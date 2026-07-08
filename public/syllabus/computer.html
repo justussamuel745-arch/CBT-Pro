@@ -1,0 +1,1047 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JAMB Computer Studies Syllabus</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: #e6e9ef;
+            font-family: 'Times New Roman', Times, serif;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .document {
+            max-width: 900px;
+            width: 100%;
+            background: #ffffff;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+            padding: 60px 70px 50px 70px;
+            border-radius: 4px;
+            margin-bottom: 40px;
+            position: relative;
+        }
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: #888;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 6px;
+            margin-bottom: 22px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        h1 {
+            font-size: 28px;
+            font-weight: bold;
+            text-align: center;
+            letter-spacing: 2px;
+            margin: 10px 0 6px 0;
+        }
+        .subtitle {
+            text-align: center;
+            font-size: 16px;
+            font-weight: bold;
+            margin: 4px 0 20px 0;
+        }
+        .general-objectives {
+            margin: 16px 0 20px 0;
+            padding-left: 20px;
+            font-size: 14.5px;
+            line-height: 1.7;
+        }
+        .general-objectives li {
+            margin-bottom: 4px;
+        }
+        .section-head {
+            font-size: 17px;
+            font-weight: bold;
+            margin: 30px 0 12px 0;
+            border-bottom: 2px solid #333;
+            padding-bottom: 4px;
+        }
+        .syllabus-table {
+            width: 100%;
+            table-layout: fixed;
+            border-collapse: collapse;
+            font-size: 14px;
+            line-height: 1.6;
+            margin: 12px 0 8px 0;
+        }
+        .syllabus-table th {
+            background: #f2f4f8;
+            border: 1px solid #333;
+            padding: 10px 12px;
+            text-align: left;
+            font-weight: bold;
+            font-size: 14px;
+            word-wrap: break-word;
+        }
+        .syllabus-table td {
+            border: 1px solid #333;
+            padding: 10px 12px;
+            vertical-align: top;
+            font-size: 14px;
+            word-wrap: break-word;
+        }
+        .syllabus-table .topic-cell {
+            width: 52%;
+            background: #fafbfc;
+        }
+        .syllabus-table .objective-cell {
+            width: 48%;
+            background: #fafbfc;
+        }
+        .syllabus-table .topic-cell strong,
+        .syllabus-table .objective-cell strong {
+            font-weight: 700;
+        }
+        .syllabus-table .topic-cell .sub-item {
+            display: block;
+            margin-top: 4px;
+            padding-left: 16px;
+        }
+        .syllabus-table .topic-cell .sub-item2 {
+            display: block;
+            margin-top: 2px;
+            padding-left: 28px;
+        }
+        .syllabus-table .objective-cell .obj-item {
+            display: block;
+            margin-top: 2px;
+            padding-left: 8px;
+        }
+        .syllabus-table .topic-cell .note {
+            font-style: italic;
+            color: #444;
+            display: block;
+            margin-top: 4px;
+            padding-left: 16px;
+        }
+        .page-number {
+            text-align: center;
+            font-size: 12px;
+            color: #888;
+            margin-top: 28px;
+            padding-top: 12px;
+            border-top: 1px solid #ddd;
+        }
+        .references {
+            margin: 30px 0 6px 0;
+            font-size: 13.5px;
+            line-height: 1.8;
+        }
+        .references .ref-title {
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 4px;
+        }
+        .references p {
+            margin-bottom: 2px;
+        }
+        @media (max-width: 700px) {
+            .document {
+                padding: 30px 20px;
+            }
+            .syllabus-table {
+                font-size: 13px;
+            }
+            .syllabus-table th,
+            .syllabus-table td {
+                padding: 6px 8px;
+            }
+            .syllabus-table .topic-cell {
+                width: 50%;
+            }
+            .syllabus-table .objective-cell {
+                width: 50%;
+            }
+            h1 {
+                font-size: 22px;
+            }
+        }
+        @media print {
+            body {
+                background: #fff;
+                padding: 0;
+            }
+            .document {
+                box-shadow: none;
+                padding: 40px 60px;
+                border-radius: 0;
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ========================================================= -->
+    <!--                 COMPUTER STUDIES SYLLABUS                   -->
+    <!-- ========================================================= -->
+
+    <!-- PAGE 1 -->
+    <div class="document">
+        <div class="page-header"><span>Computer Studies</span><span>UTME Syllabus</span></div>
+        <h1>COMPUTER STUDIES</h1>
+        <p class="subtitle">GENERAL OBJECTIVES</p>
+        <p style="font-size:14px; line-height:1.6; margin-bottom:14px;">
+            The aim of the Unified Tertiary Matriculation Examination syllabus in Computer Studies is to prepare the candidates for the Board's examination. The objectives of the syllabus are designed to test candidates' understanding, knowledge and acquisition of:
+        </p>
+        <ol class="general-objectives" style="list-style-type:decimal;">
+            <li>Evolution of Computing Systems</li>
+            <li>Basic concepts of computer and its operations</li>
+            <li>Problem solving skills, data processing and practical skills in Computing</li>
+            <li>System software and Application Software.</li>
+            <li>Operations of Basic computer hardware – Input, Output, Memory and Central Processing Unit</li>
+            <li>Application of Online resources and Online skills</li>
+            <li>Ethics and human issues in computing</li>
+            <li>Career Prospects in Computing</li>
+        </ol>
+        <p style="font-size:14px; margin: 8px 0 10px 0;">
+            The syllabus is divided into nine sections as given below:
+        </p>
+        <ul style="font-size:15px; margin: 0 0 20px 20px; list-style-type: disc; line-height:1.8;">
+            <li><strong>A.</strong> Evolution of Computing</li>
+            <li><strong>B.</strong> Fundamentals of Computing</li>
+            <li><strong>C.</strong> Computer Application Packages</li>
+            <li><strong>D.</strong> Managing Computer Files</li>
+            <li><strong>E.</strong> Computer Maintenance and Safety Measures</li>
+            <li><strong>F.</strong> Information &amp; Communication Technology (ICT)</li>
+            <li><strong>G.</strong> Developing Problem-Solving Skills</li>
+            <li><strong>H.</strong> Artificial Intelligence (AI) and Robotics</li>
+            <li><strong>I.</strong> Computer Ethics and Human Issues</li>
+        </ul>
+
+        <h2 class="section-head">SECTION A: Evolution of Computing</h2>
+
+        <table class="syllabus-table">
+            <thead><tr><th>TOPICS / CONTENTS / NOTES</th><th>OBJECTIVES</th></tr></thead>
+            <tbody>
+                <tr>
+                    <td class="topic-cell">
+                        <strong>1. History of computing</strong><br />
+                        <span class="sub-item"><strong>a.</strong> Pre-Computing Age – 19th century Features and components early computing devices</span>
+                        <span class="sub-item"><strong>b.</strong> Computing Devices – 20th Century</span>
+                        <span class="sub-item"><strong>c.</strong> The history behind each device</span>
+                    </td>
+                    <td class="objective-cell">
+                        Candidates should be able to:<br />
+                        <span class="obj-item">i. Identify the various computing devices since the beginning of counting/computing</span>
+                        <span class="obj-item" style="padding-left:16px;">– Abacus</span>
+                        <span class="obj-item" style="padding-left:16px;">– Slide Rule</span>
+                        <span class="obj-item" style="padding-left:16px;">– Napier's Bones</span>
+                        <span class="obj-item" style="padding-left:16px;">– Pascal Calculator</span>
+                        <span class="obj-item" style="padding-left:16px;">– Leibnitz Multiplier</span>
+                        <span class="obj-item" style="padding-left:16px;">– Jacquard Loom</span>
+                        <span class="obj-item" style="padding-left:16px;">– Charles Babbage's Analytical Engine</span>
+                        <span class="obj-item" style="padding-left:16px;">– Hollerith Census machine</span>
+                        <span class="obj-item" style="padding-left:16px;">– Burrough's machine.</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="topic-cell">
+                        <strong>2. Classification of computing devices</strong><br />
+                        <span class="sub-item"><strong>a.</strong> By Generation</span>
+                        <span class="sub-item"><strong>b.</strong> By Size</span>
+                        <span class="sub-item"><strong>c.</strong> By Purpose</span>
+                        <span class="sub-item"><strong>d.</strong> By Type</span>
+                    </td>
+                    <td class="objective-cell">
+                        <span class="obj-item">ii. Discuss the contributions and uses of each of the founders of these devices:</span>
+                        <span class="obj-item" style="padding-left:16px;">– ENIAC</span>
+                        <span class="obj-item" style="padding-left:16px;">– EDVAC</span>
+                        <span class="obj-item" style="padding-left:16px;">– UNIVAC 1</span>
+                        <span class="obj-item" style="padding-left:16px;">– Desktop Personal Computers, etc.</span>
+                        <span class="obj-item">i. Relate each generation with its characteristic feature.</span>
+                        <span class="obj-item" style="padding-left:16px;">– First, Second, Third, Fourth to current generation.</span>
+                        <span class="obj-item">ii. Describe each generation under the following:</span>
+                        <span class="obj-item" style="padding-left:16px;">– Year of Development</span>
+                        <span class="obj-item" style="padding-left:16px;">– Basic components/Type of Technology</span>
+                        <span class="obj-item" style="padding-left:16px;">– Speed of operation</span>
+                        <span class="obj-item" style="padding-left:16px;">– Storage Capacity/Component</span>
+                        <span class="obj-item">iii. Explain the differences in the classification of computing systems by size (micro, mini, mainframe, and super)</span>
+                        <span class="obj-item">iv. Differentiate among the various types of modern computer systems in respect of sizes and basic components, data and usage</span>
+                        <span class="obj-item" style="padding-left:16px;">– Personal Computers, Desktops, Laptops, Tablets, Hand-held, Servers, Workstations, Mainframes, Wearable, Super Computers.</span>
+                        <span class="obj-item" style="padding-left:16px;">– Digital, Analog, Hybrid, Special purpose, General purpose, etc.</span>
+                        <span class="obj-item">v. State the importance and use of these computing systems.</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="page-number">Page 1</div>
+    </div>
+
+    <!-- PAGE 2 -->
+    <div class="document">
+        <div class="page-header"><span>Computer Studies</span><span>UTME Syllabus</span></div>
+        <h2 class="section-head">SECTION B: Fundamentals of Computing</h2>
+        <table class="syllabus-table">
+            <thead><tr><th>TOPICS / CONTENTS / NOTES</th><th>OBJECTIVES</th></tr></thead>
+            <tbody>
+                <tr>
+                    <td class="topic-cell">
+                        <strong>1. Overview of Computing Systems</strong><br />
+                        <span class="sub-item"><strong>a.</strong> Two main constituents of a computer (hardware and software)</span>
+                        <span class="sub-item"><strong>b.</strong> Characteristics of computers</span>
+                        <span class="sub-item"><strong>c.</strong> Type, examples and uses of computer hardware</span>
+                        <span class="sub-item"><strong>d.</strong> Logic Circuits</span>
+                        <span class="sub-item"><strong>e.</strong> Types, examples and uses of software</span>
+                    </td>
+                    <td class="objective-cell">
+                        Candidates should be able to:<br />
+                        <span class="obj-item">i. Define Computer system in relation to its nature and programmability</span>
+                        <span class="obj-item">ii. List functional parts of computer systems</span>
+                        <span class="obj-item">iii. Explain the characteristics of computers (Electronic, Accuracy, Speed, interactive, Reliability, Consistency, Large Storage etc.)</span>
+                        <span class="obj-item">iv. Identify the differences between hardware and software</span>
+                        <span class="obj-item">v. Define and give examples of hardware devices</span>
+                        <span class="obj-item">vi. List components of computer hardware, their functions and different types – Central Processing Unit, Peripherals (Input and Output devices) and Storage media</span>
+                        <span class="obj-item">vii. Explain the differences between input and output devices</span>
+                        <span class="obj-item">viii. Explain the functions of major input devices and give examples of the major input devices (keyboards, mouse, scanner, joystick, light pen, voice, digital camera, etc.)</span>
+                        <span class="obj-item">ix. Explain the classification of keys on the keyboard (function, numeric, alphabetic, cursors).</span>
+                        <span class="obj-item">x. Explain the features, functions and operations of the mouse</span>
+                        <span class="obj-item">xi. Explain the differences among keyboard, mouse, light pen and scanner, digital camera and output devices</span>
+                        <span class="obj-item">xii. Define and give examples of output devices (monitor, printer, speaker, plotters)</span>
+                        <span class="obj-item">xiii. List the different types, features and uses of each output device above.</span>
+                        <span class="obj-item">xiv. Explain the similarities and differences among inkjet, laser and line printers</span>
+                        <span class="obj-item">xv. List the components of CPU – Arithmetic and Logic Unit (ALU), Control Unit (CU) and Registers.</span>
+                        <span class="obj-item">xvi. Explain the functions of ALU, CU and Registers.</span>
+                        <span class="obj-item">xvii. Distinguish between Primary and Secondary Memory (Storage) units</span>
+                        <span class="obj-item">xviii. List the components of Primary Memory Unit (Random Access Memory (RAM), Read Only Memory (ROM))</span>
+                        <span class="obj-item">xix. Explain the uses and differences between RAM and ROM</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="page-number">Page 2</div>
+    </div>
+
+    <!-- PAGE 3 -->
+    <div class="document">
+        <div class="page-header"><span>Computer Studies</span><span>UTME Syllabus</span></div>
+        <table class="syllabus-table">
+            <thead><tr><th>TOPICS / CONTENTS / NOTES</th><th>OBJECTIVES</th></tr></thead>
+            <tbody>
+                <tr>
+                    <td class="topic-cell">
+                        <span class="sub-item">(continued)</span>
+                        <span class="sub-item"><strong>f.</strong> Secondary (auxiliary) storage</span>
+                        <span class="sub-item"><strong>g.</strong> Units of storage</span>
+                        <span class="sub-item"><strong>h.</strong> Data transfer</span>
+                        <span class="sub-item"><strong>i.</strong> Logic circuits – basic gates</span>
+                    </td>
+                    <td class="objective-cell">
+                        <span class="obj-item">xx. Explain the functions of secondary (auxiliary) storages</span>
+                        <span class="obj-item">xxi. List different types of secondary storages</span>
+                        <span class="obj-item">xxii. Give examples of secondary storages (Floppy disks, magnetic tape, hard disks, compact disk (CD), Digital Video Disk (DVD), USB, etc.)</span>
+                        <span class="obj-item">xxiii. Carry out comparative analysis of auxiliary storage devices in respect of size, speed, cost and technology (access mode, component, etc.).</span>
+                        <span class="obj-item">xxiv. List different units by which storage are measured and their relationships – bits, bytes, nibbles, words, kilobytes, megabytes, gigabytes, terabytes etc.</span>
+                        <span class="obj-item">xxv. Relate the relationships between Micro, Mega, Giga, and Terra bytes.</span>
+                        <span class="obj-item">xxvi. Define – Registers, Bus, Address</span>
+                        <span class="obj-item">xxvii. Explain the functions of the following Registers: MDR (Memory Data Register), MAR (Memory Address Register), MBR (Memory Base Register), AC (Accumulator), PC (Program Counter), CIR (Current Instruction Register), etc.</span>
+                        <span class="obj-item">xxviii. Explain the differences between register and main memory</span>
+                        <span class="obj-item">xxix. State the major steps involved in how a computer converts data to required information (Input – Process – Output)</span>
+                        <span class="obj-item">xxx. Enumerate factors affecting speed of data transfer (bus speed and bus width)</span>
+                        <span class="obj-item">xxxi. Define different type types and uses of gates: AND, NOT, OR, NOR, NAND</span>
+                        <span class="obj-item">xxxii. Interpret Logic equations for AND, NOT and OR gates</span>
+                        <span class="obj-item">xxxiii. List the symbols of AND, NOT and OR gates</span>
+                        <span class="obj-item">xxxiv. Construct Truth Table for standard logic gates – AND, NOT, OR, gates</span>
+                        <span class="obj-item">xxxv. Define comparator</span>
+                        <span class="obj-item">xxxvi. Construct a simple comparator with XOR (Exclusive OR) and NOR gate</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="topic-cell">
+                        <strong>2. Software</strong><br />
+                        <span class="sub-item"><strong>a.</strong> System software</span>
+                        <span class="sub-item"><strong>b.</strong> Application software</span>
+                        <span class="sub-item"><strong>c.</strong> Data and Information</span>
+                    </td>
+                    <td class="objective-cell">
+                        Candidates should be able to:<br />
+                        <span class="obj-item">i. Differentiate between system and application software.</span>
+                        <span class="obj-item">ii. List different types of System software (Operating Systems, Utility Software, Middleware, Device Drivers, Translators, etc.)</span>
+                        <span class="obj-item">iii. Define Operating System (OS)</span>
+                        <span class="obj-item">iv. List functions of OS</span>
+                        <span class="obj-item">v. List different types of OS User Interfaces (Text (Command Line and Menu) and Graphical User Interface (GUI))</span>
+                        <span class="obj-item">vi. Give examples of Operating Systems (MS Windows, LINUX, UNIX, etc.)</span>
+                        <span class="obj-item">vii. Discuss different OS on phones, iPad (Android, Blackberry, iPhone, etc.)</span>
+                        <span class="obj-item">viii. Define Utility Software</span>
+                        <span class="obj-item">ix. List functions of Utility Software</span>
+                        <span class="obj-item">x. List different types of Utility Software</span>
+                        <span class="obj-item">xi. Give examples of Utility Software (Editors, Anti-Virus, etc.)</span>
+                        <span class="obj-item">xii. Define Translators</span>
+                        <span class="obj-item">xiii. Explain the functions of Translator Software</span>
+                        <span class="obj-item">xiv. List the different categories of translators (Interpreter, Assembler and Compiler)</span>
+                        <span class="obj-item">xv. Explain the differences among the categories of translators.</span>
+                        <span class="obj-item">xvi. List examples of application software and their usage</span>
+                        <span class="obj-item">xvii. Differentiate between open source and proprietary software</span>
+                        <span class="obj-item">xviii. Different methods of acquiring Application software (Built in house and Off the Shelf)</span>
+                        <span class="obj-item">xix. Explain the differences between User Application program and general-purpose Application packages</span>
+                        <span class="obj-item">xx. Give examples of common off the Shelf Application packages and their examples. Word Processing (MS Word), Spreadsheet (Excel), Database (Access), Presentation (PowerPoint), Graphics (Adobe Photoshop), Accounting (Sage), Payroll (Sage), Government (Remita), Banking (Fusion Banking Essence), Statistics (SPSS), Educational (SchoolShell), Hospital (eHospital), etc.</span>
+                        <span class="obj-item">xxi. Define data and information</span>
+                        <span class="obj-item">xxii. List properties of information</span>
+                        <span class="obj-item">xxiii. List different types of data types (integers, real numbers, strings, multimedia (image, audio/visual, signal etc.)</span>
+                        <span class="obj-item">xxiv. Identify ways of representing and handling data, that is number bases with special reference to binary, decimal, hexadecimal etc.</span>
+                        <span class="obj-item">xxv. Define digitization</span>
+                        <span class="obj-item">xxvi. Explain the process of digitalization (manual, heads-up, interactive tracing, automatic)</span>
+                        <span class="obj-item">xxvii. List different formats of digitized data (image, audio, video, motion, text, multimedia, etc.)</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="page-number">Page 3</div>
+    </div>
+
+    <!-- PAGE 4 -->
+    <div class="document">
+        <div class="page-header"><span>Computer Studies</span><span>UTME Syllabus</span></div>
+        <h2 class="section-head">SECTION C: Computer Application Packages</h2>
+        <table class="syllabus-table">
+            <thead><tr><th>TOPICS / CONTENTS / NOTES</th><th>OBJECTIVES</th></tr></thead>
+            <tbody>
+                <tr>
+                    <td class="topic-cell">
+                        <strong>1. Word Processing package</strong><br />
+                        <span class="sub-item"><strong>(a)</strong> General concept</span>
+                        <span class="sub-item"><strong>(b)</strong> Creating and saving documents</span>
+                        <span class="sub-item"><strong>(c)</strong> Editing, formatting and insertion</span>
+                        <span class="sub-item"><strong>(d)</strong> Printing</span>
+                        <span class="sub-item"><strong>(e)</strong> MS Word</span>
+                        <span class="sub-item2">i. Features</span>
+                        <span class="sub-item2">ii. Launch MS Word</span>
+                        <span class="sub-item2">iii. Basic operations</span>
+                        <span class="sub-item2">iv. Other operations</span>
+                    </td>
+                    <td class="objective-cell">
+                        Candidates should be able to:<br />
+                        <span class="obj-item">i. Define word processing, and give examples of word processing packages. (MS Word, WordStar, WordPerfect, Open Word, etc.)</span>
+                        <span class="obj-item">ii. Identify features of Word Processing packages in general (create, save, edit, insert, print, share etc.)</span>
+                        <span class="obj-item">iii. List the application areas of Word Processing packages (Office, Publishing, Journalism, Education, etc.)</span>
+                        <span class="obj-item">iv. Launch effectively MS word.</span>
+                        <span class="obj-item">v. Perform MS Word basic operations – create, edit, save, retrieve, print, copy and move, etc.</span>
+                        <span class="obj-item">vi. Use different types and sizes of fonts</span>
+                        <span class="obj-item">vii. Perform MS Word operations of: Format, justify, search/explore, etc.</span>
+                        <span class="obj-item">viii. Carry out spell checking and file merging operations</span>
+                        <span class="obj-item">ix. Close MS Word.</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="topic-cell">
+                        <strong>2. Spreadsheet package</strong><br />
+                        <span class="sub-item"><strong>(a)</strong> General concept</span>
+                        <span class="sub-item"><strong>(b)</strong> MS Excel</span>
+                    </td>
+                    <td class="objective-cell">
+                        Candidates should be able to:<br />
+                        <span class="obj-item">i. Define Spreadsheet and give examples of Spreadsheet packages. (MS Excel, VisiCalc, SuperCalc, SPSS, Calc etc.)</span>
+                        <span class="obj-item">ii. Identify features of Spreadsheet packages in general (Environment, Status bar, menu bar, formula bar, etc.)</span>
+                        <span class="obj-item">iii. List the application areas of Spreadsheet packages (Accounting, Engineering, Statistics, Calculation, what-if scenarios, Education, etc.)</span>
+                        <span class="obj-item">iv. Launch effectively MS Excel.</span>
+                        <span class="obj-item">v. Define basic terms in MS Excel – worksheet, workbook, cells, cell ranges, etc.</span>
+                        <span class="obj-item">vi. Use MS Excel to: create, edit, save, retrieve, and print spreadsheet documents.</span>
+                        <span class="obj-item">vii. Use data types in MS Excel (Number, Labels, Formula etc.)</span>
+                        <span class="obj-item">viii. Perform basic operations in MS excel – Data Entry, Saving, Retrieve, move, copy, etc.)</span>
+                        <span class="obj-item">ix. Perform arithmetic calculations using formula and inbuilt functions, etc.</span>
+                        <span class="obj-item">x. Use different types and sizes of fonts</span>
+                        <span class="obj-item">xi. Perform additional MS Excel operations (Formatting, Editing, Printing, Drawing charts etc.)</span>
+                        <span class="obj-item">xii. Close MS Excel.</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="page-number">Page 4</div>
+    </div>
+
+    <!-- PAGE 5 -->
+    <div class="document">
+        <div class="page-header"><span>Computer Studies</span><span>UTME Syllabus</span></div>
+        <table class="syllabus-table">
+            <thead><tr><th>TOPICS / CONTENTS / NOTES</th><th>OBJECTIVES</th></tr></thead>
+            <tbody>
+                <tr>
+                    <td class="topic-cell">
+                        <strong>3. Database package</strong><br />
+                        <span class="sub-item"><strong>(a)</strong> Definition of Database and examples of database packages</span>
+                        <span class="sub-item"><strong>(b)</strong> Database organizations</span>
+                        <span class="sub-item"><strong>(c)</strong> Different features of database format</span>
+                        <span class="sub-item"><strong>(d)</strong> Basic operations of Database using MS Access</span>
+                        <span class="sub-item"><strong>(e)</strong> Create database using MS Access</span>
+                        <span class="sub-item"><strong>(f)</strong> Carry out operations on existing database using MS Access.</span>
+                    </td>
+                    <td class="objective-cell">
+                        Candidates should be able to:<br />
+                        <span class="obj-item">i. Define Database and give examples of Database packages. (Dbase, Foxbase, MS Access, Oracle, etc.)</span>
+                        <span class="obj-item">ii. Define basic database terms (File, Record, Field, key, form, table, etc.)</span>
+                        <span class="obj-item">iii. List and explain different types of database organisation (Hierarchical, Network and Relational.)</span>
+                        <span class="obj-item">iv. List the application areas of Database in different organizations (Office, Home, Education, Government, Hospital, Agriculture, etc.)</span>
+                        <span class="obj-item">v. Explain different features of database format in MS Access: Files designed as tables, Tables comprising of rows and columns, Row containing related information about a record, Column containing specific type of information about a field</span>
+                        <span class="obj-item">vi. Carry out steps to create a database in MS Access to: Define structure of a database, Indicate field type (numeric, character, data, text, etc.), Enter data, Save data</span>
+                        <span class="obj-item">vii. carry out basic operations on an already created MS Access database: searching, modifying, sorting, reporting, selecting, inserting, etc.</span>
+                        <span class="obj-item">viii. Close the MS Access database.</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="topic-cell">
+                        <strong>4. Graphics Package</strong><br />
+                        <span class="sub-item"><strong>(a)</strong> Definitions and examples of Graphic packages</span>
+                        <span class="sub-item"><strong>(b)</strong> Features of CorelDraw</span>
+                        <span class="sub-item"><strong>(c)</strong> Simple design using CorelDraw</span>
+                    </td>
+                    <td class="objective-cell">
+                        Candidates should be able to:<br />
+                        <span class="obj-item">i. Define Graphics and give examples of Graphic packages (Paint, Harvard Graphics, Photoshop, CorelDraw, Autocad etc)</span>
+                        <span class="obj-item">ii. Explain features of CorelDraw (LiveSketch Tool, Multi-Monitor, Healing Clone Tools, Copy Curve Segments, Gaussian Blur Feature, Touch-Friendly GU Interface, Powerful Stylus Enhancements, Import Legacy Workspaces, Prominent Interactive Sliders, Custom Node Shapes, Font Filtering and Search, Corel Font Manager, Enhanced Vector Previews, Handles and Node etc.)</span>
+                        <span class="obj-item">iii. Use features of CorelDraw to activate existing CorelDraw file</span>
+                        <span class="obj-item">iv. Use CorelDraw to design Business Card, School Logo, National Flag, Invitation Card, Certificates etc.</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="page-number">Page 5</div>
+    </div>
+
+    <!-- PAGE 6 -->
+    <div class="document">
+        <div class="page-header"><span>Computer Studies</span><span>UTME Syllabus</span></div>
+        <table class="syllabus-table">
+            <thead><tr><th>TOPICS / CONTENTS / NOTES</th><th>OBJECTIVES</th></tr></thead>
+            <tbody>
+                <tr>
+                    <td class="topic-cell">
+                        <strong>5. Presentation Package</strong><br />
+                        <span class="sub-item"><strong>(a)</strong> Definition of Presentation package and examples of Presentation packages</span>
+                        <span class="sub-item"><strong>(b)</strong> PowerPoint</span>
+                        <span class="sub-item2">i. Features of PowerPoint Environment</span>
+                        <span class="sub-item2">ii. Steps in activating an existing PowerPoint</span>
+                        <span class="sub-item2">iii. PowerPoint operations</span>
+                    </td>
+                    <td class="objective-cell">
+                        Candidates should be able to:<br />
+                        <span class="obj-item">i. Define Presentation and give examples of Presentation packages (MS PowerPoint, Windows Movie Maker, Micromedia Flash, Impress, Apple keynotes, etc.)</span>
+                        <span class="obj-item">ii. Explain features of PowerPoint Environment (Animation Painter, Video Editor, create a video of you presentation, Automatic Ribbons Toolbars, Transitions, Sections, Cropped Tool, Mask Feature, Effective Preview, Screen Shot, Smart Guides,)</span>
+                        <span class="obj-item">iii. Explain steps in activating a PowerPoint presentation</span>
+                        <span class="obj-item">iv. Perform PowerPoint operations to: Create new presentation, Insert pictures, text, graphs, animated contents, add new slide etc., Save presentation, run slide show, print presentation, close presentation etc.</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="topic-cell">
+                        <strong>6. Web Design Package</strong><br />
+                        <span class="sub-item"><strong>(a)</strong> Definition and examples of Web Design Packages</span>
+                        <span class="sub-item"><strong>(b)</strong> Uses Web Design Packages</span>
+                        <span class="sub-item"><strong>(c)</strong> Elements of Web design using Dreamview</span>
+                    </td>
+                    <td class="objective-cell">
+                        Candidates should be able to:<br />
+                        <span class="obj-item">i. Define and Give examples of Web design package (HTML, XML, Dreamweaver, Rapidweaver, Google Web Designer, Microsoft Sharepoint Designer, Net Object Fusion, Xara Web Designer etc.)</span>
+                        <span class="obj-item">ii. List Elements of Web Design: Navigation, Visual design, Content, Web friendly, Interaction, Information, Accessibility, Intuitiveness, Branding, Turnaround time, Conversion etc.</span>
+                        <span class="obj-item">iii. Use Dreamweaver for: Social Media Management, Social Media Marketing, Website Design &amp; Web Development, Pay Per Click (PPC) Management and Advert Consulting etc.</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2 class="section-head">SECTION D: Managing Computer Files</h2>
+        <table class="syllabus-table">
+            <thead><tr><th>TOPICS / CONTENTS / NOTES</th><th>OBJECTIVES</th></tr></thead>
+            <tbody>
+                <tr>
+                    <td class="topic-cell">
+                        <strong>1. Concept of Computer Files</strong><br />
+                        <span class="sub-item"><strong>(a)</strong> Definitions of basic terms</span>
+                        <span class="sub-item"><strong>(b)</strong> File organisations</span>
+                        <span class="sub-item"><strong>(c)</strong> Methods of accessing files</span>
+                        <span class="sub-item"><strong>(d)</strong> File classifications</span>
+                        <span class="sub-item"><strong>(e)</strong> Criteria for classifying files</span>
+                    </td>
+                    <td class="objective-cell">
+                        Candidates should be able to:<br />
+                        <span class="obj-item">i. Define some basic terms (File, record, field, data item etc.).</span>
+                        <span class="obj-item">ii. Identify and use of basic data types (numeric, alphabetic, and alphanumeric)</span>
+                        <span class="obj-item">iii. Explain the relationship among file structure items (Data item – field – record – file – database)</span>
+                        <span class="obj-item">iv. Classify files according to how they are organised. (Serial, Sequential, Index and random)</span>
+                        <span class="obj-item">v. Access files as appropriate (Serial, Sequential and Random).</span>
+                        <span class="obj-item">vi. Classify files into: Master, Transaction, Reference</span>
+                        <span class="obj-item">vii. Explain the criteria used in classifying files: Nature of content (Program and Data), Organization method, Storage medium, Date, Size, etc.</span>
+                        <span class="obj-item">viii. Perform basic file operations: Create, Delete, Retrieve, Insert, Copy, View, Update, Open, Close etc.</span>
+                        <span class="obj-item">ix. Identify causes of data loss: Overwriting, Inadvertent deletion, Hardware malfunction, Virus attack, Theft, Arson, Natural Disaster, etc.</span>
+                        <span class="obj-item">x. Use different methods of securing data and maintaining its integrity: Backup, Antivirus, Personal Identification Number, Biometrics, Passwords, Proper labelling of storage devices, CCTV, Physical Security, Fire Extinguisher, Smoke Alarms, etc.</span>
+                        <span class="obj-item">xi. Compare the advantages and disadvantages of computer and manual file (security, speed of access and creation, cost of setup and maintenance, electricity supply, etc.)</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="page-number">Page 6</div>
+    </div>
+
+    <!-- PAGE 7 -->
+    <div class="document">
+        <div class="page-header"><span>Computer Studies</span><span>UTME Syllabus</span></div>
+        <h2 class="section-head">SECTION E: Computer Maintenance and Safety Measures</h2>
+        <table class="syllabus-table">
+            <thead><tr><th>TOPICS / CONTENTS / NOTES</th><th>OBJECTIVES</th></tr></thead>
+            <tbody>
+                <tr>
+                    <td class="topic-cell">
+                        <strong>1. Booting and shutting down process</strong>
+                    </td>
+                    <td class="objective-cell">
+                        Candidates should be able to:<br />
+                        <span class="obj-item">i. Define booting</span>
+                        <span class="obj-item">ii. List the two types of booting process (cold and warm booting)</span>
+                        <span class="obj-item">iii. Explain the difference between cold and warm booting.</span>
+                        <span class="obj-item">iv. Explain the steps involved in booting and shutting down a computer system</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="topic-cell">
+                        <strong>2. Computer Maintenance</strong>
+                    </td>
+                    <td class="objective-cell">
+                        Candidates should be able to:<br />
+                        <span class="obj-item">i. Perform general cleaning of the computer system</span>
+                        <span class="obj-item">ii. Charge and replace battery for portable systems and UPS</span>
+                        <span class="obj-item">iii. Clean drive lens</span>
+                        <span class="obj-item">iv. Perform simple hardware and software maintenance</span>
+                        <span class="obj-item">v. Recover data from a crashed system</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="topic-cell">
+                        <strong>3. Computer Room Management</strong>
+                    </td>
+                    <td class="objective-cell">
+                        Candidates should be able to:<br />
+                        <span class="obj-item">i. Define proper sitting arrangement</span>
+                        <span class="obj-item">ii. Position the monitor, keyboard, CPU, Mouse and other peripherals appropriately</span>
+                        <span class="obj-item">iii. Ensure Proper illumination of the computer room</span>
+                        <span class="obj-item">iv. Maintain a dust free environment</span>
+                        <span class="obj-item">v. Keep liquid away from computer room</span>
+                        <span class="obj-item">vi. Keep strictly to laboratory rules and regulations</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2 class="section-head">SECTION F: Information &amp; Communication Technology (ICT)</h2>
+        <table class="syllabus-table">
+            <thead><tr><th>TOPICS / CONTENTS / NOTES</th><th>OBJECTIVES</th></tr></thead>
+            <tbody>
+                <tr>
+                    <td class="topic-cell">
+                        <strong>1. Communication Systems</strong><br />
+                        <span class="sub-item"><strong>(a)</strong> Definitions and Acronym of ICT</span>
+                        <span class="sub-item"><strong>(b)</strong> Types and examples of ICT</span>
+                    </td>
+                    <td class="objective-cell">
+                        Candidates should be able to:<br />
+                        <span class="obj-item">i. State the full meaning of the acronym ICT</span>
+                        <span class="obj-item">ii. Define ICT</span>
+                        <span class="obj-item">iii. List types of ICT – Broadcasting, Telecommunication, Data Network, Information Systems, Satellite Communication, etc.</span>
+                        <span class="obj-item">iv. Give examples of Broadcasting: Radio broadcasting, Television Broadcasting, Satellites Broadcasting etc.</span>
+                        <span class="obj-item">v. List types of Telecommunications: Public Switched Telephone Network (PSTN), Land Line, Mobile phone system, Circuit Switched Packet Telephone System (CSPT), Satellite Telephone System, Fixed Wireless Telephone System etc.</span>
+                        <span class="obj-item">vi. List types of Data Network: Personal Area Network (PAN), Local Area Network (LAN), Metropolitan Area Network (MAN), Wide Area Network (WAN), Intranet, Internet etc.</span>
+                        <span class="obj-item">vii. List types of Information System: Data Processing System, Global Positioning System (GPS), etc.</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="topic-cell">
+                        <strong>2. Application areas of ICT</strong><br />
+                        <span class="sub-item"><strong>(a)</strong> Application areas</span>
+                        <span class="sub-item"><strong>(b)</strong> ICT based Devices</span>
+                    </td>
+                    <td class="objective-cell">
+                        Candidates should be able to:<br />
+                        <span class="obj-item">i. Define Applications Areas of ICT: Teleconferencing, Video conferencing, Telecommuting, Telecomputing, Messaging, Information search, retrieval and archival systems, E-Learning, Telemedicine, E-Commerce, E-Government, E-Library, etc.</span>
+                        <span class="obj-item">ii. List types of ICT Devices: Mobile phones, Computers, Automated Teller Machines (ATM), Dispensing Machines, Point of Sale Machines, Automated Cash Register (ACR), Radio sets, Television sets, Scanners, etc.</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="page-number">Page 7</div>
+    </div>
+
+    <!-- PAGE 8 -->
+    <div class="document">
+        <div class="page-header"><span>Computer Studies</span><span>UTME Syllabus</span></div>
+        <table class="syllabus-table">
+            <thead><tr><th>TOPICS / CONTENTS / NOTES</th><th>OBJECTIVES</th></tr></thead>
+            <tbody>
+                <tr>
+                    <td class="topic-cell">
+                        <strong>3. Internet</strong><br />
+                        <span class="sub-item"><strong>(a)</strong> Definition of terms</span>
+                        <span class="sub-item"><strong>(b)</strong> Internet Browsers</span>
+                        <span class="sub-item"><strong>(c)</strong> Features of Internet Browsers</span>
+                        <span class="sub-item"><strong>(d)</strong> Internet Services</span>
+                    </td>
+                    <td class="objective-cell">
+                        Candidates should be able to:<br />
+                        <span class="obj-item">i. Define Internet</span>
+                        <span class="obj-item">ii. Define and illustrate use of: Home page, Browse, Browser, Chatroom, Cybercafe, Http, Html, ISP, Webpage, Website, etc.</span>
+                        <span class="obj-item">iii. Access the Internet through any of the browsers: Internet Explorer, Opera, Firefox, Cometbird, Ubuntu, Google Chrome, Phoenix, etc.</span>
+                        <span class="obj-item">iv. Explain features of the Internet Browsers: Title Bar, Menu Bar, Tool Bar, Address Bar, Icons, Search Bar, Uniform Resource Locator (URL)/Hypertext link, etc.</span>
+                        <span class="obj-item">v. Describe the use of different types of Internet services: Electronic Mail (e-mail), E-mail Discussion Group, Instant Messaging/Chats, Virtual meeting platforms, File Transfer Protocol (FTP), World Wide Web (WWW), Search Engines, Chatting etc.</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="topic-cell">
+                        <strong>4. Electronic Mail</strong><br />
+                        <span class="sub-item"><strong>(a)</strong> Definition</span>
+                        <span class="sub-item"><strong>(b)</strong> E-mail Service</span>
+                        <span class="sub-item"><strong>(c)</strong> Steps involved in creating and opening mail (email box, and chatting)</span>
+                        <span class="sub-item"><strong>(d)</strong> Features of e-mail address</span>
+                    </td>
+                    <td class="objective-cell">
+                        Candidates should be able to:<br />
+                        <span class="obj-item">i. Define Electronic Mail and Chatting</span>
+                        <span class="obj-item">ii. List e-mail services: Creating e-mail address, Composing e-mail, Sending/receiving e-mail, Adding attachments, Chatting, Creating mailing list/group etc.</span>
+                        <span class="obj-item">iii. Explain the features in an e-mail address e.g. xyz@jamb.org.ng (user@Domainname) Explain the components of domain name.</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="topic-cell">
+                        <strong>5. Networking</strong><br />
+                        <span class="sub-item"><strong>(a)</strong> Definitions</span>
+                        <span class="sub-item"><strong>(b)</strong> Network types</span>
+                        <span class="sub-item"><strong>(c)</strong> Network topologies</span>
+                        <span class="sub-item"><strong>(d)</strong> Network devices</span>
+                    </td>
+                    <td class="objective-cell">
+                        Candidates should be able to:<br />
+                        <span class="obj-item">i. Define computer network</span>
+                        <span class="obj-item">ii. List and define various types of Networks: PAN, LAN, WAN, MAN, Intranet, Extranet, Internet</span>
+                        <span class="obj-item">iii. Explain the differences in basic network topologies: Star, Bus, Ring</span>
+                        <span class="obj-item">iv. Define and explain the use of network devices: Hub, Modems, Switches, Routers, Gateway, Repeaters, Access Points, Interface (API), Network Interface Card (NIC), etc.</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="page-number">Page 8</div>
+    </div>
+
+    <!-- PAGE 9 -->
+    <div class="document">
+        <div class="page-header"><span>Computer Studies</span><span>UTME Syllabus</span></div>
+        <table class="syllabus-table">
+            <thead><tr><th>TOPICS / CONTENTS / NOTES</th><th>OBJECTIVES</th></tr></thead>
+            <tbody>
+                <tr>
+                    <td class="topic-cell">
+                        <strong>6. World Wide Web (www)</strong><br />
+                        <span class="sub-item"><strong>(a)</strong> Definition and full meanings of acronyms</span>
+                        <span class="sub-item"><strong>(b)</strong> Brief history of WWW</span>
+                        <span class="sub-item"><strong>(c)</strong> Basic terminologies</span>
+                        <span class="sub-item"><strong>(d)</strong> Protocols</span>
+                        <span class="sub-item"><strong>(e)</strong> Advantages and disadvantages of www.</span>
+                        <span class="sub-item"><strong>(f)</strong> Navigation through websites</span>
+                        <span class="sub-item"><strong>(g)</strong> Software for web development</span>
+                        <span class="sub-item"><strong>(h)</strong> Differences between email and website</span>
+                    </td>
+                    <td class="objective-cell">
+                        Candidates should be able to:<br />
+                        <span class="obj-item">i. Give full meanings of www, HTTP, HTTPS, HTML, XML</span>
+                        <span class="obj-item">ii. Explain the history behind www</span>
+                        <span class="obj-item">iii. Explain basic terminologies: www, Website, Webpage, Homepage, Protocol etc.</span>
+                        <span class="obj-item">iv. Define Protocol and list different types of protocols (http, https, ftp, etc.)</span>
+                        <span class="obj-item">v. List uses and benefits of www: Accessible from anywhere around the globe with the availability of the Internet, access to information or make information accessible to the world, connect to people from anywhere from home, purchase products online anywhere in the comfort of your home, create website for your business and do a lot much more than physical office, communicate with anyone around the world through texts, chats, and emails, Online course can be completed using www, Online marketing and branding of businesses, Facilitate establishing professional contacts, Unlimited access to information, etc.</span>
+                        <span class="obj-item">vi. List disadvantages of www: Risk of data and identity theft, Cyberbullying, Easy spread of fake news, Hacking, Spam mails, Paedophile, etc.</span>
+                        <span class="obj-item">vii. Navigate through websites: www.jamb.org, www.wace.org, www.neco.org, www.ui.edu, www.jigiy.com, www.google.com, etc.</span>
+                        <span class="obj-item">viii. Use of software for web development: Frontpage, WordPress, Dreamweaver, Photoshop, Google Web Designer, etc.</span>
+                        <span class="obj-item">ix. Differentiate between email and website – xyz@jamb.gov and www.jamb.org</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="topic-cell">
+                        <strong>7. Cables and Connectors</strong><br />
+                        <span class="sub-item"><strong>(a)</strong> Network cables and connectors</span>
+                    </td>
+                    <td class="objective-cell">
+                        Candidates should be able to:<br />
+                        <span class="obj-item">i. Identify different network cables and connectors: Cables (Twisted Pair, Coaxial, Fibre Optics, etc.) Connectors (RJ45, RJ11, T-Connectors)</span>
+                        <span class="obj-item">ii. Identify different types of Computer Cables and Connectors: Cables: Power Cables, Data Cables, Printer Cable, Universal Serial Bus (USB), Monitor Cable, Serial Cable, Parallel Cable, etc. Connectors: Male and Female.</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2 class="section-head">SECTION G: Developing Problem-Solving Skills</h2>
+        <table class="syllabus-table">
+            <thead><tr><th>TOPICS / CONTENTS / NOTES</th><th>OBJECTIVES</th></tr></thead>
+            <tbody>
+                <tr>
+                    <td class="topic-cell">
+                        <strong>1. Programming Language (PL)</strong><br />
+                        <span class="sub-item"><strong>(a)</strong> Definition and Classification of PL</span>
+                        <span class="sub-item"><strong>(b)</strong> Advantages and disadvantages of different levels of PL</span>
+                    </td>
+                    <td class="objective-cell">
+                        Candidates should be able to:<br />
+                        <span class="obj-item">i. Define Programming Language (PL)</span>
+                        <span class="obj-item">ii. Identify different classifications of PL: Machine Language: interpreted directly in hardware i.e., binary machine code; Assembly languages: thin wrappers over a corresponding machine language i.e., Assembly Language/symbolic language; High-Level languages: anything that are machine independent i.e., BASIC, C, Java, Fortran 2008, Python, Perl etc.</span>
+                        <span class="obj-item">iii. Give advantages and disadvantages of Machine Language, Assembly Language and High programming Language.</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="page-number">Page 9</div>
+    </div>
+
+    <!-- PAGE 10 -->
+    <div class="document">
+        <div class="page-header"><span>Computer Studies</span><span>UTME Syllabus</span></div>
+        <table class="syllabus-table">
+            <thead><tr><th>TOPICS / CONTENTS / NOTES</th><th>OBJECTIVES</th></tr></thead>
+            <tbody>
+                <tr>
+                    <td class="topic-cell">
+                        <strong>2. High Level Languages (HLL)</strong><br />
+                        <span class="sub-item"><strong>(a)</strong> Classifications of HLL</span>
+                        <span class="sub-item"><strong>(b)</strong> Characteristics of HLL</span>
+                        <span class="sub-item"><strong>(c)</strong> Translators</span>
+                    </td>
+                    <td class="objective-cell">
+                        Candidates should be able to:<br />
+                        <span class="obj-item">i. Classify High-Level programming Languages into: Scientific, General Purpose, Business, Object oriented, Procedural, Artificial Intelligence, String processing, Domain Specific, Scripting, Systems, Visual, Esoteric, etc.</span>
+                        <span class="obj-item">ii. Explain the characteristics of High Level Programming Languages: Requires translation into machine language, Portable, Easier to read, write and maintain as commands are similar to English, Use data types and data structures, selection statements and repetition/iteration constructs, Use logic operators and functions that are built into the language, Programmers friendly, Easy to code, debug and maintain</span>
+                        <span class="obj-item">iii. Define translators and its two basic types: Interpreters and Compilers.</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="topic-cell">
+                        <strong>3. Algorithm and Flowcharts</strong><br />
+                        <span class="sub-item"><strong>(a)</strong> Definitions</span>
+                        <span class="sub-item"><strong>(b)</strong> Functions of Algorithm</span>
+                        <span class="sub-item"><strong>(c)</strong> Properties of Algorithm</span>
+                        <span class="sub-item"><strong>(d)</strong> Flowchart symbols</span>
+                    </td>
+                    <td class="objective-cell">
+                        Candidates should be able to:<br />
+                        <span class="obj-item">i. Define Algorithm and Flowchart</span>
+                        <span class="obj-item">ii. State functions of algorithms: They are used to perform: Calculations, Data Processing, Automated reasoning etc.</span>
+                        <span class="obj-item">iii. State and explain the properties of Algorithm: Input specified, Output specified, Definiteness, Effectiveness, Finiteness etc.</span>
+                        <span class="obj-item">iv. Identify Flowchart symbols: Start, Input/Output, Process, Decision, Stop, loop, Continuation etc.</span>
+                        <span class="obj-item">v. Draw Flowchart of a given programming problem</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="topic-cell">
+                        <strong>4. Programming Language Structure</strong><br />
+                        <span class="sub-item"><strong>(a)</strong> Basic Statements</span>
+                        <span class="sub-item"><strong>(b)</strong> Arithmetic/string operators</span>
+                        <span class="sub-item"><strong>(c)</strong> Subunits</span>
+                        <span class="sub-item"><strong>(d)</strong> Primitive and non-primitive data</span>
+                    </td>
+                    <td class="objective-cell">
+                        Candidates should be able to:<br />
+                        <span class="obj-item">i. Identify features/syntax of a programming language: Keywords, Variable types, Constants/literals, Numeric, String/alphanumeric, Basic characteristics of the language</span>
+                        <span class="obj-item">ii. Basic statements of a high-level programming language: Input, Output, Processing, Comments, Subunits (Functions, Procedure, Methods, Subroutines etc.), Statements (Iteration/Loop, Conditional, Assignment, Dimension, etc.)</span>
+                        <span class="obj-item">iii. Arithmetic operators and expressions</span>
+                        <span class="obj-item">iv. String operators and expressions</span>
+                        <span class="obj-item">v. Built in functions</span>
+                        <span class="obj-item">vi. Primitive data (Integer, float, Boolean, character, etc.)</span>
+                        <span class="obj-item">vii. Non-Primitive Data Types (Arrays, classes, string, etc.)</span>
+                        <span class="obj-item">viii. Complex data structures (Trees, graphs, linked lists, objects etc.)</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="page-number">Page 10</div>
+    </div>
+
+    <!-- PAGE 11 -->
+    <div class="document">
+        <div class="page-header"><span>Computer Studies</span><span>UTME Syllabus</span></div>
+        <table class="syllabus-table">
+            <thead><tr><th>TOPICS / CONTENTS / NOTES</th><th>OBJECTIVES</th></tr></thead>
+            <tbody>
+                <tr>
+                    <td class="topic-cell">
+                        <strong>5. Program Development</strong><br />
+                        <span class="sub-item"><strong>(a)</strong> Definition</span>
+                        <span class="sub-item"><strong>(b)</strong> Characteristics of programs</span>
+                        <span class="sub-item"><strong>(c)</strong> Precautions</span>
+                        <span class="sub-item"><strong>(d)</strong> Steps involved in developing program</span>
+                    </td>
+                    <td class="objective-cell">
+                        Candidates should be able to:<br />
+                        <span class="obj-item">i. Define a program</span>
+                        <span class="obj-item">ii. List characteristics of a good program: Accuracy, Readability, Maintainability, Efficiency, Generality, Clarity etc.</span>
+                        <span class="obj-item">iii. State the precautions required in the development of a program: Be stable, steady and patient, No step skipping, Follow order of execution etc.</span>
+                        <span class="obj-item">iv. Steps involved in program development: Problem definition, Problem analysis, Design (Flow charting/ algorithm) development, Program coding, Program compilation, Program testing/debugging, Program documentation, Programme Maintenance</span>
+                        <span class="obj-item">v. Examples of: Interpreted program (BASIC, Java, Python), Compiled Program (COBOL, FORTRAN, C, C++, Java etc.)</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="topic-cell">
+                        <strong>6. System Development Life Cycle (SDLC)</strong><br />
+                        <span class="sub-item"><strong>(a)</strong> Definition of SDLC</span>
+                        <span class="sub-item"><strong>(b)</strong> Stages of SDLC</span>
+                    </td>
+                    <td class="objective-cell">
+                        Candidates should be able to:<br />
+                        <span class="obj-item">i. Define SDLC</span>
+                        <span class="obj-item">ii. Describe SDLC</span>
+                        <span class="obj-item">iii. Explain stages in SDLC: Preliminary study (Identification of the problem, Recognition of the Need), Feasibility, Analysis, Design, Implementation (coding, testing, documentation and delivery), Maintenance, Review</span>
+                        <span class="obj-item">iv. Draw diagram of a SDLC</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2 class="section-head">SECTION H: Artificial Intelligence (AI) and Robotics</h2>
+        <table class="syllabus-table">
+            <thead><tr><th>TOPICS / CONTENTS / NOTES</th><th>OBJECTIVES</th></tr></thead>
+            <tbody>
+                <tr>
+                    <td class="topic-cell">
+                        <strong>1. Definition of AI</strong>
+                    </td>
+                    <td class="objective-cell">
+                        Candidates should be able to:<br />
+                        <span class="obj-item">i. Define AI</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="topic-cell">
+                        <strong>2. Branches of AI</strong>
+                    </td>
+                    <td class="objective-cell">
+                        <span class="obj-item">ii. Identify branches of AI: Machine Learning (supervised, unsupervised, reinforcement), Neural Network, Expert Systems, Fuzzy Logic, Natural Language Processing, Deep Learning etc.</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="topic-cell">
+                        <strong>3. Applications of AI</strong>
+                    </td>
+                    <td class="objective-cell">
+                        <span class="obj-item">iii. List Application Areas of AI: Robotics, E-Commerce, Navigation, Human Resource, Healthcare, Agriculture, Gaming, Automobiles, Social Media, Marketing, etc.</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="page-number">Page 11</div>
+    </div>
+
+    <!-- PAGE 12 -->
+    <div class="document">
+        <div class="page-header"><span>Computer Studies</span><span>UTME Syllabus</span></div>
+        <table class="syllabus-table">
+            <thead><tr><th>TOPICS / CONTENTS / NOTES</th><th>OBJECTIVES</th></tr></thead>
+            <tbody>
+                <tr>
+                    <td class="topic-cell">
+                        <strong>4. Fundamentals of Robotics</strong><br />
+                        <span class="sub-item"><strong>(a)</strong> Definition of Robotics</span>
+                        <span class="sub-item"><strong>(b)</strong> Main Components of Robotics</span>
+                        <span class="sub-item"><strong>(c)</strong> Types of Robots</span>
+                        <span class="sub-item"><strong>(d)</strong> Application Areas of Robotics</span>
+                        <span class="sub-item"><strong>(e)</strong> Advantages and Disadvantages of Robots</span>
+                    </td>
+                    <td class="objective-cell">
+                        Candidates should be able to:<br />
+                        <span class="obj-item">i. Define Robotics</span>
+                        <span class="obj-item">ii. Define Robots</span>
+                        <span class="obj-item">iii. Identify main components of Robots: Control system, Sensors, Actuators, Power Supply, End Effectors etc.</span>
+                        <span class="obj-item">iv. Mention types of Robots: Humanoid Robots, Autonomous Robots, Teleoperated Robots, Augmenting Robots etc.</span>
+                        <span class="obj-item">v. Itemise application areas of Robots: Logistics, Manufacturing, Home, Travel, Healthcare, Security, Space exploration, Entertainment, Agriculture, Food Preparation, Manufacturing, Military, Customer Service etc.</span>
+                        <span class="obj-item">vi. State advantages and disadvantages of using Robots</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2 class="section-head">SECTION I: Computer Ethics and Human Issues</h2>
+        <table class="syllabus-table">
+            <thead><tr><th>TOPICS / CONTENTS / NOTES</th><th>OBJECTIVES</th></tr></thead>
+            <tbody>
+                <tr>
+                    <td class="topic-cell">
+                        <strong>1. Ethical issues</strong><br />
+                        <span class="sub-item"><strong>(a)</strong> Computer-related crime</span>
+                        <span class="sub-item"><strong>(b)</strong> Responsibility for computer failure</span>
+                        <span class="sub-item"><strong>(c)</strong> Protection of computer property, records and software</span>
+                        <span class="sub-item"><strong>(d)</strong> Privacy of the company, workers and customers.</span>
+                    </td>
+                    <td class="objective-cell">
+                        Candidates should be able to:<br />
+                        <span class="obj-item">i. Define computer-related crime.</span>
+                        <span class="obj-item">ii. State examples of computer-related crime. (Compromising computer systems, hacking, theft, etc.)</span>
+                        <span class="obj-item">iii. List methods to prevent unauthorised use of computer system (user identification, Passwords etc.)</span>
+                        <span class="obj-item">iv. List methods to protect computer resources using both electronic and manual methods.</span>
+                        <span class="obj-item">v. List methods to Protect privacy of individuals (workers, companies, customers, government etc.) by law and electronically.</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="page-number">Page 12</div>
+    </div>
+
+    <!-- PAGE 13 -->
+    <div class="document">
+        <div class="page-header"><span>Computer Studies</span><span>UTME Syllabus</span></div>
+        <table class="syllabus-table">
+            <thead><tr><th>TOPICS / CONTENTS / NOTES</th><th>OBJECTIVES</th></tr></thead>
+            <tbody>
+                <tr>
+                    <td class="topic-cell">
+                        <strong>2. Computer Security</strong><br />
+                        <strong>3. Cyber risks and protection</strong>
+                    </td>
+                    <td class="objective-cell">
+                        Candidates should be able to:<br />
+                        <span class="obj-item">vi. Define computer security</span>
+                        <span class="obj-item">vii. Identify different types of computer security and their characteristics: Network security, Internet security (cyber), Application Security, Data security, Information security, End user security etc.</span>
+                        <span class="obj-item">viii. Identify appropriate security tool to use for the different types of computer security (Firewalls, antivirus software, encryption, etc.)</span>
+                        <span class="obj-item">ix. Identify categories of application threats and their characteristics (Input, authorisation, session management, parameter tampering,)</span>
+                        <span class="obj-item">x. Identify basic dimensions of Information Security (Confidentiality, Integrity, and Availability (CIA))</span>
+                        <span class="obj-item">xi. Mention Network security Issues (unauthorised, intrusion, rules and configurations that protect confidentiality, integrity and accessibility using both software and hardware.)</span>
+                        <span class="obj-item">xii. Mention Network security methods (antivirus software, application security, behavioural analytics, data loss prevention, email security, firewalls, mobile device security, network segmentation, security and event management (SEIM), Virtual Private Network (VPN), Web security, wireless security, Network Access Control (NAC).</span>
+                        <span class="obj-item">xiii. List Types of cyber security threats (Cybercrime, cyber-attack, cyber terrorism, malware, virus, trojans, spyware, Ransomware, Adware, Botnets, SQL injection, Phishing, Man-in-the-middle attack, Denial of Service, Drilex, Romance scams, Emotet malware,)</span>
+                        <span class="obj-item">xiv. List Cyber security safety tips: Regular update of software and operating systems, Use of anti-virus software, Use of strong passwords, Do not open email attachments from unknown senders, Do not click on links in emails from unknown senders or unfamiliar websites, avoid use of unsecure WIFI networks in public places etc.</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="topic-cell">
+                        <strong>4. Potentials for Higher Studies in Computing</strong>
+                    </td>
+                    <td class="objective-cell">
+                        Candidates should be able to:<br />
+                        <span class="obj-item">i. List possible career paths in computing: Software Developer, Software Test Engineer, Programme Analyst, System Developer, Web Developer, Software Development Engineer, Computer System Analyst, Database Administrator, System Administrator, System Engineer, System Analyst, Network Engineer, Business Analyst, Program Manager, IT Specialist, Data Analyst/Scientist, AI and Robotics, System Security Analyst, Digital Forensic Analyst, Mobile App Developer, ICT Manager, Blogger, E-Marketer, Social Media Manager, ICT Educator, Career in Academia, Private Entrepreneurship, Internet Police, IT User Support/Desk Officer, ICT Librarian, Computer Instructor, etc.</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="references">
+            <div class="ref-title">RECOMMENDED TEXTS</div>
+            <p>1. A Textbook for Year 11 – Computer Studies Bibhya Sharma, Shaveen Singh &amp; Vijay Singh, Publisher: Technology and Employment Skills Training Ministry of Education, Fiji.</p>
+            <p>2. Addan Emmanuel (2013). <em>My Computer for Senior Secondary Schools 1, 2, 3 with Practical Training CD</em>. Valueplus Publication Limited.</p>
+            <p>3. Adebisi, A. J. (2013). <em>Fundamentals of Computer Studies</em>, Nigeria: Expert Consults, Available on https://www.researchgate.net/publication/258339295_FUNDAMENTALS_OF_COMPUTER_STUDIES</p>
+            <p>4. Adedapo F. O. Mitchell A. S. and Agunbiade D. A. (Assessed on August 6, 2021): <em>Online with Computer Senior Secondary 2</em>; rasmedpublications.com</p>
+            <p>5. Brookshear, J. G. (1991). <em>Computer Science: An Overview</em>. Benjamin-Cummings Publishing Co. Inc.</p>
+            <p>6. Chiemeke Stella C., Souley Boukari, Olumide B. Longe (Assessed on August 6, 2021); <em>Computer Studies for Senior Secondary Schools</em>; University Press Plc., upssbookshop.com</p>
+            <p>7. Doyle, S (1995). <em>Computer Studies for You</em>, USA: Nelson Thomas Ltd, 2nd Edition. Available at https://www.amazon.com/GCSCC-Computer-Studies-You/dp/0748703810</p>
+            <p>8. Driscoll, T. &amp; Dolden R. (1998). <em>Computer Studies and Information Technology (The Motivate Series)</em>, Nigeria: Macmillan Education, Available at https://amazon.com/ComputerStudies-Information-Technology-Motivate/dp/0333598342</p>
+            <p>9. Henderson, P. (1987, February), Modern Introductory Computer Science. In <em>Proceedings of the eighteen SIGCSE technical symposium on Computer Science education</em> (pp. 183-190).</p>
+            <p>10. HiiT@School (Assessed on August 6, 2021); <em>Computer Studies for Senior Secondary Education</em>; HiiT</p>
+            <p>11. Ojo D. J. (2018). <em>Senior Secondary School Certificate Examination on Data Processing. Past Questions and Answers (2014 – 2020)</em>. Published by TONAD Publishers Limited. (Theory, Objectives and Practical)</p>
+            <p>12. Otuka J. O. E. Akande A. F. and Iginla S. I. (2019): <em>New Computer Studies 1-3</em>; LearnAfrica</p>
+            <p>13. Senior School Certificate Examinations/National Examination Council (SSCE/NECO). Past Questions and Answers on Computer Studies (Theory/Objectives).</p>
+            <p>14. Sloan, R. H., &amp; Troy, P. (2008). CS 0.5: a better approach to introductory computer science for majors. <em>ACM SIGCSE Bulletin</em>, 40(1), 271-275.</p>
+        </div>
+        <div class="page-number">Page 13</div>
+    </div>
+
+</body>
+</html>

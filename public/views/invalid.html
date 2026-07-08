@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>404 - Page Not Found | CBT Pro</title>
+<style>
+  :root {
+    --blue-500: #3B82F6;
+    --purple-500: #8B5CF6;
+    --slate-900: #0F172A;
+    --slate-700: #334155;
+    --white: #FFFFFF;
+    --radius: 40%;
+  }
+  
+    * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: linear-gradient(135deg, var(--blue-500) 0%, var(--purple-500) 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    color: var(--white);
+  }
+  
+  /* Animated background blobs */
+  .blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.4;
+    animation: float 8s ease-in-out infinite;
+  }
+  .blob1 {
+    width: 400px;
+    height: 400px;
+    background: var(--purple-500);
+    top: -100px;
+    left: -100px;
+    animation-delay: 0s;
+  }
+  .blob2 {
+    width: 300px;
+    height: 300px;
+    background: var(--blue-500);
+    bottom: -80px;
+    right: -80px;
+    animation-delay: 4s;
+  }
+  
+  @keyframes float {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(30px, -30px) scale(1.1); }
+  }
+  
+  /* Main card */
+  .container {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    padding: 60px 40px;
+    max-width: 500px;
+    animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(40px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  /* 404 number with gradient text */
+  .error-code {
+    font-size: 140px;
+    font-weight: 800;
+    line-height: 1;
+    background: linear-gradient(135deg, var(--white) 0%, rgba(255,255,255,0.7) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 20px;
+    animation: pulse 2s ease-in-out infinite;
+  }
+  
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+  }
+  
+  /* Icon container matching your CBT Pro style */
+  .icon-wrap {
+    width: 120px;
+    height: 120px;
+    margin: 0 auto 32px;
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(20px);
+    border-radius: var(--radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid rgba(255,255,255,0.2);
+    animation: rotate 6s linear infinite;
+  }
+  
+  @keyframes rotate {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  
+  .icon-wrap svg {
+    width: 60px;
+    height: 60px;
+    stroke: var(--white);
+    stroke-width: 2;
+    fill: none;
+  }
+  
+  h1 {
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+  
+  p {
+    font-size: 18px;
+    color: rgba(255,255,255,0.8);
+    line-height: 1.6;
+    margin-bottom: 40px;
+  }
+  
+  /* Button matching your subject tile style */
+  .btn {
+    display: inline-block;
+    padding: 16px 40px;
+    background: rgba(255,255,255,0.2);
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    color: var(--white);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 16px;
+    border: 2px solid rgba(255,255,255,0.3);
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  
+  .btn:hover {
+    background: var(--white);
+    color: var(--slate-900);
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+  }
+  
+  @media (max-width: 640px) {
+    .error-code { font-size: 100px; }
+    .container { padding: 40px 24px; }
+    h1 { font-size: 24px; }
+  }
+</style>
+</head>
+<body>
+  <div class="blob blob1"></div>
+  <div class="blob blob2"></div>
+  
+  <div class="container">
+    <div class="icon-wrap">
+      <svg viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="10"/>
+        <path d="M12 8v4M12 16h.01"/>
+      </svg>
+    </div>
+    
+    <div class="error-code">404</div>
+    <h1>Page Not Found</h1>
+    <p>The page you’re looking for doesn’t exist or was moved. Let’s get you back to CBT Pro.</p>
+    
+    <a href="/" target="_top" class="btn">Go to Homepage</a>
+  </div>
+</body>
+</html>

@@ -1,0 +1,99 @@
+/* =====================================
+GLOBAL VARIABLES - Shared across all pages
+  ======================================*/
+
+ :root {
+   --primary: #4f46e5;
+   --primary-dark: #4338ca;
+   --primary-light: #eef2ff;
+   --accent: #06b6d4;
+   --success: #10b981;
+   --bg: #f8fafc;
+   --card: #ffffff;
+   --text: #0f172a;
+   --text-muted: #64748b;
+   --border: #e2e8f0;
+   --warning: #f59e0b;
+   --danger: #ef4444;
+   --danger-dark: #dc2626;
+   --shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+   --shadow-lg: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+   --radius: 16px;
+   --radius-sm: 10px;
+   --gradient: linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%);
+ }
+ 
+ :root {
+    --font: 'Inter', system-ui, sans-serif;
+    --c-bg: #f0f2f5;
+    --c-surface: #ffffff;
+    --c-border: #e5e7eb;
+    --c-text: #111827;
+    --c-muted: #6b7280;
+    --c-subtle: #f9fafb;
+
+    --c-success: #16a34a;
+    --c-success-bg: #f0fdf4;
+    --c-success-border: #bbf7d0;
+    --c-success-light: #dcfce7;
+
+    --c-error: #dc2626;
+    --c-error-bg: #fef2f2;
+    --c-error-border: #fecaca;
+    --c-error-light: #fee2e2;
+
+    --c-warning: #d97706;
+    --c-warning-bg: #fffbeb;
+    --c-warning-border: #fde68a;
+    --c-warning-light: #fef3c7;
+
+    --c-info: #2563eb;
+    --c-info-bg: #eff6ff;
+    --c-info-border: #bfdbfe;
+    --c-info-light: #dbeafe;
+
+    --c-radius-sm: 6px;
+    --c-radius-lg: 14px;
+  }
+  
+  :root {
+    --sidebar-w: 240px;
+    --top-h: 60px;
+    --c-bg: #f0f2f5;
+    --c-surface: #ffffff;
+    --c-sidebar: #111827;
+    --c-sidebar-hover: #1f2937;
+    --c-primary: #2563eb;
+    --c-primary-hover: #1d4ed8;
+    --c-danger: #dc2626;
+    --c-danger-hover: #b91c1c;
+    --c-success: #16a34a;
+    --c-warning: #d97706;
+    --c-text: #111827;
+    --c-muted: #6b7280;
+    --c-border: #e5e7eb;
+    --c-row-hover: #f9fafb;
+    --c-radius: 10px;
+    --c-shadow-sm: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.04);
+    --c-shadow-md: 0 4px 12px rgba(0,0,0,.1);
+    --c-shadow-lg: 0 12px 32px rgba(0,0,0,.15);
+    --font: 'Inter', system-ui, sans-serif;
+  }
+ 
+  /* =====================================
+  GLOBAL RESET
+  ======================================*/
+  
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+  }
+  

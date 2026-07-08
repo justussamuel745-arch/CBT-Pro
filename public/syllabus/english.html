@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JAMB Use of English Syllabus</title>
+  <style>
+    /* ── reset & base ── */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      background: #e6e9ef;
+      font-family: 'Times New Roman', Times, serif;
+      padding: 40px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    .document {
+      max-width: 900px;
+      width: 100%;
+      background: #ffffff;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+      padding: 60px 70px 50px 70px;
+      border-radius: 4px;
+      margin-bottom: 30px;
+      position: relative;
+    }
+    
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: #888;
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 6px;
+      margin-bottom: 22px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-family: 'Times New Roman', Times, serif;
+    }
+    
+    h1 {
+      font-size: 26px;
+      font-weight: bold;
+      text-align: center;
+      letter-spacing: 1px;
+      margin: 10px 0 6px 0;
+      font-family: 'Times New Roman', Times, serif;
+    }
+    
+    h2 {
+      font-size: 18px;
+      font-weight: bold;
+      margin: 28px 0 12px 0;
+      font-family: 'Times New Roman', Times, serif;
+    }
+    
+    .subtitle {
+      text-align: center;
+      font-size: 16px;
+      font-weight: bold;
+      margin: 4px 0 20px 0;
+      font-family: 'Times New Roman', Times, serif;
+    }
+    
+    .section-head {
+      font-size: 15px;
+      font-weight: bold;
+      margin: 24px 0 6px 0;
+      font-family: 'Times New Roman', Times, serif;
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 4px;
+    }
+    
+    .general-objectives {
+      margin: 16px 0 20px 0;
+      padding-left: 20px;
+      font-size: 14.5px;
+      line-height: 1.7;
+    }
+    
+    .general-objectives li {
+      margin-bottom: 4px;
+    }
+    
+    .syllabus-table {
+      width: 100%;
+      table-layout: fixed;
+      border-collapse: collapse;
+      font-size: 14px;
+      line-height: 1.6;
+      margin: 16px 0 8px 0;
+      font-family: 'Times New Roman', Times, serif;
+    }
+    
+    .syllabus-table th {
+      background: #f2f4f8;
+      border: 1px solid #333;
+      padding: 10px 12px;
+      text-align: left;
+      font-weight: bold;
+      font-size: 14px;
+      word-wrap: break-word;
+    }
+    
+    .syllabus-table td {
+      border: 1px solid #333;
+      padding: 10px 12px;
+      vertical-align: top;
+      font-size: 14px;
+      word-wrap: break-word;
+    }
+    
+    .syllabus-table .topic-cell {
+      width: 52%;
+      background: #fafbfc;
+    }
+    
+    .syllabus-table .objective-cell {
+      width: 48%;
+      background: #fafbfc;
+    }
+    
+    .syllabus-table .topic-cell strong,
+    .syllabus-table .objective-cell strong {
+      font-weight: 700;
+    }
+    
+    .syllabus-table .topic-cell .sub-item {
+      display: block;
+      margin-top: 4px;
+      padding-left: 16px;
+    }
+    
+    .syllabus-table .topic-cell .sub-item2 {
+      display: block;
+      margin-top: 2px;
+      padding-left: 28px;
+    }
+    
+    .syllabus-table .objective-cell .obj-item {
+      display: block;
+      margin-top: 2px;
+      padding-left: 8px;
+    }
+    
+    .syllabus-table .topic-cell .note {
+      font-style: italic;
+      color: #444;
+      display: block;
+      margin-top: 4px;
+      padding-left: 16px;
+    }
+    
+    .page-number {
+      text-align: center;
+      font-size: 12px;
+      color: #888;
+      margin-top: 28px;
+      padding-top: 12px;
+      border-top: 1px solid #ddd;
+      font-family: 'Times New Roman', Times, serif;
+    }
+    
+    .references {
+      margin: 30px 0 6px 0;
+      font-size: 13.5px;
+      line-height: 1.8;
+      font-family: 'Times New Roman', Times, serif;
+    }
+    
+    .references .ref-title {
+      font-weight: bold;
+      font-size: 16px;
+      margin-bottom: 10px;
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 4px;
+    }
+    
+    .references p {
+      margin-bottom: 2px;
+    }
+    
+    .question-distribution {
+      margin: 20px 0 10px 0;
+      font-size: 14px;
+      line-height: 1.8;
+    }
+    
+    .question-distribution .section-title {
+      font-weight: bold;
+      margin-top: 10px;
+    }
+    
+    .question-distribution ul {
+      list-style: none;
+      padding-left: 20px;
+    }
+    
+    .question-distribution ul li {
+      margin-bottom: 2px;
+    }
+    
+    @media (max-width: 700px) {
+      .document {
+        padding: 30px 20px 30px 20px;
+      }
+      
+      .syllabus-table {
+        font-size: 13px;
+      }
+      
+      .syllabus-table th,
+      .syllabus-table td {
+        padding: 6px 8px;
+      }
+      
+      .syllabus-table .topic-cell {
+        width: 50%;
+      }
+      
+      .syllabus-table .objective-cell {
+        width: 50%;
+      }
+      
+      h1 {
+        font-size: 22px;
+      }
+      
+      .page-header {
+        font-size: 10px;
+      }
+    }
+    
+    @media print {
+      body {
+        background: #fff;
+        padding: 0;
+      }
+      
+      .document {
+        box-shadow: none;
+        padding: 40px 60px 40px 60px;
+        border-radius: 0;
+        max-width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  
+  <!-- ════════════════════════════════════════════════════ -->
+  <!-- PAGE 1                                             -->
+  <!-- ════════════════════════════════════════════════════ -->
+  <div class="document">
+    
+    <div class="page-header">
+      <span>Use of English</span>
+      <span>UTME Syllabus</span>
+    </div>
+    
+    <h1>USE OF ENGLISH</h1>
+    <p class="subtitle">GENERAL OBJECTIVES</p>
+    
+    <p style="font-size:14px; line-height:1.6; margin-bottom:14px;">
+      The aim of the Unified Tertiary Matriculation Examination (UTME) syllabus in Use of English is to guide candidates
+      in their preparation for the Board's examination. It is designed to evaluate the candidates' ability to:
+    </p>
+    
+    <ol class="general-objectives" style="list-style-type:lower-roman;">
+      <li>communicate effectively in both written and spoken English; and</li>
+      <li>use English Language for learning at the tertiary level.</li>
+    </ol>
+    
+    <h2>2. The syllabus consists of three sections:</h2>
+    
+    <ul style="font-size:15px; margin: 10px 0 20px 20px; list-style-type: disc; line-height:1.8;">
+      <li><strong>SECTION A:</strong> Comprehension and Summary</li>
+      <li><strong>SECTION B:</strong> Lexis and Structure</li>
+      <li><strong>SECTION C:</strong> Oral Forms</li>
+    </ul>
+    
+    <!-- ─── TABLE: SECTION A ─── -->
+    <h2 style="margin-top: 10px;">3. DETAILED SYLLABUS/CONTENTS</h2>
+    
+    <table class="syllabus-table">
+      <thead>
+        <tr>
+          <th>TOPICS / CONTENTS / NOTES</th>
+          <th>OBJECTIVES</th>
+        </tr>
+      </thead>
+      <tbody>
+        
+        <!-- Section A -->
+        <tr>
+          <td class="topic-cell">
+            <strong>A. Comprehension and Summary</strong><br />
+            <span class="sub-item"><strong>(a)</strong> description</span>
+            <span class="sub-item"><strong>(b)</strong> narration</span>
+            <span class="sub-item"><strong>(c)</strong> exposition</span>
+            <span class="sub-item"><strong>(d)</strong> argumentation/persuasion</span>
+            <span class="sub-item" style="margin-top:8px;"><strong>NOTE:</strong></span>
+            <span class="sub-item2">(i) Each of the three passages to be set (one will be a cloze test) should reflect
+              various disciplines and be about 200 words long.</span>
+            <span class="sub-item2">(ii) Questions on the passages will test the following:</span>
+            <span class="sub-item2" style="padding-left: 44px;">(a) Comprehension of the whole or part of each
+              passage.</span>
+            <span class="sub-item2" style="padding-left: 44px;">(b) Comprehension of words, phrases, clauses, sentences,
+              figures of speech and idioms as used in the passages.</span>
+            <span class="sub-item2" style="padding-left: 44px;">(c) Coherence and logical reasoning (deductions,
+              inferences, etc.).</span>
+            <span class="sub-item2" style="padding-left: 44px;">(d) Approved Reading Text.</span>
+            <span class="sub-item2" style="padding-left: 44px;">(e) Synthesis of ideas from the passages.</span>
+            <span class="note"><strong>Note:</strong> Synthesis of ideas means the art of combining distinct or separate
+              pieces of information to form a complete whole as summary.</span>
+          </td>
+          <td class="objective-cell">
+            Candidates should be able to:<br />
+            <span class="obj-item">i. identify main points/topic sentences in passages;</span>
+            <span class="obj-item">ii. determine implied meanings;</span>
+            <span class="obj-item">iii. identify the grammatical functions of words, phrases, clauses and
+              figurative/idiomatic expressions; and</span>
+            <span class="obj-item">iv. deduce or infer the writers' intentions including mood, attitude to the subject
+              matter and opinion.</span>
+          </td>
+        </tr>
+        
+      </tbody>
+    </table>
+    
+    <div class="page-number">Page 1</div>
+  </div>
+  
+  <!-- ════════════════════════════════════════════════════ -->
+  <!-- PAGE 2                                             -->
+  <!-- ════════════════════════════════════════════════════ -->
+  <div class="document">
+    
+    <div class="page-header">
+      <span>Use of English</span>
+      <span>UTME Syllabus</span>
+    </div>
+    
+    <!-- ─── TABLE: SECTION B & C ─── -->
+    <table class="syllabus-table">
+      <thead>
+        <tr>
+          <th>TOPICS / CONTENTS / NOTES</th>
+          <th>OBJECTIVES</th>
+        </tr>
+      </thead>
+      <tbody>
+        
+        <!-- Section B -->
+        <tr>
+          <td class="topic-cell">
+            <strong>B. Lexis and Structure</strong><br />
+            <span class="sub-item"><strong>(a)</strong> synonyms</span>
+            <span class="sub-item"><strong>(b)</strong> antonyms</span>
+            <span class="sub-item"><strong>(c)</strong> clause and sentence patterns</span>
+            <span class="sub-item"><strong>(d)</strong> word classes and their functions</span>
+            <span class="sub-item"><strong>(e)</strong> mood, tense, aspect, number, agreement/concord, degree
+              (positive, comparative and superlative) and question tags</span>
+            <span class="sub-item"><strong>(f)</strong> mechanics</span>
+            <span class="sub-item"><strong>(g)</strong> ordinary usage, figurative usage and idiomatic usage.</span>
+            <span class="note"><strong>Note:</strong> Idioms to be tested are those that are formal and expressed in
+              Standard British English (SBE).</span>
+          </td>
+          <td class="objective-cell">
+            Candidates should be able to:<br />
+            <span class="obj-item">i. identify words and expressions in their ordinary, figurative and idiomatic
+              contexts;</span>
+            <span class="obj-item">ii. determine similar and opposite meanings of words;</span>
+            <span class="obj-item">iii. differentiate between correct and incorrect spellings;</span>
+            <span class="obj-item">iv. identify various grammatical patterns in use; and</span>
+            <span class="obj-item">v. interpret information conveyed in sentences.</span>
+          </td>
+        </tr>
+        
+        <!-- Section C -->
+        <tr>
+          <td class="topic-cell">
+            <strong>C. Oral Forms</strong><br />
+            <span class="sub-item"><strong>(a)</strong> Vowels (monothongs, diphthongs and triphthongs)</span>
+            <span class="sub-item"><strong>(b)</strong> Consonants (including clusters)</span>
+            <span class="sub-item"><strong>(c)</strong> Rhymes (including homophones)</span>
+            <span class="sub-item"><strong>(d)</strong> Word stress (monosyllabic and polysyllabic)</span>
+            <span class="sub-item"><strong>(e)</strong> Emphatic stress (in connected speech)</span>
+            <span class="note"><strong>Note:</strong> Emphatic stress involves the placement of stress on words in an
+              utterance for the purpose of emphasis.</span>
+          </td>
+          <td class="objective-cell">
+            Candidates should be able to:<br />
+            <span class="obj-item">i. make distinctions among vowel types;</span>
+            <span class="obj-item">ii. differentiate among consonant types; and</span>
+            <span class="obj-item">iii. identify correct pronunciation of individual words and articulation of connected
+              speech.</span>
+          </td>
+        </tr>
+        
+      </tbody>
+    </table>
+    
+    <div class="page-number">Page 2</div>
+  </div>
+  
+  <!-- ════════════════════════════════════════════════════ -->
+  <!-- PAGE 3 – QUESTION DISTRIBUTION                     -->
+  <!-- ════════════════════════════════════════════════════ -->
+  <div class="document">
+    
+    <div class="page-header">
+      <span>Use of English</span>
+      <span>UTME Syllabus</span>
+    </div>
+    
+    <h2 style="margin-top: 0;">Question Distribution</h2>
+    
+    <div class="question-distribution">
+      
+      <div class="section-title">SECTION A: Comprehension and Summary</div>
+      <ul>
+        <li>1 comprehension passage – 5 questions</li>
+        <li>1 summary passage – 5 questions</li>
+        <li>1 cloze passage – 10 questions</li>
+        <li>1 reading text – 5 questions</li>
+        <li style="font-weight:bold; margin-top:4px;">Total: 25 questions</li>
+      </ul>
+      
+      <div class="section-title" style="margin-top:16px;">SECTION B: Lexis and Structure</div>
+      <ul>
+        <li>(a) Sentence interpretation – 5 questions</li>
+        <li>(b) Antonyms – 5 questions</li>
+        <li>(c) Synonyms – 5 questions</li>
+        <li>(d) Basic Grammar – 10 questions</li>
+        <li style="font-weight:bold; margin-top:4px;">Total: 25 questions</li>
+      </ul>
+      
+      <div class="section-title" style="margin-top:16px;">SECTION C: Oral Forms</div>
+      <ul>
+        <li>(a) Vowels – 2 questions</li>
+        <li>(b) Consonants – 2 questions</li>
+        <li>(c) Rhymes – 2 questions</li>
+        <li>(d) Word Stress – 2 questions</li>
+        <li>(e) Emphatic Stress – 2 questions</li>
+        <li style="font-weight:bold; margin-top:4px;">Total: 10 questions</li>
+      </ul>
+      
+      <div style="font-weight:bold; font-size:16px; margin-top:16px;">Grand Total: 60 questions</div>
+      
+    </div>
+    
+    <div class="page-number">Page 3</div>
+  </div>
+  
+  <!-- ════════════════════════════════════════════════════ -->
+  <!-- PAGE 4 – REFERENCES                                -->
+  <!-- ════════════════════════════════════════════════════ -->
+  <div class="document">
+    
+    <div class="page-header">
+      <span>Use of English</span>
+      <span>UTME Syllabus</span>
+    </div>
+    
+    <div class="references">
+      <div class="ref-title">REFERENCES</div>
+      
+      <p>Adedimeji, M. A (2021) <em>Doses of Grammar</em>. Patigi. Ahman Pategi University Press.</p>
+      <p>Attah, M. O. (2013). <em>Practice in Spoken English for Intermediate and Advanced Learners</em>. Maiduguri:
+        University of Maiduguri Press.</p>
+      <p>Bamgbose, A. (2002). <em>English Lexis and Structure for Senior Secondary Schools and Colleges</em> (Revised
+        Edition). Ibadan: Heinemann.</p>
+      <p>Banjo, A., Adeniran A., Akano, A. and Onoga, U. (2004) <em>New Oxford Secondary English Course Book six for
+          Senior Secondary Schools</em>. Ibadan: University Press Plc.</p>
+      <p>Caesar, O. J. (2003). <em>Essential Oral English for Schools and Colleges</em>. Lagos: Tonad Publishers
+        Limited.</p>
+      <p>Jones, D. (2011). <em>Cambridge English Pronouncing Dictionary</em>. Cambridge: Cambridge University Press.</p>
+      <p>Egbe, D. I (1996). <em>Mastering English Usage and Communication Skills</em>. Lagos: Tisons.</p>
+      <p>Elugbe, B. (2000). <em>Oral English for Schools and Colleges</em>. Ibadan: Heinemann.</p>
+      <p>Grant, N. J. H., Nnamonu, S. and Jowitt, D. (1998) <em>Senior English Project 3</em>. (New Edition) Harlow:
+        Longman.</p>
+      <p>Idowu, O. O., Sogbesan, T. S., Adofo, A. K., Burgess, D. F. and Burgess, L. J. (1998) <em>Round-up English: A
+          Complete Guide</em>, Lagos: Longman.</p>
+      <p>Idris, U. (2001). <em>Oral English at Your Fingertips for Schools and Colleges</em>. Lagos: M. Youngbrain
+        Publishers.</p>
+      <p>Igiligi, E. C. and Ogenyi, S. O. (2010) <em>Grammar and Composition in the G.S.M. Age</em>. Enugu: Joe Hills
+        Production Services.</p>
+      <p>Jauro, L. B. (2013). <em>Oral English for Schools and Colleges: A Teaching and Learning Approach</em>. Yola:
+        Paraclete Publishers.</p>
+      <p>Nnamonu, S. and Jowitt, D. (1989) <em>Common Errors in English</em>. Lagos: Longman.</p>
+      <p>Obinna, M. F. (2001) <em>University Matriculation Use of English</em>. (Fourth Edition). Port Harcourt: Sunray
+        Books Limited.</p>
+      <p>Ogunsanwo, O., Duruaku, A. B.C., Ezechukwu, J. and Nwachukwu, U. I. (2005) <em>Countdown English Language</em>
+        (Revised Edition). Ibadan: Evans Brothers.</p>
+      <p>Olatoye, S. (2006) <em>The Silent Teacher</em>. Ado-Ekiti: Segun and Sons Enterprises.</p>
+      <p>Oluikpe, B. O. A., Nnaemeka, B. A., Obah, T. Y., Otagburuagu, E. J., Onuigbo, S. and Ogbonna, E. A. (1998)
+        <em>Intensive English for Senior Secondary School 3</em>. Onitsha: Africana First Publishers.</p>
+      
+    </div>
+    
+    <div class="page-number">Page 4</div>
+  </div>
+  
+</body>
+
+</html>

@@ -1,0 +1,110 @@
+/* =====================================
+  PAGE SPECIFIC STYLE
+  ======================================*/
+.legal-page .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 1.25rem 4rem;
+}
+
+.legal-page .content-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 2.5rem;
+    box-shadow: var(--shadow);
+    margin-bottom: 2rem;
+}
+
+.legal-page .content-card h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    margin-top: 2rem;
+}
+
+.legal-page .content-card h2:first-child {
+    margin-top: 0;
+}
+
+.legal-page .content-card h3 {
+    font-size: 1.15rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    margin-top: 1.5rem;
+    color: var(--text);
+}
+
+.legal-page .content-card p {
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+}
+
+.legal-page .content-card ul {
+    margin-left: 1.5rem;
+    margin-bottom: 1rem;
+    color: var(--text-muted);
+}
+
+.legal-page .content-card li {
+    margin-bottom: 0.5rem;
+}
+
+.legal-page .highlight-box {
+    background: rgb(79 70 229 / 0.08);
+    border-left: 4px solid var(--primary);
+    padding: 1rem 1.25rem;
+    border-radius: 8px;
+    margin: 1.5rem 0;
+}
+
+.legal-page .highlight-box p {
+    margin: 0;
+    color: var(--text);
+    font-weight: 500;
+}
+
+.legal-page .last-updated {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    margin-bottom: 1.5rem;
+}
+
+.legal-page .tab-switcher {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.legal-page .tab-btn {
+    padding: 0.75rem 1.5rem;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    font-weight: 600;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.legal-page .tab-btn.active {
+    color: var(--primary);
+    border-bottom-color: var(--primary);
+}
+
+.legal-page .tab-content {
+    display: none;
+}
+
+.legal-page .tab-content.active {
+    display: block;
+}
+
+.legal-page footer {
+    border-top: 1px solid var(--border);
+    padding: 2rem 0;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.875rem;
+}

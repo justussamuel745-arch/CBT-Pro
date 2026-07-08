@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JAMB Agriculture &amp; Arabic Syllabi</title>
+    <style>
+        /* ── reset & base ── */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #e6e9ef;
+            font-family: 'Times New Roman', Times, serif;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .document {
+            max-width: 900px;
+            width: 100%;
+            background: #ffffff;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+            padding: 60px 70px 50px 70px;
+            border-radius: 4px;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: #888;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 6px;
+            margin-bottom: 22px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        h1 {
+            font-size: 28px;
+            font-weight: bold;
+            text-align: center;
+            letter-spacing: 2px;
+            margin: 10px 0 6px 0;
+        }
+
+        .subtitle {
+            text-align: center;
+            font-size: 16px;
+            font-weight: bold;
+            margin: 4px 0 20px 0;
+        }
+
+        .general-objectives {
+            margin: 16px 0 20px 0;
+            padding-left: 20px;
+            font-size: 14.5px;
+            line-height: 1.7;
+        }
+        .general-objectives li {
+            margin-bottom: 4px;
+        }
+
+        .section-head {
+            font-size: 17px;
+            font-weight: bold;
+            margin: 30px 0 12px 0;
+            border-bottom: 2px solid #333;
+            padding-bottom: 4px;
+        }
+
+        .syllabus-table {
+            width: 100%;
+            table-layout: fixed;
+            border-collapse: collapse;
+            font-size: 14px;
+            line-height: 1.6;
+            margin: 12px 0 8px 0;
+        }
+        .syllabus-table th {
+            background: #f2f4f8;
+            border: 1px solid #333;
+            padding: 10px 12px;
+            text-align: left;
+            font-weight: bold;
+            font-size: 14px;
+            word-wrap: break-word;
+        }
+        .syllabus-table td {
+            border: 1px solid #333;
+            padding: 10px 12px;
+            vertical-align: top;
+            font-size: 14px;
+            word-wrap: break-word;
+        }
+        .syllabus-table .topic-cell {
+            width: 52%;
+            background: #fafbfc;
+        }
+        .syllabus-table .objective-cell {
+            width: 48%;
+            background: #fafbfc;
+        }
+        .syllabus-table .topic-cell strong,
+        .syllabus-table .objective-cell strong {
+            font-weight: 700;
+        }
+        .syllabus-table .topic-cell .sub-item {
+            display: block;
+            margin-top: 4px;
+            padding-left: 16px;
+        }
+        .syllabus-table .topic-cell .sub-item2 {
+            display: block;
+            margin-top: 2px;
+            padding-left: 28px;
+        }
+        .syllabus-table .objective-cell .obj-item {
+            display: block;
+            margin-top: 2px;
+            padding-left: 8px;
+        }
+        .syllabus-table .topic-cell .note {
+            font-style: italic;
+            color: #444;
+            display: block;
+            margin-top: 4px;
+            padding-left: 16px;
+        }
+
+        .page-number {
+            text-align: center;
+            font-size: 12px;
+            color: #888;
+            margin-top: 28px;
+            padding-top: 12px;
+            border-top: 1px solid #ddd;
+        }
+
+        .references {
+            margin: 30px 0 6px 0;
+            font-size: 13.5px;
+            line-height: 1.8;
+        }
+        .references .ref-title {
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 4px;
+        }
+        .references p {
+            margin-bottom: 2px;
+        }
+
+        .arabic-text {
+            font-family: 'Traditional Arabic', 'Times New Roman', Times, serif;
+            direction: rtl;
+            font-size: 15px;
+        }
+
+        @media (max-width: 700px) {
+            .document {
+                padding: 30px 20px;
+            }
+            .syllabus-table {
+                font-size: 13px;
+            }
+            .syllabus-table th,
+            .syllabus-table td {
+                padding: 6px 8px;
+            }
+            .syllabus-table .topic-cell {
+                width: 50%;
+            }
+            .syllabus-table .objective-cell {
+                width: 50%;
+            }
+            h1 {
+                font-size: 22px;
+            }
+        }
+
+        @media print {
+            body {
+                background: #fff;
+                padding: 0;
+            }
+            .document {
+                box-shadow: none;
+                padding: 40px 60px;
+                border-radius: 0;
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+  
+      <!-- ============================================================ -->
+    <!--                      ARABIC SYLLABUS                          -->
+    <!-- ============================================================ -->
+
+    <!-- ==================== ARABIC PAGE 1 ==================== -->
+    <div class="document">
+        <div class="page-header"><span>Arabic</span><span>UTME Syllabus</span></div>
+        <h1>ARABIC</h1>
+        <p class="subtitle">GENERAL OBJECTIVES</p>
+        <p style="font-size:14px; line-height:1.6; margin-bottom:14px;">
+            The aim of the Unified Tertiary Matriculation Examination (UTME) syllabus in Arabic is to prepare candidates for admission into tertiary institutions through the Board's examination. It is designed to test their achievement of the course objectives, which are to:
+        </p>
+        <ol class="general-objectives" style="list-style-type:decimal;">
+            <li>answer comprehension questions correctly in standard Arabic;</li>
+            <li>translate simple texts from English to Arabic and vice versa;</li>
+            <li>apply the rules of Arabic grammar functionally;</li>
+            <li>appreciate Arabic literary texts within the contexts of their environment and eras;</li>
+            <li>use Arabic as a living world language in communication where necessary.</li>
+        </ol>
+
+        <h2 class="section-head">DETAILED SYLLABUS</h2>
+
+        <table class="syllabus-table">
+            <thead><tr><th>TOPICS / CONTENTS / NOTES</th><th>OBJECTIVES</th></tr></thead>
+            <tbody>
+                <tr>
+                    <td class="topic-cell">
+                        <strong>SECTION A: COMPREHENSION</strong><br />
+                        <span class="sub-item">It consists of a passage of seventy (70) words. Five multiple-choice questions are to be set on the passage. The contents should be within the experience of the candidates e.g. current affairs, sports, education, politics, economy, health, culture and ethics.</span>
+                    </td>
+                    <td class="objective-cell">
+                        Candidates should be able to:<br />
+                        <span class="obj-item">i. use appropriate words or phrases for specific thought;</span>
+                        <span class="obj-item">ii. deduce the lesson in the passage;</span>
+                        <span class="obj-item">iii. determine the main theme of the passage;</span>
+                        <span class="obj-item">iv. give an appropriate title to the passage;</span>
+                        <span class="obj-item">v. interpret the meanings of particular words.</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="topic-cell">
+                        <strong>SECTION B: TRANSLATION</strong><br />
+                        <span class="sub-item">This section consists of ten (10) questions. Five of them are on translation from English into Arabic while the other five are on translation from Arabic into English.</span>
+                        <span class="sub-item">Translation into English includes key words and phrases in a sentence.</span>
+                        <span class="sub-item">Translated questions are to be based on standard Arabic and English usages.</span>
+                    </td>
+                    <td class="objective-cell">
+                        Candidates should be able to:<br />
+                        <span class="obj-item">i. use an appropriate Arabic word or phrase to convey the meaning of an English word or phrase;</span>
+                        <span class="obj-item">ii. determine an appropriate English word or phrase for an Arabic statement;</span>
+                        <span class="obj-item">iii. interpret idiomatic expressions in both Arabic and English;</span>
+                        <span class="obj-item">iv. transfer ideas expressed in Arabic to English and vice versa;</span>
+                        <span class="obj-item">v. communicate effectively in Arabic and English.</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="topic-cell">
+                        <strong>SECTION C: GRAMMAR</strong><br />
+                        <span class="sub-item">Major grammatical features in Arabic to be examined include:</span>
+                        <span class="sub-item" style="font-family:'Traditional Arabic','Times New Roman',serif; direction:rtl; text-align:right;">أسماء الإشارة والموصولة والشرط والاستفهام.</span>
+                    </td>
+                    <td class="objective-cell">
+                        Candidates should be able to:<br />
+                        <span class="obj-item">i. identify the various forms of demonstrative and relative pronouns;</span>
+                        <span class="obj-item">ii. compare gender markers in Arabic;</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="page-number">Page 1</div>
+    </div>
+
+    <!-- ==================== ARABIC PAGE 2 ==================== -->
+    <div class="document">
+        <div class="page-header"><span>Arabic</span><span>UTME Syllabus</span></div>
+        <table class="syllabus-table">
+            <thead><tr><th>TOPICS / CONTENTS / NOTES</th><th>OBJECTIVES</th></tr></thead>
+            <tbody>
+                <tr>
+                    <td class="topic-cell">
+                        <span class="sub-item">2. Gender (Masculine and Feminine).</span>
+                        <span class="sub-item">3. Characteristics of noun.</span>
+                        <span class="sub-item">4. Dual.</span>
+                        <span class="sub-item">5. Plurals:</span>
+                        <span class="sub-item2">a. sound masculine plural</span>
+                        <span class="sub-item2">b. sound feminine plural</span>
+                        <span class="sub-item2">c. broken plural</span>
+                        <span class="sub-item">6. Construct phrase.</span>
+                        <span class="sub-item">7. Separable and inseparable pronouns.</span>
+                        <span class="sub-item">8. Appendants:</span>
+                        <span class="sub-item2">a. adjective.</span>
+                        <span class="sub-item2">b. conjunction.</span>
+                        <span class="sub-item2">c. the permutative.</span>
+                        <span class="sub-item2">d. emphasis</span>
+                        <span class="sub-item">9. Prepositions.</span>
+                        <span class="sub-item">10. Transitive &amp; Intransitive verbs.</span>
+                        <span class="sub-item">11. The perfect verb.</span>
+                        <span class="sub-item">12. The imperfect verb:</span>
+                        <span class="sub-item2">a. the indicative.</span>
+                        <span class="sub-item2">b. the subjunctive.</span>
+                        <span class="sub-item2">c. the jussive.</span>
+                        <span class="sub-item">13. The imperative verb.</span>
+                        <span class="sub-item">14. The modifiers:</span>
+                        <span class="sub-item2">a. Kana and its associates</span>
+                        <span class="sub-item2">b. Inna and its associates</span>
+                        <span class="sub-item2">c. Zanna and its associates</span>
+                        <span class="sub-item">15. Trilateral and derived verb.</span>
+                        <span class="sub-item">16. Verbal noun.</span>
+                    </td>
+                    <td class="objective-cell">
+                        <span class="obj-item">iii. distinguish between nouns and other parts of speech;</span>
+                        <span class="obj-item">iv. identify the dual forms of nouns;</span>
+                        <span class="obj-item">v. construct sound and broken plurals;</span>
+                        <span class="obj-item">vi. construct and apply the construct phrase (Idaafah);</span>
+                        <span class="obj-item">vii. apply pronouns and appendants correctly in sentences;</span>
+                        <span class="obj-item">viii. identify the various types of prepositions and their usages;</span>
+                        <span class="obj-item">ix. differentiate between transitive and intransitive verbs;</span>
+                        <span class="obj-item">x. identify perfect and imperfect verbs and use them correctly;</span>
+                        <span class="obj-item">xi. determine the indicative, subjunctive and jussive moods of the imperfect verb;</span>
+                        <span class="obj-item">xii. construct imperative verbs;</span>
+                        <span class="obj-item">xiii. apply the modifiers (Kana and its associates, Inna and its associates, Zanna and its associates) correctly;</span>
+                        <span class="obj-item">xiv. distinguish between trilateral and derived verbs;</span>
+                        <span class="obj-item">xv. form verbal nouns from various verb forms;</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="page-number">Page 2</div>
+    </div>
+
+    <!-- ==================== ARABIC PAGE 3 ==================== -->
+    <div class="document">
+        <div class="page-header"><span>Arabic</span><span>UTME Syllabus</span></div>
+        <table class="syllabus-table">
+            <thead><tr><th>TOPICS / CONTENTS / NOTES</th><th>OBJECTIVES</th></tr></thead>
+            <tbody>
+                <tr>
+                    <td class="topic-cell">
+                        <span class="sub-item">17. Derivatives:</span>
+                        <span class="sub-item2">a. active participle.</span>
+                        <span class="sub-item2">b. passive participle.</span>
+                        <span class="sub-item2">c. comparative/superlative.</span>
+                        <span class="sub-item2">d. noun of instrument.</span>
+                        <span class="sub-item2">e. nouns of time and place.</span>
+                        <span class="sub-item2">f. relative adjective.</span>
+                        <span class="sub-item2">g. hyperbole noun.</span>
+                        <span class="sub-item">18. Conditional sentence.</span>
+                        <span class="sub-item">19. Numeral (1–1000).</span>
+                        <span class="sub-item">20. Active and passive voice.</span>
+                        <span class="sub-item">21. Subject and predicate.</span>
+                        <span class="sub-item">22. Nouns in the accusative</span>
+                        <span class="sub-item2">a. direct object.</span>
+                        <span class="sub-item2">b. adverbs of place and time.</span>
+                        <span class="sub-item2">c. adverb of circumstance.</span>
+                        <span class="sub-item2">d. the exempted with illa.</span>
+                        <span class="sub-item2">e. the specification.</span>
+                        <span class="sub-item2">f. the vocative.</span>
+                    </td>
+                    <td class="objective-cell">
+                        <span class="obj-item">xvi. identify and apply derivatives (active participle, passive participle, comparative/superlative, noun of instrument, nouns of time and place, relative adjective, hyperbole noun);</span>
+                        <span class="obj-item">xvii. apply the rules governing conditional sentences, identify, construct and differentiate them in normal sentences;</span>
+                        <span class="obj-item">xviii. recognise and count Arabic numerals from 1 to 1000 and identify the intricacies involved in their usage;</span>
+                        <span class="obj-item">xix. distinguish between doer and doer-substitute and apply them in sentences;</span>
+                        <span class="obj-item">xx. identify different types of adverbial clause, the exempted, specification and the vocative and use them in standard Arabic;</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="topic-cell">
+                        <strong>SECTION D: COMPOSITION</strong><br />
+                        <span class="sub-item">This section consists of five (5) questions on subjects relating to the lives and environment of the candidates, e.g. education, culture, health, politics, economy, sports and current affairs.</span>
+                    </td>
+                    <td class="objective-cell">
+                        Candidates should be able to:<br />
+                        <span class="obj-item">i. use appropriate words for specific thoughts;</span>
+                        <span class="obj-item">ii. use correct idiomatic expressions in Arabic;</span>
+                        <span class="obj-item">iii. communicate effectively in Arabic;</span>
+                        <span class="obj-item">iv. express ideas clearly in Arabic;</span>
+                        <span class="obj-item">v. demonstrate the use of common Arabic idioms and proverbs;</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="page-number">Page 3</div>
+    </div>
+
+    <!-- ==================== ARABIC PAGE 4 ==================== -->
+    <div class="document">
+        <div class="page-header"><span>Arabic</span><span>UTME Syllabus</span></div>
+        <table class="syllabus-table">
+            <thead><tr><th>TOPICS / CONTENTS / NOTES</th><th>OBJECTIVES</th></tr></thead>
+            <tbody>
+                <tr>
+                    <td class="topic-cell">
+                        <strong>SECTION E: ARABIC LITERATURE</strong><br />
+                        <span class="sub-item">This section consists of ten (10) questions on notable literary figures and their works cutting across the various periods which include the following:</span>
+
+                        <span class="sub-item" style="margin-top:10px;"><strong>a) Introduction to Arabic literature.</strong></span>
+                        <span class="sub-item2" style="font-family:'Traditional Arabic','Times New Roman',serif; direction:rtl; text-align:right;">.أ- المدخل إلى الأدب العربي</span>
+                        <span class="sub-item2" style="font-family:'Traditional Arabic','Times New Roman',serif; direction:rtl; text-align:right;">.فوقنه- الأدب تعريفه وأقسامه</span>
+                        <span class="sub-item2" style="font-family:'Traditional Arabic','Times New Roman',serif; direction:rtl; text-align:right;">.الأدبية- العصور</span>
+                        <span class="sub-item2" style="font-family:'Traditional Arabic','Times New Roman',serif; direction:rtl; text-align:right;">.وأغراضه- الشعر تعريفه وأنواعه</span>
+                        <span class="sub-item2" style="font-family:'Traditional Arabic','Times New Roman',serif; direction:rtl; text-align:right;">.وتفوقنه- النثر تعريفه</span>
+
+                        <span class="sub-item" style="margin-top:10px;"><strong>b) The Pre-Islamic Period (500 – 610 C.E.).</strong></span>
+                        <span class="sub-item2" style="font-family:'Traditional Arabic','Times New Roman',serif; direction:rtl; text-align:right;">.م) 610 – 500 العصر الجاهلي (حوالي -ب</span>
+                        <span class="sub-item2" style="font-family:'Traditional Arabic','Times New Roman',serif; direction:rtl; text-align:right;">" #مطيك صدر أمي بني "أقيموا والميته "النفري</span>
+                        <span class="sub-item2" style="font-family:'Traditional Arabic','Times New Roman',serif; direction:rtl; text-align:right;">."...الأشياء أفضل "كنس عند وخطبته التميمي الصيفي بني أكتم</span>
+
+                        <span class="sub-item" style="margin-top:10px;"><strong>c) The Islamic Periods (610 – 1798 C.E.).</strong></span>
+                        <span class="sub-item2" style="font-family:'Traditional Arabic','Times New Roman',serif; direction:rtl; text-align:right;">.م) 1798 – 610( الإسلامية- العصور</span>
+                        <span class="sub-item2" style="font-family:'Traditional Arabic','Times New Roman',serif; direction:rtl; text-align:right;">."في- دصبحت أسان الناس "الوطنية وخطبته التقييس يوسف بن أبي</span>
+                        <span class="sub-item2" style="font-family:'Traditional Arabic','Times New Roman',serif; direction:rtl; text-align:right;">."دصيقك "أبدل "وبدايتها الصديق معاملته في ورسالته المقع بني عبدالله</span>
+                        <span class="sub-item2" style="font-family:'Traditional Arabic','Times New Roman',serif; direction:rtl; text-align:right;">.عبدالعزيز بن خلفية المدح في وصيدته عطية بن جرير</span>
+                    </td>
+                    <td class="objective-cell">
+                        Candidates should be able to:<br />
+                        <span class="obj-item">i. identify the various periods of Arabic literature;</span>
+                        <span class="obj-item">ii. distinguish between poetry and prose;</span>
+                        <span class="obj-item">iii. relate literary works to their authors and periods;</span>
+                        <span class="obj-item">iv. analyse the themes and styles of selected literary works;</span>
+                        <span class="obj-item">v. appreciate the cultural and historical contexts of Arabic literary texts;</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="page-number">Page 4</div>
+    </div>
+
+    <!-- ==================== ARABIC PAGE 5 ==================== -->
+    <div class="document">
+        <div class="page-header"><span>Arabic</span><span>UTME Syllabus</span></div>
+        <table class="syllabus-table">
+            <thead><tr><th>TOPICS / CONTENTS / NOTES</th><th>OBJECTIVES</th></tr></thead>
+            <tbody>
+                <tr>
+                    <td class="topic-cell">
+                        <span class="sub-item" style="margin-top:10px;"><strong>d) The Modern Period (1798 to date).</strong></span>
+                        <span class="sub-item2" style="font-family:'Traditional Arabic','Times New Roman',serif; direction:rtl; text-align:right;">.م) إلى اليوم 1798( الحديث العصر -د</span>
+                        <span class="sub-item2" style="font-family:'Traditional Arabic','Times New Roman',serif; direction:rtl; text-align:right;">"المعلم وواجب والتعليم العلم "وصيدته شوقي أحمد</span>
+                        <span class="sub-item2" style="font-family:'Traditional Arabic','Times New Roman',serif; direction:rtl; text-align:right;">"... مصنوع الناس في "الخير الموكب وصيدته جبران خليل</span>
+                        <span class="sub-item2" style="font-family:'Traditional Arabic','Times New Roman',serif; direction:rtl; text-align:right;">"الشاعرة "اللغة "وكتابه العقد محمود عباس</span>
+
+                        <span class="sub-item" style="margin-top:10px;"><strong>e) Arabic Literature in West Africa.</strong></span>
+                        <span class="sub-item2" style="font-family:'Traditional Arabic','Times New Roman',serif; direction:rtl; text-align:right;">.إفريقيا غرب في العربي الأدب -ه</span>
+                        <span class="sub-item2" style="font-family:'Traditional Arabic','Times New Roman',serif; direction:rtl; text-align:right;">"وأبكيا جودا "أعيني "فودي بني عثمان الشيخ بنت أسماء</span>
+                        <span class="sub-item2" style="font-family:'Traditional Arabic','Times New Roman',serif; direction:rtl; text-align:right;">"لحبيبي</span>
+                        <span class="sub-item2" style="font-family:'Traditional Arabic','Times New Roman',serif; direction:rtl; text-align:right;">"الطفولة "عث قصبة وكتابه العملي عبدالقادر علي</span>
+                        <span class="sub-item2" style="font-family:'Traditional Arabic','Times New Roman',serif; direction:rtl; text-align:right;">"العريقة الإفريقية بالقارة "الافتخار وصيدته غساما الأمين محمد</span>
+                        <span class="sub-item2" style="font-family:'Traditional Arabic','Times New Roman',serif; direction:rtl; text-align:right;">"التكورر "أهل "وكتابه الفالني يحيى -أدم</span>
+                    </td>
+                    <td class="objective-cell">
+                        <span class="obj-item">vi. evaluate the contributions of West African Arabic literary figures;</span>
+                        <span class="obj-item">vii. compare the literary traditions of different periods;</span>
+                        <span class="obj-item">viii. examine the influence of environment and culture on Arabic literature;</span>
+                        <span class="obj-item">ix. analyse selected poems and prose passages from the prescribed texts;</span>
+                        <span class="obj-item">x. demonstrate knowledge of the literary history of Arabic in West Africa.</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div style="margin-top:30px; font-size:14px; line-height:1.6; border-top:1px solid #ddd; padding-top:16px;">
+            <p><strong>Note:</strong> Candidates are expected to be familiar with the prescribed literary texts and figures listed in the syllabus.</p>
+        </div>
+
+        <div class="page-number">Page 5</div>
+    </div>
+    </body>
+</html>

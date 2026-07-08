@@ -1,0 +1,69 @@
+.message_body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: #f5f7fa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 20px;
+  margin: 0;
+}
+
+.message_card {
+  background: white;
+  border-radius: 12px;
+  padding: 48px 40px;
+  max-width: 480px;
+  width: 100%;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  text-align: center;
+}
+
+.message_icon {
+  width: 64px;
+  height: 64px;
+  background: #10b981;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 24px;
+}
+
+.message_icon svg {
+  width: 32px;
+  height: 32px;
+  stroke: white;
+  stroke-width: 3;
+  fill: none;
+}
+
+.message_title {
+  font-size: 28px;
+  color: #111827;
+  margin: 0 0 12px 0;
+  font-weight: 600;
+}
+
+.message_text {
+  color: #6b7280;
+  font-size: 16px;
+  line-height: 1.6;
+  margin: 0 0 32px 0;
+}
+
+.message_btn {
+  display: inline-block;
+  background: #2563eb;
+  color: white;
+  text-decoration: none;
+  padding: 12px 28px;
+  border-radius: 8px;
+  font-weight: 500;
+  transition: background 0.2s;
+  border: none;
+}
+
+.message_btn:hover {
+  background: #1d4ed8;
+}

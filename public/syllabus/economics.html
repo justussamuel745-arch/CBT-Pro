@@ -1,0 +1,1138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JAMB Economics Syllabus</title>
+  <style>
+    /* ── reset & base ── */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      background: #e6e9ef;
+      font-family: 'Times New Roman', Times, serif;
+      padding: 40px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    /* ── PDF-like document container ── */
+    .document {
+      max-width: 900px;
+      width: 100%;
+      background: #ffffff;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+      padding: 60px 70px 50px 70px;
+      border-radius: 4px;
+      margin-bottom: 30px;
+      position: relative;
+    }
+    
+    /* ── page header (simulated) ── */
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: #888;
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 6px;
+      margin-bottom: 22px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-family: 'Times New Roman', Times, serif;
+    }
+    
+    /* ── typography ── */
+    h1 {
+      font-size: 28px;
+      font-weight: bold;
+      text-align: center;
+      letter-spacing: 2px;
+      margin: 10px 0 6px 0;
+      font-family: 'Times New Roman', Times, serif;
+    }
+    
+    h2 {
+      font-size: 18px;
+      font-weight: bold;
+      margin: 28px 0 12px 0;
+      font-family: 'Times New Roman', Times, serif;
+    }
+    
+    h3 {
+      font-size: 16px;
+      font-weight: bold;
+      margin: 20px 0 8px 0;
+      font-family: 'Times New Roman', Times, serif;
+    }
+    
+    .subtitle {
+      text-align: center;
+      font-size: 16px;
+      font-weight: bold;
+      margin: 4px 0 20px 0;
+      font-family: 'Times New Roman', Times, serif;
+    }
+    
+    .section-head {
+      font-size: 15px;
+      font-weight: bold;
+      margin: 24px 0 6px 0;
+      font-family: 'Times New Roman', Times, serif;
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 4px;
+    }
+    
+    .general-objectives {
+      margin: 16px 0 20px 0;
+      padding-left: 20px;
+      font-size: 14.5px;
+      line-height: 1.7;
+    }
+    
+    .general-objectives li {
+      margin-bottom: 4px;
+    }
+    
+    /* ── syllabus table ── */
+    .syllabus-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+      line-height: 1.6;
+      margin: 16px 0 8px 0;
+      font-family: 'Times New Roman', Times, serif;
+    }
+    
+    .syllabus-table th {
+      background: #f2f4f8;
+      border: 1px solid #333;
+      padding: 10px 12px;
+      text-align: left;
+      font-weight: bold;
+      font-size: 14px;
+      font-family: 'Times New Roman', Times, serif;
+    }
+    
+    .syllabus-table td {
+      border: 1px solid #333;
+      padding: 10px 12px;
+      vertical-align: top;
+      font-size: 14px;
+      font-family: 'Times New Roman', Times, serif;
+    }
+    
+    .syllabus-table .topic-cell {
+      width: 52%;
+      background: #fafbfc;
+    }
+    
+    .syllabus-table .objective-cell {
+      width: 48%;
+      background: #fafbfc;
+    }
+    
+    .syllabus-table .topic-cell strong,
+    .syllabus-table .objective-cell strong {
+      font-weight: 700;
+    }
+    
+    .syllabus-table .topic-cell .sub-item {
+      display: block;
+      margin-top: 4px;
+      padding-left: 16px;
+    }
+    
+    .syllabus-table .topic-cell .sub-item2 {
+      display: block;
+      margin-top: 2px;
+      padding-left: 28px;
+    }
+    
+    .syllabus-table .objective-cell .obj-item {
+      display: block;
+      margin-top: 2px;
+      padding-left: 8px;
+    }
+    
+    .syllabus-table .topic-cell .note {
+      font-style: italic;
+      color: #444;
+    }
+    
+    /* ── inline list helpers ── */
+    .inline-list {
+      list-style: none;
+      padding-left: 0;
+      margin: 0;
+    }
+    
+    .inline-list li {
+      margin-bottom: 2px;
+    }
+    
+    .inline-list .sub {
+      padding-left: 20px;
+    }
+    
+    /* ── references ── */
+    .references {
+      margin: 30px 0 6px 0;
+      font-size: 13.5px;
+      line-height: 1.8;
+      font-family: 'Times New Roman', Times, serif;
+    }
+    
+    .references p {
+      margin-bottom: 2px;
+    }
+    
+    .references .ref-title {
+      font-weight: bold;
+      font-size: 16px;
+      margin-bottom: 10px;
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 4px;
+    }
+    
+    /* ── page number ── */
+    .page-number {
+      text-align: center;
+      font-size: 12px;
+      color: #888;
+      margin-top: 28px;
+      padding-top: 12px;
+      border-top: 1px solid #ddd;
+      font-family: 'Times New Roman', Times, serif;
+    }
+    
+    /* ── page break simulation ── */
+    .page-break {
+      margin-top: 40px;
+      padding-top: 30px;
+      border-top: 2px dashed #ddd;
+    }
+    
+    /* ── responsive ── */
+    @media (max-width: 700px) {
+      .document {
+        padding: 30px 20px 30px 20px;
+      }
+      
+      .syllabus-table {
+        font-size: 13px;
+      }
+      
+      .syllabus-table th,
+      .syllabus-table td {
+        padding: 6px 8px;
+      }
+      
+      .syllabus-table .topic-cell {
+        width: 50%;
+      }
+      
+      .syllabus-table .objective-cell {
+        width: 50%;
+      }
+      
+      h1 {
+        font-size: 22px;
+      }
+      
+      .page-header {
+        font-size: 10px;
+      }
+    }
+    
+    @media print {
+      body {
+        background: #fff;
+        padding: 0;
+      }
+      
+      .document {
+        box-shadow: none;
+        padding: 40px 60px 40px 60px;
+        border-radius: 0;
+        max-width: 100%;
+      }
+      
+      .page-break {
+        border-top: 1px solid #ccc;
+      }
+    }
+    
+    /* small helper */
+    .mt-4 {
+      margin-top: 4px;
+    }
+    
+    .mt-8 {
+      margin-top: 8px;
+    }
+    
+    .mt-12 {
+      margin-top: 12px;
+    }
+    
+    .mb-4 {
+      margin-bottom: 4px;
+    }
+    
+    .mb-8 {
+      margin-bottom: 8px;
+    }
+    
+    .indent {
+      padding-left: 20px;
+    }
+    
+    .indent-more {
+      padding-left: 36px;
+    }
+    
+    .bold {
+      font-weight: 700;
+    }
+    
+    .italic {
+      font-style: italic;
+    }
+    
+    .text-sm {
+      font-size: 13px;
+    }
+    
+    .text-xs {
+      font-size: 12px;
+    }
+    
+    .text-center {
+      text-align: center;
+    }
+    
+    .border-top-light {
+      border-top: 1px solid #ddd;
+      padding-top: 6px;
+      margin-top: 6px;
+    }
+  </style>
+</head>
+
+<body>
+  
+  <!-- ════════════════════════════════════════════════════ -->
+  <!-- PAGE 1                                             -->
+  <!-- ════════════════════════════════════════════════════ -->
+  <div class="document">
+    
+    <div class="page-header">
+      <span>Economics</span>
+      <span>UTME Syllabus</span>
+    </div>
+    
+    <h1>ECONOMICS</h1>
+    <p class="subtitle">GENERAL OBJECTIVES</p>
+    
+    <p style="font-size:14px; line-height:1.6; margin-bottom:14px;">
+      The aim of the Unified Tertiary Matriculation Examination (UTME) syllabus in Economics is to prepare the
+      candidates for the Board's examination. It is designed to test their achievement of the course objectives, which
+      are to:
+    </p>
+    
+    <ol class="general-objectives" style="list-style-type:decimal;">
+      <li>demonstrate sufficient knowledge and understanding of the basic concepts, tools and their general applications
+        to economic analysis;</li>
+      <li>identify and explain the basic structures, operations and roles of the various economic units and institutions
+        (national and international);</li>
+      <li>describe major economic activities – production, distribution and consumption;</li>
+      <li>identify and appraise the basic and current economic problems of society;</li>
+      <li>develop the competence to proffer solutions to economic problems identified.</li>
+    </ol>
+    
+    <h2>DETAILED SYLLABUS</h2>
+    
+    <!-- ─── Topic 1 ─── -->
+    <table class="syllabus-table">
+      <thead>
+        <tr>
+          <th>TOPICS / CONTENTS / NOTES</th>
+          <th>OBJECTIVES</th>
+        </tr>
+      </thead>
+      <tbody>
+        
+        <!-- Topic 1 -->
+        <tr>
+          <td class="topic-cell">
+            <strong>1. Economics as a science</strong><br />
+            <span class="sub-item"><strong>a.</strong> Basic Concepts:</span>
+            <span class="sub-item2">wants, scarcity, choice, scale of preference, opportunity cost, rationality,
+              production, distribution, consumption.</span>
+            <span class="sub-item"><strong>b.(i)</strong> Economic problems of:</span>
+            <span class="sub-item2">what, how and for whom to produce and efficiency of resource use.</span>
+            <span class="sub-item"><strong>b.(ii)</strong> Application of PPF to solution of economic problems.</span>
+          </td>
+          <td class="objective-cell">
+            Candidates should be able to:<br />
+            <span class="obj-item">(i) compare various concepts in economics and their applications;</span>
+            <span class="obj-item">(ii) interpret graphs/schedules in relation to the concepts;</span>
+            <span class="obj-item">(iii) identify economic problems;</span>
+            <span class="obj-item">(iv) proffer solutions to economic problems.</span>
+          </td>
+        </tr>
+        
+        <!-- Topic 2 -->
+        <tr>
+          <td class="topic-cell">
+            <strong>2. Economic Systems</strong><br />
+            <span class="sub-item"><strong>a.</strong> Types and characteristics of free enterprise, centrally planned
+              and mixed economies</span>
+            <span class="sub-item"><strong>b.</strong> Solutions to economic problems under different systems</span>
+            <span class="sub-item"><strong>c.</strong> Contemporary issues in economic systems</span>
+          </td>
+          <td class="objective-cell">
+            Candidates should be able to:<br />
+            <span class="obj-item">(i) compare the various economic systems;</span>
+            <span class="obj-item">(ii) apply the knowledge of economic systems to contemporary issues in
+              Nigeria;</span>
+            <span class="obj-item">(iii) proffer solutions to economic problems in different economic systems.</span>
+          </td>
+        </tr>
+        
+      </tbody>
+    </table>
+    
+    <div class="page-number">Page 1</div>
+  </div>
+  
+  <!-- ════════════════════════════════════════════════════ -->
+  <!-- PAGE 2                                             -->
+  <!-- ════════════════════════════════════════════════════ -->
+  <div class="document">
+    
+    <div class="page-header">
+      <span>Economics</span>
+      <span>UTME Syllabus</span>
+    </div>
+    
+    <!-- ─── Topic 3 ─── -->
+    <table class="syllabus-table">
+      <thead>
+        <tr>
+          <th>TOPICS / CONTENTS / NOTES</th>
+          <th>OBJECTIVES</th>
+        </tr>
+      </thead>
+      <tbody>
+        
+        <tr>
+          <td class="topic-cell">
+            <strong>3. Methods and Tools of Economic Analysis</strong><br />
+            <span class="sub-item"><strong>a.</strong> Scientific Approach:</span>
+            <span class="sub-item2">i. inductive and deductive methods</span>
+            <span class="sub-item2">ii. positive and normative reasoning</span>
+            <span class="sub-item"><strong>b.</strong> Basic Tools</span>
+            <span class="sub-item2">i. tables, charts and graphs</span>
+            <span class="sub-item2">ii. measures of central tendency: mean, median and mode, and their
+              applications.</span>
+            <span class="sub-item2">iii. measures of dispersion; variance, standard deviation, range and their
+              applications;</span>
+            <span class="sub-item2">iv. merits and demerits of the tools.</span>
+          </td>
+          <td class="objective-cell">
+            Candidates should be able to:<br />
+            <span class="obj-item">(i) distinguish between the various forms of reasoning;</span>
+            <span class="obj-item">(ii) apply these forms of reasoning to real life situations;</span>
+            <span class="obj-item">(iii) use the tools to interpret economic data;</span>
+            <span class="obj-item">(iv) analyse economic data using the tools;</span>
+            <span class="obj-item">(v) understand the merits and demerits of the tools.</span>
+          </td>
+        </tr>
+        
+        <!-- Topic 4 -->
+        <tr>
+          <td class="topic-cell">
+            <strong>4. The Theory of Demand</strong><br />
+            <span class="sub-item"><strong>a.</strong> i. meaning and determinants of demand</span>
+            <span class="sub-item2">ii. demand schedules and curves</span>
+            <span class="sub-item2">iii. the distinction between change in quantity demanded and change in
+              demand.</span>
+            <span class="sub-item"><strong>b.</strong> Types of demand: Composite, derived, competitive and joint
+              demand:</span>
+            <span class="sub-item"><strong>c.</strong> Types, nature and determinants of elasticity and their
+              measurement – price, income and cross elasticity of demand:</span>
+            <span class="sub-item"><strong>d.</strong> Importance of elasticity of demand to consumers, producers and
+              government.</span>
+          </td>
+          <td class="objective-cell">
+            Candidates should be able to:<br />
+            <span class="obj-item">(i) identify the factors determining demand;</span>
+            <span class="obj-item">(ii) interpret demand curves from demand schedules;</span>
+            <span class="obj-item">(iii) differentiate between change in quantity demanded and change in demand;</span>
+            <span class="obj-item">(iv) compare the various types of demand and their interrelationships;</span>
+            <span class="obj-item">(v) relate the determinants to the nature of elasticity;</span>
+            <span class="obj-item">(vi) compute elasticities;</span>
+            <span class="obj-item">(vii) interpret elasticity coefficients in relation to real life situations.</span>
+          </td>
+        </tr>
+        
+      </tbody>
+    </table>
+    
+    <div class="page-number">Page 2</div>
+  </div>
+  
+  <!-- ════════════════════════════════════════════════════ -->
+  <!-- PAGE 3                                             -->
+  <!-- ════════════════════════════════════════════════════ -->
+  <div class="document">
+    
+    <div class="page-header">
+      <span>Economics</span>
+      <span>UTME Syllabus</span>
+    </div>
+    
+    <!-- ─── Topic 5 ─── -->
+    <table class="syllabus-table">
+      <thead>
+        <tr>
+          <th>TOPICS / CONTENTS / NOTES</th>
+          <th>OBJECTIVES</th>
+        </tr>
+      </thead>
+      <tbody>
+        
+        <tr>
+          <td class="topic-cell">
+            <strong>5. The Theory of Consumer Behaviour</strong><br />
+            <span class="sub-item"><strong>a.</strong> Basic Concepts:</span>
+            <span class="sub-item2">i. utility (cardinal, ordinal, total average and marginal utilities)</span>
+            <span class="sub-item2">ii. indifference curve and budget line.</span>
+            <span class="sub-item"><strong>b.</strong> Diminishing marginal utility and the law of demand.</span>
+            <span class="sub-item"><strong>c.</strong> Consumer equilibrium using the indifference curve and marginal
+              analyses.</span>
+            <span class="sub-item"><strong>d.</strong> Effects of shift in the budget line and the indifference
+              curve.</span>
+            <span class="sub-item"><strong>e.</strong> Consumer surplus and its applications.</span>
+          </td>
+          <td class="objective-cell">
+            Candidates should be able to:<br />
+            <span class="obj-item">(i) explain the various utility concepts;</span>
+            <span class="obj-item">(ii) apply the law of demand using the marginal utility analysis;</span>
+            <span class="obj-item">(iii) use indifference curve and marginal analyses to determine consumer
+              equilibrium;</span>
+            <span class="obj-item">(iv) relate the income and substitution effects;</span>
+            <span class="obj-item">(v) apply consumer surplus to real life situations.</span>
+          </td>
+        </tr>
+        
+        <!-- Topic 6 -->
+        <tr>
+          <td class="topic-cell">
+            <strong>6. The Theory of Supply</strong><br />
+            <span class="sub-item"><strong>a.</strong> i. Meaning and determinants of supply</span>
+            <span class="sub-item2">ii. Supply schedules and supply curves</span>
+            <span class="sub-item2">iii. the distinction between change in quantity supplied and change in supply</span>
+            <span class="sub-item"><strong>b.</strong> Types of Supply: Joint/complementary, competitive and
+              composite</span>
+            <span class="sub-item"><strong>c.</strong> Elasticity of Supply: determinants, measurements, nature and
+              applications</span>
+          </td>
+          <td class="objective-cell">
+            Candidates should be able to:<br />
+            <span class="obj-item">(i) identify the factors determining supply;</span>
+            <span class="obj-item">(ii) interpret supply curves from supply schedules;</span>
+            <span class="obj-item">(iii) differentiate between change in quantity supplied and change in supply;</span>
+            <span class="obj-item">(iv) compare the various types of supply and their interrelationships;</span>
+            <span class="obj-item">(v) relate the determinants to the nature of elasticity;</span>
+            <span class="obj-item">(vi) compute elasticity coefficients;</span>
+            <span class="obj-item">(vii) interpret the coefficients in relation to real life situations.</span>
+          </td>
+        </tr>
+        
+        <!-- Topic 7 -->
+        <tr>
+          <td class="topic-cell">
+            <strong>7. The Theory of Price Determination</strong><br />
+            <span class="sub-item"><strong>a.</strong> The concepts of market and price</span>
+            <span class="sub-item"><strong>b.</strong> Functions of the price system</span>
+            <span class="sub-item"><strong>c.</strong> i. Equilibrium price and quantity in product and factor
+              markets</span>
+          </td>
+          <td class="objective-cell">
+            Candidates should be able to:<br />
+            <span class="obj-item">(i) explain the concepts of market and price;</span>
+            <span class="obj-item">(ii) examine the functions of the price system;</span>
+            <span class="obj-item">(iii) evaluate the effects of government interference with the price system;</span>
+          </td>
+        </tr>
+        
+      </tbody>
+    </table>
+    
+    <div class="page-number">Page 3</div>
+  </div>
+  
+  <!-- ════════════════════════════════════════════════════ -->
+  <!-- PAGE 4                                             -->
+  <!-- ════════════════════════════════════════════════════ -->
+  <div class="document">
+    
+    <div class="page-header">
+      <span>Economics</span>
+      <span>UTME Syllabus</span>
+    </div>
+    
+    <!-- continuation of Topic 7 -->
+    <table class="syllabus-table">
+      <thead>
+        <tr>
+          <th>TOPICS / CONTENTS / NOTES</th>
+          <th>OBJECTIVES</th>
+        </tr>
+      </thead>
+      <tbody>
+        
+        <tr>
+          <td class="topic-cell">
+            <span class="sub-item"><strong>c.(ii)</strong> Price legislation and its effects</span>
+            <span class="sub-item"><strong>d.</strong> The effects of changes in supply and demand on equilibrium price
+              and quantity.</span>
+          </td>
+          <td class="objective-cell">
+            <span class="obj-item">(iv) differentiate between minimum and maximum price legislation;</span>
+            <span class="obj-item">(v) interpret the effects of changes in supply and demand on equilibrium price and
+              quantity.</span>
+          </td>
+        </tr>
+        
+        <!-- Topic 8 -->
+        <tr>
+          <td class="topic-cell">
+            <strong>8. The Theory of Production</strong><br />
+            <span class="sub-item"><strong>a.</strong> Meaning and types of production</span>
+            <span class="sub-item"><strong>b.</strong> Concepts of production and their interrelationships (TP, AP, MP
+              and the law of variable proportion).</span>
+            <span class="sub-item"><strong>c.</strong> Division of labour and specialization</span>
+            <span class="sub-item"><strong>d.</strong> Scale of Production: Internal and external economies of scale and
+              their implications.</span>
+            <span class="sub-item"><strong>e.</strong> Production functions and returns to scale</span>
+            <span class="sub-item"><strong>f.</strong> Producers' equilibrium isoquant-isocost and marginal
+              analyses.</span>
+            <span class="sub-item"><strong>g.</strong> Factors affecting productivity.</span>
+          </td>
+          <td class="objective-cell">
+            Candidates should be able to:<br />
+            <span class="obj-item">(i) relate TP, AP and MP with the law of variable proportion;</span>
+            <span class="obj-item">(ii) compare internal and external economies of scale in production and their
+              effects;</span>
+            <span class="obj-item">(iii) identify the types of production functions;</span>
+            <span class="obj-item">(iv) compare the different types of returns to the scale and their
+              implications;</span>
+            <span class="obj-item">(v) determine the firm's equilibrium position using the isoquant-isocost and marginal
+              analyses;</span>
+            <span class="obj-item">(vi) identify the factors affecting productivity.</span>
+          </td>
+        </tr>
+        
+        <!-- Topic 9 -->
+        <tr>
+          <td class="topic-cell">
+            <strong>9. Theory of Costs and Revenue</strong><br />
+            <span class="sub-item"><strong>a.</strong> The concepts of cost: Fixed, Variable, Total Average and
+              Marginal</span>
+            <span class="sub-item"><strong>b.</strong> The concepts of revenue: Total, Average and Marginal
+              revenue;</span>
+            <span class="sub-item"><strong>c.</strong> Accountants' and Economists' notions of cost</span>
+            <span class="sub-item"><strong>d.</strong> Short-run and long-run costs</span>
+            <span class="sub-item"><strong>e.</strong> The marginal cost and the supply curve of firm.</span>
+          </td>
+          <td class="objective-cell">
+            Candidates should be able to:<br />
+            <span class="obj-item">(i) explain the various cost concepts;</span>
+            <span class="obj-item">(ii) differentiate between accountants' and economists' notions of costs;</span>
+            <span class="obj-item">(iii) interpret the short-run and long-run costs curves;</span>
+            <span class="obj-item">(iv) establish the relationship between marginal cost and supply curve;</span>
+            <span class="obj-item">(v) explain the various revenue concepts.</span>
+          </td>
+        </tr>
+        
+      </tbody>
+    </table>
+    
+    <div class="page-number">Page 4</div>
+  </div>
+  
+  <!-- ════════════════════════════════════════════════════ -->
+  <!-- PAGE 5                                             -->
+  <!-- ════════════════════════════════════════════════════ -->
+  <div class="document">
+    
+    <div class="page-header">
+      <span>Economics</span>
+      <span>UTME Syllabus</span>
+    </div>
+    
+    <!-- ─── Topic 10 ─── -->
+    <table class="syllabus-table">
+      <thead>
+        <tr>
+          <th>TOPICS / CONTENTS / NOTES</th>
+          <th>OBJECTIVES</th>
+        </tr>
+      </thead>
+      <tbody>
+        
+        <tr>
+          <td class="topic-cell">
+            <strong>10. Market Structures</strong><br />
+            <span class="sub-item"><strong>a.</strong> Perfectly competitive market:</span>
+            <span class="sub-item2">i. Assumptions and characteristics;</span>
+            <span class="sub-item2">ii. Short-run and long-run equilibrium of a perfect competitor;</span>
+            <span class="sub-item"><strong>b.</strong> Imperfect Market:</span>
+            <span class="sub-item2">i. Pure monopoly, discriminatory monopoly and monopolistic competition.</span>
+            <span class="sub-item2">ii. Short-run and long-run equilibrium positions.</span>
+            <span class="sub-item"><strong>c.</strong> Break-even/shut-down analysis in the various markets.</span>
+          </td>
+          <td class="objective-cell">
+            Candidates should be able to:<br />
+            <span class="obj-item">(i) analyse the assumptions and characteristics of a perfectly competitive
+              market;</span>
+            <span class="obj-item">(ii) differentiate between short-run and long-run equilibrium of a perfectly
+              competitive firm;</span>
+            <span class="obj-item">(iii) analyse the assumptions and characteristics of imperfect markets;</span>
+            <span class="obj-item">(iv) differentiate between the short-run and long-run equilibria of imperfectly
+              competitive firms;</span>
+            <span class="obj-item">(v) establish the conditions for the break-even/shut down of firms.</span>
+          </td>
+        </tr>
+        
+        <!-- Topic 11 -->
+        <tr>
+          <td class="topic-cell">
+            <strong>11. National Income</strong><br />
+            <span class="sub-item"><strong>a.</strong> The Concepts of GNP, GDP, NI, NNP</span>
+            <span class="sub-item"><strong>b.</strong> National Income measurements and their problems</span>
+            <span class="sub-item"><strong>c.</strong> Uses and limitations of national income estimates</span>
+            <span class="sub-item"><strong>d.</strong> The circular flow of income (two and three-sector models)</span>
+            <span class="sub-item"><strong>e.</strong> The concepts of consumption, investment and savings</span>
+            <span class="sub-item"><strong>f.</strong> The multiplier and its effects</span>
+            <span class="sub-item"><strong>g.</strong> Elementary theory of income determination and equilibrium
+              national income.</span>
+          </td>
+          <td class="objective-cell">
+            Candidates should be able to:<br />
+            <span class="obj-item">(i) identify the major concepts in national income;</span>
+            <span class="obj-item">(ii) compare the different ways of measuring national income;</span>
+            <span class="obj-item">(iii) examine their problems;</span>
+            <span class="obj-item">(iv) determine the uses and limitations of national income estimates;</span>
+            <span class="obj-item">(v) interpret the circular flow of income using the two and three-sector
+              models;</span>
+            <span class="obj-item">(vi) calculate the various multipliers;</span>
+            <span class="obj-item">(vii) evaluate their effects on equilibrium national income;</span>
+            <span class="obj-item">(viii) explain the concepts of consumption, investment and savings.</span>
+          </td>
+        </tr>
+        
+      </tbody>
+    </table>
+    
+    <div class="page-number">Page 5</div>
+  </div>
+  
+  <!-- ════════════════════════════════════════════════════ -->
+  <!-- PAGE 6                                             -->
+  <!-- ════════════════════════════════════════════════════ -->
+  <div class="document">
+    
+    <div class="page-header">
+      <span>Economics</span>
+      <span>UTME Syllabus</span>
+    </div>
+    
+    <!-- ─── Topic 12 ─── -->
+    <table class="syllabus-table">
+      <thead>
+        <tr>
+          <th>TOPICS / CONTENTS / NOTES</th>
+          <th>OBJECTIVES</th>
+        </tr>
+      </thead>
+      <tbody>
+        
+        <tr>
+          <td class="topic-cell">
+            <strong>12. Money and Inflation</strong><br />
+            <span class="sub-item"><strong>a.</strong> Types, characteristics and functions of money</span>
+            <span class="sub-item"><strong>b.</strong> Demand for money and the supply of money</span>
+            <span class="sub-item"><strong>c.</strong> Quantity Theory of money (Fisher equation)</span>
+            <span class="sub-item"><strong>d.</strong> The value of money and the price level</span>
+            <span class="sub-item"><strong>e.</strong> Inflation: Types, measurements, effects and control</span>
+            <span class="sub-item"><strong>f.</strong> Deflation: Measurements, effects and control.</span>
+          </td>
+          <td class="objective-cell">
+            Candidates should be able to:<br />
+            <span class="obj-item">(i) explain between the types, characteristics and functions of money;</span>
+            <span class="obj-item">(ii) identify the factors affecting the demand for and the supply of money;</span>
+            <span class="obj-item">(iii) examine the relationship between the value of money and the price level;</span>
+            <span class="obj-item">(iv) identify the components in the quantity theory of money;</span>
+            <span class="obj-item">(v) examine the causes and effects of inflation;</span>
+            <span class="obj-item">(vi) calculate the consumer price index;</span>
+            <span class="obj-item">(vii) interpret the consumer price index;</span>
+            <span class="obj-item">(viii) examine ways of controlling inflation;</span>
+            <span class="obj-item">(ix) examine the causes, measurement, effects and control of deflation.</span>
+          </td>
+        </tr>
+        
+        <!-- Topic 13 -->
+        <tr>
+          <td class="topic-cell">
+            <strong>13. Financial Institutions</strong><br />
+            <span class="sub-item"><strong>a.</strong> Types and functions of financial institutions (traditional,
+              central bank, mortgage banks, merchant banks, insurance companies, building societies);</span>
+            <span class="sub-item"><strong>b.</strong> The role of financial institutions in economic
+              development;</span>
+            <span class="sub-item"><strong>c.</strong> Money and capital markets</span>
+            <span class="sub-item"><strong>d.</strong> Financial sector regulations</span>
+            <span class="sub-item"><strong>e.</strong> Deposit money banks and the creation of money</span>
+            <span class="sub-item"><strong>f.</strong> Monetary policy and its instruments</span>
+            <span class="sub-item"><strong>g.</strong> Challenges facing financial institutions in Nigeria.</span>
+          </td>
+          <td class="objective-cell">
+            Candidates should be able to:<br />
+            <span class="obj-item">(i) identify the types and functions of financial institutions;</span>
+            <span class="obj-item">(ii) explain the roles of financial institutions in economic development;</span>
+            <span class="obj-item">(iii) distinguish between the money and capital markets;</span>
+            <span class="obj-item">(iv) identify the various financial sector regulators and their functions;</span>
+            <span class="obj-item">(v) explain the money creation process and its challenges;</span>
+            <span class="obj-item">(vi) examine the various monetary policy instruments and their effects;</span>
+            <span class="obj-item">(vii) appraise the challenges facing the financial institutions in Nigeria.</span>
+          </td>
+        </tr>
+        
+        <!-- Topic 14 -->
+        <tr>
+          <td class="topic-cell">
+            <strong>14. Public Finance</strong><br />
+            <span class="sub-item"><strong>a.</strong> Meaning and objectives</span>
+            <span class="sub-item"><strong>b.</strong> Fiscal policy and its instruments</span>
+            <span class="sub-item"><strong>c.</strong> Sources of government revenue (taxes royalties, rents, grants and
+              aids)</span>
+            <span class="sub-item"><strong>d.</strong> Principles of taxation</span>
+            <span class="sub-item"><strong>e.</strong> Tax incidence and its effects</span>
+            <span class="sub-item"><strong>f.</strong> The effects of public expenditure</span>
+            <span class="sub-item"><strong>g.</strong> Government budget and public debts</span>
+            <span class="sub-item"><strong>h.</strong> Revenue allocation and resource control in Nigeria.</span>
+          </td>
+          <td class="objective-cell">
+            Candidates should be able to:<br />
+            <span class="obj-item">(i) identify the objectives of public finance;</span>
+            <span class="obj-item">(ii) explain fiscal policy and its instruments;</span>
+            <span class="obj-item">(iii) compare the various sources of government revenue;</span>
+            <span class="obj-item">(iv) analyse the principles of taxation;</span>
+            <span class="obj-item">(v) analyse the incidence of taxation and its effects;</span>
+            <span class="obj-item">(vi) examine the effects of public expenditure on the economy;</span>
+            <span class="obj-item">(vii) examine the types and effects of budgets;</span>
+            <span class="obj-item">(viii) highlight the criteria for revenue allocation in Nigeria and their
+              impact.</span>
+          </td>
+        </tr>
+        
+      </tbody>
+    </table>
+    
+    <div class="page-number">Page 6</div>
+  </div>
+  
+  <!-- ════════════════════════════════════════════════════ -->
+  <!-- PAGE 7                                             -->
+  <!-- ════════════════════════════════════════════════════ -->
+  <div class="document">
+    
+    <div class="page-header">
+      <span>Economics</span>
+      <span>UTME Syllabus</span>
+    </div>
+    
+    <!-- ─── Topic 15 ─── -->
+    <table class="syllabus-table">
+      <thead>
+        <tr>
+          <th>TOPICS / CONTENTS / NOTES</th>
+          <th>OBJECTIVES</th>
+        </tr>
+      </thead>
+      <tbody>
+        
+        <tr>
+          <td class="topic-cell">
+            <strong>15. Economic Growth and Development</strong><br />
+            <span class="sub-item"><strong>a.</strong> Meaning and scope</span>
+            <span class="sub-item"><strong>b.</strong> Indicators of growth and development</span>
+            <span class="sub-item"><strong>c.</strong> Factors affecting growth and development</span>
+            <span class="sub-item"><strong>d.</strong> Problems of development in Nigeria</span>
+            <span class="sub-item"><strong>e.</strong> Development planning in Nigeria.</span>
+          </td>
+          <td class="objective-cell">
+            Candidates should be able to:<br />
+            <span class="obj-item">(i) distinguish between economic growth and development;</span>
+            <span class="obj-item">(ii) highlight the indicators of growth and development;</span>
+            <span class="obj-item">(iii) identify the factors affecting growth and development;</span>
+            <span class="obj-item">(iv) examine the problems of development in Nigeria;</span>
+            <span class="obj-item">(v) examine the role of planning in development;</span>
+          </td>
+        </tr>
+        
+        <!-- Topic 16 -->
+        <tr>
+          <td class="topic-cell">
+            <strong>16. Agriculture in Nigeria</strong><br />
+            <span class="sub-item"><strong>a.</strong> Types and features;</span>
+            <span class="sub-item"><strong>b.</strong> The role of agriculture in economic development;</span>
+            <span class="sub-item"><strong>c.</strong> Problems of agriculture;</span>
+            <span class="sub-item"><strong>d.</strong> Agricultural policies and their effects;</span>
+            <span class="sub-item"><strong>e.</strong> Instability in agricultural incomes (causes, effects and
+              solutions).</span>
+          </td>
+          <td class="objective-cell">
+            Candidates should be able to:<br />
+            <span class="obj-item">(i) identify the types and features of agriculture;</span>
+            <span class="obj-item">(ii) examine the characteristics and problems of agriculture;</span>
+            <span class="obj-item">(iii) assess the role of agriculture in economic development;</span>
+            <span class="obj-item">(iv) appraise agricultural policies in Nigeria;</span>
+            <span class="obj-item">(v) evaluate the causes and effects of instability in agricultural incomes.</span>
+          </td>
+        </tr>
+        
+        <!-- Topic 17 -->
+        <tr>
+          <td class="topic-cell">
+            <strong>17. Industry and Industrialization</strong><br />
+            <span class="sub-item"><strong>a.</strong> Concepts and effects of location and localization of industry in
+              Nigeria;</span>
+            <span class="sub-item"><strong>b.</strong> Strategies and Industrialization in Nigeria;</span>
+            <span class="sub-item"><strong>c.</strong> Industrialization and economic development in Nigeria;</span>
+            <span class="sub-item"><strong>d.</strong> Funding and management of business organization;</span>
+            <span class="sub-item"><strong>e.</strong> Factors determining the size of firms.</span>
+          </td>
+          <td class="objective-cell">
+            Candidates should be able to:<br />
+            <span class="obj-item">(i) differentiate between location and localization of industry;</span>
+            <span class="obj-item">(ii) identify the factors influencing the location and localization of
+              industry;</span>
+            <span class="obj-item">(iii) examine the problems of industrialization;</span>
+            <span class="obj-item">(iv) appraise some industrialization strategies;</span>
+            <span class="obj-item">(v) examine the role of industry in economic development.</span>
+          </td>
+        </tr>
+        
+        <!-- Topic 18 -->
+        <tr>
+          <td class="topic-cell">
+            <strong>18. Natural Resources and the Nigerian Economy</strong><br />
+            <span class="sub-item"><strong>a.</strong> Development of major natural resources (petroleum, gold, diamond,
+              timber etc);</span>
+            <span class="sub-item"><strong>b.</strong> Contributions of the oil and the non-oil sectors to the Nigerian
+              economy;</span>
+            <span class="sub-item"><strong>c.</strong> Linkage effects;</span>
+            <span class="sub-item"><strong>d.</strong> Upstream/downstream of the oil sector;</span>
+            <span class="sub-item"><strong>e.</strong> The role of NNPC and OPEC in the oil sector;</span>
+            <span class="sub-item"><strong>f.</strong> Challenges facing natural resources exploitation.</span>
+          </td>
+          <td class="objective-cell">
+            Candidates should be able to:<br />
+            <span class="obj-item">(i) trace the development of the major natural resources in Nigeria;</span>
+            <span class="obj-item">(ii) understand the contribution of the oil and the non-oil sectors to the Nigerian
+              economy;</span>
+            <span class="obj-item">(iii) establish the linkages between the natural resources and other sectors;</span>
+            <span class="obj-item">(iv) analyse the environmental effects of exploitation activities in Nigeria;</span>
+            <span class="obj-item">(v) distinguish between the upstream and downstream activities in the oil
+              sector;</span>
+            <span class="obj-item">(vi) examine the roles of NNPC and OPEC in the oil sector;</span>
+            <span class="obj-item">(vii) suggest ways of controlling the effects of natural resources
+              exploitation.</span>
+          </td>
+        </tr>
+        
+      </tbody>
+    </table>
+    
+    <div class="page-number">Page 7</div>
+  </div>
+  
+  <!-- ════════════════════════════════════════════════════ -->
+  <!-- PAGE 8                                             -->
+  <!-- ════════════════════════════════════════════════════ -->
+  <div class="document">
+    
+    <div class="page-header">
+      <span>Economics</span>
+      <span>UTME Syllabus</span>
+    </div>
+    
+    <!-- ─── Topic 19 ─── -->
+    <table class="syllabus-table">
+      <thead>
+        <tr>
+          <th>TOPICS / CONTENTS / NOTES</th>
+          <th>OBJECTIVES</th>
+        </tr>
+      </thead>
+      <tbody>
+        
+        <tr>
+          <td class="topic-cell">
+            <strong>19. Business Organizations</strong><br />
+            <span class="sub-item"><strong>a.</strong> Private enterprises (e.g. sole-proprietorship, partnership,
+              limited liability companies and cooperative societies)</span>
+            <span class="sub-item"><strong>b.</strong> Problems of private enterprises;</span>
+            <span class="sub-item"><strong>c.</strong> Public enterprises and their problems;</span>
+            <span class="sub-item"><strong>d.</strong> Funding and management of business organizations;</span>
+            <span class="sub-item"><strong>e.</strong> Factors determining the size of firms;</span>
+            <span class="sub-item"><strong>f.</strong> Privatization and Commercialization as solutions to the problems
+              of public enterprises.</span>
+          </td>
+          <td class="objective-cell">
+            Candidates should be able to:<br />
+            <span class="obj-item">(i) compare the types and basic features of private business organization;</span>
+            <span class="obj-item">(ii) appreciate the financing and management problems of business
+              organizations;</span>
+            <span class="obj-item">(iii) identify the features of public enterprises;</span>
+            <span class="obj-item">(iv) identify the factors determining the size of firms;</span>
+            <span class="obj-item">(v) differentiate between privatization and commercialization;</span>
+            <span class="obj-item">(vi) compare the advantages and disadvantages of privatization and
+              commercialization.</span>
+          </td>
+        </tr>
+        
+        <!-- Topic 20 -->
+        <tr>
+          <td class="topic-cell">
+            <strong>20. Population</strong><br />
+            <span class="sub-item"><strong>a.</strong> Meaning and theories;</span>
+            <span class="sub-item"><strong>b.</strong> Census: importance and problems.</span>
+            <span class="sub-item"><strong>c.</strong> Size and growth: over-population, under-population and optimum
+              population.</span>
+            <span class="sub-item"><strong>d.</strong> Structure and distribution;</span>
+            <span class="sub-item"><strong>e.</strong> Population policy and economic development.</span>
+          </td>
+          <td class="objective-cell">
+            Candidates should be able to:<br />
+            <span class="obj-item">(i) analyse some population theories;</span>
+            <span class="obj-item">(ii) examine the relevance of the theories to Nigeria;</span>
+            <span class="obj-item">(iii) examine the uses and limitations of census data;</span>
+            <span class="obj-item">(iv) identify determinants of the size, composition and growth of population;</span>
+            <span class="obj-item">(v) analyse the structure and distribution of population;</span>
+            <span class="obj-item">(vi) appraise government population policy in Nigeria.</span>
+          </td>
+        </tr>
+        
+        <!-- Topic 21 -->
+        <tr>
+          <td class="topic-cell">
+            <strong>21. International Trade</strong><br />
+            <span class="sub-item"><strong>a.</strong> Meaning and basis for international trade (absolute and
+              comparative costs etc.)</span>
+            <span class="sub-item"><strong>b.</strong> Balance of trade and balance of payments: problems and corrective
+              measures;</span>
+            <span class="sub-item"><strong>c.</strong> Composition and direction of Nigeria's foreign trade;</span>
+            <span class="sub-item"><strong>d.</strong> Exchange rate: meaning, types and determination.</span>
+          </td>
+          <td class="objective-cell">
+            Candidates should be able to:<br />
+            <span class="obj-item">(i) examine the basis for international trade;</span>
+            <span class="obj-item">(ii) differentiate between absolute and comparative advantages;</span>
+            <span class="obj-item">(iii) distinguish between balance of trade and balance of payments and their
+              corrective measures;</span>
+            <span class="obj-item">(iv) highlight the problems of balance of payments and their corrective
+              measures;</span>
+            <span class="obj-item">(v) examine the composition and direction of Nigeria's foreign trade;</span>
+            <span class="obj-item">(vi) identify the types of exchange rates;</span>
+            <span class="obj-item">(vii) examine how exchange rates are determined.</span>
+          </td>
+        </tr>
+        
+        <!-- Topic 22 -->
+        <tr>
+          <td class="topic-cell">
+            <strong>22. International Economic Organizations</strong><br />
+            <span class="sub-item">Roles and relevance of international organizations e.g. ECOWAS, AU, EU, ECA, IMF,
+              EEC, OECD, World Bank, IBRD, WTO, ADB and UNCTAD etc. to Nigeria.</span>
+          </td>
+          <td class="objective-cell">
+            Candidates should be able to:<br />
+            <span class="obj-item">(i) identify the various economic organizations and their functions;</span>
+            <span class="obj-item">(ii) evaluate their relevance to the Nigerian economy.</span>
+          </td>
+        </tr>
+        
+        <!-- Topic 23 -->
+        <tr>
+          <td class="topic-cell">
+            <strong>23. Factors of Production and their Theories</strong><br />
+            <span class="sub-item"><strong>a.</strong> Types, features and rewards;</span>
+            <span class="sub-item"><strong>b.</strong> Determination of wages, interest and profits;</span>
+            <span class="sub-item"><strong>c.</strong> Theories: marginal productivity theory of wages and liquidity
+              preference theory;</span>
+            <span class="sub-item"><strong>d.</strong> Factor mobility and efficiency;</span>
+            <span class="sub-item"><strong>e.</strong> Unemployment and its solutions.</span>
+          </td>
+          <td class="objective-cell">
+            Candidates should be able to:<br />
+            <span class="obj-item">(i) identify the types; features and rewards of factors of productions;</span>
+            <span class="obj-item">(ii) analyse the determination of wages, interest and profits;</span>
+            <span class="obj-item">(iii) interpret the marginal productivity of liquidity preference theories;</span>
+            <span class="obj-item">(iv) examine factors mobility and efficiency;</span>
+            <span class="obj-item">(v) examine the types and causes of unemployment in Nigeria;</span>
+            <span class="obj-item">(vi) suggest solutions to unemployment in Nigeria.</span>
+          </td>
+        </tr>
+        
+      </tbody>
+    </table>
+    
+    <div class="page-number">Page 8</div>
+  </div>
+  
+  <!-- ════════════════════════════════════════════════════ -->
+  <!-- PAGE 9 – REFERENCES                                -->
+  <!-- ════════════════════════════════════════════════════ -->
+  <div class="document">
+    
+    <div class="page-header">
+      <span>Economics</span>
+      <span>UTME Syllabus</span>
+    </div>
+    
+    <div class="references">
+      <div class="ref-title">REFERENCES</div>
+      
+      <p>1. (1996) <em>Economics: Exam Focus</em>, Ibadan: University Press Plc.</p>
+      <p>Black, J. (1997) <em>Oxford Dictionary of Economics</em>. Oxford: Oxford University Press</p>
+      <p>Eyiye, D.O. (1980) <em>Economics Made Easy</em>, Benin City, Quality Publishers Ltd.</p>
+      <p>Fajana, F. et al (1999) <em>Countdown to SsCE/JME Economics</em> Ibadan: Evans</p>
+      <p>Falodun, A.B. et al (1997) <em>Round-up Economics</em>, Lagos: Longman</p>
+      <p>Kountsoyiannis, A. (1979) <em>Modern Microeconomics</em>, London: Macmillan</p>
+      <p>Lipsey, R.G. (1997) <em>An Introduction to Positive Economics</em>, Oxford: Oxford University Press.</p>
+      <p>Samuelson, P and Nordhaus, W. (1989) <em>Economics</em>, Singapore: McGraw-Hill</p>
+      <p>Udu E and Agu G.A. (2005) <em>New System Economics: a Senior Secondary Course</em>, Ibadan: Africana FIRST
+        Publishers Ltd.</p>
+      <p>Wannacott and Wannacott (1979) <em>Economics</em>, New York: McGraw-Hill.</p>
+      <p>Brownson-oton Richard (2010) <em>What is Micro-Economics?</em> Niky Printing and Publishing coy.</p>
+      <p>Brownson-oton Richard (2010) <em>What is Macro-Economics?</em> Niky Printing and Publishing coy.</p>
+    </div>
+    
+    <div class="page-number">Page 9</div>
+  </div>
+  
+</body>
+
+</html>

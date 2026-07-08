@@ -1,0 +1,284 @@
+/* =====================================
+  PAGE SPECIFIC STYLE
+  ======================================*/
+  #study-two-container{
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 1.25rem;
+  }
+  
+  .mb-1{
+    margin-bottom: 1rem;
+  }
+  
+.subject-header {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 1.5rem;
+}
+
+.subject-title-group {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.subject-name-wrap h1 {
+  font-size: 2rem;
+  font-weight: 800;
+  margin-bottom: 0.25rem;
+}
+
+.subject-stats {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+/* DROPDOWN WRAPPER - VERTICAL */
+.dropdowns-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+}
+
+/* PURE CSS DROPDOWN */
+.css-dropdown {
+  position: relative;
+  width: 100%;
+}
+
+/* Hidden checkbox that controls dropdown */
+.dropdown-toggle {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.dropdown-label {
+  width: 100%;
+  padding: 0.875rem 1.25rem;
+  background: var(--card);
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: all 0.2s;
+  user-select: none;
+}
+
+.dropdown-label:hover {
+  border-color: var(--primary);
+}
+
+.dropdown-toggle:checked+.dropdown-label {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgb(79 70 229 / 0.1);
+}
+
+.dropdown-arrow {
+  transition: transform 0.2s;
+  font-size: 0.8rem;
+}
+
+.dropdown-toggle:checked+.dropdown-label .dropdown-arrow {
+  transform: rotate(180deg);
+}
+
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  top: 110%;
+  left: 0;
+  right: 0;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
+  max-height: 400px;
+  overflow-y: auto;
+  padding: 0.5rem;
+  z-index: 50;
+  animation: slideDown 0.2s ease;
+}
+
+.dropdown-toggle:checked~.dropdown-menu {
+  display: block;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.checkbox-item {
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.checkbox-item:hover {
+  background: var(--bg);
+}
+
+.checkbox-item input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--primary);
+  cursor: pointer;
+}
+
+.checkbox-item label {
+  font-weight: 500;
+  cursor: pointer;
+  flex: 1;
+}
+
+.divider {
+  height: 1px;
+  background: var(--border);
+  margin: 0.5rem 0;
+}
+
+/* PURE CSS SELECT ALL */
+/* When select-all is checked, visually check all items using :has() */
+.dropdown-menu:has(.select-all:checked) input[type="checkbox"]:not(.select-all) {
+  appearance: auto;
+}
+
+/* This is the magic: use form + :checked to control siblings */
+.select-all:checked~.checkbox-item input[type="checkbox"] {
+  accent-color: var(--primary);
+}
+
+/* Make it actually check them - requires :has() support */
+.dropdown-menu:has(.select-all:checked) .item-checkbox {
+  accent-color: var(--primary);
+}
+
+/* Fallback: Use general sibling selector for browsers without :has() */
+.select-all:checked~.checkbox-item .item-checkbox {
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+/* MAIN */
+.study-two-main {
+  padding-bottom: 4rem;
+}
+
+.study-two-card {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 2rem;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+  margin-bottom: 1.5rem;
+}
+
+.study-two-card-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* QUICK ACTIONS */
+.study-two-action-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 1rem;
+}
+
+.study-two-action-card {
+  padding: 1.5rem 1rem;
+  background: var(--bg);
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: none;
+  color: var(--text);
+}
+
+.study-two-action-card:hover {
+  border-color: var(--primary);
+  background: white;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
+}
+
+.study-two-action-icon {
+  font-size: 2rem;
+  margin-bottom: 0.75rem;
+}
+
+.study-two-action-title {
+  font-weight: 700;
+  font-size: 0.95rem;
+  margin-bottom: 0.25rem;
+}
+
+.study-two-action-desc {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.study-two-btn {
+  width: 100%;
+  padding: 1rem;
+  border: none;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 1.5rem;
+}
+
+.study-two-btn a {
+  color: white;
+  display: block;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .subject-name-wrap h1 {
+    font-size: 1.5rem;
+  }
+  
+  .study-two-action-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* Pure CSS form validation indicator */
+form:has(input[name="topics"]:checked):has(input[name="years"]:checked) .btn-primary {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+form:not(:has(input[name="topics"]:checked)) .btn-primary,
+form:not(:has(input[name="years"]:checked)) .btn-primary {
+  opacity: 0.5;
+  pointer-events: none;
+}

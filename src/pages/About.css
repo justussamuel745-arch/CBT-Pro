@@ -1,0 +1,253 @@
+/* =====================================
+  PAGE SPECIFIC STYLE
+  ======================================*/
+  
+  #about-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 1.25rem;
+  }
+  
+  
+  /* PAGE HEADER */
+  .about-page-header {
+    background: var(--gradient);
+    color: white;
+    padding: 4rem 0;
+    text-align: center;
+  }
+  
+  .about-page-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+  }
+  
+  .about-page-subtitle {
+    opacity: 0.95;
+    font-size: 1.1rem;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  
+  .about-main {
+    padding: 3rem 0 4rem;
+  }
+  
+  .about-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 2.5rem;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+    margin-bottom: 2rem;
+  }
+  
+  .about-section-title {
+    font-size: 1.75rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  
+  .section-title span {
+    font-size: 2rem;
+  }
+  
+  .about-section-text {
+    color: var(--text-muted);
+    font-size: 1.05rem;
+    line-height: 1.8;
+    margin-bottom: 1.5rem;
+  }
+  
+  .about-section-text strong {
+    color: var(--text);
+    font-weight: 700;
+  }
+  
+    /* STATS */
+  .about-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin: 2rem 0;
+  }
+  
+  .about-stat-card {
+    background: var(--bg);
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    text-align: center;
+  }
+  
+  .about-stat-number {
+    font-size: 2.5rem;
+    font-weight: 800;
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0.25rem;
+  }
+  
+  .about-stat-label {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+  
+    /* CONTACT */
+  .about-contact-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    margin-top: 2rem;
+  }
+  
+  .about-contact-card {
+    background: var(--bg);
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    transition: all 0.2s;
+  }
+  
+  .about-contact-card:hover {
+    border-color: var(--primary);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgb(79 70 229 / 0.1);
+  }
+  
+  .about-contact-icon {
+    width: 50px;
+    height: 50px;
+    background: var(--gradient);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    flex-shrink: 0;
+  }
+  
+  .about-contact-info h4 {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+  }
+  
+  .about-contact-info a {
+    color: var(--text);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1rem;
+  }
+  
+  .about-contact-info a:hover {
+    color: var(--primary);
+  }
+  
+    /* VALUES */
+  .about-values-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+  }
+  
+  .about-value-card {
+    padding: 1.5rem;
+    background: var(--bg);
+    border-radius: 12px;
+    border-left: 4px solid var(--primary);
+  }
+  
+  .about-value-card h4 {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .about-value-card p {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    line-height: 1.7;
+  }
+  
+  /* =====================================
+  FOOTER STYLES - shared across pages
+  ======================================*/
+  
+  footer {
+    background: #0f172a;
+    color: #94a3b8;
+    padding: 3rem 0 1.5rem;
+    margin-top: 4rem;
+  }
+  
+  .footer-container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 1.25rem;
+    width: 100%;
+  }
+
+.footer-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 2.5rem;
+    margin-bottom: 2.5rem;
+  }
+
+  footer h4 {
+    color: white;
+    margin-bottom: 1.25rem;
+    font-weight: 700;
+  }
+
+  footer a {
+    color: #94a3b8;
+    text-decoration: none;
+    display: block;
+    margin-bottom: 0.75rem;
+    transition: color 0.2s;
+  }
+
+  footer a:hover {
+    color: white;
+  }
+
+.footer-bottom {
+    border-top: 1px solid #1e293b;
+    padding-top: 1.5rem;
+    text-align: center;
+    font-size: 0.875rem;
+  }
+  
+  
+    /* RESPONSIVE */
+  @media (max-width: 768px) {
+    .about-page-title {
+      font-size: 1.75rem;
+    }
+    
+    .about-stats-grid,
+    .about-contact-grid,
+    .about-values-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .about-card {
+      padding: 1.5rem;
+    }
+  }

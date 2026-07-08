@@ -1,0 +1,5 @@
+/*
+  Theme.
+  Last sync time.
+  Other app settings.
+*/

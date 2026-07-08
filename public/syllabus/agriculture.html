@@ -1,0 +1,1068 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JAMB Agriculture &amp; Arabic Syllabi</title>
+    <style>
+        /* ── reset & base ── */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #e6e9ef;
+            font-family: 'Times New Roman', Times, serif;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .document {
+            max-width: 900px;
+            width: 100%;
+            background: #ffffff;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+            padding: 60px 70px 50px 70px;
+            border-radius: 4px;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: #888;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 6px;
+            margin-bottom: 22px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        h1 {
+            font-size: 28px;
+            font-weight: bold;
+            text-align: center;
+            letter-spacing: 2px;
+            margin: 10px 0 6px 0;
+        }
+
+        .subtitle {
+            text-align: center;
+            font-size: 16px;
+            font-weight: bold;
+            margin: 4px 0 20px 0;
+        }
+
+        .general-objectives {
+            margin: 16px 0 20px 0;
+            padding-left: 20px;
+            font-size: 14.5px;
+            line-height: 1.7;
+        }
+        .general-objectives li {
+            margin-bottom: 4px;
+        }
+
+        .section-head {
+            font-size: 17px;
+            font-weight: bold;
+            margin: 30px 0 12px 0;
+            border-bottom: 2px solid #333;
+            padding-bottom: 4px;
+        }
+
+        .syllabus-table {
+            width: 100%;
+            table-layout: fixed;
+            border-collapse: collapse;
+            font-size: 14px;
+            line-height: 1.6;
+            margin: 12px 0 8px 0;
+        }
+        .syllabus-table th {
+            background: #f2f4f8;
+            border: 1px solid #333;
+            padding: 10px 12px;
+            text-align: left;
+            font-weight: bold;
+            font-size: 14px;
+            word-wrap: break-word;
+        }
+        .syllabus-table td {
+            border: 1px solid #333;
+            padding: 10px 12px;
+            vertical-align: top;
+            font-size: 14px;
+            word-wrap: break-word;
+        }
+        .syllabus-table .topic-cell {
+            width: 52%;
+            background: #fafbfc;
+        }
+        .syllabus-table .objective-cell {
+            width: 48%;
+            background: #fafbfc;
+        }
+        .syllabus-table .topic-cell strong,
+        .syllabus-table .objective-cell strong {
+            font-weight: 700;
+        }
+        .syllabus-table .topic-cell .sub-item {
+            display: block;
+            margin-top: 4px;
+            padding-left: 16px;
+        }
+        .syllabus-table .topic-cell .sub-item2 {
+            display: block;
+            margin-top: 2px;
+            padding-left: 28px;
+        }
+        .syllabus-table .objective-cell .obj-item {
+            display: block;
+            margin-top: 2px;
+            padding-left: 8px;
+        }
+        .syllabus-table .topic-cell .note {
+            font-style: italic;
+            color: #444;
+            display: block;
+            margin-top: 4px;
+            padding-left: 16px;
+        }
+
+        .page-number {
+            text-align: center;
+            font-size: 12px;
+            color: #888;
+            margin-top: 28px;
+            padding-top: 12px;
+            border-top: 1px solid #ddd;
+        }
+
+        .references {
+            margin: 30px 0 6px 0;
+            font-size: 13.5px;
+            line-height: 1.8;
+        }
+        .references .ref-title {
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 4px;
+        }
+        .references p {
+            margin-bottom: 2px;
+        }
+
+        .arabic-text {
+            font-family: 'Traditional Arabic', 'Times New Roman', Times, serif;
+            direction: rtl;
+            font-size: 15px;
+        }
+
+        @media (max-width: 700px) {
+            .document {
+                padding: 30px 20px;
+            }
+            .syllabus-table {
+                font-size: 13px;
+            }
+            .syllabus-table th,
+            .syllabus-table td {
+                padding: 6px 8px;
+            }
+            .syllabus-table .topic-cell {
+                width: 50%;
+            }
+            .syllabus-table .objective-cell {
+                width: 50%;
+            }
+            h1 {
+                font-size: 22px;
+            }
+        }
+
+        @media print {
+            body {
+                background: #fff;
+                padding: 0;
+            }
+            .document {
+                box-shadow: none;
+                padding: 40px 60px;
+                border-radius: 0;
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ============================================================ -->
+    <!--                    AGRICULTURE SYLLABUS                        -->
+    <!-- ============================================================ -->
+
+    <!-- ==================== PAGE 1 ==================== -->
+    <div class="document">
+        <div class="page-header"><span>Agriculture</span><span>UTME Syllabus</span></div>
+        <h1>AGRICULTURE</h1>
+        <p class="subtitle">GENERAL OBJECTIVES</p>
+        <p style="font-size:14px; line-height:1.6; margin-bottom:14px;">
+            The aim of the Unified Tertiary Matriculation Examination (UTME) syllabus in Agriculture is to prepare candidates for the Board's examination. It is designed to test their achievement of the course objectives, which are to:
+        </p>
+        <ol class="general-objectives" style="list-style-type:decimal;">
+            <li>stimulate and sustain their interest in Agriculture;</li>
+            <li>acquire basic knowledge and practical skills in Agriculture;</li>
+            <li>acquire the knowledge of interpretation and the use of data;</li>
+            <li>stimulate their ability to make deductions using the acquired knowledge in Agriculture.</li>
+        </ol>
+        <p style="font-size:14px; margin: 8px 0 10px 0;">
+            The syllabus is divided into five sections as given below:
+        </p>
+        <ul style="font-size:15px; margin: 0 0 20px 20px; list-style-type: disc; line-height:1.8;">
+            <li><strong>A.</strong> General Agriculture</li>
+            <li><strong>B.</strong> Agronomy</li>
+            <li><strong>C.</strong> Animal Production</li>
+            <li><strong>D.</strong> Agricultural Economics and Extension</li>
+            <li><strong>E.</strong> Agricultural Technology</li>
+        </ul>
+
+        <h2 class="section-head">SECTION A: General Agriculture</h2>
+
+        <table class="syllabus-table">
+            <thead><tr><th>TOPICS / CONTENTS / NOTES</th><th>OBJECTIVES</th></tr></thead>
+            <tbody>
+                <tr>
+                    <td class="topic-cell">
+                        <strong>1. Meaning and Scope of Agriculture</strong><br />
+                        <span class="sub-item"><strong>a.</strong> Definition of Agriculture</span>
+                        <span class="sub-item"><strong>b.</strong> Branches of Agriculture</span>
+                        <span class="sub-item"><strong>c.</strong> Types of Agriculture i.e. subsistence and commercial</span>
+                    </td>
+                    <td class="objective-cell">
+                        Candidates should be able to:<br />
+                        <span class="obj-item">use the definition of Agriculture in modern terms as it relates to production, processing and marketing.</span>
+                        <span class="obj-item">differentiate between the various branches of Agriculture.</span>
+                        <span class="obj-item">differentiate between the various types of Agriculture, their advantages and disadvantages and their respective problems.</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="topic-cell">
+                        <strong>2. Importance of Agriculture</strong><br />
+                        <span class="sub-item">i. Provision of raw materials for agro-allied industries</span>
+                        <span class="sub-item">ii. Provision of employment</span>
+                        <span class="sub-item">iii. Development of rural areas, etc.</span>
+                    </td>
+                    <td class="objective-cell">
+                        Candidates should be able to:<br />
+                        <span class="obj-item">relate agricultural benefits to individual farmers.</span>
+                        <span class="obj-item">relate agro-allied industries to their respective raw materials.</span>
+                        <span class="obj-item">relate the various contributions of Agriculture to economic development in West Africa.</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="topic-cell">
+                        <strong>3. Agricultural Ecology</strong><br />
+                        <span class="sub-item"><strong>a.</strong> Ecological zones of West Africa</span>
+                        <span class="sub-item"><strong>b.</strong> Agricultural products of each ecological zone</span>
+                        <span class="sub-item"><strong>c.</strong> Environmental factors and their effects on crop and livestock production</span>
+                    </td>
+                    <td class="objective-cell">
+                        Candidates should be able to:<br />
+                        <span class="obj-item">differentiate between the features of the ecological zones in West Africa.</span>
+                        <span class="obj-item">classify agricultural products according to each ecological zone.</span>
+                        <span class="obj-item">differentiate abiotic from biotic factors affecting agricultural production.</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="topic-cell">
+                        <strong>4. Agricultural Genetics</strong><br />
+                        <span class="sub-item"><strong>a.</strong> First and second laws of Mendel</span>
+                        <span class="sub-item"><strong>b.</strong> Cell division</span>
+                        <span class="sub-item"><strong>c.</strong> Terminologies e.g. locus, alleles, genotype, dominance</span>
+                        <span class="sub-item"><strong>d.</strong> Methods of crop improvement e.g. introduction, selection, crossing, quarantine etc.</span>
+                        <span class="sub-item"><strong>e.</strong> Methods of animal improvement e.g. introduction, breeding, quarantine and selection: Breeding systems – inbreeding, line-breeding, cross-breeding, artificial insemination</span>
+                    </td>
+                    <td class="objective-cell">
+                        Candidates should be able to:<br />
+                        <span class="obj-item">apply the first and second laws of Mendel to genetics.</span>
+                        <span class="obj-item">differentiate between the types of cell division.</span>
+                        <span class="obj-item">i. determine the outcome of genetic crossing involving homozygous and heterozygous traits.</span>
+                        <span class="obj-item">ii. compute simple probability ratios.</span>
+                        <span class="obj-item">i. give reasons for crop improvement.</span>
+                        <span class="obj-item">ii. distinguish between various methods of crop improvement, and their respective advantages and disadvantages.</span>
+                        <span class="obj-item">i. give reasons for animal improvement.</span>
+                        <span class="obj-item">ii. differentiate between the various methods of animal improvement, and their respective advantages and disadvantages.</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="page-number">Page 1</div>
+    </div>
+
+    <!-- ==================== PAGE 2 ==================== -->
+    <div class="document">
+        <div class="page-header"><span>Agriculture</span><span>UTME Syllabus</span></div>
+        <table class="syllabus-table">
+            <thead><tr><th>TOPICS / CONTENTS / NOTES</th><th>OBJECTIVES</th></tr></thead>
+            <tbody>
+                <tr>
+                    <td class="topic-cell">
+                        <strong>5. Farm Inputs</strong><br />
+                        <span class="sub-item">e.g. planting materials, agrochemicals, etc.</span>
+                    </td>
+                    <td class="objective-cell">
+                        Candidates should be able to:<br />
+                        <span class="obj-item">classify different types of farm inputs and their uses.</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="topic-cell">
+                        <strong>6. History of Agricultural Development in West Africa</strong><br />
+                        <span class="sub-item"><strong>a.</strong> Agricultural systems e.g. shifting cultivation, bush fallowing, etc.</span>
+                        <span class="sub-item"><strong>b.</strong> Problems of Agricultural development e.g. land tenure systems, inadequate infrastructures, inadequate finance for agriculture, environmental degradation, etc.</span>
+                        <span class="sub-item"><strong>c.</strong> Establishment of national research institutes e.g. NCRI, IAR, IAR&amp;T, CRIN, NIFOR, FRIN, RRI, NRCRI, NIHORT, LCRI, etc. and international research institutes e.g. IITA, ILRI, ICRISAT, WARDA, etc., leading to increased application of science to the development of agriculture.</span>
+                        <span class="sub-item"><strong>d.</strong> Agricultural Development Projects (ADPs) e.g. RTEP, FADAMA etc.</span>
+                        <span class="sub-item"><strong>e.</strong> National Agricultural Programmes such as OFN, NAFPP, NALDA, Green Revolution, NCRPs, NARP, Project Coordinating Unit (PCU) etc.</span>
+                    </td>
+                    <td class="objective-cell">
+                        Candidates should be able to:<br />
+                        <span class="obj-item">compare various agricultural systems.</span>
+                        <span class="obj-item">identify the problems, their effects and proffer solutions.</span>
+                        <span class="obj-item">i. trace the history of research institutes from past to present.</span>
+                        <span class="obj-item">ii. assess their role in the development of agriculture.</span>
+                        <span class="obj-item">give reasons for the establishment of ADPs.</span>
+                        <span class="obj-item">evaluate the contributions of national agricultural programmes.</span>
+                        <span class="obj-item">evaluate the effects of government policies on agricultural development.</span>
+                        <span class="obj-item">identify agricultural laws and their effect on agricultural production.</span>
+                        <span class="obj-item">i. identify the various agricultural incentives provided by the government.</span>
+                        <span class="obj-item">ii. assess their effects on agricultural development.</span>
+                        <span class="obj-item">compare the various infrastructural facilities provided by government and their uses.</span>
+                        <span class="obj-item">examine the roles of NGOs in the development of agriculture.</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2 class="section-head" style="margin-top:30px;">SECTION B: Agronomy</h2>
+
+        <table class="syllabus-table">
+            <thead><tr><th>TOPICS / CONTENTS / NOTES</th><th>OBJECTIVES</th></tr></thead>
+            <tbody>
+                <tr>
+                    <td class="topic-cell">
+                        <strong>1. Rocks and Soil formation</strong><br />
+                        <span class="sub-item"><strong>a.</strong> Rock formation</span>
+                        <span class="sub-item"><strong>b.</strong> Factors affecting rock weathering and soil formation</span>
+                        <span class="sub-item"><strong>c.</strong> Physical properties of soil</span>
+                        <span class="sub-item2">i. Soil profile</span>
+                        <span class="sub-item2">ii. Soil components, texture and structure</span>
+                        <span class="sub-item"><strong>d.</strong> Chemical properties of soil</span>
+                        <span class="sub-item2">i. Soil acidity and alkalinity</span>
+                        <span class="sub-item2">ii. Chemical components of soil e.g. silicate</span>
+                    </td>
+                    <td class="objective-cell">
+                        Candidates should be able to:<br />
+                        <span class="obj-item">Identify the major types of rocks and their formation.</span>
+                        <span class="obj-item">Identify major types and properties of soils; factors and processes of soil formation.</span>
+                        <span class="obj-item">differentiate between the horizons in a soil profile.</span>
+                        <span class="obj-item">i. differentiate between the components of soil.</span>
+                        <span class="obj-item">ii. compute the proportion of soil components.</span>
+                        <span class="obj-item">iii. analyse soil into its component parts.</span>
+                        <span class="obj-item">iv. determine the water-holding capacity of soil.</span>
+                        <span class="obj-item">determine the soil pH.</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="page-number">Page 2</div>
+    </div>
+
+    <!-- ==================== PAGE 3 ==================== -->
+    <div class="document">
+        <div class="page-header"><span>Agriculture</span><span>UTME Syllabus</span></div>
+        <table class="syllabus-table">
+            <thead><tr><th>TOPICS / CONTENTS / NOTES</th><th>OBJECTIVES</th></tr></thead>
+            <tbody>
+                <tr>
+                    <td class="topic-cell">
+                        <strong>2. Soil Water and Soil Conservation</strong><br />
+                        <span class="sub-item"><strong>3. Soil conservation:</strong> meaning and importance, causes, effects, prevention and control of leaching, erosion, continuous cropping, burning and oxidation of organic matter.</span>
+                        <span class="sub-item"><strong>4. Irrigation and drainage methods.</strong></span>
+                    </td>
+                    <td class="objective-cell">
+                        Candidates should be able to:<br />
+                        <span class="obj-item">i. compare capillary, gravitational and hygroscopic water.</span>
+                        <span class="obj-item">ii. determine water-holding capacity, wilting points and plant available/unavailable water.</span>
+                        <span class="obj-item">iii. Identify the methods of soil water management and conservation.</span>
+                        <span class="obj-item">i. identify the causes of erosion and leaching.</span>
+                        <span class="obj-item">ii. determine control methods.</span>
+                        <span class="obj-item">i. classify irrigation and drainage systems.</span>
+                        <span class="obj-item">ii. examine the importance and challenges of irrigation and drainage.</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="topic-cell">
+                        <strong>5. Soil Fertility</strong><br />
+                        <span class="sub-item"><strong>a.</strong> Macro and micro-nutrients and their roles in plant nutrition: carbon, water and nitrogen cycles.</span>
+                        <span class="sub-item"><strong>b.</strong> The living population of the soil (flora and fauna), and their roles in soil fertility.</span>
+                        <span class="sub-item"><strong>c.</strong> Maintenance of soil fertility: Methods of maintaining soil fertility e.g. use of cover crops, application of organic manures, etc.</span>
+                        <span class="sub-item"><strong>d.</strong> Nutrient deficiency symptoms e.g. chlorosis, sickle leaves, stunting, apical necrosis etc.</span>
+                    </td>
+                    <td class="objective-cell">
+                        Candidates should be able to:<br />
+                        <span class="obj-item">i. classify plant nutrients.</span>
+                        <span class="obj-item">ii. identify factors affecting their availability.</span>
+                        <span class="obj-item">examine the roles of soil flora and fauna in maintaining soil fertility.</span>
+                        <span class="obj-item">i. compare the different methods of maintaining soil fertility.</span>
+                        <span class="obj-item">ii. differentiate between organic and inorganic fertilizer, and their methods of application.</span>
+                        <span class="obj-item">iii. determine common fertilizer ratios.</span>
+                        <span class="obj-item">i. identify the deficiency symptoms and their causes.</span>
+                        <span class="obj-item">ii. suggest remedies.</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="topic-cell">
+                        <strong>6. Land Preparation and Soil Tillage</strong><br />
+                        <span class="sub-item"><strong>a.</strong> Principles and practices of land preparation and soil tillage</span>
+                        <span class="sub-item"><strong>b.</strong> Factors affecting choice of tillage methods: Zero tillage, minimum tillage, etc.</span>
+                    </td>
+                    <td class="objective-cell">
+                        Candidates should be able to:<br />
+                        <span class="obj-item">i. compare the different methods of land preparation and soil tillage in relation to different groups of crops.</span>
+                        <span class="obj-item">ii. state the advantages and the disadvantages of the different methods of land preparation and soil tillage.</span>
+                        <span class="obj-item">give reasons for the choice of tillage methods.</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="topic-cell">
+                        <strong>7. Plant Forms and Functions</strong><br />
+                        <span class="sub-item"><strong>a.</strong> Parts of monocot and dicot crop plants and their functions</span>
+                        <span class="sub-item"><strong>b.</strong> The anatomy and morphology of the storage organs of common crop plants</span>
+                    </td>
+                    <td class="objective-cell">
+                        Candidates should be able to:<br />
+                        <span class="obj-item">i. identify crop plant parts and their functions.</span>
+                        <span class="obj-item">ii. distinguish between monocot and dicot crop plants.</span>
+                        <span class="obj-item">identify various storage organs of crop plants.</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="topic-cell">
+                        <strong>8. Growth, Development and Reproduction</strong><br />
+                        <span class="sub-item"><strong>a.</strong> Gametogenesis</span>
+                        <span class="sub-item"><strong>b.</strong> Pollination</span>
+                        <span class="sub-item"><strong>c.</strong> Fertilization</span>
+                        <span class="sub-item"><strong>d.</strong> Embryo formation and development</span>
+                    </td>
+                    <td class="objective-cell">
+                        Candidates should be able to:<br />
+                        <span class="obj-item">examine the process of gamete formation.</span>
+                        <span class="obj-item">Identify the different types of pollination.</span>
+                        <span class="obj-item">analyse the process of fertilization.</span>
+                        <span class="obj-item">trace the process of embryo formation and development to the formation of seeds and fruits.</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="page-number">Page 3</div>
+    </div>
+
+    <!-- ==================== PAGE 4 ==================== -->
+    <div class="document">
+        <div class="page-header"><span>Agriculture</span><span>UTME Syllabus</span></div>
+        <table class="syllabus-table">
+            <thead><tr><th>TOPICS / CONTENTS / NOTES</th><th>OBJECTIVES</th></tr></thead>
+            <tbody>
+                <tr>
+                    <td class="topic-cell">
+                        <strong>9. Plant Propagation Methods</strong><br />
+                        <span class="sub-item"><strong>a.</strong> Sexual: the use of seeds, seed viability, viability test, seed rate and seed germination</span>
+                        <span class="sub-item"><strong>b.</strong> Asexual (vegetative propagation) e.g. cutting, budding, grafting, layering, etc.</span>
+                        <span class="sub-item"><strong>c.</strong> Nursery and nursery management</span>
+                    </td>
+                    <td class="objective-cell">
+                        Candidates should be able to:<br />
+                        <span class="obj-item">i. classify crops propagated by sexual methods.</span>
+                        <span class="obj-item">ii. determine seed viability and seed rate.</span>
+                        <span class="obj-item">iii. differentiate between types of seed germination.</span>
+                        <span class="obj-item">iv. examine the conditions for seed germination.</span>
+                        <span class="obj-item">classify crops into different vegetative propagation methods.</span>
+                        <span class="obj-item">i. determine appropriate nursery sites, types; their advantages and disadvantages.</span>
+                        <span class="obj-item">ii. apply the techniques of transplanting seedlings.</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="topic-cell">
+                        <strong>10. Cropping Systems, Planting Patterns and Plant Densities</strong><br />
+                        <span class="sub-item"><strong>a.</strong> Cropping systems: Monocropping, mixed-, multiple-, inter-, relay-, strip- and rotational cropping</span>
+                        <span class="sub-item"><strong>b.</strong> Planting patterns: Broadcasting, row spacing and drilling</span>
+                        <span class="sub-item"><strong>c.</strong> Plant densities: single, double and multiple stands</span>
+                    </td>
+                    <td class="objective-cell">
+                        Candidates should be able to:<br />
+                        <span class="obj-item">i. identify and compare cropping systems.</span>
+                        <span class="obj-item">ii. apply different cropping systems to solve problems in agriculture.</span>
+                        <span class="obj-item">differentiate between the various planting patterns.</span>
+                        <span class="obj-item">i. examine the various types of plant densities and their effects on crop yield.</span>
+                        <span class="obj-item">ii. compute plant density per hectare.</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="topic-cell">
+                        <strong>11. Crop Husbandry</strong><br />
+                        <span class="sub-item">Common and scientific names, gross morphology, anatomy of storage organs, methods of propagation, husbandry practices, harvesting, processing and storage, common diseases and pests, economic importance of the following groups of crops.</span>
+                        <span class="sub-item"><strong>Group 1:</strong> Cereals e.g. maize, guinea corn, rice etc.</span>
+                        <span class="sub-item"><strong>Group 2:</strong> Legumes e.g. cowpea, groundnut, soybean etc.</span>
+                        <span class="sub-item"><strong>Group 3:</strong> Tubers e.g. yam, cassava, sweet potatoes etc.</span>
+                        <span class="sub-item"><strong>Group 4:</strong> Vegetables and Spices e.g. tomatoes, egg plant, pepper, onions, okra, cabbage, Amaranthus sp. etc.</span>
+                        <span class="sub-item"><strong>Group 5:</strong> Fruits e.g. citrus, pineapple, pawpaw etc.</span>
+                        <span class="sub-item"><strong>Group 6:</strong> Beverages e.g. cocoa, kola, coffee etc.</span>
+                        <span class="sub-item"><strong>Group 7:</strong> Oils e.g. oil palm, coconut, shea butter etc.</span>
+                        <span class="sub-item"><strong>Group 8:</strong> Latex e.g. para rubber, gum arabic etc.</span>
+                        <span class="sub-item"><strong>Group 9:</strong> Fibres e.g. jute, cotton, sisal hemp etc.</span>
+                    </td>
+                    <td class="objective-cell">
+                        Candidates should be able to:<br />
+                        <span class="obj-item">i. apply the different methods of crop propagation, husbandry, harvesting, processing and storage for each crop.</span>
+                        <span class="obj-item">ii. identify common diseases and pests and their effects on crop yield.</span>
+                        <span class="obj-item">iii. determine the economic importance of each of the crops.</span>
+                        <span class="obj-item">iv. relate their importance to national economic development.</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="page-number">Page 4</div>
+    </div>
+
+    <!-- ==================== PAGE 5 ==================== -->
+    <div class="document">
+        <div class="page-header"><span>Agriculture</span><span>UTME Syllabus</span></div>
+        <table class="syllabus-table">
+            <thead><tr><th>TOPICS / CONTENTS / NOTES</th><th>OBJECTIVES</th></tr></thead>
+            <tbody>
+                <tr>
+                    <td class="topic-cell">
+                        <strong>12. Pasture and Forage Crops</strong><br />
+                        <span class="sub-item"><strong>a.</strong> Study of gross morphology, methods of propagation and husbandry of common pasture grasses and legumes. Establishment, maintenance, conservation and uses of pastures and forage crops.</span>
+                        <span class="sub-item"><strong>b.</strong> Study of natural grasslands and their distribution in West Africa</span>
+                        <span class="sub-item"><strong>c.</strong> Range management</span>
+                    </td>
+                    <td class="objective-cell">
+                        Candidates should be able to:<br />
+                        <span class="obj-item">classify common grasses and legumes used as pastures and forage.</span>
+                        <span class="obj-item">ii. differentiate between pasture and forage crops by their common and scientific names.</span>
+                        <span class="obj-item">iii. distinguish between the various methods of conserving pastures e.g. hay- and silage-making.</span>
+                        <span class="obj-item">relate different vegetational zones to their dominant pasture species.</span>
+                        <span class="obj-item">determine range types and utilization of range resources in Nigeria.</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="topic-cell">
+                        <strong>13. Floriculture</strong><br />
+                        <span class="sub-item">Identification, establishment, maintenance and uses of ornamental trees, shrubs and flowers</span>
+                    </td>
+                    <td class="objective-cell">
+                        Candidates should be able to:<br />
+                        <span class="obj-item">i. distinguish between common ornamental trees, shrubs and flowers.</span>
+                        <span class="obj-item">ii. determine their uses and maintenance.</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="topic-cell">
+                        <strong>14. Weeds</strong><br />
+                        <span class="sub-item"><strong>a.</strong> Gross morphology, methods of reproduction, dispersal and effect of weeds</span>
+                        <span class="sub-item"><strong>b.</strong> Weed control methods – weeding, mulching, cover cropping, tillage, herbicides and trap cropping</span>
+                    </td>
+                    <td class="objective-cell">
+                        Candidates should be able to:<br />
+                        <span class="obj-item">i. identify weeds with their common and scientific names.</span>
+                        <span class="obj-item">ii. classify weeds according to their mode of dispersal.</span>
+                        <span class="obj-item">iii. Identify the characteristic features of weeds.</span>
+                        <span class="obj-item">apply various weed control methods.</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="topic-cell">
+                        <strong>15. Crop Diseases</strong><br />
+                        <span class="sub-item"><strong>a.</strong> Identification of disease-causing organisms both in store and in the field.</span>
+                        <span class="sub-item"><strong>b.</strong> A simple account of diseases caused by fungi, bacteria, nematodes and viruses; symptoms, the nature of the damage, methods of transmission and common methods of control.</span>
+                        <span class="sub-item"><strong>c.</strong> Side effects of application of preventive and control methods e.g. pollution, poisoning and distribution of ecosystem.</span>
+                    </td>
+                    <td class="objective-cell">
+                        Candidates should be able to:<br />
+                        <span class="obj-item">distinguish between common store and field disease-causing organisms.</span>
+                        <span class="obj-item">i. relate various disease-causing organisms to the damage caused, symptoms and their mode of spread.</span>
+                        <span class="obj-item">ii. apply appropriate control methods.</span>
+                        <span class="obj-item">relate each control method to its side effect.</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="topic-cell">
+                        <strong>16. Crop Pests</strong><br />
+                        <span class="sub-item"><strong>a.</strong> General account of pests of agricultural plants both in the field and in the store, their types, importance, principles and methods of prevention and control</span>
+                        <span class="sub-item"><strong>b.</strong> Life cycles of: biting insects e.g. grasshopper; boring insects e.g. weevils; sucking insects e.g. aphids and cotton strainer.</span>
+                        <span class="sub-item"><strong>c.</strong> Common pesticides and their side effects</span>
+                    </td>
+                    <td class="objective-cell">
+                        Candidates should be able to:<br />
+                        <span class="obj-item">i. identify the various field and store pests.</span>
+                        <span class="obj-item">ii. assess their economic importance.</span>
+                        <span class="obj-item">iii. relate various prevention and control methods to different pests.</span>
+                        <span class="obj-item">iv. describe the life cycles of various insects.</span>
+                        <span class="obj-item">v. apply the knowledge of the life cycles of insect pests to their prevention and control.</span>
+                        <span class="obj-item">vi. differentiate between common pesticides.</span>
+                        <span class="obj-item">vii. examine their mode of action on pests.</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="page-number">Page 5</div>
+    </div>
+
+    <!-- ==================== PAGE 6 ==================== -->
+    <div class="document">
+        <div class="page-header"><span>Agriculture</span><span>UTME Syllabus</span></div>
+        <table class="syllabus-table">
+            <thead><tr><th>TOPICS / CONTENTS / NOTES</th><th>OBJECTIVES</th></tr></thead>
+            <tbody>
+                <tr>
+                    <td class="topic-cell">
+                        <strong>17. Forest Management (Silviculture)</strong><br />
+                        <span class="sub-item"><strong>a.</strong> Importance: Source of wood, pulp, fibre and other forest products</span>
+                        <span class="sub-item"><strong>b.</strong> Conservation: regulation, exploitation, regeneration, afforestation, agro-forestry and management systems; taungya, alley, ley, etc.</span>
+                    </td>
+                    <td class="objective-cell">
+                        Candidates should be able to:<br />
+                        <span class="obj-item">i. relate various forest products to their uses.</span>
+                        <span class="obj-item">ii. compare different forest conservation methods.</span>
+                        <span class="obj-item">iii. apply the various methods appropriately.</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2 class="section-head">SECTION C: Animal Production</h2>
+
+        <table class="syllabus-table">
+            <thead><tr><th>TOPICS / CONTENTS / NOTES</th><th>OBJECTIVES</th></tr></thead>
+            <tbody>
+                <tr>
+                    <td class="topic-cell">
+                        <strong>1. Forms and classification of major farm animals in West Africa</strong><br />
+                        <span class="sub-item"><strong>a.</strong> Species, breeds, distribution and uses.</span>
+                        <span class="sub-item"><strong>b.</strong> External features of cattle, sheep, goat, pigs, rabbits and poultry</span>
+                    </td>
+                    <td class="objective-cell">
+                        Candidates should be able to:<br />
+                        <span class="obj-item">i. classify various breeds of farm animals.</span>
+                        <span class="obj-item">ii. locate where they are found.</span>
+                        <span class="obj-item">iii. Identify the uses of different species of farm animals.</span>
+                        <span class="obj-item">identify their characteristic features.</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="topic-cell">
+                        <strong>2. General terminologies in animal production</strong><br />
+                        <span class="sub-item">Common terms used in animal husbandry, e.g. calving, kidding, castrate, tupping, veal, mutton, etc.</span>
+                    </td>
+                    <td class="objective-cell">
+                        Candidates should be able to:<br />
+                        <span class="obj-item">distinguish between the various terms in animal husbandry.</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="topic-cell">
+                        <strong>3. Anatomy and physiology of farm animals</strong><br />
+                        <span class="sub-item"><strong>a.</strong> Functions of tissues and organs of farm animals</span>
+                        <span class="sub-item"><strong>b.</strong> Animal body systems e.g. digestive (ruminants and non-ruminants), reproductive, respiratory, urinary (excretory) and nervous systems.</span>
+                        <span class="sub-item"><strong>c.</strong> Effect of environmental changes on physiological development of farm animals e.g. climate change (temperature, relative humidity, light, etc.)</span>
+                    </td>
+                    <td class="objective-cell">
+                        Candidates should be able to:<br />
+                        <span class="obj-item">distinguish between various functions of tissues and organs of farm animals.</span>
+                        <span class="obj-item">compare different body systems in farm animals.</span>
+                        <span class="obj-item">determine the effects of climate change on farm animals.</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="topic-cell">
+                        <strong>4. Reproduction in farm animals</strong><br />
+                        <span class="sub-item"><strong>a.</strong> Gametogenesis, oestrus cycle, signs of heat and heat periods, secondary sexual characters, gestation periods, parturition and the role of hormones in reproduction.</span>
+                        <span class="sub-item"><strong>b.</strong> Development, nourishment and birth of the young. Mammary glands and lactation in farm animals.</span>
+                        <span class="sub-item"><strong>c.</strong> Egg formation, incubation and hatching in poultry.</span>
+                    </td>
+                    <td class="objective-cell">
+                        Candidates should be able to:<br />
+                        <span class="obj-item">i. give an account of the process of reproduction in farm animals.</span>
+                        <span class="obj-item">ii. determine the role of hormones in reproduction.</span>
+                        <span class="obj-item">trace the development in farm animals from fertilization to birth and care of the young.</span>
+                        <span class="obj-item">trace the process of egg formation and incubation in poultry.</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="page-number">Page 6</div>
+    </div>
+
+    <!-- ==================== PAGE 7 ==================== -->
+    <div class="document">
+        <div class="page-header"><span>Agriculture</span><span>UTME Syllabus</span></div>
+        <table class="syllabus-table">
+            <thead><tr><th>TOPICS / CONTENTS / NOTES</th><th>OBJECTIVES</th></tr></thead>
+            <tbody>
+                <tr>
+                    <td class="topic-cell">
+                        <strong>5. Animal nutrition</strong><br />
+                        <span class="sub-item"><strong>a.</strong> Feed nutrients and functions</span>
+                        <span class="sub-item"><strong>b.</strong> Feeds and feeding: Simple ration formulation – balanced ration, common pasture/forage crops e.g. guinea grass, elephant grass, giant star grass, Andropogon sp, Calopogonium sp. Hay and silage preparation, different types of rations, namely maintenance ration and production ration.</span>
+                        <span class="sub-item"><strong>c.</strong> Nutrient deficiencies: Causes and symptoms of malnutrition and their correction in farm animals.</span>
+                    </td>
+                    <td class="objective-cell">
+                        Candidates should be able to:<br />
+                        <span class="obj-item">identify the various feed nutrients, their sources and functions.</span>
+                        <span class="obj-item">i. differentiate between the types of animal feeds and their formulation.</span>
+                        <span class="obj-item">ii. relate the various types of rations to different classes of livestock.</span>
+                        <span class="obj-item">i. trace symptoms to nutrient deficiencies in farm animals.</span>
+                        <span class="obj-item">ii. apply appropriate corrective measures to nutrient deficiencies in farm animals.</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="topic-cell">
+                        <strong>6. Livestock management</strong><br />
+                        <span class="sub-item">Housing, feeding, sanitation and veterinary care of ruminants, pigs, rabbits and poultry under intensive, semi-intensive and extensive systems of management from birth to slaughter.</span>
+                    </td>
+                    <td class="objective-cell">
+                        Candidates should be able to:<br />
+                        <span class="obj-item">apply the different management practices for farm animals.</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="topic-cell">
+                        <strong>7. Animal Health</strong><br />
+                        <span class="sub-item"><strong>a.</strong> Animal diseases (pathology)</span>
+                        <span class="sub-item2">i. Environmental factors predisposing animals to diseases; causal organisms, symptoms, transmission and effects.</span>
+                        <span class="sub-item2">ii. Preventive and curative methods for diseases caused by viruses, bacteria, fungi and protozoa.</span>
+                        <span class="sub-item"><strong>b.</strong> Parasites (parasitology)</span>
+                        <span class="sub-item2">i. Life cycles and economic importance of livestock parasites e.g. endoparasites, ectoparasites and disease vectors.</span>
+                        <span class="sub-item2">ii. Prevention and control – dipping, spraying, deworming, sanitation</span>
+                    </td>
+                    <td class="objective-cell">
+                        Candidates should be able to:<br />
+                        <span class="obj-item">i. identify diseases of farm animals and causative agents.</span>
+                        <span class="obj-item">ii. classify livestock diseases based on symptoms and mode of transmission.</span>
+                        <span class="obj-item">iii. apply appropriate preventive and curative measures against diseases caused by these pathogens.</span>
+                        <span class="obj-item">i. classify livestock parasites.</span>
+                        <span class="obj-item">ii. determine their role in disease transmission.</span>
+                        <span class="obj-item">iii. trace life cycles of parasites from egg to adult stage.</span>
+                        <span class="obj-item">apply appropriate prevention and control methods against livestock parasites.</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="topic-cell">
+                        <strong>8. Fisheries and Wildlife</strong><br />
+                        <span class="sub-item"><strong>a.</strong> Fish culture systems; Common types of fishes e.g Tilapia, Catfish, etc.</span>
+                        <span class="sub-item2">i. Extensive systems: inland and deep-sea fishing, lakes and rivers.</span>
+                        <span class="sub-item2">ii. Semi-intensive systems: dams</span>
+                        <span class="sub-item2">iii. Intensive systems: fish ponds – Factors to consider in ponds establishment and pond management e.g. pond fertilization, liming and desilting.</span>
+                        <span class="sub-item"><strong>b.</strong> Fish harvesting and processing methods</span>
+                        <span class="sub-item2">i. Use of drag nets, hook and line, etc.</span>
+                        <span class="sub-item2">ii. Curing, sun-drying and smoking.</span>
+                        <span class="sub-item"><strong>c.</strong> Wildlife management</span>
+                        <span class="sub-item2">Habitat conservation, feeding, domestication, harvesting, processing and wildlife regulations.</span>
+                    </td>
+                    <td class="objective-cell">
+                        Candidates should be able to:<br />
+                        <span class="obj-item">i. identify the common types of fishes in West Africa.</span>
+                        <span class="obj-item">ii. differentiate between various systems of fish farming in West Africa.</span>
+                        <span class="obj-item">iii. determine the factors to be considered in intensive fish farming.</span>
+                        <span class="obj-item">i. assess the advantages and disadvantages of different fish harvesting and processing methods.</span>
+                        <span class="obj-item">ii. determine the appropriate methods of catching fish.</span>
+                        <span class="obj-item">iii. identify the various methods of fish preservation.</span>
+                        <span class="obj-item">identify the various fishery regulations in Nigeria.</span>
+                        <span class="obj-item">i. identify animals found in West African game reserves.</span>
+                        <span class="obj-item">ii. give reasons for the establishment of game reserves.</span>
+                        <span class="obj-item">iii. Identify the common wildlife regulations.</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="page-number">Page 7</div>
+    </div>
+
+    <!-- ==================== PAGE 8 ==================== -->
+    <div class="document">
+        <div class="page-header"><span>Agriculture</span><span>UTME Syllabus</span></div>
+        <table class="syllabus-table">
+            <thead><tr><th>TOPICS / CONTENTS / NOTES</th><th>OBJECTIVES</th></tr></thead>
+            <tbody>
+                <tr>
+                    <td class="topic-cell">
+                        <strong>9. Bee-keeping (Apiculture)</strong><br />
+                        <span class="sub-item"><strong>a.</strong> Meaning and importance of apiculture</span>
+                        <span class="sub-item"><strong>b.</strong> Types of bees e.g. exotic and indigenous bees</span>
+                        <span class="sub-item"><strong>c.</strong> Methods of bee-keeping e.g. traditional and modern bee-keeping</span>
+                        <span class="sub-item"><strong>d.</strong> Equipment and safety measures in bee-keeping</span>
+                    </td>
+                    <td class="objective-cell">
+                        Candidates should be able to:<br />
+                        <span class="obj-item">relate bee-keeping to economic development.</span>
+                        <span class="obj-item">differentiate between various types of bees.</span>
+                        <span class="obj-item">classify methods of bee-keeping.</span>
+                        <span class="obj-item">identify bee-keeping equipment, their uses and necessary precautionary measures.</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2 class="section-head">SECTION D: Agricultural Economics and Extension</h2>
+
+        <table class="syllabus-table">
+            <thead><tr><th>TOPICS / CONTENTS / NOTES</th><th>OBJECTIVES</th></tr></thead>
+            <tbody>
+                <tr>
+                    <td class="topic-cell">
+                        <strong>1. Factors of agricultural production</strong><br />
+                        <span class="sub-item"><strong>a.</strong> Land</span>
+                        <span class="sub-item2">i. Types of land ownership in West Africa</span>
+                        <span class="sub-item"><strong>b.</strong> Labour</span>
+                        <span class="sub-item"><strong>c.</strong> Capital</span>
+                        <span class="sub-item"><strong>d.</strong> Management</span>
+                    </td>
+                    <td class="objective-cell">
+                        Candidates should be able to:<br />
+                        <span class="obj-item">i. understand the meaning of land and state its uses.</span>
+                        <span class="obj-item">ii. identify the various forms of land ownership.</span>
+                        <span class="obj-item">iii. examine the effects of land ownership on agriculture.</span>
+                        <span class="obj-item">iv. differentiate between the various features of land and their effects on land use.</span>
+                        <span class="obj-item">differentiate between the types and sources of labour and their effects on agricultural production.</span>
+                        <span class="obj-item">compare the sources of capital and associated problems.</span>
+                        <span class="obj-item">determine the functions of a farm manager in an agricultural enterprise.</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="topic-cell">
+                        <strong>2. Basic Economic Principles</strong><br />
+                        <span class="sub-item"><strong>a.</strong> Demand and supply</span>
+                        <span class="sub-item"><strong>b.</strong> Production function: Input/output, Output/output, Input/output relationships; stages of production, concepts of diminishing returns, scale of preference and choice.</span>
+                        <span class="sub-item"><strong>c.</strong> Characteristic Features of Agricultural Production; Smallness of farm holdings: biological limits of farm production and susceptibility of farm production to climate, seasonality of farm productions, price elasticity in demand and supply of agricultural produce.</span>
+                    </td>
+                    <td class="objective-cell">
+                        Candidates should be able to:<br />
+                        <span class="obj-item">i. relate demand to supply in agricultural production.</span>
+                        <span class="obj-item">ii. interpret geographical representation of demand and supply.</span>
+                        <span class="obj-item">i. relate input to output.</span>
+                        <span class="obj-item">ii. deduce economic concepts from graphic representation.</span>
+                        <span class="obj-item">i. distinguish between the common features of agricultural production and produce.</span>
+                        <span class="obj-item">ii. compute elasticity of demand and supply.</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="topic-cell">
+                        <strong>3. Labour Management</strong><br />
+                        <span class="sub-item"><strong>a.</strong> Labour relations: Supervision, etc.</span>
+                        <span class="sub-item"><strong>b.</strong> Types of labour: Permanent labour etc.</span>
+                        <span class="sub-item"><strong>c.</strong> National labour laws and regulations.</span>
+                    </td>
+                    <td class="objective-cell">
+                        Candidates should be able to:<br />
+                        <span class="obj-item">identify the various ways of achieving labour efficiency.</span>
+                        <span class="obj-item">differentiate between the various types and sources of labour.</span>
+                        <span class="obj-item">apply national labour laws and regulations.</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="page-number">Page 8</div>
+    </div>
+
+    <!-- ==================== PAGE 9 ==================== -->
+    <div class="document">
+        <div class="page-header"><span>Agriculture</span><span>UTME Syllabus</span></div>
+        <table class="syllabus-table">
+            <thead><tr><th>TOPICS / CONTENTS / NOTES</th><th>OBJECTIVES</th></tr></thead>
+            <tbody>
+                <tr>
+                    <td class="topic-cell">
+                        <strong>4. Farm Management</strong><br />
+                        <span class="sub-item"><strong>a.</strong> Qualities, functions and problems of a farm manager.</span>
+                        <span class="sub-item"><strong>b.</strong> Records and record-keeping: Types and importance of record-keeping – livestock records, profit and loss account book.</span>
+                        <span class="sub-item"><strong>c.</strong> Stock evaluation:</span>
+                        <span class="sub-item2">i. gross and net profits in farm management.</span>
+                        <span class="sub-item2">ii. Appreciation, depreciation and salvage value</span>
+                        <span class="sub-item"><strong>d.</strong> Agricultural insurance:</span>
+                        <span class="sub-item2">i. Meaning, importance and types of agricultural insurances</span>
+                        <span class="sub-item2">ii. Problems of agricultural insurance</span>
+                    </td>
+                    <td class="objective-cell">
+                        Candidates should be able to:<br />
+                        <span class="obj-item">identify the qualities, functions and problems of a farm manager.</span>
+                        <span class="obj-item">i. differentiate between the types of farm records.</span>
+                        <span class="obj-item">ii. give reasons for keeping farm records.</span>
+                        <span class="obj-item">determine gross and net margins, appreciation, depreciation and salvage value.</span>
+                        <span class="obj-item">i. examine the relevance of agricultural insurance.</span>
+                        <span class="obj-item">ii. determine the appropriate agricultural insurance scheme.</span>
+                        <span class="obj-item">determine the problems associated with agricultural insurance.</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="topic-cell">
+                        <strong>5. Marketing of Agricultural Produce</strong><br />
+                        <span class="sub-item"><strong>a.</strong> Importance of Marketing.</span>
+                        <span class="sub-item"><strong>b.</strong> Marketing channels.</span>
+                        <span class="sub-item"><strong>c.</strong> Characteristics of agricultural products affecting their marketing.</span>
+                    </td>
+                    <td class="objective-cell">
+                        Candidates should be able to:<br />
+                        <span class="obj-item">evaluate the importance of agricultural marketing.</span>
+                        <span class="obj-item">i. classify marketing agents and their functions.</span>
+                        <span class="obj-item">ii. determine the various ways in which marketing channels pose problems in agricultural production.</span>
+                        <span class="obj-item">determine the characteristics of agricultural products affecting their marketing.</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="topic-cell">
+                        <strong>6. Agricultural Extension</strong><br />
+                        <span class="sub-item"><strong>a.</strong> Meaning and importance.</span>
+                        <span class="sub-item"><strong>b.</strong> The role of Agricultural Development programmes, universities, research institutes and farmers' organizations (Cooperative societies).</span>
+                        <span class="sub-item"><strong>c.</strong> Extension methods including demonstration plots, use of visual aids, mass media, etc.</span>
+                        <span class="sub-item"><strong>d.</strong> Problems of agricultural extension in West Africa and possible solutions.</span>
+                    </td>
+                    <td class="objective-cell">
+                        Candidates should be able to:<br />
+                        <span class="obj-item">identify the importance of agricultural extension.</span>
+                        <span class="obj-item">analyse the roles of government and non-governmental organizations in agricultural extension education.</span>
+                        <span class="obj-item">differentiate between the various extension methods.</span>
+                        <span class="obj-item">i. examine the problems of agricultural extension in West Africa.</span>
+                        <span class="obj-item">ii. provide possible solutions.</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2 class="section-head">SECTION E: Agricultural Technology</h2>
+
+        <table class="syllabus-table">
+            <thead><tr><th>TOPICS / CONTENTS / NOTES</th><th>OBJECTIVES</th></tr></thead>
+            <tbody>
+                <tr>
+                    <td class="topic-cell">
+                        <strong>1. Farm surveying and farmstead planning</strong><br />
+                        <span class="sub-item">Identify the factors to be considered in farmstead planning.</span>
+                    </td>
+                    <td class="objective-cell">
+                        Candidates should be able to:<br />
+                        <span class="obj-item">examine the relevance of farm surveying to agriculture.</span>
+                        <span class="obj-item">classify common surveying equipment, their uses and care.</span>
+                        <span class="obj-item">differentiate between the common survey methods.</span>
+                        <span class="obj-item">apply survey principles to farmstead outlay.</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="page-number">Page 9</div>
+    </div>
+
+    <!-- ==================== PAGE 10 ==================== -->
+    <div class="document">
+        <div class="page-header"><span>Agriculture</span><span>UTME Syllabus</span></div>
+        <table class="syllabus-table">
+            <thead><tr><th>TOPICS / CONTENTS / NOTES</th><th>OBJECTIVES</th></tr></thead>
+            <tbody>
+                <tr>
+                    <td class="topic-cell">
+                        <strong>2. Simple farm tools</strong><br />
+                        <span class="sub-item"><strong>3. Farm machinery and implements</strong></span>
+                        <span class="sub-item2"><strong>a.</strong> Types, uses and maintenance of farm machinery and implements</span>
+                        <span class="sub-item"><strong>4. Mechanization and sources of farm power</strong></span>
+                        <span class="sub-item2"><strong>a.</strong> Sources of farm power e.g. animal and machines</span>
+                        <span class="sub-item2"><strong>b.</strong> Advantages and disadvantages of agricultural mechanization</span>
+                        <span class="sub-item2"><strong>c.</strong> Problems and prospects of mechanized agriculture in West Africa</span>
+                    </td>
+                    <td class="objective-cell">
+                        Candidates should be able to:<br />
+                        <span class="obj-item">i. identify simple farm tools.</span>
+                        <span class="obj-item">ii. use and maintain farm tools.</span>
+                        <span class="obj-item">iii. compare the advantages and disadvantages of simple farm tools.</span>
+                        <span class="obj-item">identify common farm machinery and implements.</span>
+                        <span class="obj-item">i. classify farm machinery according to their uses.</span>
+                        <span class="obj-item">ii. Operate farm machines and implements.</span>
+                        <span class="obj-item">apply appropriate maintenance routines on farm machines and implements.</span>
+                        <span class="obj-item">compare the advantages and disadvantages of various sources of farm power and their application.</span>
+                        <span class="obj-item">distinguish between the advantages and disadvantages of mechanization.</span>
+                        <span class="obj-item">assess the problems and prospects of mechanized agriculture in West Africa.</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="topic-cell">
+                        <strong>5. Processing and storage</strong><br />
+                        <span class="sub-item"><strong>a.</strong> Processing: traditional and modern methods of food processing e.g. gari, rice and groundnut processing, etc.</span>
+                        <span class="sub-item"><strong>b.</strong> Storage</span>
+                    </td>
+                    <td class="objective-cell">
+                        Candidates should be able to:<br />
+                        <span class="obj-item">i. identify the importance of agricultural processing.</span>
+                        <span class="obj-item">ii. differentiate between the various methods of processing agricultural produce.</span>
+                        <span class="obj-item">i. Identify and compare different storage methods.</span>
+                        <span class="obj-item">ii. apply appropriate storage methods to different crops.</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="topic-cell">
+                        <strong>6. Introduction to biotechnology</strong><br />
+                        <span class="sub-item">Basic terms, e.g. tissue and anther culture, in vitro fertilization and genetic engineering</span>
+                    </td>
+                    <td class="objective-cell">
+                        Candidates should be able to:<br />
+                        <span class="obj-item">i. use basic terms in biotechnology.</span>
+                        <span class="obj-item">ii. provide reasons for the importance and application of biotechnology.</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="topic-cell">
+                        <strong>7. Application of ICT in agriculture</strong><br />
+                        <span class="sub-item"><strong>a.</strong> Features of computers</span>
+                        <span class="sub-item"><strong>b.</strong> Uses of computers in agriculture: disease and weather forecasting, ration formulation, database and simulation studies, etc.</span>
+                        <span class="sub-item"><strong>c.</strong> Use of communication gadgets e.g. mobile phone, internet, etc.</span>
+                    </td>
+                    <td class="objective-cell">
+                        Candidates should be able to:<br />
+                        <span class="obj-item">identify the various components of a computer.</span>
+                        <span class="obj-item">use the computer to enhance agricultural practices.</span>
+                        <span class="obj-item">use communication gadgets to improve agricultural production.</span>
+                        <span class="obj-item">use basic concepts in agricultural experiments.</span>
+                        <span class="obj-item">i. draw inferences from experimental results.</span>
+                        <span class="obj-item">ii. compute simple measures of central tendency.</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="references">
+            <div class="ref-title">RECOMMENDED TEXTS</div>
+            <p>Adeniyi, M. O. et al (1999) <em>Countdown to Senior Secondary Certificate Examination Agricultural Science</em>, Ibadan: Evans</p>
+            <p>Akinsanmi, O. (2000) <em>Junior Secondary Agricultural Science</em>, UK: Longman.</p>
+            <p>Akinsanmi, O. (2000) <em>Senior Secondary Agricultural Science</em>, UK: Longman.</p>
+            <p>Anthonio, Q. B. O. (1999) <em>General Agriculture for West Africa</em>, London: George Allen</p>
+            <p>Are, L. A. et al (2010) <em>Comprehensive Certificate Agricultural Science for Senior Secondary Schools</em>, University Press Plc.</p>
+            <p>Egbuna, C. K. et al (2014) <em>Extension Modern Agricultural Science for Senior Secondary Schools</em> (2010), Extension Publication</p>
+            <p>Emmanuel C. A. (2003) <em>A Dictionary of Agriculture</em>, Benue: Agitab Publisher Makurdi</p>
+            <p>Falusi, A. O. and Adeleye, I. O. A (2000) <em>Agricultural Science for Junior Secondary Schools Books 1–3</em>, Ibadan: Onibonoje</p>
+            <p>Komolafe, M. F., Adegbola, A. A., Are, L. A. and Ashaye, T. I. (2004) <em>Agricultural Science for Senior Secondary Schools 1, 2 and 3</em>, Ibadan: University Press Ltd.</p>
+            <p>Philips T. A. (1986) <em>Agricultural Notebook</em>, Lagos: Longman</p>
+            <p>STAN (1999) <em>Agricultural Science for Senior Secondary Schools</em>, Lagos: Longman</p>
+            <p>Daramola A. M. et al (1999) <em>Exam Focus Agricultural Science for SSCE and JME</em></p>
+        </div>
+        <div class="page-number">Page 10</div>
+    </div>
+
+
+</body>
+</html>

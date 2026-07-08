@@ -1,0 +1,259 @@
+/* =====================================
+  PAGE SPECIFIC STYLE
+  ======================================*/
+  
+.padding-reset {
+  padding: 0;
+}
+
+.margin-reset {
+  margin: 0;
+}
+
+.f-w-500 {
+  font-weight: 500;
+}
+
+.link-color {
+  color: var(--primary);
+}
+
+.page-header {
+  background: linear-gradient(180deg, #ffffff, var(--bg));
+  border-bottom: 1px solid var(--border);
+}
+
+.simulator-two-header-inner {
+  max-width: 1200px;
+  margin: auto;
+  padding: 32px 24px 24px;
+}
+
+.simulator-two-breadcrumb {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+}
+
+.simulator-two-container {
+  max-width: 1200px;
+  margin: 28px auto;
+  padding: 0 24px;
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 24px;
+  align-items: start;
+}
+
+/* SUBJECTS PANEL */
+.simulator-two-panel {
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+}
+
+.simulator-two-panel-header {
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.simulator-two-panel-header h2 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.simulator-two-subject-count {
+  background: var(--primary-light);
+  color: var(--primary-dark);
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.simulator-two-subject-list {
+  padding: 8px;
+}
+
+.simulator-two-subject-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  margin: 4px;
+  border-radius: var(--radius-sm);
+  transition: background 0.15s;
+}
+
+.simulator-two-subject-item:hover {
+  background: var(--bg);
+}
+
+.simulator-two-subject-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.simulator-two-subject-icon {
+  width: 36px;
+  height: 36px;
+  background: var(--primary-light);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  color: var(--primary);
+}
+
+.simulator-two-subject-icon img{
+  width: 100%;
+  border-radius: 18px;
+}
+
+.simulator-two-subject-name {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.q-chip {
+  background: white;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  padding: 8px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  max-width: 90px;
+  text-align: center;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' fill='%2364748b' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  cursor: pointer;
+}
+
+.q-chip:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-light);
+  outline: none;
+}
+
+/* CONFIG PANEL */
+.simulator-two-config-panel {
+  position: sticky;
+  top: 92px;
+}
+
+.simulator-two-config-section {
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border);
+}
+
+.simulator-two-config-section:last-child {
+  border-bottom: none;
+}
+
+.simulator-two-section-label {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+select {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--border);
+  outline: none;
+  font-size: 14px;
+  font-weight: 500;
+  background: white;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%2364748b' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+}
+
+select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-light);
+}
+
+.simulator-two-time-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.time-field label {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+  display: block;
+  font-weight: 500;
+}
+
+.proceed-wrap {
+  padding: 20px 24px;
+}
+
+.proceed-btn {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: var(--primary);
+  color: white;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 700;
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+  transition: all 0.2s;
+}
+
+.proceed-btn:hover {
+  background: var(--primary-dark);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-lg);
+}
+
+/* RESPONSIVE */
+@media(max-width: 1024px) {
+  .simulator-two-container {
+    grid-template-columns: 1fr;
+  }
+  .simulator-two-config-panel {
+    position: static;
+  }
+}
+
+@media(max-width: 600px) {
+  .simulator-two-header-inner, .nav-inner, .simulator-two-container {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+  .page-header h1 {
+    font-size: 1.5rem;
+  }
+  .panel-header, .simulator-two-config-section, .proceed-wrap {
+    padding: 16px;
+  }
+  .simulator-two-subject-item {
+    padding: 12px;
+  }
+  .simulator-two-subject-icon {
+    width: 32px;
+    height: 32px;
+  }
+}
