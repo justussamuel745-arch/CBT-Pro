@@ -1,0 +1,67 @@
+.pwa-update-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  transform: translateX(-50%);
+  width: min(420px, calc(100% - 32px));
+  
+  background: var(--surface, #fff);
+  color: var(--text, #111);
+  
+  border-radius: 18px;
+  padding: 18px;
+  
+  box-shadow: 0 15px 40px rgba(0, 0, 0, .18);
+  
+  z-index: 99999;
+  
+  animation: slideUp .3s ease;
+}
+
+@keyframes slideUp {
+  
+  from {
+    opacity: 0;
+    transform: translate(-50%, 40px);
+  }
+  
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+  
+}
+
+.pwa-update-title {
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.pwa-update-text {
+  margin-top: 8px;
+  opacity: .8;
+}
+
+.pwa-update-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.pwa-update-btn {
+  border: none;
+  cursor: pointer;
+  padding: .7rem 1.2rem;
+  border-radius: 10px;
+  font-weight: 600;
+}
+
+.pwa-update-btn.primary {
+  background: #2563eb;
+  color: white;
+}
+
+.pwa-update-btn.secondary {
+  background: #ececec;
+}

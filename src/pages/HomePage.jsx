@@ -5,6 +5,7 @@ import { Menu } from '../components/Menu.jsx';
 import UserContext from '../context/UserContext.jsx';
 import { subjectsData } from '../scripts/data/subjectsData.js';
 import { formatName } from '../scripts/utilis/formatName';
+import { InstallAppBanner } from '../components/InstallAppBanner';
 import './HomePage.css'
 
 export function HomePage() {
@@ -76,7 +77,7 @@ export function HomePage() {
               subjectsData.map(subject => 
                 (
                   <div className="home-subject-card" key={subject.id}>
-                    <div className="subject-logo margin-auto" dangerouslySetInnerHTML={{__html: subject.icon}}/>️
+                    <div className="subject-logo margin-auto" dangerouslySetInnerHTML={{__html: subject.icon}}/>
                     <div className="subject-name">{formatName(subject.name)}</div>
                   </div>
                 )
@@ -166,6 +167,8 @@ export function HomePage() {
           </div>
         </section>
       </main>
+      
+      <InstallAppBanner />
       
       <Footer />
     </>

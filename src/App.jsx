@@ -33,6 +33,7 @@ const Pages = lazy(() => import('./pages/admin/Pages.jsx'));
 import { fetchDataGet, fetchUserInfo, fetchHistory } from './scripts/utilis/fetch';
 import { on } from './scripts/utilis/submitHistory';
 import { getUser } from './hooks/services/indexedDB/users';
+import PWAUpdateToast from './components/PWAUpdateToast';
 import './App.css';
 
 function App() {
@@ -151,6 +152,7 @@ function App() {
           </Routes>
         )
       }
+      <PWAUpdateToast />
     </>
   )
 }

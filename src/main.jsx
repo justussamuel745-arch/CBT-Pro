@@ -6,12 +6,14 @@ import { registerSW } from "virtual:pwa-register";
 import './index.css'
 import App from './App.jsx'
 
-registerSW({
+export const updateSW = registerSW({
+  immediate: true,
   onNeedRefresh() {
-    console.log("New version available.");
+    window.dispatchEvent(new Event("pwa-update-available"));
   },
+
   onOfflineReady() {
-    console.log("App is ready to work offline.");
+    window.dispatchEvent(new Event("pwa-offline-ready"));
   },
 });
 
