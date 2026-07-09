@@ -85,7 +85,7 @@ function FaqItem({ q, a }) {
           <i className="fa-solid fa-chevron-down"></i>
         </span>
       </button>
-      {open && <div className="payment-faq-a">{a}</div>}
+      {open && <div className="payment-faq-a" dangerouslySetInnerHTML={{__html: a}} />}
     </div>
   );
 }
@@ -152,6 +152,17 @@ function ActivationGuide() {
         <FaqItem q="Can I pay for someone else's account?" a="No. CBT Pro subscriptions can only be activated for the account you are currently logged into. This policy helps us maintain accurate records, secure your data, and prevent accidental activation of the wrong account. To activate another account, kindly log out and sign in with that account’s email, then proceed with payment. The subscription and receipt will be linked to the logged-in account only." />
         <FaqItem q="My payment went through but the app isn't activated?" a="Wait 2–3 minutes and refresh. If it's still inactive, copy your Paystack reference number and contact support — we'll resolve it within the hour." />
         <FaqItem q="Is this a recurring charge?" a="No. You will not be charged again until the subscription expires. CBT Pro operates on a one-time annual payment model. Your subscription is valid for 12 months from the date of activation. If you wish to continue with the application after your subscription expires, you will need to make a new payment to renew your access. No automatic charges will be made to your card or bank account." />
+        <FaqItem q="What features are included after activation?" a={`
+          <p>Upon activating your account, you will unlock full access to our comprehensive study suite, which includes:</p>
+          <ul style="list-style: none">
+              <li><strong>250 AI Credits:</strong> Fuel your learning with credits dedicated to AI-powered insights and assistance.</li>
+              <li><strong>Complete JAMB Question Archive:</strong> Gain unrestricted access to JAMB questions spanning all available years.</li>
+              <li><strong>AI-Enhanced Study Mode:</strong> Master difficult concepts with step-by-step explanations powered by artificial intelligence.</li>
+              <li><strong>Topic-by-Topic Revision:</strong> Structure your preparation by studying specific subjects and individual topics at your own pace.</li>
+              <li><strong>Dynamic CBT Simulator:</strong> Practice in a realistic exam environment with a unique, randomized selection of questions for every attempt.</li>
+              <li><strong>Continuous Updates:</strong> Enjoy ongoing platform enhancements and exclusive upcoming features designed to elevate your prep.</li>
+          </ul>
+        `} />
       </div>
 
       <a href="mailto:teamcbtpro@gmail.com" className="payment-support-btn">

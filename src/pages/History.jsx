@@ -5,6 +5,7 @@ import { fetchWithAuth } from '../scripts/utilis/fetch'
 import { formatTime } from '../scripts/utilis/formatTime';
 import { formatDate } from '../scripts/utilis/formatDate';
 import { ToastProvider, useToast, CSS } from '../components/NotificationSystem';
+import { removeHistory } from '../hooks/services/indexedDB/history';
 import './History.css';
 
 const ExpensiveHistoryModal = memo(({modalInfo, setModalInfo, getScoreClass, formatDate, formatTime}) => {
@@ -91,6 +92,11 @@ function HistoryInner() {
         }
       } catch (err) {
         console.error('Error:', err);
+        toast.push({
+          variant: 'pill',
+          type: 'error',
+          message: 'Unable to fetch your history.',
+        });
       }
     }
     if (!historyData){
@@ -144,6 +150,8 @@ function HistoryInner() {
       ? data.historyData
       : []
       setHistoryData(filteredHistory)
+      removeHistory(id)
+      
     } catch (err) {
       console.error('Error:', err);
     } finally {

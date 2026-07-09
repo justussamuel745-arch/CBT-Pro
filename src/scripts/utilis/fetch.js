@@ -1,5 +1,6 @@
 import { url } from './url.js'
 import { saveUser } from '../../hooks/services/indexedDB/users.js';
+import { saveHistory } from '../../hooks/services/indexedDB/history.js'
 
 export async function fetchDataPost(formData, path) {
   const response = await fetch(`${url}${path}`, {
@@ -131,5 +132,6 @@ export async function fetchHistory(token, setHistoryData) {
   }
   
   setHistoryData(data)
+  saveHistory(data)
 }
 

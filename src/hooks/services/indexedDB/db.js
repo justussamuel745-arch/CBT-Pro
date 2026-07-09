@@ -6,7 +6,7 @@
 */
 
 const DB_NAME = "CBTPro";
-const DB_VERSION = 1;
+const DB_VERSION = 3;
 
 export function openDB() {
   return new Promise((resolve, reject) => {
@@ -68,6 +68,22 @@ export function openDB() {
           keyPath: "id"
         });
       }
+
+      // history store
+      if (!db.objectStoreNames.contains("history")) {
+        const historyStore = db.createObjectStore("history", {
+          keyPath: "_id",
+        });
+
+        historyStore.createIndex("createdAt", "createdAt", {
+          unique: false,
+        });
+
+        historyStore.createIndex("userId", "userId", {
+          unique: false,
+        });
+      }
+
     };
 
     request.onsuccess = () => {

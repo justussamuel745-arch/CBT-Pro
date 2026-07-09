@@ -354,8 +354,8 @@ function SettingsInner() {
   async function logoutUser() {
     try {
       await fetchDataGet('/api/logout');
-      await deleteUser(userInfo.id)
-      setToken(null);
+      await deleteUser()
+      setToken(null)
     } catch (err) {
       console.error('Fetch error:', err);
       toast.push({ type: 'error', title: 'Logout failed', message: 'Please try again.' });

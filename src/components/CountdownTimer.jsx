@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router';
 import UserContext from '../context/UserContext';
 import { fetchWithAuth } from '../scripts/utilis/fetch';
 import { calculateScore } from '../scripts/utilis/calculateScore';
+import { saveHistory } from '../hooks/services/indexedDB/history';
 
 export function CountdownTimer({ onFinish, hours, minutes, skipAutoSubmit }) {
   const { token, setToken, answers, setExamResults, examQuestions, userInfo, setHistoryData } = useContext(UserContext)
@@ -48,8 +49,8 @@ export function CountdownTimer({ onFinish, hours, minutes, skipAutoSubmit }) {
       if (!response.ok) {
         throw { status: response.status, error: newHistory }
       }
-      console.log(data);
       setHistoryData(data)
+      saveHistory(data)
     } catch (err) {
       if (typeof err?.error === 'object' || err.status !== 404){
         const unsavedHistory = JSON.parse(localStorage.getItem('unsavedHistory')) || []

@@ -33,6 +33,7 @@ const Pages = lazy(() => import('./pages/admin/Pages.jsx'));
 import { fetchDataGet, fetchUserInfo, fetchHistory } from './scripts/utilis/fetch';
 import { on } from './scripts/utilis/submitHistory';
 import { getUser } from './hooks/services/indexedDB/users';
+import { getHistory } from './hooks/services/indexedDB/history';
 import PWAUpdateToast from './components/PWAUpdateToast';
 import './App.css';
 
@@ -78,6 +79,8 @@ function App() {
       });
       setIsActivated(user.isActivated)
       setIsLoading(false)
+      const userHistory = await getHistory(user?._id)
+      setHistoryData(userHistory)
     }
     
     

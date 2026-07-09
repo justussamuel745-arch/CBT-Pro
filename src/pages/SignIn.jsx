@@ -2,7 +2,7 @@ import { useState, useEffect, createContext, useContext, useRef } from "react";
 import { useNavigate } from 'react-router';
 import { Ic } from '../scripts/utilis/Ic'
 import UserContext from '../context/UserContext.jsx';
-import { fetchDataPost, fetchUserInfo } from '../scripts/utilis/fetch.js';
+import { fetchDataPost, fetchUserInfo, fetchHistory } from '../scripts/utilis/fetch.js';
 import './SignIn.css';
 
 // ─────────────────────────────────────────────────────────────
@@ -154,7 +154,7 @@ function validate(email, password) {
 // SIGN IN FORM
 // ─────────────────────────────────────────────────────────────
 function Auth() {
-  const { setToken, setIsActivated, setIsAdmin, setUserInfo, setProfileFields } = useContext(UserContext)
+  const { setToken, setIsActivated, setIsAdmin, setUserInfo, setProfileFields, setHistoryData} = useContext(UserContext)
   const navigate = useNavigate()
   const toast = useToast();
   const [email, setEmail] = useState("");
@@ -191,6 +191,8 @@ function Auth() {
       setIsAdmin(response.isAdmin)
       /*========= Fetching Data for Settings Page ===========*/
       fetchUserInfo(response.accessToken, setUserInfo, setProfileFields)
+      /*========= Fetching Data for History Page ===========*/
+      fetchHistory(response.accessToken, setHistoryData)
       setModal({
         type: "success",
         icon: "✓",
@@ -204,6 +206,7 @@ function Auth() {
         },
       });
     } catch (err) {
+      console.log(err);
       if (err.errors === 'wrong_password'){
         setFormAlert({ kind: "error", title: "Incorrect password", message: "The password you entered doesn't match this account. Try again or reset your password." });
         setErrors({ password: "Incorrect password." });
