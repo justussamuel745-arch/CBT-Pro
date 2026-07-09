@@ -780,6 +780,7 @@ function SettingsInner() {
 
               {/* ════════════ ACCOUNT ACTIONS TAB ════════════ */}
               <div className={`settings-content ${activeTab === 'danger' ? 'active' : ''}`}>
+              
                 <div className="settings-card settings-danger-zone">
                   <h3 className="settings-card-title">
                     <span className="settings-card-title-icon"><Ic.Warn /></span>

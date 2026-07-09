@@ -5,7 +5,7 @@ import { Menu } from '../components/Menu.jsx';
 import UserContext from '../context/UserContext.jsx';
 import { subjectsData } from '../scripts/data/subjectsData.js';
 import { formatName } from '../scripts/utilis/formatName';
-import { InstallAppBanner } from '../components/InstallAppBanner';
+import { InstallAppBanner, InstallAppCard } from '../components/InstallAppBanner';
 import './HomePage.css'
 
 export function HomePage() {
@@ -165,11 +165,11 @@ export function HomePage() {
             <p>Stop guessing. Start practicing. Everything you need to prepare like a top JAMB candidate.</p>
             {token ? <Link to="/study" className="btn btn-hero">Get started now</Link> : <Link to="/signup" className="btn btn-hero">Create Free Account</Link> }
           </div>
+          <InstallAppCard />
         </section>
       </main>
       
       <InstallAppBanner />
-      
       <Footer />
     </>
   )
