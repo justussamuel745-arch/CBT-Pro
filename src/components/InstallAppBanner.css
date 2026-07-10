@@ -1,26 +1,28 @@
 /* ─────────────────────────────────────────────────────────────
    GLOBAL & THEMING FALLBACKS
-   ───────────────────────────────────────────────────────────── */
-/* :root {
+───────────────────────────────────────────────────────────── */
+:root {
   --primary: var(--primary, #4f46e5);
   --primary-light: var(--primary-light, rgba(79, 70, 229, 0.1));
-
+}
 
 /* ─────────────────────────────────────────────────────────────
    FLOATING BANNER (Bottom Slide-Up)
-   ───────────────────────────────────────────────────────────── */
+───────────────────────────────────────────────────────────── */
 .pwa-install-banner {
   position: fixed;
   bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
   left: 50%;
   transform: translateX(-50%) translateY(150%);
-  width: min(calc(100% - 2rem), 520px);
+  width: min(calc(100vw - 2rem), 440px);
+  max-height: min(80vh, 560px);
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   box-shadow: var(--shadow-lg);
   z-index: 9999;
   overflow: hidden;
+  box-sizing: border-box;
   transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
   display: flex;
   flex-direction: column;
@@ -38,15 +40,17 @@
 }
 
 .pwa-install-body {
-  padding: clamp(1rem, 3vw, 1.25rem);
+  padding: clamp(0.875rem, 3vw, 1.25rem);
   display: flex;
-  align-items: center;
-  gap: clamp(0.75rem, 2vw, 1rem);
+  align-items: flex-start;
+  gap: clamp(0.625rem, 2vw, 1rem);
+  flex-shrink: 0;
+  box-sizing: border-box;
 }
 
 .pwa-install-icon {
-  width: clamp(42px, 10vw, 48px);
-  height: clamp(42px, 10vw, 48px);
+  width: clamp(38px, 9vw, 48px);
+  height: clamp(38px, 9vw, 48px);
   border-radius: 12px;
   background: var(--gradient);
   display: flex;
@@ -59,43 +63,44 @@
 
 .pwa-install-text {
   flex: 1;
-  min-width: 0; /* Prevents flex children from overflowing */
+  min-width: 0;
 }
 
 .pwa-install-title {
-  font-size: clamp(0.95rem, 2.5vw, 1.05rem);
+  font-size: clamp(0.9rem, 2.4vw, 1.05rem);
   font-weight: 700;
   color: var(--text);
   letter-spacing: -0.01em;
   margin-bottom: 0.2rem;
-  line-height: 1.2;
+  line-height: 1.25;
 }
 
 .pwa-install-sub {
-  font-size: clamp(0.75rem, 2vw, 0.825rem);
+  font-size: clamp(0.72rem, 1.9vw, 0.825rem);
   color: var(--text-muted);
   line-height: 1.45;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+  overflow-wrap: break-word;
 }
 
 .pwa-install-actions {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.4rem;
   flex-shrink: 0;
 }
 
 .pwa-install-btn {
   min-height: 40px;
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 0.9rem;
   background: var(--gradient);
   color: #ffffff;
   border: none;
   border-radius: 10px;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   font-weight: 600;
   font-family: inherit;
   cursor: pointer;
@@ -103,7 +108,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.2s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
   box-shadow: 0 4px 10px rgba(79, 70, 229, 0.2);
 }
 
@@ -116,9 +121,15 @@
   transform: translateY(0) scale(0.98);
 }
 
+.pwa-install-btn:focus-visible,
+.pwa-install-close:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
 .pwa-install-close {
-  width: 36px;
-  height: 36px;
+  width: 34px;
+  height: 34px;
   border-radius: 8px;
   border: none;
   background: transparent;
@@ -136,37 +147,46 @@
   color: var(--text);
 }
 
-/* ── iOS / Manual Instructions Sheet ── */
+/* ── Manual Instructions / Guide Sheet ──
+   Holds both short numbered steps AND longer single-paragraph
+   messages (redirect / unsupported). Scrolls internally so a
+   lengthy message can never push the banner off-screen. */
 .pwa-ios-sheet {
-  padding: 1rem clamp(1rem, 3vw, 1.25rem) 1.25rem;
+  padding: 0.875rem clamp(0.875rem, 3vw, 1.25rem) 1.1rem;
   background: var(--bg);
   border-top: 1px solid var(--border);
   display: flex;
   flex-direction: column;
-  gap: 0.625rem;
+  gap: 0.6rem;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  box-sizing: border-box;
+  animation: pwa-sheet-in 0.28s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .pwa-ios-step {
   display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  font-size: 0.85rem;
+  align-items: flex-start;
+  gap: 0.65rem;
+  font-size: 0.83rem;
   color: var(--text);
-  line-height: 1.4;
+  line-height: 1.5;
+  overflow-wrap: break-word;
 }
 
 .pwa-ios-num {
-  width: 24px;
-  height: 24px;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
   background: var(--primary-light);
   color: var(--primary);
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  margin-top: 0.05rem;
 }
 
 .pwa-ios-icon {
@@ -175,22 +195,43 @@
   justify-content: center;
   color: var(--primary);
   flex-shrink: 0;
-  vertical-align: middle;
+  margin-top: 0.15rem;
+}
+
+/* A step with no number (redirect / unsupported messages) gets
+   a light card treatment instead of the plain numbered-list look,
+   so a full sentence doesn't read like a mislabeled step. */
+.pwa-ios-step:has(.pwa-ios-icon):not(:has(.pwa-ios-num)) {
+  padding: 0.75rem 0.85rem;
+  background: var(--card);
+  border: 1px dashed var(--border);
+  border-radius: 12px;
+}
+
+@keyframes pwa-sheet-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* ─────────────────────────────────────────────────────────────
    INLINE CARD (Embedded Section Variant)
-   ───────────────────────────────────────────────────────────── */
+───────────────────────────────────────────────────────────── */
 .pwa-install-card {
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: clamp(1.25rem, 4vw, 2rem);
+  padding: clamp(1.1rem, 4vw, 2rem);
   box-shadow: var(--shadow);
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: clamp(1rem, 3vw, 1.5rem);
-  transition: all 0.3s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
   width: 100%;
   box-sizing: border-box;
   margin-top: 0.8rem;
@@ -203,63 +244,69 @@
 }
 
 .pwa-install-card-icon {
-  width: clamp(48px, 12vw, 64px);
-  height: clamp(48px, 12vw, 64px);
+  width: clamp(46px, 11vw, 60px);
+  height: clamp(46px, 11vw, 60px);
   border-radius: 16px;
   background: var(--gradient);
-  display: flex;
   align-items: center;
   justify-content: center;
   color: #ffffff;
   flex-shrink: 0;
   box-shadow: 0 6px 16px rgba(79, 70, 229, 0.25);
-  display: none;
+  display: none; /* hidden by default, matches original behavior */
+  margin-bottom: 1rem;
 }
 
 .pwa-install-card-body {
   flex: 1;
   min-width: 0;
+  width: 100%;
+  max-width: 480px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  box-sizing: border-box;
 }
 
 .pwa-install-card-title {
-  font-size: clamp(1.1rem, 3vw, 1.35rem);
+  font-size: clamp(1.05rem, 3vw, 1.3rem);
   font-weight: 700;
   color: var(--text);
   margin: 0 0 0.5rem 0;
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  line-height: 1.2;
+  line-height: 1.25;
+  text-align: center;
 }
 
 .pwa-install-card-desc {
   color: var(--text-muted);
-  margin: 0 0 1.25rem 0;
-  font-size: clamp(0.85rem, 2vw, 0.95rem);
+  margin: 0 0 1.1rem 0;
+  font-size: clamp(0.82rem, 2vw, 0.95rem);
   line-height: 1.6;
-  max-width: 600px;
+  max-width: 100%;
   text-align: center;
+  overflow-wrap: break-word;
 }
 
 .pwa-install-card-features {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   gap: 0.5rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.4rem;
 }
 
 .pwa-feature-chip {
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  padding: 0.35rem 0.8rem;
+  padding: 0.35rem 0.75rem;
   background: var(--bg);
   border: 1px solid var(--border);
   border-radius: 20px;
-  font-size: 0.78rem;
+  font-size: 0.75rem;
   font-weight: 600;
   color: var(--text-muted);
   white-space: nowrap;
@@ -272,44 +319,78 @@
 
 .pwa-card-guide {
   width: 100%;
+  max-width: 480px;
   margin-top: 1rem;
-  padding: 1rem 1.25rem;
+  padding: 0.9rem 1.1rem;
   border-radius: 12px;
   background: var(--bg);
   border: 1px dashed var(--border);
-  font-size: 0.85rem;
+  font-size: 0.83rem;
   color: var(--text);
   box-sizing: border-box;
+  max-height: 220px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  text-align: left;
+  animation: pwa-sheet-in 0.28s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .pwa-card-guide p {
   margin: 0.5rem 0;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 0.5rem;
+  line-height: 1.55;
+  overflow-wrap: break-word;
 }
 
-.pwa-card-guide p:first-child { margin-top: 0; }
-.pwa-card-guide p:last-child { margin-bottom: 0; }
+.pwa-card-guide p:first-child {
+  margin-top: 0;
+}
+
+.pwa-card-guide p:last-child {
+  margin-bottom: 0;
+}
 
 /* ─────────────────────────────────────────────────────────────
    RESPONSIVE BREAKPOINTS
-   ───────────────────────────────────────────────────────────── */
+───────────────────────────────────────────────────────────── */
 
-/* Compact Mobile (under 480px) */
+/* Very small phones (under 360px) */
+@media (max-width: 359px) {
+  .pwa-install-banner {
+    width: calc(100vw - 1.25rem);
+    bottom: calc(0.625rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  .pwa-install-body {
+    padding: 0.75rem;
+    gap: 0.5rem;
+  }
+
+  .pwa-install-actions {
+    gap: 0.3rem;
+  }
+
+  .pwa-install-btn {
+    padding: 0.5rem 0.7rem;
+    font-size: 0.75rem;
+  }
+}
+
+/* Compact mobile (360px – 480px) */
 @media (max-width: 480px) {
   .pwa-install-body {
     flex-wrap: wrap;
   }
 
   .pwa-install-icon {
-    width: 40px;
-    height: 40px;
+    width: 38px;
+    height: 38px;
   }
 
   .pwa-install-text {
-    /* Let text take remaining width of the top row */
-    flex: 1 1 calc(100% - 56px); 
+    flex: 1 1 calc(100% - 52px);
   }
 
   .pwa-install-actions {
@@ -321,38 +402,80 @@
   }
 
   .pwa-install-btn {
-    flex: 1; /* Expand button for easier thumb tapping */
+    flex: 1;
   }
 
-  /* Stack Card elements vertically and center align on very small screens */
+  .pwa-ios-sheet {
+    max-height: 45vh;
+  }
+
+  .pwa-card-guide {
+    max-height: 40vh;
+  }
+
   .pwa-install-card {
-    flex-direction: column;
-    align-items: stretch;
-    text-align: center;
+    padding: 1.1rem;
   }
 
   .pwa-install-card-icon {
     display: flex;
     align-self: center;
   }
+}
 
-  .pwa-install-card-body {
+/* Tablet & medium screens (481px – 768px) */
+@media (min-width: 481px) and (max-width: 768px) {
+  .pwa-install-card {
     align-items: center;
   }
 
-  .pwa-install-card-features {
-    justify-content: center;
-  }
-
-  .pwa-card-guide {
-    text-align: left; /* Keep instructions readable */
+  .pwa-ios-sheet {
+    max-height: 50vh;
   }
 }
 
-/* Tablet & Medium Screens (481px to 768px) */
-@media (min-width: 481px) and (max-width: 768px) {
+/* Small laptop / tablet landscape (769px – 1024px) */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .pwa-install-banner {
+    width: min(calc(100vw - 3rem), 460px);
+  }
+
   .pwa-install-card {
-    flex-direction: column;
-    align-items: flex-start;
+    padding: 1.75rem;
+  }
+}
+
+/* Desktop (1025px+) */
+@media (min-width: 1025px) {
+  .pwa-install-banner {
+    width: 460px;
+    max-height: min(75vh, 600px);
+  }
+
+  .pwa-install-card:hover .pwa-install-card-icon {
+    transform: scale(1.05);
+  }
+}
+
+/* Short viewports (landscape phones, small laptops with low height) */
+@media (max-height: 480px) {
+  .pwa-install-banner {
+    max-height: 88vh;
+  }
+
+  .pwa-ios-sheet {
+    max-height: 30vh;
+  }
+}
+
+/* Respect reduced-motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .pwa-install-banner,
+  .pwa-install-btn,
+  .pwa-install-card,
+  .pwa-ios-sheet,
+  .pwa-card-guide {
+    transition: none;
+    animation: none;
   }
 }

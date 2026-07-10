@@ -19,7 +19,7 @@ export function Footer() {
           </div>
           <div>
             <h4>Resources</h4>
-            <a href="#">AI Tutor</a>
+            <Link to="">AI Tutor</Link>
             <Link to="/simulator">Mock Exam</Link>
             <Link to="/study">Past Questions</Link>
             <Link to="/syllabus">2027 Syllabus</Link>

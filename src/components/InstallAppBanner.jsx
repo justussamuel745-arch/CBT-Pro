@@ -15,20 +15,150 @@ const Ic = {
   Bolt: () => <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" /></svg>,
   Bell: () => <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" /><path d="M13.73 21a2 2 0 0 1-3.46 0" /></svg>,
   Smartphone: () => <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" /><line x1="12" y1="18" x2="12.01" y2="18" /></svg>,
+  Menu: () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.3" strokeLinecap="round"><line x1="4" y1="6" x2="20" y2="6" /><line x1="4" y1="12" x2="20" y2="12" /><line x1="4" y1="18" x2="20" y2="18" /></svg>,
+  MoreVert: () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.3" strokeLinecap="round"><circle cx="12" cy="5" r="1.2" fill="currentColor" /><circle cx="12" cy="12" r="1.2" fill="currentColor" /><circle cx="12" cy="19" r="1.2" fill="currentColor" /></svg>,
+  Compass: () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" /></svg>,
+  Bookmark: () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 21 12 16 5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" /></svg>,
 };
 
-function getBrowser() {
+// ─────────────────────────────────────────────────────────────
+// PLATFORM / BROWSER DETECTION
+// ─────────────────────────────────────────────────────────────
+function detectEnvironment() {
   const ua = navigator.userAgent;
 
-  if (/SamsungBrowser/i.test(ua)) return "samsung";
-  if (/Edg/i.test(ua)) return "edge";
-  if (/Chrome/i.test(ua) && !/Edg/i.test(ua)) return "chrome";
-  if (/Safari/i.test(ua) && !/Chrome/i.test(ua)) return "safari";
+  const isIOS = /iPad|iPhone|iPod/.test(ua) && !window.MSStream;
+  const isAndroid = /Android/i.test(ua);
+  const isDesktop = !isIOS && !isAndroid;
 
-  return "other";
+  let browser = "other";
+  if (/EdgiOS/i.test(ua)) browser = "edge-ios";
+  else if (/CriOS/i.test(ua)) browser = "chrome-ios";
+  else if (/FxiOS/i.test(ua)) browser = "firefox-ios";
+  else if (/SamsungBrowser/i.test(ua)) browser = "samsung";
+  else if (/OPR\//i.test(ua) || /Opera/i.test(ua)) browser = "opera";
+  else if (/Edg\//i.test(ua)) browser = "edge";
+  else if (/Firefox\//i.test(ua)) browser = "firefox";
+  else if (/Chrome\//i.test(ua)) browser = "chrome";
+  else if (/Safari\//i.test(ua)) browser = "safari";
+
+  return { isIOS, isAndroid, isDesktop, browser };
 }
 
-const DISMISS_DURATION = 24 * 60 * 60 * 1000; // 1 days
+// ─────────────────────────────────────────────────────────────
+// Builds the right guidance for the device Claude — sorry,
+// the device the user is actually on. One source of truth so
+// both the banner and the card show identical, correct steps.
+//
+// mode:
+//   "auto"      → native install prompt is available, no guide needed
+//   "guide"     → show numbered manual steps
+//   "redirect"  → can't install in this browser at all, tell them
+//                 which browser to switch to
+//   "unsupported" → this platform/browser has no install path
+// ─────────────────────────────────────────────────────────────
+function getInstallGuidance({ isIOS, isAndroid, isDesktop, browser }, canInstall) {
+  if (canInstall) {
+    return { mode: "auto" };
+  }
+
+  // ---- iOS ----
+  if (isIOS) {
+    if (browser === "safari") {
+      return {
+        mode: "guide",
+        label: "Installation Guide",
+        steps: [
+          { icon: <Ic.Share />, text: <>Tap the <strong>Share</strong> button in the toolbar.</> },
+          { icon: <Ic.Plus />, text: <>Scroll down and tap <strong>Add to Home Screen</strong>.</> },
+          { icon: <Ic.Check />, text: <>Tap <strong>Add</strong> in the top-right corner.</> },
+        ],
+      };
+    }
+    // Chrome/Firefox/Edge on iOS all run on WebKit and cannot install PWAs —
+    // only Safari can add to the Home Screen.
+    return {
+      mode: "redirect",
+      label: "Open in Safari",
+      message: "Installing isn't supported in this browser on iPhone/iPad. Open CBT Pro in Safari, then tap Share > Add to Home Screen.",
+    };
+  }
+
+  // ---- Android ----
+  if (isAndroid) {
+    if (browser === "samsung") {
+      return {
+        mode: "guide",
+        label: "Installation Guide",
+        steps: [
+          { icon: <Ic.Menu />, text: <>Tap the <strong>Menu</strong> icon at the bottom of Samsung Internet.</> },
+          { icon: <Ic.Plus />, text: <>Tap <strong>Add page to</strong>.</> },
+          { icon: <Ic.Smartphone />, text: <>Choose <strong>Home screen</strong>.</> },
+        ],
+      };
+    }
+    if (browser === "firefox") {
+      return {
+        mode: "guide",
+        label: "Installation Guide",
+        steps: [
+          { icon: <Ic.MoreVert />, text: <>Tap the <strong>⋮</strong> menu in Firefox.</> },
+          { icon: <Ic.Plus />, text: <>Tap <strong>Install</strong> (or <strong>Add to Home screen</strong>).</> },
+        ],
+      };
+    }
+    if (browser === "opera") {
+      return {
+        mode: "guide",
+        label: "Installation Guide",
+        steps: [
+          { icon: <Ic.MoreVert />, text: <>Tap the <strong>Opera</strong> menu.</> },
+          { icon: <Ic.Plus />, text: <>Tap <strong>Home screen</strong> to add CBT Pro.</> },
+        ],
+      };
+    }
+    // Chrome / Edge on Android normally fire the native prompt (canInstall
+    // would be true above). If it hasn't fired yet, engagement heuristics
+    // just haven't been met — give the manual fallback.
+    return {
+      mode: "guide",
+      label: "Installation Guide",
+      steps: [
+        { icon: <Ic.MoreVert />, text: <>Tap the <strong>⋮</strong> menu in the top-right.</> },
+        { icon: <Ic.Plus />, text: <>Tap <strong>Install app</strong>.</> },
+        { icon: <Ic.Check />, text: <>Confirm by tapping <strong>Install</strong>.</> },
+      ],
+    };
+  }
+
+  // ---- Desktop ----
+  if (isDesktop) {
+    if (browser === "chrome" || browser === "edge" || browser === "opera") {
+      return {
+        mode: "guide",
+        label: "Installation Guide",
+        steps: [
+          { icon: <Ic.Compass />, text: <>Look for the <strong>install icon</strong> in the address bar.</> },
+          { icon: <Ic.Check />, text: <>Click it, then confirm <strong>Install</strong>.</> },
+        ],
+      };
+    }
+    // Safari desktop and Firefox desktop have no install API at all.
+    return {
+      mode: "unsupported",
+      label: "Not Supported Here",
+      message: "This browser doesn't support installing web apps. Bookmark this page for quick access, or open CBT Pro in Chrome or Edge to install it.",
+    };
+  }
+
+  return {
+    mode: "unsupported",
+    label: "Not Supported Here",
+    message: "Installing isn't supported in this browser. Try opening CBT Pro in Chrome or Edge.",
+  };
+}
+
+const DISMISS_DURATION = 24 * 60 * 60 * 1000; // 1 day
 
 // ─────────────────────────────────────────────────────────────
 // FLOATING BANNER — the recommended placement
@@ -36,91 +166,64 @@ const DISMISS_DURATION = 24 * 60 * 60 * 1000; // 1 days
 export function InstallAppBanner() {
   const [visible, setVisible] = useState(false);
   const [dismissed, setDismissed] = useState(false);
-  const [showIosSteps, setShowIosSteps] = useState(false);
+  const [showGuide, setShowGuide] = useState(false);
 
-  const {
-    canInstall,
-    isInstalled,
-    install,
-  } = usePWAInstall();
-  const browser = getBrowser();
+  const { canInstall, isInstalled, install } = usePWAInstall();
+  const env = detectEnvironment();
+  const guidance = getInstallGuidance(env, canInstall);
 
   useEffect(() => {
-    const dismissedAt = Number(
-      localStorage.getItem("pwa-install-dismissed")
-    );
+    const dismissedAt = Number(localStorage.getItem("pwa-install-dismissed"));
 
     if (dismissedAt) {
-      const expired =
-        Date.now() - dismissedAt > DISMISS_DURATION;
+      const expired = Date.now() - dismissedAt > DISMISS_DURATION;
 
       if (!expired) {
         setDismissed(true);
         return;
       }
-
-      // Expired, allow the banner to show again
       localStorage.removeItem("pwa-install-dismissed");
     }
 
-    if (isInstalled) {
-      return;
-    }
+    if (isInstalled) return;
 
-    const timer = setTimeout(() => {
-      setVisible(true);
-    }, 2500);
-
+    const timer = setTimeout(() => setVisible(true), 2500);
     return () => clearTimeout(timer);
   }, [isInstalled]);
 
   useEffect(() => {
     function onAppInstalled() {
-      localStorage.setItem(
-        "pwa-install-dismissed",
-        Date.now().toString()
-      );
+      localStorage.setItem("pwa-install-dismissed", Date.now().toString());
       setDismissed(true);
       setVisible(false);
-      setShowIosSteps(false);
+      setShowGuide(false);
     }
-
     window.addEventListener("appinstalled", onAppInstalled);
-
-    return () => {
-      window.removeEventListener("appinstalled", onAppInstalled);
-    };
+    return () => window.removeEventListener("appinstalled", onAppInstalled);
   }, []);
 
   function handleClose() {
     setVisible(false);
-    setShowIosSteps(false);
-    localStorage.setItem(
-      "pwa-install-dismissed",
-      Date.now().toString()
-    );
+    setShowGuide(false);
+    localStorage.setItem("pwa-install-dismissed", Date.now().toString());
     setTimeout(() => setDismissed(true), 400);
   }
 
   async function handleInstall() {
-    // Native install prompt available
-    if (canInstall) {
+    // Native install prompt available — trigger it directly, no guide needed.
+    if (guidance.mode === "auto") {
       const installed = await install();
-
-      if (installed) {
-        handleClose();
-      }
-
+      if (installed) handleClose();
       return;
     }
-
-    // Otherwise show manual instructions
-    setShowIosSteps((prev) => !prev);
+    // Otherwise reveal the accurate manual steps for this browser.
+    setShowGuide((prev) => !prev);
   }
 
-  if (dismissed || isInstalled) {
-    return null;
-  }
+  if (dismissed || isInstalled) return null;
+
+  const buttonLabel =
+    guidance.mode === "auto" ? "Install" : guidance.label;
 
   return (
     <div className={`pwa-install-banner${visible ? ' pwa-visible' : ''}`}>
@@ -137,7 +240,7 @@ export function InstallAppBanner() {
           <button className="pwa-install-btn" onClick={handleInstall}>
             <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}>
               <Ic.Download />
-              {canInstall ? "Install" : "Installation Guide"}
+              {buttonLabel}
             </span>
           </button>
           <button className="pwa-install-close" onClick={handleClose} aria-label="Dismiss">
@@ -146,89 +249,33 @@ export function InstallAppBanner() {
         </div>
       </div>
 
-      {/* iOS manual steps — Safari has no native install prompt */}
-      {showIosSteps && (
+      {showGuide && guidance.mode === "guide" && (
         <div className="pwa-ios-sheet">
-
-          {browser === "safari" && (
-            <>
-              <div className="pwa-ios-step">
-                <span className="pwa-ios-num">1</span>
-                Tap the <span className="pwa-ios-icon"><Ic.Share /></span> Share button.
-              </div>
-
-              <div className="pwa-ios-step">
-                <span className="pwa-ios-num">2</span>
-                Tap <strong>Add to Home Screen</strong>.
-              </div>
-
-              <div className="pwa-ios-step">
-                <span className="pwa-ios-num">3</span>
-                Tap <strong>Add</strong>.
-              </div>
-            </>
-          )}
-
-          {browser === "chrome" && (
-            <>
-              <div className="pwa-ios-step">
-                <span className="pwa-ios-num">1</span>
-                Tap the <strong>⋮</strong> menu in the top-right.
-              </div>
-
-              <div className="pwa-ios-step">
-                <span className="pwa-ios-num">2</span>
-                Tap <strong>Install app</strong>.
-              </div>
-
-              <div className="pwa-ios-step">
-                <span className="pwa-ios-num">3</span>
-                Confirm by tapping <strong>Install</strong>.
-              </div>
-            </>
-          )}
-
-          {browser === "edge" && (
-            <>
-              <div className="pwa-ios-step">
-                <span className="pwa-ios-num">1</span>
-                Tap the menu.
-              </div>
-
-              <div className="pwa-ios-step">
-                <span className="pwa-ios-num">2</span>
-                Tap <strong>Install this site as an app</strong>.
-              </div>
-            </>
-          )}
-
-          {browser === "samsung" && (
-            <>
-              <div className="pwa-ios-step">
-                <span className="pwa-ios-num">1</span>
-                Tap the <strong>☰ Menu</strong> at the bottom of Samsung Internet.
-              </div>
-
-              <div className="pwa-ios-step">
-                <span className="pwa-ios-num">2</span>
-                Tap <strong>Add page to</strong>.
-              </div>
-
-              <div className="pwa-ios-step">
-                <span className="pwa-ios-num">3</span>
-                Choose <strong>Home screen</strong>.
-              </div>
-            </>
-          )}
-
-          {browser === "other" && (
-            <div className="pwa-ios-step">
-              Open your browser menu and look for
-              <strong> Install App</strong> or
-              <strong> Add to Home Screen</strong>.
+          {guidance.steps.map((step, i) => (
+            <div className="pwa-ios-step" key={i}>
+              <span className="pwa-ios-num">{i + 1}</span>
+              <span className="pwa-ios-icon">{step.icon}</span>
+              {step.text}
             </div>
-          )}
+          ))}
+        </div>
+      )}
 
+      {showGuide && guidance.mode === "redirect" && (
+        <div className="pwa-ios-sheet">
+          <div className="pwa-ios-step">
+            <span className="pwa-ios-icon"><Ic.Compass /></span>
+            {guidance.message}
+          </div>
+        </div>
+      )}
+
+      {showGuide && guidance.mode === "unsupported" && (
+        <div className="pwa-ios-sheet">
+          <div className="pwa-ios-step">
+            <span className="pwa-ios-icon"><Ic.Bookmark /></span>
+            {guidance.message}
+          </div>
         </div>
       )}
     </div>
@@ -237,162 +284,71 @@ export function InstallAppBanner() {
 
 // ─────────────────────────────────────────────────────────────
 // INLINE CARD — alternative, embed inside a <section> on the homepage
-// Drop this into HomePage.jsx wherever a card fits, e.g. next to
-// the simulator/syllabus grid.
 // ─────────────────────────────────────────────────────────────
 export function InstallAppCard() {
-  const {
-    canInstall,
-    isInstalled,
-    install,
-  } = usePWAInstall();
-
+  const { canInstall, isInstalled, install } = usePWAInstall();
   const [showGuide, setShowGuide] = useState(false);
 
-  const browser = getBrowser();
+  const env = detectEnvironment();
+  const guidance = getInstallGuidance(env, canInstall);
 
   async function handleInstall() {
-
-    if (canInstall) {
-      const installed = await install();
-
-      if (installed) {
-        return;
-      }
-
+    if (guidance.mode === "auto") {
+      await install();
       return;
     }
-
     setShowGuide((prev) => !prev);
   }
 
+  if (isInstalled) return null;
 
-  if (isInstalled) {
-    return null;
-  }
-
+  const buttonLabel = guidance.mode === "auto" ? "Install App" : guidance.label;
 
   return (
     <div className="pwa-install-card">
-
       <div className="pwa-install-card-icon">
         <Ic.Smartphone />
       </div>
 
-
       <div className="pwa-install-card-body">
-
-        <h3 className="pwa-install-card-title">
-          Get CBT Pro App
-        </h3>
-
+        <h3 className="pwa-install-card-title">Get CBT Pro App</h3>
 
         <p className="pwa-install-card-desc">
           Install CBT Pro for faster access, offline practice,
           and a full-screen exam experience.
         </p>
 
-
         <div className="pwa-install-card-features">
-
-          <span className="pwa-feature-chip">
-            <Ic.Check />
-            Works offline
-          </span>
-
-          <span className="pwa-feature-chip">
-            <Ic.Bolt />
-            Instant launch
-          </span>
-
-          <span className="pwa-feature-chip">
-            <Ic.Bell />
-            Exam reminders
-          </span>
-
+          <span className="pwa-feature-chip"><Ic.Check />Works offline</span>
+          <span className="pwa-feature-chip"><Ic.Bolt />Instant launch</span>
+          <span className="pwa-feature-chip"><Ic.Bell />Exam reminders</span>
         </div>
-
 
         <button
           className="pwa-install-btn"
           onClick={handleInstall}
-          style={{
-            padding: "0.65rem 1.25rem",
-            fontSize: "0.85rem"
-          }}
+          style={{ padding: "0.65rem 1.25rem", fontSize: "0.85rem" }}
         >
-
-          <span
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: "0.4rem"
-            }}
-          >
-
+          <span style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem" }}>
             <Ic.Download />
-
-            {canInstall
-              ? "Install App"
-              : "How to Install"}
-
+            {buttonLabel}
           </span>
-
         </button>
 
-
-        {showGuide && (
-
+        {showGuide && guidance.mode === "guide" && (
           <div className="pwa-card-guide">
-
-
-            {browser === "samsung" && (
-              <>
-                <p>1. Tap ☰ Menu</p>
-                <p>2. Tap Add page to</p>
-                <p>3. Choose Home screen</p>
-              </>
-            )}
-
-
-            {browser === "chrome" && (
-              <>
-                <p>1. Tap ⋮ menu</p>
-                <p>2. Select Install app</p>
-              </>
-            )}
-
-
-            {browser === "safari" && (
-              <>
-                <p>1. Tap Share button</p>
-                <p>2. Select Add to Home Screen</p>
-              </>
-            )}
-
-
-            {browser === "edge" && (
-              <>
-                <p>1. Open menu</p>
-                <p>2. Select Install this app</p>
-              </>
-            )}
-
-
-            {browser === "other" && (
-              <p>
-                Open browser menu and choose
-                "Add to Home Screen".
-              </p>
-            )}
-
-
+            {guidance.steps.map((step, i) => (
+              <p key={i}>{i + 1}. {step.text}</p>
+            ))}
           </div>
-
         )}
 
+        {showGuide && (guidance.mode === "redirect" || guidance.mode === "unsupported") && (
+          <div className="pwa-card-guide">
+            <p>{guidance.message}</p>
+          </div>
+        )}
       </div>
-
     </div>
   );
 }

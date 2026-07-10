@@ -7,6 +7,7 @@ import rehypeKatex from 'rehype-katex';
 import 'katex/dist/katex.min.css';
 import UserContext from '../context/UserContext';
 import { fetchWithAuth } from '../scripts/utilis/fetch';
+import { saveUser } from '../hooks/services/indexedDB/users.js';
 import './AstraAIModal.css'
 
 
@@ -112,7 +113,7 @@ const CreditsDisplay = memo(function CreditsDisplay({ credits, creditLimit, onTo
             <div className="astra-credits-popover-sub">
               {isLow
                 ? "You're running low. Top up to keep chatting with Astra without interruption."
-                : "Each message you send to Astra uses 1 credit. Responses are always free."
+                : "1 credit is deducted only after a response is successfully generated. Failed requests do not consume credits."
               }
             </div>
             <div className="astra-credits-popover-bar-track">
@@ -180,7 +181,7 @@ const MessageBubble = memo(function MessageBubble({ msg }) {
 // MAIN MODAL
 // ─────────────────────────────────────────────────────────────
 export const AstraAIModal = memo(function AstraAIModal({ setChatWithAI, chatMessages, setChatMessages}) {
-  const { token, setToken, userInfo } = useContext(UserContext);
+  const { token, setToken, userInfo, setUserInfo } = useContext(UserContext);
   const navigate = useNavigate()
   const [userMsg,  setUserMsg]  = useState('');
   const [disabled, setDisabled] = useState(false);
@@ -240,9 +241,11 @@ export const AstraAIModal = memo(function AstraAIModal({ setChatWithAI, chatMess
           ? { ...msg, message: data.answer, description: undefined }
           : msg
       ));
+      
+      setUserInfo(prev => ({...prev, aiCredits: data.creditsLeft}))
+      const newInfo = await saveUser({...userInfo, aiCredits: data.creditsLeft, id: 'current-user'})
 
     } catch (err) {
-      console.error('Astra error:', err);
       let errorText;
       if (!err.status){
         errorText = "Can't reach the server. Check your connection and try again."

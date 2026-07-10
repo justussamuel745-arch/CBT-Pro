@@ -5,7 +5,6 @@ function UserProvider({ children }) {
   const [token, setToken] = useState(null)
   const [isActivated, setIsActivated] = useState(null)
   const [error, setError] = useState(null)
-  const [toastMsg, setToastMsg] = useState(null)
   const [examConfig, setExamConfig] = useState(null)
   const [answers, setAnswers] = useState([])
   const [examResults, setExamResults] = useState(null)
@@ -33,8 +32,6 @@ function UserProvider({ children }) {
       setIsActivated,
       error,
       setError,
-      toastMsg,
-      setToastMsg,
       examConfig,
       setExamConfig,
       answers,

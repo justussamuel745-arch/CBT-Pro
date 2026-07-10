@@ -51,11 +51,15 @@ export function Syllabus() {
   }
   
   if (subject){
-    return <iframe src={`/syllabus/${subject}.html`} style={{
-      width: '100vw',
-      height: '100vh',
-      margin: 0
-    }} />
+    if (AVAILABLE_SYLLABUS.includes(subject)){
+      return <iframe src={`/syllabus/${subject}.html`} style={{
+        width: '100vw',
+        height: '100vh',
+        margin: 0
+      }} />
+    } else {
+      return <h2>Currently Not Available</h2>
+    }
   }
   
   return (

@@ -1,22 +1,31 @@
-import { useState, useContext } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import { Link } from 'react-router';
 import UserContext from '../context/UserContext.jsx';
 import { fetchWithAuth } from '../scripts/utilis/fetch.js'
-import { Toast } from '../components/Errors.jsx'
+import { ToastProvider, useToast, CSS } from '../components/NotificationSystem';
 import './Feedback.css';
 
-export function Feedback(){
-  const { token, setToken, error, setError, toastMsg, setToastMsg } = useContext(UserContext);
+function FeedbackInner(){
+  const { token, setToken, error, setError } = useContext(UserContext);
   const [ feedbackType, setFeedbackType ] = useState('')
   const [feedbackComment, setFeedbackComment ] = useState('')
   const [ isDisabled, setIsDisabled ] = useState(false)
   const [ formContainer, setFormContainer ] = useState('show')
   
+  const toast = useToast()
+  
+  useEffect(() => {
+    const el = document.createElement("style");
+    el.id = "__ns_styles";
+    el.textContent = CSS[0];
+    document.head.appendChild(el);
+    return () => document.getElementById("__ns_styles")?.remove();
+  }, []);
+  
   async function submitForm(event){
     event.preventDefault()
     setError(null)
     if (!feedbackType){
-      //alert('Please select a feedback type');
       setError({
         feild: 'feedbackType',
         message: 'Please select a feedback type'
@@ -25,7 +34,6 @@ export function Feedback(){
     }
     
     if (feedbackComment.length < 10) {
-      //alert('Please write at least 10 characters');
       setError({
         feild: 'feedbackComment',
         message: 'Please write at least 10 characters'
@@ -52,9 +60,9 @@ export function Feedback(){
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (err) {
       if (!err.status) {
-        setToastMsg('Network Error. Check your connection or try again later')
+        toast.push({ variant: 'pill', type: 'error', message: "Network Error. Check your connection or try again later" });
       } else if (err.status >= 500) {
-        setToastMsg('Something went wrong. Please try again later')
+        toast.push({ variant: 'pill', type: 'error', message: "Something went wrong. Please try again later" });
       }
       console.error('Error:', err);
     }
@@ -72,8 +80,6 @@ export function Feedback(){
     <>
       <title>Send Feedback | CBT Pro</title>
       
-      
-      {toastMsg && <Toast msg={toastMsg} onClose={() => setToastMsg(null)} />}
       <div className="feedback-page">
         <nav className="nav">
           <div className="nav-container">
@@ -160,4 +166,12 @@ export function Feedback(){
       </div>
     </>
   )
+}
+
+export function Feedback() {
+  return (
+    <ToastProvider position="top-right">
+      <FeedbackInner />
+    </ToastProvider>
+  );
 }
