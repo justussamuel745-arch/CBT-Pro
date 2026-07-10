@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import UserContext from '../context/UserContext.jsx'
+import usePWAInstall from "../hooks/usePWAInstall";
 
 function UserProvider({ children }) {
   const [token, setToken] = useState(null)
@@ -22,7 +23,8 @@ function UserProvider({ children }) {
   
   /* =========== Exam ============*/
   const [examQuestions, setExamQuestions] = useState([])
-
+  
+  const pwa = usePWAInstall()
 
   return (
     <UserContext.Provider value={{
@@ -49,7 +51,8 @@ function UserProvider({ children }) {
       examQuestions,
       setExamQuestions,
       historyData,
-      setHistoryData
+      setHistoryData,
+      pwa
     }}>
       { children }
     </UserContext.Provider>

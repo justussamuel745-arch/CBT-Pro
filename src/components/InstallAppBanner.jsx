@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import usePWAInstall from "../hooks/usePWAInstall";
+import { useState, useEffect, useContext } from "react";
+import UserContext from '../context/UserContext';
 import './InstallAppBanner.css';
 
 // ─────────────────────────────────────────────────────────────
@@ -164,11 +164,12 @@ const DISMISS_DURATION = 24 * 60 * 60 * 1000; // 1 day
 // FLOATING BANNER — the recommended placement
 // ─────────────────────────────────────────────────────────────
 export function InstallAppBanner() {
+  const { pwa } = useContext(UserContext)
   const [visible, setVisible] = useState(false);
   const [dismissed, setDismissed] = useState(false);
   const [showGuide, setShowGuide] = useState(false);
 
-  const { canInstall, isInstalled, install } = usePWAInstall();
+  const { canInstall, isInstalled, install } = pwa;
   const env = detectEnvironment();
   const guidance = getInstallGuidance(env, canInstall);
 
@@ -286,7 +287,8 @@ export function InstallAppBanner() {
 // INLINE CARD — alternative, embed inside a <section> on the homepage
 // ─────────────────────────────────────────────────────────────
 export function InstallAppCard() {
-  const { canInstall, isInstalled, install } = usePWAInstall();
+  const { pwa } = useContext(UserContext)
+  const { canInstall, isInstalled, install } = pwa;
   const [showGuide, setShowGuide] = useState(false);
 
   const env = detectEnvironment();
