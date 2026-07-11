@@ -12,7 +12,7 @@ import { formatName } from '../scripts/utilis/formatName.js';
 import { CountdownTimer } from '../components/CountdownTimer.jsx'
 import { Calculator } from '../components/Calculator.jsx'
 import { Loading } from '../components/Loading.jsx'
-import { url } from '../scripts/utilis/url.js'
+import { Image } from '../components/Image'
 import { ModalStripe,  CSS } from '../components/NotificationSystem';
 import { getRandomQuestions } from '../hooks/services/examQuestions';
 import { saveQuestions } from '../hooks/services/indexedDB/questions';
@@ -146,6 +146,7 @@ export function Exam() {
             });
           }
           data = await response.json().catch(() => ({}));
+          console.log(data.map(d => d.id))
           if (!response.ok){
             throw { status: response.status, error: data.message || 'Something went wrong. Try again' };
           }
@@ -207,7 +208,6 @@ export function Exam() {
         
       } catch (err) {
         console.error('Error:', err.message);
-        alert(err.message)
         navigate('/simulator');
       }
     }
@@ -515,12 +515,9 @@ export function Exam() {
                 (
                   <div key={ques.id}>
                     <div className="exam-question-text">
-                      <img 
-                        src={`${url}/images/${ques.id}.jpg`} 
-                        className="mode-question-image"
-                        onError={(e) => e.target.style.display = 'none'}
-                        alt="Question image" 
-                      />
+                      
+                      <Image id={ques.id} />
+                      
                       {ques.question.instruction && <><strong>{ques.question.instruction}</strong><br /></>}
                       {ques.question.comprehension && <><strong dangerouslySetInnerHTML={{__html: ques.question.comprehension}}></strong><br/></>}
                       {
@@ -551,7 +548,7 @@ export function Exam() {
                              <div className={`exam-option ${opt.id === userAnswer && 'selected'}`} key={opt.id} onClick={selectedOpt} data-selected-id={opt.id} data-id={ques.id}>
                                 <div className="exam-option-key">{opt.id.toUpperCase()}</div>
                                 <div className="exam-option-content">
-                                  <div className="exam-option-text">{opt.option}</div>
+                                  <div className="exam-option-text" dangerouslySetInnerHTML={{__html: opt.option}} />
                                 </div>
                               </div>
                           ) 

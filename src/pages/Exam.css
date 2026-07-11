@@ -246,15 +246,6 @@
   margin-bottom: 1em;
 }
 
-.exam-question-image {
-  width: 100%;
-  max-height: 400px;
-  object-fit: contain;
-  border-radius: 10px;
-  margin-bottom: 1.5em;
-  border: 1px solid var(--border);
-}
-
 .exam-options {
   display: flex;
   flex-direction: column;

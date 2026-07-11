@@ -11,7 +11,7 @@ import { Loading } from '../components/Loading';
 import { Calculator } from '../components/Calculator';
 import { AstraAIModal } from '../components/AstraAIModal';
 import { formatName } from '../scripts/utilis/formatName';
-import { url } from '../scripts/utilis/url';
+import { Image } from '../components/Image'
 import { ModalDialog, CSS } from '../components/NotificationSystem';
 import { ReportQuestionModal } from "../components/ReportQuestionModal";
 
@@ -330,12 +330,7 @@ export function Review() {
                     <span className="mode-tag">{ques.topic}</span>
                   </div>
                   <div className="mode-question-text">
-                    <img 
-                      src={`${url}/images/${ques.id}.jpg`} 
-                      className="mode-question-image"
-                      onError={(e) => e.target.style.display = 'none'}
-                      alt="Question image" 
-                    />
+                    <Image id={ques.id} />
                     {typeof ques.question === 'object' && ques.question?.instruction && <><strong>{ques.question.instruction}</strong><br /></>}
                     {typeof ques.question === 'object' && ques.question?.comprehension && <><strong dangerouslySetInnerHTML={{ __html: ques.question.comprehension }} /><br /></>}
                     {

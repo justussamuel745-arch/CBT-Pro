@@ -224,15 +224,6 @@
   margin-bottom: 1em;
 }
 
-.mode-question-image {
-  width: 100%;
-  max-height: 400px;
-  object-fit: contain;
-  border-radius: 10px;
-  margin-bottom: 1.5em;
-  border: 1px solid var(--border);
-}
-
 .mode-options {
   display: flex;
   flex-direction: column;

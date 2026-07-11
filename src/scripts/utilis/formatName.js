@@ -1,5 +1,6 @@
 export function formatName(subject){
   let formattedName = subject
+  
   if (subject === 'English'){
     formattedName = 'Use of English'
   } else if (subject === 'Lekki'){
@@ -12,6 +13,12 @@ export function formatName(subject){
     formattedName = 'Home Economics'
   } else if (subject === 'PhysicalHealth'){
     formattedName = 'physical Health'
+  } else if (subject === 'Literature'){
+    formattedName = 'Literature in English'
+  }else if (subject === 'CurrentAffairs'){
+    formattedName = 'Current Affairs'
+  } else if (subject === 'Civic'){
+    formattedName = 'Civic Education'
   }
   
   return formattedName
