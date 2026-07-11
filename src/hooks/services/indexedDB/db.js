@@ -6,7 +6,7 @@
 */
 
 const DB_NAME = "CBTPro";
-const DB_VERSION = 3;
+const DB_VERSION = 4;
 
 export function openDB() {
   return new Promise((resolve, reject) => {
@@ -81,6 +81,13 @@ export function openDB() {
 
         historyStore.createIndex("userId", "userId", {
           unique: false,
+        });
+      }
+
+      // Images Store
+      if (!db.objectStoreNames.contains("images")) {
+        db.createObjectStore("images", {
+          keyPath: "id",
         });
       }
     };

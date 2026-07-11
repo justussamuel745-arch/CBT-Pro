@@ -16,6 +16,7 @@ import { formatName } from '../scripts/utilis/formatName.js';
 import { ModalStripe, CSS } from '../components/NotificationSystem';
 import { ReportQuestionModal } from "../components/ReportQuestionModal";
 import { saveQuestions, getQuestions } from '../hooks/services/indexedDB/questions';
+import { saveAllImages } from '../hooks/services/indexedDB/images';
 import './StudyMode.css'
 
 const Notification = memo(({type, title, body, primaryLabel, onPrimary, onClose, closeLabel }) => {
@@ -168,8 +169,8 @@ export function StudyMode() {
         
         setRecords(data.map(d => d.id ? {id: d.id, isBookmarked: false} : null))
         setProgressList(data.map((d, index) => index + 1))
+        saveAllImages(data)
       } catch (err) {
-        console.log(err);
         if (!err.status){
           setModal('connection_lost')
         } else if (err.status >= 500){
@@ -331,7 +332,6 @@ export function StudyMode() {
                 const toggle = !toggleBmk
                 setToggleBmk(toggle)
                 setCurrentBmkCheck(toggle)
-                console.log(toggle);
                 setRecords(prev => prev.map(r => r.id === currentQuestion[0].id ? {...r, isBookmarked: toggle} : r))
                 const questionsStorage = JSON.parse(localStorage.getItem('bookmarks')) || []
                 const currentQ = currentQuestion[0]
@@ -393,7 +393,7 @@ export function StudyMode() {
                     </div>
                     <div className="mode-question-text">
                     
-                      <Image id={ques.id} />
+                      <Image id={ques.id} ext={ques.image?.url} />
                       
                       {typeof ques.question === 'object' && ques.question?.instruction && <><strong>{ques.question.instruction}</strong><br /></>}
                       {typeof ques.question === 'object' && ques.question?.comprehension && <><strong dangerouslySetInnerHTML={{ __html: ques.question.comprehension }} /><br /></>}

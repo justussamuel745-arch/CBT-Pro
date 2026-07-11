@@ -455,7 +455,7 @@ export const subjectsData = [
     id: "ENG001",
     icon: `<img src="${englishImg}" style="width: 100%; border-radius: 16px" />`,
     name: "English",
-    totalQuestions: 2450,
+    totalQuestions: 3150,
     topics: [
       "Comprehension and Summary",
       "Description",
@@ -602,7 +602,7 @@ export const subjectsData = [
     id: "LIT001",
     icon: `<img src="${literatureImg}" style="width: 100%; border-radius: 16px" />`,
     name: "Literature",
-    totalQuestions: 980,
+    totalQuestions: 1438,
     topics: [
       "Drama",
       "Poetry",
@@ -678,7 +678,7 @@ export const subjectsData = [
     id: "ACC001",
     icon: `<img src="${accountingImg}" style="width: 100%; border-radius: 16px" />`,
     name: "Accounting",
-    totalQuestions: 1050,
+    totalQuestions: 1358,
     topics: [
       "Ledger",
       "Cash Book",
@@ -693,7 +693,7 @@ export const subjectsData = [
     id: "COM001",
     icon: `<img src="${commerceImg}" style="width: 100%; border-radius: 16px" />`,
     name: "Commerce",
-    totalQuestions: 940,
+    totalQuestions: 1281,
     topics: [
       "Trade",
       "Insurance",
@@ -708,7 +708,7 @@ export const subjectsData = [
     id: "INS001",
     icon: `<img src="${insuranceImg}" style="width: 100%; border-radius: 16px" />`,
     name: "Insurance",
-    totalQuestions: 620,
+    totalQuestions: 1456,
     topics: [
       "Principles of Insurance",
       "Types of Insurance",
@@ -725,7 +725,7 @@ export const subjectsData = [
     id: "CIV001",
     icon: `<img src="${civicImg}" style="width: 100%; border-radius: 16px" />`,
     name: "Civic",
-    totalQuestions: 850,
+    totalQuestions: 1345,
     topics: [
       "National Consciousness",
       "Values",
@@ -745,7 +745,7 @@ export const subjectsData = [
     id: "CUR001",
     icon: `<img src="${currentAffairsImg}" style="width: 100%; border-radius: 16px" />`,
     name: "CurrentAffairs",
-    totalQuestions: 500,
+    totalQuestions: 1123,
     topics: [
       "National News",
       "International News",

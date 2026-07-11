@@ -8,6 +8,7 @@ import { Ic } from '../scripts/utilis/Ic'
 import defaultAvatar from '../assets/images/avatar.jpg';
 import { saveUser, deleteUser } from '../hooks/services/indexedDB/users';
 import { deleteAllQuestions } from '../hooks/services/indexedDB/questions';
+import { clearImages } from '../hooks/services/indexedDB/images';
 import './Settings.css';
 
 
@@ -862,6 +863,7 @@ function SettingsInner() {
                 onPrimary={async () => { 
                   setModal(null)
                   await deleteAllQuestions()
+                  await clearImages()
                   toast.push({ type: 'success', title: 'Data Cleared', message: 'Offline data cleared' });
                 }}
                 onClose={() => setModal(null)}

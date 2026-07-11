@@ -14,6 +14,7 @@ import { formatName } from '../scripts/utilis/formatName';
 import { Image } from '../components/Image'
 import { ModalDialog, CSS } from '../components/NotificationSystem';
 import { ReportQuestionModal } from "../components/ReportQuestionModal";
+import { saveAllImages } from '../hooks/services/indexedDB/images';
 
 export function Review() {
   const {  isActivated, examConfig, answers, examQuestions } = useContext(UserContext);
@@ -330,7 +331,7 @@ export function Review() {
                     <span className="mode-tag">{ques.topic}</span>
                   </div>
                   <div className="mode-question-text">
-                    <Image id={ques.id} />
+                    <Image id={ques.id} ext={ques.image?.url} />
                     {typeof ques.question === 'object' && ques.question?.instruction && <><strong>{ques.question.instruction}</strong><br /></>}
                     {typeof ques.question === 'object' && ques.question?.comprehension && <><strong dangerouslySetInnerHTML={{ __html: ques.question.comprehension }} /><br /></>}
                     {

@@ -16,6 +16,8 @@ import { Image } from '../components/Image'
 import { ModalStripe,  CSS } from '../components/NotificationSystem';
 import { getRandomQuestions } from '../hooks/services/examQuestions';
 import { saveQuestions } from '../hooks/services/indexedDB/questions';
+import { saveAllImages } from '../hooks/services/indexedDB/images';
+
 import './Exam.css';
 
 const ExpensiveChild = memo(({submitExam, hours, minutes, skipAutoSubmit}) => {
@@ -146,7 +148,6 @@ export function Exam() {
             });
           }
           data = await response.json().catch(() => ({}));
-          console.log(data.map(d => d.id))
           if (!response.ok){
             throw { status: response.status, error: data.message || 'Something went wrong. Try again' };
           }
@@ -205,8 +206,9 @@ export function Exam() {
         
         setAnswers(answersVariable)
         
-        
+        saveAllImages(data)
       } catch (err) {
+        alert(err.message)
         console.error('Error:', err.message);
         navigate('/simulator');
       }
@@ -516,7 +518,7 @@ export function Exam() {
                   <div key={ques.id}>
                     <div className="exam-question-text">
                       
-                      <Image id={ques.id} />
+                      <Image id={ques.id} ext={ques.image?.url} />
                       
                       {ques.question.instruction && <><strong>{ques.question.instruction}</strong><br /></>}
                       {ques.question.comprehension && <><strong dangerouslySetInnerHTML={{__html: ques.question.comprehension}}></strong><br/></>}
