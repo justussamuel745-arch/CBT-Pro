@@ -83,7 +83,6 @@ export function openDB() {
           unique: false,
         });
       }
-
     };
 
     request.onsuccess = () => {
