@@ -441,7 +441,7 @@ export function StudyMode() {
                             <div className={`mode-option ${classBadge()}`}>
                               <div className="mode-option-key">{opt.id.toUpperCase()}</div>
                               <div className="mode-option-content">
-                                <div className="mode-option-text">{opt.option}</div>
+                                <div className="mode-option-text" dangerouslySetInnerHTML={{__html: opt.option}} />
                               </div>
                             </div>
                           </div>

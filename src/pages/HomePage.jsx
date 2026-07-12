@@ -1,7 +1,6 @@
 import { useContext } from 'react';
 import { Link, useNavigate } from 'react-router'
 import { Footer } from '../components/Footer';
-import { Menu } from '../components/Menu.jsx';
 import UserContext from '../context/UserContext.jsx';
 import { subjectsData } from '../scripts/data/subjectsData.js';
 import { formatName } from '../scripts/utilis/formatName';
@@ -9,7 +8,7 @@ import { InstallAppBanner } from '../components/InstallAppBanner';
 import './HomePage.css'
 
 export function HomePage() {
-  const { token, isActivated, isAdmin, userInfo} = useContext(UserContext)
+  const { token, isActivated, userInfo} = useContext(UserContext)
   const navigate = useNavigate()
   
   return (
@@ -22,11 +21,8 @@ export function HomePage() {
             {token ? 
               (
                 <>
-                  {!isActivated 
-                    ? <Link to="/payment" className="btn btn-outline">Activate now</Link>
-                    :  isAdmin ?  <Link to="/admin/users" className="btn btn-outline">Admin Panel</Link> : ''
+                  {!isActivated && <Link to="/payment" className="btn btn-outline">Activate now</Link>
                   }
-                  <Menu />
                 </>
               ): 
               ( <>
@@ -163,7 +159,7 @@ export function HomePage() {
           <div className="cta">
             <h2>Your 300+ Score Starts Today</h2>
             <p>Stop guessing. Start practicing. Everything you need to prepare like a top JAMB candidate.</p>
-            {token ? <Link to="/study" className="btn btn-hero">Get started now</Link> : <Link to="/signup" className="btn btn-hero">Create Free Account</Link> }
+              <Link to="/signup" className="btn btn-hero">Create Free Account</Link> 
           </div>
         </section>
       </main>

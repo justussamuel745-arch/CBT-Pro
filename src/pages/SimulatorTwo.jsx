@@ -108,7 +108,7 @@ export function SimulatorTwo() {
       <section className="page-header padding-reset margin-reset">
         <div className="simulator-two-header-inner">
           <div className="simulator-two-breadcrumb">
-            <Link to="/" className="f-w-500 link-color">Home</Link> /
+            <Link to="/" className="f-w-500 link-color">Dashboard</Link> /
             <Link to="/simulator" className="f-w-500 link-color">Subjects</Link> /
             <span>Configure</span>
           </div>

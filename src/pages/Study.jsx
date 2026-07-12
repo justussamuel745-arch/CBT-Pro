@@ -1,8 +1,6 @@
 import  { useState, useContext} from "react";
 import { Link } from 'react-router';
 import UserContext from '../context/UserContext.jsx'
-import { Footer } from '../components/Footer';
-import { Menu } from '../components/Menu';
 import { subjectsData } from '../scripts/data/subjectsData.js';
 import { formatName } from '../scripts/utilis/formatName.js'
 import './Study.css';
@@ -40,7 +38,6 @@ export function Study(){
                   </Link>
                 ) 
               }
-              <Menu />
             </div>
           </div>
         </div>
@@ -50,7 +47,7 @@ export function Study(){
       <div className="page-header">
         <div id="study-container">
           <div className="breadcrumb">
-            <Link to="/">Home</Link> / Study
+            <Link to="/">Dashboard</Link> / Study
           </div>
           <h1 className="page-title">Choose Your Subject</h1>
           <p className="page-subtitle">
@@ -126,8 +123,6 @@ export function Study(){
         </section>
       </main>
 
-      {/* FOOTER */}
-      <Footer />
     </>
   );
 };

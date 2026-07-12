@@ -481,7 +481,7 @@ function PaymentInner() {
       {/* Header */}
       <div className="payment-nav-container">
         <div className="payment-breadcrumb">
-          <Link to="/">Home</Link> / Payment
+          <Link to="/">Dashboard</Link> / Payment
         </div>
         <h1 className="payment-page-title">
           {mainTab === 'activation' ? 'Activate Your App' : 'Buy AI Credits'}

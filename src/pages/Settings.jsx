@@ -405,7 +405,7 @@ function SettingsInner() {
         <div className="page-header">
           <div className="nav-container">
             <div className="breadcrumb">
-              <Link to="/">Home</Link> / Settings
+              <Link to="/">Dashboard</Link> / Settings
             </div>
             <div className="settings-header-title">
               <div className="settings-header-icon"><Ic.Settings /></div>

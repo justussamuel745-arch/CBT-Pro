@@ -161,7 +161,7 @@ export function StudyTwo() {
       <div className="page-header">
         <div id="study-two-container">
           <div className="breadcrumb mb-1">
-            <Link to="/">Home</Link> / <Link to="/study">Study</Link> / <span>{formatName(subject.name)}</span>
+            <Link to="/">Dashboard</Link> / <Link to="/study">Study</Link> / <span>{formatName(subject.name)}</span>
           </div>
           <div className="subject-header">
             <div className="subject-title-group">

@@ -94,7 +94,7 @@ function FeedbackInner(){
         <div className="page-header">
           <div className="nav-container">
             <div className="breadcrumb">
-              <Link to="/">Home</Link> / Feedback
+              <Link to="/">Dashboard</Link> / Feedback
             </div>
             <h1>Send Feedback</h1>
             <p className="page-subtitle">Help us improve CBT Pro. We read every message.</p>

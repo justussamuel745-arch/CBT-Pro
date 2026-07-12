@@ -1,7 +1,6 @@
 import { useState, useContext } from 'react'
 import { Link, useNavigate } from 'react-router';
 import UserContext from '../context/UserContext.jsx'
-import { Menu } from '../components/Menu';
 import { subjectsData } from '../scripts/data/subjectsData.js';
 import { formatName } from '../scripts/utilis/formatName.js';
 import './Simulator.css'
@@ -51,7 +50,6 @@ export function Simulator() {
                   </Link>
                 ) 
               }
-              <Menu />
             </div>
           </div>
         </div>
@@ -60,7 +58,7 @@ export function Simulator() {
       <section className="page-header margin padding">
         <div className="header-inner">
           <div className="breadcrumb text-start">
-            <Link to="/">Home</Link> / <span>subjects</span>
+            <Link to="/">Dashboard</Link> / <span>subjects</span>
           </div>
           <h1>Select Your Subjects</h1>
           <p>Choose any number of JAMB subjects to start your CBT session</p>
