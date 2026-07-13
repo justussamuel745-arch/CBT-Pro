@@ -26,7 +26,6 @@ import { Loading } from './components/Loading';
 import { Invalid } from './components/Invalid';
 import { Syllabus } from './pages/Syllabus';
 import { Dashboard } from './pages/Dashboard';
-import { Game } from './pages/Game';
 import { ProctectedAdminRoute } from './routes/ProtectedAdminRoute';
 const Delete = lazy(() => import('./pages/Delete.jsx'));
 const ResetPassword = lazy(() => import('./pages/auth/ResetPassword.jsx'));
