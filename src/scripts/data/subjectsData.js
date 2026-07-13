@@ -594,225 +594,280 @@ export const subjectsData = [
     name: "Biology",
     totalQuestions: 1680,
     topics: [
-      "Cell Structure",
-      "Nutrition",
-      "Respiration",
-      "Genetics",
-      "Ecology",
-      "Evolution"
+      "Variety of Organisms - Characteristics of Living Organisms",
+      "Variety of Organisms - Cell Structure and Functions",
+      "Variety of Organisms - Levels of Organization",
+      "Variety of Organisms - Evolution among Monera",
+      "Variety of Organisms - Evolution among Protista",
+      "Variety of Organisms - Evolution among Fungi",
+      "Variety of Organisms - Evolution among Plantae (Thallophyta, Bryophyta)",
+      "Variety of Organisms - Evolution among Invertebrates",
+      "Variety of Organisms - Evolution among Vertebrates",
+      "Variety of Organisms - Structural/Functional and Behavioural Adaptations",
+      "Form and Functions - Internal Structure of Plants",
+      "Form and Functions - Internal Structure of Mammals",
+      "Form and Functions - Nutrition (Modes of Nutrition)",
+      "Form and Functions - Nutrition (Plant Nutrition - Photosynthesis)",
+      "Form and Functions - Nutrition (Plant Nutrition - Mineral Requirements)",
+      "Form and Functions - Nutrition (Animal Nutrition - Classes of Food)",
+      "Form and Functions - Nutrition (Animal Nutrition - Food Tests)",
+      "Form and Functions - Nutrition (Mammalian Tooth)",
+      "Form and Functions - Nutrition (Mammalian Alimentary Canal)",
+      "Form and Functions - Nutrition (Nutrition Process)",
+      "Form and Functions - Transport (Need and Materials)",
+      "Form and Functions - Transport (Mammalian Circulatory System)",
+      "Form and Functions - Transport (Plant Vascular System)",
+      "Form and Functions - Transport (Media and Mechanisms)",
+      "Form and Functions - Respiration (Respiratory Organs and Surfaces)",
+      "Form and Functions - Respiration (Mechanism of Gaseous Exchange)",
+      "Form and Functions - Respiration (Aerobic and Anaerobic Respiration)",
+      "Form and Functions - Excretion (Excretory Structures)",
+      "Form and Functions - Excretion (Excretory Mechanisms - Kidney, Lungs, Skin)",
+      "Form and Functions - Excretion (Excretory Products of Plants)",
+      "Form and Functions - Support and Movement (Plant Movements)",
+      "Form and Functions - Support and Movement (Supporting Tissues in Animals)",
+      "Form and Functions - Support and Movement (Types and Functions of Skeleton)",
+      "Form and Functions - Reproduction (Asexual Reproduction)",
+      "Form and Functions - Reproduction (Sexual Reproduction in Flowering Plants)",
+      "Form and Functions - Reproduction (Reproduction in Mammals)",
+      "Form and Functions - Growth (Meaning and Germination)",
+      "Form and Functions - Co-ordination and Control (Nervous Coordination)",
+      "Form and Functions - Co-ordination and Control (Sense Organs)",
+      "Form and Functions - Co-ordination and Control (Hormonal Control)",
+      "Form and Functions - Co-ordination and Control (Homeostasis)",
+      "Ecology - Factors Affecting Distribution of Organisms",
+      "Ecology - Symbiotic Interactions",
+      "Ecology - Energy Flow in the Ecosystem",
+      "Ecology - Nutrient Cycling (Carbon, Water, Nitrogen Cycles)",
+      "Ecology - Local (Nigerian) Biomes",
+      "Ecology - Ecology of Populations",
+      "Ecology - Soil (Characteristics and Components)",
+      "Ecology - Soil Fertility",
+      "Ecology - Humans and Environment (Diseases)",
+      "Ecology - Humans and Environment (Pollution and Control)",
+      "Ecology - Humans and Environment (Conservation of Natural Resources)",
+      "Ecology - Humans and Environment (Game Reserves and National Parks)",
+      "Heredity and Variations - Variation in Population",
+      "Heredity and Variations - Heredity (Inheritance of Characters)",
+      "Heredity and Variations - Heredity (Chromosomes as Basis of Heredity)",
+      "Heredity and Variations - Heredity (Probability and Sex Determination)",
+      "Heredity and Variations - Heredity (Application in Agriculture and Medicine)",
+      "Heredity and Variations - Heredity (Sex-linked Characters)",
+      "Heredity and Variations - Theories of Evolution",
+      "Heredity and Variations - Evidence of Evolution"
     ],
-    category: 'science'
+  category: 'science'
   },
 
-  {
-    id: "ECO001",
+{
+  id: "ECO001",
     icon: `<img src="${economicsImg}" style="width: 100%; border-radius: 16px"/>`,
-    name: "Economics",
-    totalQuestions: 1340,
-    topics: [
-      "Economics as a Science",
-      "Economic Systems",
-      "Methods and Tools of Economic Analysis",
-      "The Theory of Demand",
-      "The Theory of Consumer Behaviour",
-      "The Theory of Supply",
-      "The Theory of Price Determination",
-      "The Theory of Production",
-      "Theory of Costs and Revenue",
-      "Market Structures",
-      "National Income",
-      "Money and Inflation",
-      "Financial Institutions",
-      "Public Finance",
-      "Economic Growth and Development",
-      "Agriculture in Nigeria",
-      "Industry and Industrialization",
-      "Natural Resources and the Nigerian Economy",
-      "Business Organizations",
-      "Population",
-      "International Trade",
-      "International Economic Organizations",
-      "Factors of Production and their Theories"
-    ],
-    category: 'commercial arts'
-  },
+      name: "Economics",
+        totalQuestions: 1340,
+          topics: [
+            "Economics as a Science",
+            "Economic Systems",
+            "Methods and Tools of Economic Analysis",
+            "The Theory of Demand",
+            "The Theory of Consumer Behaviour",
+            "The Theory of Supply",
+            "The Theory of Price Determination",
+            "The Theory of Production",
+            "Theory of Costs and Revenue",
+            "Market Structures",
+            "National Income",
+            "Money and Inflation",
+            "Financial Institutions",
+            "Public Finance",
+            "Economic Growth and Development",
+            "Agriculture in Nigeria",
+            "Industry and Industrialization",
+            "Natural Resources and the Nigerian Economy",
+            "Business Organizations",
+            "Population",
+            "International Trade",
+            "International Economic Organizations",
+            "Factors of Production and their Theories"
+          ],
+            category: 'commercial arts'
+},
 
-  {
-    id: "GOV001",
+{
+  id: "GOV001",
     icon: `<img src="${governmentImg}" style="width: 100%; border-radius: 16px" />`,
-    name: "Government",
-    totalQuestions: 1210,
-    topics: [
-      "Constitution",
-      "Democracy",
-      "Citizenship",
-      "Political Parties",
-      "Federalism",
-      "Arms of Government"
-    ],
-    category: 'arts'
-  },
+      name: "Government",
+        totalQuestions: 1210,
+          topics: [
+            "Constitution",
+            "Democracy",
+            "Citizenship",
+            "Political Parties",
+            "Federalism",
+            "Arms of Government"
+          ],
+            category: 'arts'
+},
 
-  {
-    id: "LIT001",
+{
+  id: "LIT001",
     icon: `<img src="${literatureImg}" style="width: 100%; border-radius: 16px" />`,
-    name: "Literature",
-    totalQuestions: 1438,
-    topics: [
-      "Drama",
-      "Poetry",
-      "Prose",
-      "Figures of Speech",
-      "African Literature"
-    ],
-    category: 'arts'
-  },
+      name: "Literature",
+        totalQuestions: 1438,
+          topics: [
+            "Drama",
+            "Poetry",
+            "Prose",
+            "Figures of Speech",
+            "African Literature"
+          ],
+            category: 'arts'
+},
 
-  {
-    id: "GEO001",
+{
+  id: "GEO001",
     icon: `<img src="${geographyImg}" style="width: 100%; border-radius: 16px" />`,
-    name: "Geography",
-    totalQuestions: 1120,
-    topics: [
-      "Map Reading",
-      "Climate",
-      "Vegetation",
-      "Population",
-      "Industry",
-      "Agriculture"
-    ],
-    category: 'arts science'
-  },
+      name: "Geography",
+        totalQuestions: 1120,
+          topics: [
+            "Map Reading",
+            "Climate",
+            "Vegetation",
+            "Population",
+            "Industry",
+            "Agriculture"
+          ],
+            category: 'arts science'
+},
 
-  {
-    id: "CRK001",
+{
+  id: "CRK001",
     icon: `<img src="${crkImg}" style="width: 100%; border-radius: 16px" />`,
-    name: "CRK",
-    totalQuestions: 890,
-    topics: [
-      "Creation",
-      "Leadership",
-      "Prophets",
-      "Miracles",
-      "Christian Living"
-    ],
-    category: 'arts'
-  },
+      name: "CRK",
+        totalQuestions: 890,
+          topics: [
+            "Creation",
+            "Leadership",
+            "Prophets",
+            "Miracles",
+            "Christian Living"
+          ],
+            category: 'arts'
+},
 
-  {
-    id: "IRK001",
+{
+  id: "IRK001",
     icon: `<img src="${irkImg}" style="width: 100%; border-radius: 16px" />`,
-    name: "IRK",
-    totalQuestions: 760,
-    topics: [
-      "Tawhid",
-      "Qur'an",
-      "Hadith",
-      "Sharia",
-      "Islamic Morality"
-    ],
-    category: 'arts'
-  },
+      name: "IRK",
+        totalQuestions: 760,
+          topics: [
+            "Tawhid",
+            "Qur'an",
+            "Hadith",
+            "Sharia",
+            "Islamic Morality"
+          ],
+            category: 'arts'
+},
 
-  {
-    id: "HIS001",
+{
+  id: "HIS001",
     icon: `<img src="${historyImg}" style="width: 100%; border-radius: 16px" />`,
-    name: "History",
-    totalQuestions: 760,
-    topics: [
-      "Pre Colonial Nigeria",
-      "Colonial Rule",
-      "Nationalism",
-      "Independence",
-      "Civil War"
-    ],
-    category: 'arts'
-  },
+      name: "History",
+        totalQuestions: 760,
+          topics: [
+            "Pre Colonial Nigeria",
+            "Colonial Rule",
+            "Nationalism",
+            "Independence",
+            "Civil War"
+          ],
+            category: 'arts'
+},
 
-  {
-    id: "ACC001",
+{
+  id: "ACC001",
     icon: `<img src="${accountingImg}" style="width: 100%; border-radius: 16px" />`,
-    name: "Accounting",
-    totalQuestions: 1358,
-    topics: [
-      "Ledger",
-      "Cash Book",
-      "Trial Balance",
-      "Final Accounts",
-      "Depreciation"
-    ],
-    category: 'commercial'
-  },
+      name: "Accounting",
+        totalQuestions: 1358,
+          topics: [
+            "Ledger",
+            "Cash Book",
+            "Trial Balance",
+            "Final Accounts",
+            "Depreciation"
+          ],
+            category: 'commercial'
+},
 
-  {
-    id: "COM001",
+{
+  id: "COM001",
     icon: `<img src="${commerceImg}" style="width: 100%; border-radius: 16px" />`,
-    name: "Commerce",
-    totalQuestions: 1281,
-    topics: [
-      "Trade",
-      "Insurance",
-      "Banking",
-      "Advertising",
-      "Transportation"
-    ],
-    category: 'commercial'
-  },
+      name: "Commerce",
+        totalQuestions: 1281,
+          topics: [
+            "Trade",
+            "Insurance",
+            "Banking",
+            "Advertising",
+            "Transportation"
+          ],
+            category: 'commercial'
+},
 
-  {
-    id: "INS001",
+{
+  id: "INS001",
     icon: `<img src="${insuranceImg}" style="width: 100%; border-radius: 16px" />`,
-    name: "Insurance",
-    totalQuestions: 1456,
-    topics: [
-      "Principles of Insurance",
-      "Types of Insurance",
-      "Insurance Contract",
-      "Risk Management",
-      "Claims and Underwriting",
-      "Insurance Law and Practice",
-      "Reinsurance"
-    ],
-    category: 'commercial'
-  },
+      name: "Insurance",
+        totalQuestions: 1456,
+          topics: [
+            "Principles of Insurance",
+            "Types of Insurance",
+            "Insurance Contract",
+            "Risk Management",
+            "Claims and Underwriting",
+            "Insurance Law and Practice",
+            "Reinsurance"
+          ],
+            category: 'commercial'
+},
 
-  {
-    id: "CIV001",
+{
+  id: "CIV001",
     icon: `<img src="${civicImg}" style="width: 100%; border-radius: 16px" />`,
-    name: "Civic",
-    totalQuestions: 1345,
-    topics: [
-      "National Consciousness",
-      "Values",
-      "Rights and Responsibilities",
-      "Human Rights",
-      "Citizenship",
-      "Democracy",
-      "Rule of Law",
-      "Traffic Regulations",
-      "Cultism and Drug Abuse",
-      "National Institutions"
-    ],
-    category: 'arts'
-  },
+      name: "Civic",
+        totalQuestions: 1345,
+          topics: [
+            "National Consciousness",
+            "Values",
+            "Rights and Responsibilities",
+            "Human Rights",
+            "Citizenship",
+            "Democracy",
+            "Rule of Law",
+            "Traffic Regulations",
+            "Cultism and Drug Abuse",
+            "National Institutions"
+          ],
+            category: 'arts'
+},
 
-  {
-    id: "CUR001",
+{
+  id: "CUR001",
     icon: `<img src="${currentAffairsImg}" style="width: 100%; border-radius: 16px" />`,
-    name: "CurrentAffairs",
-    totalQuestions: 1123,
-    topics: [
-      "National News",
-      "International News",
-      "Politics and Governance",
-      "Economy and Business",
-      "Science and Technology",
-      "Sports",
-      "Health",
-      "Education",
-      "Environment",
-      "Awards and Honours"
-    ],
-    category: 'all'
-  }
+      name: "CurrentAffairs",
+        totalQuestions: 1123,
+          topics: [
+            "National News",
+            "International News",
+            "Politics and Governance",
+            "Economy and Business",
+            "Science and Technology",
+            "Sports",
+            "Health",
+            "Education",
+            "Environment",
+            "Awards and Honours"
+          ],
+            category: 'all'
+}
 ];

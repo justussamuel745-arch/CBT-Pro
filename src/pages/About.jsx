@@ -101,7 +101,7 @@ export function About(){
               <div className="about-contact-icon"><i className="fa-solid fa-envelope"></i></div>
               <div className="about-contact-info">
                 <h4>Email</h4>
-                <span>support@cbpro.ng</span>
+                <span>support@cbpro.com</span>
               </div>
             </a>
     

@@ -88,8 +88,9 @@ export function Invalid() {
         <p style={pStyle}>Looks like you took a wrong turn. The page you’re looking for doesn’t exist or may have been moved.</p>
         
         <div style={buttonsStyle}>
-          <Link
-            to="/" 
+          <a
+            href="/" 
+            target="_top"
             style={primaryStyle}
             onMouseEnter={e => {
               e.currentTarget.style.transform = 'translateY(-2px)';
@@ -101,7 +102,7 @@ export function Invalid() {
             }}
           >
             Go Home
-          </Link>
+          </a>
           
           <Link
             onClick={() => navigate(-1)}
