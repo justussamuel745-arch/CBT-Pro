@@ -14,7 +14,6 @@ import { formatName } from '../scripts/utilis/formatName';
 import { Image } from '../components/Image'
 import { ModalDialog, CSS } from '../components/NotificationSystem';
 import { ReportQuestionModal } from "../components/ReportQuestionModal";
-import { saveAllImages } from '../hooks/services/indexedDB/images';
 
 export function Review() {
   const {  isActivated, examConfig, answers, examQuestions } = useContext(UserContext);
@@ -370,7 +369,7 @@ export function Review() {
                           <div className={`mode-option ${classBadge}`}>
                             <div className="mode-option-key">{opt.id.toUpperCase()}</div>
                             <div className="mode-option-content">
-                              <div className="mode-option-text">{opt.option}</div>
+                              <div className="mode-option-text" dangerouslySetInnerHTML={{__html: opt.option}} />
                             </div>
                           </div>
                         </div>

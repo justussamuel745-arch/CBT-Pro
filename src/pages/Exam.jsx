@@ -449,6 +449,8 @@ export function Exam() {
   }
   
   if (!isActive) return <Loading />
+  // if (!examData) return <Loading />
+  // uncomment those line of code after development since strict mode is making the useEffect run twice
 
   return (
     <>
@@ -459,7 +461,7 @@ export function Exam() {
           <div className="exam-header-inner">
             <button className="exam-back-btn" onClick={goBack}>← Back</button>
             <div className="exam-timer">
-             {isActive && <ExpensiveChild submitExam={submitExam} hours={examConfig.hours} minutes={examConfig.minutes} skipAutoSubmit={skipAutoSubmit}/> }
+             {isActive  && <ExpensiveChild submitExam={submitExam} hours={examConfig.hours} minutes={examConfig.minutes} skipAutoSubmit={skipAutoSubmit}/> }
             </div>
             <div className="exam-header-actions">
               <button

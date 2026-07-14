@@ -2,7 +2,8 @@ import { useState, useEffect, useContext, useCallback, useRef,  memo } from 'rea
 import { Link } from 'react-router';
 import UserContext from '../context/UserContext.jsx';
 import { subjectsData } from '../scripts/data/subjectsData.js'
-import { formatName } from '../scripts/utilis/formatName.js'
+import { formatName } from '../scripts/utilis/formatName.js';
+import { Image } from '../components/Image';
 import './Bookmark.css'
 
 const ExpensiveBmkModal = memo(({ modalQsInfo, setModalQsInfo }) => {
@@ -23,6 +24,7 @@ const ExpensiveBmkModal = memo(({ modalQsInfo, setModalQsInfo }) => {
               <div className="bookmark-modal-body">
                 <div className="bookmark-modal-meta">UTME {formatName(qs.subject)} • {qs.topic}</div>
                 <div className="bookmark-modal-question">
+                  <Image id={qs.id} ext={qs.image?.url} />
                   {qs.question?.instruction && <><strong>{qs.question.instruction}</strong><br/></>}
                   {qs.question?.comprehension && <><strong dangerouslySetInnerHTML={{__html: qs.question.comprehension}} /><br/></>}
                   {!(typeof qs.question === 'object') ? qs.question : qs.question.qs}
@@ -33,7 +35,7 @@ const ExpensiveBmkModal = memo(({ modalQsInfo, setModalQsInfo }) => {
                       (
                         <div className={`bookmark-modal-option ${qs.correctAnswers.includes(opt.id) && 'correct'}`} key={opt.id}>
                           <div className="bookmark-modal-option-key">{opt.id.toUpperCase()}</div>
-                          <div>{opt.option}</div>
+                          <div dangerouslySetInnerHTML={{__html: opt.option}} />
                         </div>
                       )
                     )

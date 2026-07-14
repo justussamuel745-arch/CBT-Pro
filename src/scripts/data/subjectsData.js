@@ -656,218 +656,286 @@ export const subjectsData = [
       "Heredity and Variations - Theories of Evolution",
       "Heredity and Variations - Evidence of Evolution"
     ],
-  category: 'science'
+    category: 'science'
   },
 
-{
-  id: "ECO001",
+  {
+    id: "ECO001",
     icon: `<img src="${economicsImg}" style="width: 100%; border-radius: 16px"/>`,
-      name: "Economics",
-        totalQuestions: 1340,
-          topics: [
-            "Economics as a Science",
-            "Economic Systems",
-            "Methods and Tools of Economic Analysis",
-            "The Theory of Demand",
-            "The Theory of Consumer Behaviour",
-            "The Theory of Supply",
-            "The Theory of Price Determination",
-            "The Theory of Production",
-            "Theory of Costs and Revenue",
-            "Market Structures",
-            "National Income",
-            "Money and Inflation",
-            "Financial Institutions",
-            "Public Finance",
-            "Economic Growth and Development",
-            "Agriculture in Nigeria",
-            "Industry and Industrialization",
-            "Natural Resources and the Nigerian Economy",
-            "Business Organizations",
-            "Population",
-            "International Trade",
-            "International Economic Organizations",
-            "Factors of Production and their Theories"
-          ],
-            category: 'commercial arts'
-},
+    name: "Economics",
+    totalQuestions: 1340,
+    topics: [
+      "Economics as a Science",
+      "Economic Systems",
+      "Methods and Tools of Economic Analysis",
+      "The Theory of Demand",
+      "The Theory of Consumer Behaviour",
+      "The Theory of Supply",
+      "The Theory of Price Determination",
+      "The Theory of Production",
+      "Theory of Costs and Revenue",
+      "Market Structures",
+      "National Income",
+      "Money and Inflation",
+      "Financial Institutions",
+      "Public Finance",
+      "Economic Growth and Development",
+      "Agriculture in Nigeria",
+      "Industry and Industrialization",
+      "Natural Resources and the Nigerian Economy",
+      "Business Organizations",
+      "Population",
+      "International Trade",
+      "International Economic Organizations",
+      "Factors of Production and their Theories"
+    ],
+    category: 'commercial arts'
+  },
 
-{
-  id: "GOV001",
+  {
+    id: "GOV001",
     icon: `<img src="${governmentImg}" style="width: 100%; border-radius: 16px" />`,
-      name: "Government",
-        totalQuestions: 1210,
-          topics: [
-            "Constitution",
-            "Democracy",
-            "Citizenship",
-            "Political Parties",
-            "Federalism",
-            "Arms of Government"
-          ],
-            category: 'arts'
-},
+    name: "Government",
+    totalQuestions: 1210,
+    topics: [
+      "Constitution",
+      "Democracy",
+      "Citizenship",
+      "Political Parties",
+      "Federalism",
+      "Arms of Government"
+    ],
+    category: 'arts'
+  },
 
-{
-  id: "LIT001",
+  {
+    id: "LIT001",
     icon: `<img src="${literatureImg}" style="width: 100%; border-radius: 16px" />`,
-      name: "Literature",
-        totalQuestions: 1438,
-          topics: [
-            "Drama",
-            "Poetry",
-            "Prose",
-            "Figures of Speech",
-            "African Literature"
-          ],
-            category: 'arts'
-},
+    name: "Literature",
+    totalQuestions: 1438,
+    topics: [
+      "Drama",
+      "Poetry",
+      "Prose",
+      "Figures of Speech",
+      "African Literature"
+    ],
+    category: 'arts'
+  },
 
-{
-  id: "GEO001",
+  {
+    id: "GEO001",
     icon: `<img src="${geographyImg}" style="width: 100%; border-radius: 16px" />`,
-      name: "Geography",
-        totalQuestions: 1120,
-          topics: [
-            "Map Reading",
-            "Climate",
-            "Vegetation",
-            "Population",
-            "Industry",
-            "Agriculture"
-          ],
-            category: 'arts science'
-},
+    name: "Geography",
+    totalQuestions: 1120,
+    topics: [
+      "Map Reading",
+      "Climate",
+      "Vegetation",
+      "Population",
+      "Industry",
+      "Agriculture"
+    ],
+    category: 'arts science'
+  },
 
-{
-  id: "CRK001",
+  {
+    id: "CRK001",
     icon: `<img src="${crkImg}" style="width: 100%; border-radius: 16px" />`,
-      name: "CRK",
-        totalQuestions: 890,
-          topics: [
-            "Creation",
-            "Leadership",
-            "Prophets",
-            "Miracles",
-            "Christian Living"
-          ],
-            category: 'arts'
-},
+    name: "CRK",
+    totalQuestions: 890,
+    topics: [
+      "Creation",
+      "Leadership",
+      "Prophets",
+      "Miracles",
+      "Christian Living"
+    ],
+    category: 'arts'
+  },
 
-{
-  id: "IRK001",
+  {
+    id: "IRK001",
     icon: `<img src="${irkImg}" style="width: 100%; border-radius: 16px" />`,
-      name: "IRK",
-        totalQuestions: 760,
-          topics: [
-            "Tawhid",
-            "Qur'an",
-            "Hadith",
-            "Sharia",
-            "Islamic Morality"
-          ],
-            category: 'arts'
-},
+    name: "IRK",
+    totalQuestions: 760,
+    topics: [
+      "Tawhid",
+      "Qur'an",
+      "Hadith",
+      "Sharia",
+      "Islamic Morality"
+    ],
+    category: 'arts'
+  },
 
-{
-  id: "HIS001",
+  {
+    id: "HIS001",
     icon: `<img src="${historyImg}" style="width: 100%; border-radius: 16px" />`,
-      name: "History",
-        totalQuestions: 760,
-          topics: [
-            "Pre Colonial Nigeria",
-            "Colonial Rule",
-            "Nationalism",
-            "Independence",
-            "Civil War"
-          ],
-            category: 'arts'
-},
+    name: "History",
+    totalQuestions: 760,
+    topics: [
+      "Pre Colonial Nigeria",
+      "Colonial Rule",
+      "Nationalism",
+      "Independence",
+      "Civil War"
+    ],
+    category: 'arts'
+  },
 
-{
-  id: "ACC001",
+  {
+    id: "ACC001",
     icon: `<img src="${accountingImg}" style="width: 100%; border-radius: 16px" />`,
-      name: "Accounting",
-        totalQuestions: 1358,
-          topics: [
-            "Ledger",
-            "Cash Book",
-            "Trial Balance",
-            "Final Accounts",
-            "Depreciation"
-          ],
-            category: 'commercial'
-},
+    name: "Accounting",
+    totalQuestions: 1358,
+    topics: [
+      "Nature and Significance of Book keeping and Accounting - Development of Accounting (including branches of Accounting)",
+      "Nature and Significance of Book keeping and Accounting - Objectives of Book Keeping and Accounting",
+      "Nature and Significance of Book keeping and Accounting - Users and characteristics of Accounting information",
+      "Nature and Significance of Book keeping and Accounting - Principles, concepts and conventions of Accounting (nature, significance and application)",
+      "Nature and Significance of Book keeping and Accounting - Role of Accounting records and information",
+      "Principles of Double Entry - Source documents",
+      "Principles of Double Entry - Books of original entry",
+      "Principles of Double Entry - Accounting equation",
+      "Principles of Double Entry - Ledger and its classifications",
+      "Principles of Double Entry - Trial balance",
+      "Principles of Double Entry - Types and correction of errors",
+      "Principles of Double Entry - Suspense Account",
+      "Ethics in Accounting - Objectives",
+      "Ethics in Accounting - Qualities of an Accountant",
+      "Cash Book - Columnar Cash Books: single column, double column, three column",
+      "Cash Book - Discounts",
+      "Cash Book - Petty Cash Book and imprest system",
+      "Bank Transactions and Reconciliation Statements - Instrument of bank transactions",
+      "Bank Transactions and Reconciliation Statements - e-banking system",
+      "Bank Transactions and Reconciliation Statements - Causes of discrepancies between cash book and bank statement",
+      "Bank Transactions and Reconciliation Statements - Bank reconciliation statement",
+      "Final Accounts of a Sole Trader - Income statement (Trading and profit and loss account)",
+      "Final Accounts of a Sole Trader - Statement of financial position (Balance sheet)",
+      "Final Accounts of a Sole Trader - Adjustments: provision for bad and doubtful debt, provision for discounts, provision for depreciation using straightline and reducing balance methods, accruals and prepayment",
+      "Stock Valuation - Methods of stock valuation e.g FIFO, LIFO and simple average",
+      "Stock Valuation - Advantages and disadvantages of the methods",
+      "Stock Valuation - The importance of stock valuation",
+      "Control Accounts and Self balancing ledger - Meaning and uses of control accounts",
+      "Control Accounts and Self balancing ledger - Purchases ledger control account",
+      "Control Accounts and Self balancing ledger - Sales ledger control account",
+      "Incomplete Records and Single Entry - Determination of missing figures",
+      "Incomplete Records and Single Entry - Preparation of final accounts from incomplete records",
+      "Incomplete Records and Single Entry - Conversion of single entry to double entry",
+      "Manufacturing Accounts - Cost classification",
+      "Manufacturing Accounts - Cost apportionment",
+      "Manufacturing Accounts - Preparation of manufacturing account",
+      "Accounts of Not-For-Profit-Making Organizations - Objectives",
+      "Accounts of Not-For-Profit-Making Organizations - Receipts and payments account",
+      "Accounts of Not-For-Profit-Making Organizations - Income and expenditure account",
+      "Accounts of Not-For-Profit-Making Organizations - Statement of financial position",
+      "Departmental Accounts - Objectives",
+      "Departmental Accounts - Apportionment of expenses",
+      "Branch Accounts - Objectives",
+      "Branch Accounts - Branch account in the head office books",
+      "Branch Accounts - Head office account",
+      "Branch Accounts - Reconciliation of branch and head office books",
+      "Joint Venture Accounts - Objectives and features",
+      "Joint Venture Accounts - Personnel account of venturers",
+      "Joint Venture Accounts - Memorandum joint venture accounts",
+      "Partnership Accounts - Formation of partnership",
+      "Partnership Accounts - Profit or loss account",
+      "Partnership Accounts - Appropriation account",
+      "Partnership Accounts - Partners current and capital accounts",
+      "Partnership Accounts - Treatment of goodwill",
+      "Partnership Accounts - Admission/retirement of a partner",
+      "Partnership Accounts - Dissolution of partnership",
+      "Partnership Accounts - Conversion of a partnership to a company",
+      "Introduction to Company Accounts - Formation and classification of companies",
+      "Introduction to Company Accounts - Issue of shares and debentures",
+      "Introduction to Company Accounts - Final accounts of companies",
+      "Introduction to Company Accounts - Accounting ratios",
+      "Introduction to Company Accounts - Distinction between capital and revenue reserves",
+      "Public Sector Accounting - Comparison of cash and accrual basis of Accounting",
+      "Public Sector Accounting - Sources of government revenue",
+      "Public Sector Accounting - Capital and recurrent expenditure",
+      "Public Sector Accounting - Consolidated Revenue Fund",
+      "Public Sector Accounting - Statement of assets and liabilities",
+      "Public Sector Accounting - Responsibilities and powers of: The Accountant General, The Auditor General, The Minister of Finance, The Treasurer of Local Government",
+      "Public Sector Accounting - Instruments of financial regulation",
+      "Information Technology in Accounting - Manual and computerized Accounting processing system",
+      "Information Technology in Accounting - Procedures involved in data processing",
+      "Information Technology in Accounting - Computer hardware and software",
+      "Information Technology in Accounting - Advantages and disadvantages of manual and computerized Accounting processing system"
+    ],
+    category: 'commercial'
+  },
 
-{
-  id: "COM001",
+  {
+    id: "COM001",
     icon: `<img src="${commerceImg}" style="width: 100%; border-radius: 16px" />`,
-      name: "Commerce",
-        totalQuestions: 1281,
-          topics: [
-            "Trade",
-            "Insurance",
-            "Banking",
-            "Advertising",
-            "Transportation"
-          ],
-            category: 'commercial'
-},
+    name: "Commerce",
+    totalQuestions: 1281,
+    topics: [
+      "Trade",
+      "Insurance",
+      "Banking",
+      "Advertising",
+      "Transportation"
+    ],
+    category: 'commercial'
+  },
 
-{
-  id: "INS001",
+  {
+    id: "INS001",
     icon: `<img src="${insuranceImg}" style="width: 100%; border-radius: 16px" />`,
-      name: "Insurance",
-        totalQuestions: 1456,
-          topics: [
-            "Principles of Insurance",
-            "Types of Insurance",
-            "Insurance Contract",
-            "Risk Management",
-            "Claims and Underwriting",
-            "Insurance Law and Practice",
-            "Reinsurance"
-          ],
-            category: 'commercial'
-},
+    name: "Insurance",
+    totalQuestions: 1456,
+    topics: [
+      "Principles of Insurance",
+      "Types of Insurance",
+      "Insurance Contract",
+      "Risk Management",
+      "Claims and Underwriting",
+      "Insurance Law and Practice",
+      "Reinsurance"
+    ],
+    category: 'commercial'
+  },
 
-{
-  id: "CIV001",
+  {
+    id: "CIV001",
     icon: `<img src="${civicImg}" style="width: 100%; border-radius: 16px" />`,
-      name: "Civic",
-        totalQuestions: 1345,
-          topics: [
-            "National Consciousness",
-            "Values",
-            "Rights and Responsibilities",
-            "Human Rights",
-            "Citizenship",
-            "Democracy",
-            "Rule of Law",
-            "Traffic Regulations",
-            "Cultism and Drug Abuse",
-            "National Institutions"
-          ],
-            category: 'arts'
-},
+    name: "Civic",
+    totalQuestions: 1345,
+    topics: [
+      "National Consciousness",
+      "Values",
+      "Rights and Responsibilities",
+      "Human Rights",
+      "Citizenship",
+      "Democracy",
+      "Rule of Law",
+      "Traffic Regulations",
+      "Cultism and Drug Abuse",
+      "National Institutions"
+    ],
+    category: 'arts'
+  },
 
-{
-  id: "CUR001",
+  {
+    id: "CUR001",
     icon: `<img src="${currentAffairsImg}" style="width: 100%; border-radius: 16px" />`,
-      name: "CurrentAffairs",
-        totalQuestions: 1123,
-          topics: [
-            "National News",
-            "International News",
-            "Politics and Governance",
-            "Economy and Business",
-            "Science and Technology",
-            "Sports",
-            "Health",
-            "Education",
-            "Environment",
-            "Awards and Honours"
-          ],
-            category: 'all'
-}
+    name: "CurrentAffairs",
+    totalQuestions: 1123,
+    topics: [
+      "National News",
+      "International News",
+      "Politics and Governance",
+      "Economy and Business",
+      "Science and Technology",
+      "Sports",
+      "Health",
+      "Education",
+      "Environment",
+      "Awards and Honours"
+    ],
+    category: 'all'
+  }
 ];
