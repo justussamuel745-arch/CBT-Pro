@@ -32,7 +32,7 @@ const DASHBOARD_CARDS = [
     icon: "fa-gamepad",
     title: "Educational Game",
     description: "Sharpen recall with quick, playful quiz challenges.",
-    to: "#",
+    to: "/games",
     color: "pink",
   },
   {

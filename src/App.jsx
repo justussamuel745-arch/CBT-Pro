@@ -27,6 +27,7 @@ import { Invalid } from './components/Invalid';
 import { Syllabus } from './pages/Syllabus';
 import { Dashboard } from './pages/Dashboard';
 import { ProctectedAdminRoute } from './routes/ProtectedAdminRoute';
+import { Games } from './pages/games/Games';
 const Delete = lazy(() => import('./pages/Delete.jsx'));
 const ResetPassword = lazy(() => import('./pages/auth/ResetPassword.jsx'));
 const ForgotPassword = lazy(() => import('./pages/auth/ForgotPassword.jsx'));
@@ -139,6 +140,7 @@ function App() {
               <Route path="/bookmark" element={<Bookmark />} />
               <Route path="/history" element={<History />} />
               <Route path="/syllabus" element={<Syllabus />} />
+              <Route path="/games" element={<Games />} />
               <Route path="/delete" element={
                 <Suspense fallback={<Loading />}>
                   <Delete />

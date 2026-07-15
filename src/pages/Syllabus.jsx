@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { useSearchParams, Link } from 'react-router';
+import { PDFViewer } from '../components/PdfViewer';
 import { subjectsData } from '../scripts/data/subjectsData.js';
 import { formatName } from '../scripts/utilis/formatName.js';
 import './Syllabus.css'
@@ -37,10 +38,10 @@ export function Syllabus() {
   
   function viewSyllabus(subName){
     setModalTitle(formatName(subName))
-    const lowerCaseSub = subName.toLowerCase()
+    /* const lowerCaseSub = subName.toLowerCase()
     const syllabusUrl = `/public/syllabus/${lowerCaseSub}.html`
     syllabusFrameRef.current.src = syllabusUrl
-    document.body.style.overflow = 'hidden';
+    document.body.style.overflow = 'hidden'; */
     setModalActive(true)
   }
   
@@ -52,11 +53,7 @@ export function Syllabus() {
   
   if (subject){
     if (AVAILABLE_SYLLABUS.includes(subject)){
-      return <iframe src={`/syllabus/${subject}.html`} style={{
-        width: '100vw',
-        height: '100vh',
-        margin: 0
-      }} />
+      return <PDFViewer fileUrl={`/syllabus/${subject}.pdf`} />
     } else {
       return <h2>Currently Not Available</h2>
     }
@@ -105,7 +102,8 @@ export function Syllabus() {
             <h3 className="syllabus-modal-title">{modalTitle} Syllabus</h3>
             <button className="syllabus-modal-close" onClick={closeSyllabus}>×</button>
           </div>
-          <iframe className="syllabus-pdf-frame" ref={syllabusFrameRef}></iframe>
+          {/*<iframe className="syllabus-pdf-frame" ref={syllabusFrameRef}></iframe>*/}
+          <PDFViewer fileUrl={'/Principles-of-Accounts.pdf'} />
         </div>
       </div>
     </>

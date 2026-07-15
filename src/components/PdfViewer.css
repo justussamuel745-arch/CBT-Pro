@@ -1,0 +1,32 @@
+.pdf-viewer-wrapper {
+  width: 100%;
+  height: 100vh;
+  background: #f1f5f9; /* Gray background like your screenshot */
+}
+
+/* Center pages and add shadow */
+.rpv-core__viewer {
+  background-color: #f1f5f9!important;
+}
+
+.rpv-core__page-layer {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  margin: 16px auto!important;
+  border-radius: 2px;
+}
+
+/* Clean toolbar */
+.rpv-default-layout__toolbar {
+  background: #ffffff!important;
+  border-bottom: 1px solid #e2e8f0!important;
+}
+
+/* Hide sidebar on mobile */
+@media (max-width: 768px) {
+ .rpv-default-layout__sidebar {
+    display: none!important;
+  }
+ .rpv-core__page-layer {
+    margin: 0 auto!important; /* full width on mobile */
+  }
+}
