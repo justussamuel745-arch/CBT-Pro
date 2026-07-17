@@ -3,16 +3,8 @@ import { Routes, Route } from 'react-router';
 import UserContext from './context/UserContext.jsx';
 import { ProtectedRoutes } from './routes/ProtectedRoutes'
 import { HomePage } from './pages/HomePage';
-import { Study } from './pages/Study';
-import { ProtectStudyRoute } from './routes/ProtectStudyRoute'
-import { StudyTwo } from './pages/StudyTwo';
-import { StudyMode } from './pages/StudyMode';
-import { Simulator } from './pages/Simulator';
-import { SimulatorTwo } from './pages/SimulatorTwo';
-import { Exam } from './pages/Exam';
-import { ProtectedExamRoutes } from './routes/ProtectedExamRoutes.jsx'
-import { Review } from './pages/Review';
-import { Score } from './pages/Score';
+import { Study } from './pages/study/Study';
+import { Simulator } from './pages/simulator/Simulator';
 import { About } from './pages/About';
 import { SignUp } from './pages/SignUp';
 import { SignIn } from './pages/SignIn';
@@ -27,7 +19,6 @@ import { Invalid } from './components/Invalid';
 import { Syllabus } from './pages/Syllabus';
 import { Dashboard } from './pages/Dashboard';
 import { ProctectedAdminRoute } from './routes/ProtectedAdminRoute';
-const Search  = lazy(() => import('./pages/Search.jsx'))
 const Games  = lazy(() => import('./pages/games/Games.jsx'))
 const Delete = lazy(() => import('./pages/Delete.jsx'));
 const ResetPassword = lazy(() => import('./pages/auth/ResetPassword.jsx'));
@@ -125,16 +116,8 @@ function App() {
             
             <Route path="/legal" element={<Legal />} />
             <Route element={<ProtectedRoutes />}>
-              <Route path="/study" element={<Study />} />
-              <Route path="/studytwo" element={<StudyTwo />} />
-              <Route path="/studymode" element={<ProtectStudyRoute><StudyMode /></ProtectStudyRoute>} />
-              <Route path="/simulator" element={<Simulator />} />
-              <Route element={<ProtectedExamRoutes />}>
-                <Route path="/exam" element={<Exam />} />
-                <Route path="/simulatortwo" element={<SimulatorTwo />} />
-              </Route>
-              <Route path="/review" element={<Review />} />
-              <Route path="/score" element={<Score />} />
+              <Route path="/study/*" element={<Study />} />
+              <Route path="/simulator/*" element={<Simulator />} />
               <Route path="/feedback" element={<Feedback />} />
               <Route path="/payment" element={<Payment />} />
               <Route path="/settings" element={<Settings />} />
@@ -146,11 +129,6 @@ function App() {
                   <Games />
                 </Suspense>
                 } />
-              <Route path="/search" element={
-                <Suspense fallback={<Loading />}>
-                  <Search />
-                </Suspense>
-              } />
               <Route path="/delete" element={
                 <Suspense fallback={<Loading />}>
                   <Delete />

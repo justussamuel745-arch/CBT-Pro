@@ -80,7 +80,7 @@ export function CountdownTimer({ onFinish, hours, minutes, skipAutoSubmit }) {
         const result = calculateScore(userInfo._id, examQuestionsRef.current, currentAnswers, timeTaken, timeAllocated)
         setExamResults(result)
         submitHistory(result, currentAnswers.length)
-        navigate('/score')
+        navigate('/simulator/score')
       }
     }
   }, [])

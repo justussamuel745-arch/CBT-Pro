@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useSearchParams, useNavigate} from 'react-router';
-import UserContext from '../context/UserContext';
-import { fetchWithAuth } from '../scripts/utilis/fetch';
-import { ToastProvider, useToast, CSS } from '../components/NotificationSystem';
+import UserContext from '../../context/UserContext';
+import { fetchWithAuth } from '../../scripts/utilis/fetch';
+import { ToastProvider, useToast, CSS } from '../../components/NotificationSystem';
+import { Image } from '../../components/Image';
 import './Search.css';
 
 const EXAM_TYPES = ["JAMB"];
@@ -50,8 +51,10 @@ function DetailModal({ item, onClose }) {
           <span className="pq-modal-tag"><i className="fa-solid fa-calendar" /> {item.year}</span>
           <span className="pq-modal-tag"><i className="fa-solid fa-tag" /> {item.topic}</span>
         </div>
-
-        <h3 className="pq-modal-question" dangerouslySetInnerHTML={{__html: typeof item.question !== 'object' ? item.question : item.question?.qs}}></h3>
+        
+        <Image id={item.id} ext={item.image?.url} />
+        { typeof item.question === 'object' && item.question?.comprehension && <h4 className="pq-modal-question" dangerouslySetInnerHTML={{__html: item.question.comprehension}}></h4> }
+        <p className="pq-modal-question" dangerouslySetInnerHTML={{__html: typeof item.question !== 'object' ? item.question : item.question?.qs}}></p>
 
         <ul className="pq-modal-options">
           {item.options.map(opt => (
@@ -244,7 +247,7 @@ function SearchInner() {
   );
 }
 
-export default function Search() {
+export function Search() {
   return (
     <ToastProvider position="top-right">
       <SearchInner />

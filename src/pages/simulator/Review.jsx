@@ -6,14 +6,14 @@ import remarkMath from 'remark-math'
 import rehypeKatex from 'rehype-katex'
 import rehypeRaw from 'rehype-raw'
 import 'katex/dist/katex.min.css' // don't forget CSS or formulas won't style
-import UserContext from '../context/UserContext';
-import { Loading } from '../components/Loading';
-import { Calculator } from '../components/Calculator';
-import { AstraAIModal } from '../components/AstraAIModal';
-import { formatName } from '../scripts/utilis/formatName';
-import { Image } from '../components/Image'
-import { ModalDialog, CSS } from '../components/NotificationSystem';
-import { ReportQuestionModal } from "../components/ReportQuestionModal";
+import UserContext from '../../context/UserContext';
+import { Loading } from '../../components/Loading';
+import { Calculator } from '../../components/Calculator';
+import { AstraAIModal } from '../../components/AstraAIModal';
+import { formatName } from '../../scripts/utilis/formatName';
+import { Image } from '../../components/Image'
+import { ModalDialog, CSS } from '../../components/NotificationSystem';
+import { ReportQuestionModal } from "../../components/ReportQuestionModal";
 
 export function Review() {
   const {  isActivated, examConfig, answers, examQuestions } = useContext(UserContext);

@@ -1,9 +1,9 @@
 import { useContext, useEffect, useState } from 'react';
 import { Link } from 'react-router';
-import UserContext from '../context/UserContext.jsx';
-import { subjectsData } from '../scripts/data/subjectsData.js';
-import { formatName } from '../scripts/utilis/formatName.js';
-import { formatTime } from '../scripts/utilis/formatTime.js';
+import UserContext from '../../context/UserContext.jsx';
+import { subjectsData } from '../../scripts/data/subjectsData.js';
+import { formatName } from '../../scripts/utilis/formatName.js';
+import { formatTime } from '../../scripts/utilis/formatTime.js';
 import './Score.css';
 
 // ─────────────────────────────────────────────────────────────
@@ -370,7 +370,7 @@ export function Score() {
 
         {/* ── ACTIONS ── */}
         <div className="score-actions">
-          <Link to="/review" className="btn btn-primary">Review answers</Link>
+          <Link to="/simulator/review" className="btn btn-primary">Review answers</Link>
           <Link to="/simulator" className="btn btn-outline">Try again</Link>
           <Link to="/" className="btn btn-outline">Back to home</Link>
         </div>

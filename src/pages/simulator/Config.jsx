@@ -1,12 +1,12 @@
 import { useState, useEffect, useContext } from 'react';
 import { Link, useNavigate } from 'react-router';
-import UserContext from '../context/UserContext.jsx';
-import { subjectsData } from '../scripts/data/subjectsData.js';
-import { formatName } from '../scripts/utilis/formatName.js';
-import { ModalStripe, ModalDialog, CSS } from '../components/NotificationSystem'
-import './SimulatorTwo.css';
+import UserContext from '../../context/UserContext.jsx';
+import { subjectsData } from '../../scripts/data/subjectsData.js';
+import { formatName } from '../../scripts/utilis/formatName.js';
+import { ModalStripe, ModalDialog, CSS } from '../../components/NotificationSystem'
+import './Config.css';
 
-export function SimulatorTwo() {
+export function Config() {
   const { isActivated, examConfig, setExamConfig, setExamQuestions} = useContext(UserContext);
   const navigate = useNavigate()
 
@@ -72,7 +72,7 @@ export function SimulatorTwo() {
     if (!isActivated) {
       setModal('activate_app')
     } else {
-      navigate('/exam')
+      navigate('/simulator/mode')
     }
   }
 
@@ -91,7 +91,7 @@ export function SimulatorTwo() {
               body="Your account is not activated. Access is limited to questions from a single year. The selected number of questions isn&apos;t available on your current plan. Default settings will be used. Activate to unlock full access to all features."
               primaryLabel="Activate App"
               onPrimary={() => navigate('/payment')}
-              onClose={() => {closeModal(); navigate('/exam')}}
+              onClose={() => {closeModal(); navigate('/simulator/mode')}}
               closeLabel="Skip"
             />
           </div>

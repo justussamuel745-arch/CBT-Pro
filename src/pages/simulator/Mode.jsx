@@ -6,25 +6,25 @@ import remarkMath from 'remark-math'
 import rehypeKatex from 'rehype-katex'
 import rehypeRaw from 'rehype-raw'
 import 'katex/dist/katex.min.css' // don't forget CSS or formulas won't style
-import UserContext from '../context/UserContext.jsx';
-import { fetchWithAuth } from '../scripts/utilis/fetch.js';
-import { formatName } from '../scripts/utilis/formatName.js';
-import { CountdownTimer } from '../components/CountdownTimer.jsx'
-import { Calculator } from '../components/Calculator.jsx'
-import { Loading } from '../components/Loading.jsx'
-import { Image } from '../components/Image'
-import { ModalStripe,  CSS } from '../components/NotificationSystem';
-import { getRandomQuestions } from '../hooks/services/examQuestions';
-import { saveQuestions } from '../hooks/services/indexedDB/questions';
-import { saveAllImages } from '../hooks/services/indexedDB/images';
+import UserContext from '../../context/UserContext.jsx';
+import { fetchWithAuth } from '../../scripts/utilis/fetch.js';
+import { formatName } from '../../scripts/utilis/formatName.js';
+import { CountdownTimer } from '../../components/CountdownTimer.jsx'
+import { Calculator } from '../../components/Calculator.jsx'
+import { Loading } from '../../components/Loading.jsx'
+import { Image } from '../../components/Image'
+import { ModalStripe,  CSS } from '../../components/NotificationSystem';
+import { getRandomQuestions } from '../../hooks/services/examQuestions';
+import { saveQuestions } from '../../hooks/services/indexedDB/questions';
+import { saveAllImages } from '../../hooks/services/indexedDB/images';
 
-import './Exam.css';
+import './Mode.css';
 
 const ExpensiveChild = memo(({submitExam, hours, minutes, skipAutoSubmit}) => {
   return <CountdownTimer onFinish={submitExam} hours={hours} minutes={minutes} skipAutoSubmit={skipAutoSubmit} />;
 });
 
-export function Exam() {
+export function Mode() {
   const { token, setToken, isActivated, examConfig, answers, setAnswers, setExamQuestions} = useContext(UserContext);
   const navigate = useNavigate();
   const [toggleCalc, setToggleCalc] = useState(false);

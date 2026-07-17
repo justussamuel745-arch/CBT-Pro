@@ -1,11 +1,11 @@
 import  { useState, useContext} from "react";
 import { Link } from 'react-router';
-import UserContext from '../context/UserContext.jsx'
-import { subjectsData } from '../scripts/data/subjectsData.js';
-import { formatName } from '../scripts/utilis/formatName.js'
-import './Study.css';
+import UserContext from '../../context/UserContext.jsx'
+import { subjectsData } from '../../scripts/data/subjectsData.js';
+import { formatName } from '../../scripts/utilis/formatName.js'
+import './Subjects.css';
 
-export function Study(){
+export function Subjects(){
   const { isActivated } = useContext(UserContext)
   const [activeFilter, setActiveFilter] = useState("all");
   
@@ -108,7 +108,7 @@ export function Study(){
               return (
               <Link
                 key={subject.id}
-                to={`/studytwo?id=${subject.id}`}
+                to={`/study/config?id=${subject.id}`}
                 className="study-subject-card"
                 data-category={subject.category}
               >

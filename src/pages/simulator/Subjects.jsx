@@ -1,13 +1,13 @@
 import { useState, useContext } from 'react'
 import { Link, useNavigate } from 'react-router';
-import UserContext from '../context/UserContext.jsx'
-import { subjectsData } from '../scripts/data/subjectsData.js';
-import { formatName } from '../scripts/utilis/formatName.js';
-import './Simulator.css'
+import UserContext from '../../context/UserContext.jsx'
+import { subjectsData } from '../../scripts/data/subjectsData.js';
+import { formatName } from '../../scripts/utilis/formatName.js';
+import './Subjects.css'
 
 const JAMB_SUBJECTS = subjectsData.map(subject => subject.name)
 
-export function Simulator() {
+export function Subjects() {
   const { isActivated, setExamConfig } = useContext(UserContext)
   const navigate = useNavigate()
   const [selectedSubjects, setSelectedSubjects] = useState(['English'])
@@ -32,7 +32,7 @@ export function Simulator() {
       hours: 2,
       minutes: 0
     })
-    navigate('/simulatortwo')
+    navigate('/simulator/config')
   }
   
   

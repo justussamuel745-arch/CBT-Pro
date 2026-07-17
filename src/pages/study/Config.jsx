@@ -1,16 +1,16 @@
 import { useState, useEffect, useRef, useContext } from "react";
 import { useSearchParams, useNavigate, Link, Navigate } from "react-router";
-import UserContext from '../context/UserContext.jsx';
-import { ModalDialog, ModalCentered, CSS } from '../components/NotificationSystem'
-import './StudyTwo.css';
-import { subjectsData } from '../scripts/data/subjectsData.js';
-import { formatName } from '../scripts/utilis/formatName.js'
+import UserContext from '../../context/UserContext.jsx';
+import { ModalDialog, ModalCentered, CSS } from '../../components/NotificationSystem'
+import './Config.css';
+import { subjectsData } from '../../scripts/data/subjectsData.js';
+import { formatName } from '../../scripts/utilis/formatName.js'
 
 
 const yearsList = ["2025","2024","2023","2022","2021","2020","2019","2018", "2017", "2016", "2015", "2014", "2013", "2012", "2011", "2010", "2009", "2008", "2007", "2006", "2005", "2004", "2003", "2002", "2001", "2000", "1999", "1998", "1997", "1996", "1995", "1994", "1993", "1992", "1991", "1990", "1989", "1988", "1987", "1986", "1985", "1984", "1983"];
 
 
-export function StudyTwo() {
+export function Config() {
   const { isActivated, setStudyConfig } = useContext(UserContext)
   const [searchParams] = useSearchParams();
   const navigate = useNavigate()
@@ -122,7 +122,7 @@ export function StudyTwo() {
     }
 
     setStudyConfig(configuration)
-    navigate('/studymode')
+    navigate('/study/mode')
   }
 
 
@@ -259,7 +259,7 @@ export function StudyTwo() {
         <div className="study-two-card">
           <h3 className="study-two-card-title">Start Study Session</h3>
           <div className="study-two-action-grid">
-            <Link to={`/search?subject=${subject.name}`} className="study-two-action-card">
+            <Link to={`/study/search?subject=${subject.name}`} className="study-two-action-card">
               <div className="study-two-action-icon"><i className="fas fa-search"></i></div>
               <div className="study-two-action-title"> Search</div>
               <div className="study-two-action-desc">Search past questions quickly</div>

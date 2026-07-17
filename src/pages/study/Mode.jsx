@@ -6,18 +6,18 @@ import remarkMath from 'remark-math'
 import rehypeKatex from 'rehype-katex'
 import rehypeRaw from 'rehype-raw'
 import 'katex/dist/katex.min.css' // don't forget CSS or formulas won't style
-import UserContext from '../context/UserContext.jsx';
-import { Calculator } from '../components/Calculator.jsx'
-import { AstraAIModal } from '../components/AstraAIModal'
-import { fetchWithAuth } from '../scripts/utilis/fetch.js';
-import { subjectsData } from '../scripts/data/subjectsData.js'
-import { Image } from '../components/Image'
-import { formatName } from '../scripts/utilis/formatName.js';
-import { ModalStripe, CSS } from '../components/NotificationSystem';
-import { ReportQuestionModal } from "../components/ReportQuestionModal";
-import { saveQuestions, getQuestions } from '../hooks/services/indexedDB/questions';
-import { saveAllImages } from '../hooks/services/indexedDB/images';
-import './StudyMode.css'
+import UserContext from '../../context/UserContext.jsx';
+import { Calculator } from '../../components/Calculator.jsx'
+import { AstraAIModal } from '../../components/AstraAIModal'
+import { fetchWithAuth } from '../../scripts/utilis/fetch.js';
+import { subjectsData } from '../../scripts/data/subjectsData.js'
+import { Image } from '../../components/Image'
+import { formatName } from '../../scripts/utilis/formatName.js';
+import { ModalStripe, CSS } from '../../components/NotificationSystem';
+import { ReportQuestionModal } from "../../components/ReportQuestionModal";
+import { saveQuestions, getQuestions } from '../../hooks/services/indexedDB/questions';
+import { saveAllImages } from '../../hooks/services/indexedDB/images';
+import './Mode.css'
 
 const Notification = memo(({type, title, body, primaryLabel, onPrimary, onClose, closeLabel }) => {
   return (
@@ -57,7 +57,7 @@ const AnswerCard = memo(({ explanation, correctAnswers }) => {
   )
 })
 
-export function StudyMode() {
+export function Mode() {
   const { token, setToken, studyConfig, userInfo } = useContext(UserContext)
   const navigate = useNavigate()
   const [toggleCalc, setToggleCalc] = useState(false);
@@ -299,7 +299,7 @@ export function StudyMode() {
 
         <header className="mode-header">
           <div className="mode-header-inner">
-            <button className="mode-back-btn" onClick={() => navigate(`/studytwo?id=${subjectId()}`)}>
+            <button className="mode-back-btn" onClick={() => navigate(`/study/config?id=${subjectId()}`)}>
               ← Back
             </button>
             <div className="mode-header-actions">
@@ -616,7 +616,7 @@ export function StudyMode() {
               title="Questions Not Found"
               body="No questions were found for your selected subject, year, and topic. This may be because the questions aren't available in offline mode. Connect to the internet to access the latest questions or try a different selection."
               primaryLabel="Adjust Filters"
-              onPrimary={() => navigate(`/studytwo?id=${subjectId()}`)}
+              onPrimary={() => navigate(`/study/config?id=${subjectId()}`)}
               onClose={() => navigate('/study')}
               closeLabel="Leave anyway"
             />
@@ -630,7 +630,7 @@ export function StudyMode() {
               title="No Questions Found"
               body="No questions are available for the selected subject, year, and topic combination. Please adjust your filters and try a different selection. If you believe this is an error, contact support."
               primaryLabel="Adjust Filters"
-              onPrimary={() => navigate(`/studytwo?id=${subjectId()}`)}
+              onPrimary={() => navigate(`/study/config?id=${subjectId()}`)}
               onClose={() => navigate('/study')}
               closeLabel="Leave anyway"
             />
@@ -645,7 +645,7 @@ export function StudyMode() {
               body="We were unable to load the exam questions due to a data loading error. Your session is safe. Click Reload to fetch questions again. If this continues, check your connection and try again."
               primaryLabel="Reload"
               onPrimary={() => { closeModal(); setRefresh(prev => !prev)}}
-              onClose={() => navigate(`/studytwo?id=${subjectId()}`)}
+              onClose={() => navigate(`/study/config?id=${subjectId()}`)}
             />
           )
         }
