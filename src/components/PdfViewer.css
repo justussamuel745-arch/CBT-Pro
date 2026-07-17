@@ -13,6 +13,8 @@
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
   margin: 16px auto!important;
   border-radius: 2px;
+  transform: scale(1.1);
+  transform-origin: top center;
 }
 
 /* Clean toolbar */
@@ -28,5 +30,7 @@
   }
  .rpv-core__page-layer {
     margin: 0 auto!important; /* full width on mobile */
+    transform: scale(1.1);
+  transform-origin: top center;
   }
 }

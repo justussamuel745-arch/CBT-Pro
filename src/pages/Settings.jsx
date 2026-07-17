@@ -37,6 +37,32 @@ function passwordStrength(pw) {
 }
 
 // ─────────────────────────────────────────────────────────────
+// USER IMAGE
+// ─────────────────────────────────────────────────────────────
+
+function UserImage({ avatarPreview, userInfo }){
+  if (!navigator.onLine && userInfo.blob){
+    return (
+      <img
+        src={avatarPreview || `${URL.createObjectURL(userInfo.blob)}`}
+        alt="Profile avatar"
+        onError={(e) => { e.target.src = defaultAvatar; }}
+        style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }}
+      />
+    )
+  } else {
+    return (
+      <img
+        src={avatarPreview || `${url}${userInfo.profilePic}`}
+        alt="Profile avatar"
+        onError={(e) => { e.target.src = defaultAvatar; }}
+        style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }}
+      />
+    )
+  }
+}
+
+// ─────────────────────────────────────────────────────────────
 // SKELETON LOADER
 // ─────────────────────────────────────────────────────────────
 function SettingsSkeleton() {
@@ -449,12 +475,7 @@ function SettingsInner() {
                   <div className="settings-avatar-upload">
                     <div className="settings-avatar-wrap">
                       <div className="settings-avatar">
-                        <img
-                          src={avatarPreview || `${url}${userInfo.profilePic}`}
-                          alt="Profile avatar"
-                          onError={(e) => { e.target.src = defaultAvatar; }}
-                          style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }}
-                        />
+                        <UserImage avatarPreview={avatarPreview} userInfo={userInfo} />
                       </div>
                       <div className="settings-avatar-edit-badge" onClick={() => fileInputRef.current.click()}>
                         <Ic.Camera />

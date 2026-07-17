@@ -11,7 +11,7 @@ const AVAILABLE_SYLLABUS = [
   "biology",
   "chemistry",
   "computer",
-  "crs",
+  "crk",
   "economics",
   "english",
   "french",
@@ -20,7 +20,9 @@ const AVAILABLE_SYLLABUS = [
   "literature",
   "mathematics",
   "physicalhealth",
-  "physics"
+  "physics",
+  "accounting",
+  "commerce"
 ];
 
 
@@ -37,11 +39,8 @@ export function Syllabus() {
   },[])
   
   function viewSyllabus(subName){
-    setModalTitle(formatName(subName))
-    /* const lowerCaseSub = subName.toLowerCase()
-    const syllabusUrl = `/public/syllabus/${lowerCaseSub}.html`
-    syllabusFrameRef.current.src = syllabusUrl
-    document.body.style.overflow = 'hidden'; */
+    setModalTitle([formatName(subName), subName])
+    document.body.style.overflow = 'hidden';
     setModalActive(true)
   }
   
@@ -51,9 +50,13 @@ export function Syllabus() {
     document.body.style.overflow = 'auto'
   }
   
+  function toSentenceCase(word){
+    return word.split('')[0].toUpperCase() + word.slice(1).toLowerCase()
+  }
+  
   if (subject){
     if (AVAILABLE_SYLLABUS.includes(subject)){
-      return <PDFViewer fileUrl={`/syllabus/${subject}.pdf`} />
+      return <PDFViewer fileUrl={`/syllabus/${toSentenceCase(subject)}.pdf`} />
     } else {
       return <h2>Currently Not Available</h2>
     }
@@ -99,11 +102,10 @@ export function Syllabus() {
       <div className={`syllabus-modal ${modalActive && 'syllabus-active'}`}>
         <div className="syllabus-modal-content">
           <div className="syllabus-modal-header">
-            <h3 className="syllabus-modal-title">{modalTitle} Syllabus</h3>
+            <h3 className="syllabus-modal-title">{Array.isArray(modalTitle) && modalTitle[0]} Syllabus</h3>
             <button className="syllabus-modal-close" onClick={closeSyllabus}>×</button>
           </div>
-          {/*<iframe className="syllabus-pdf-frame" ref={syllabusFrameRef}></iframe>*/}
-          <PDFViewer fileUrl={'/Principles-of-Accounts.pdf'} />
+          <PDFViewer fileUrl={`/syllabus/${Array.isArray(modalTitle) && toSentenceCase(modalTitle[1])}.pdf`} />
         </div>
       </div>
     </>

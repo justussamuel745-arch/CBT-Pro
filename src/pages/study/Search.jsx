@@ -4,6 +4,7 @@ import UserContext from '../../context/UserContext';
 import { fetchWithAuth } from '../../scripts/utilis/fetch';
 import { ToastProvider, useToast, CSS } from '../../components/NotificationSystem';
 import { Image } from '../../components/Image';
+import { formatName } from '../../scripts/utilis/formatName.js'
 import './Search.css';
 
 const EXAM_TYPES = ["JAMB"];
@@ -161,7 +162,7 @@ function SearchInner() {
 
         <div className="pq-header">
           <div className="pq-header-subject">
-            <span className="pq-header-subject-chip">{subject}</span>
+            <span className="pq-header-subject-chip">{formatName(subject)}</span>
           </div>
           <h1 className="pq-title">Search Past Questions</h1>
           <p className="pq-sub">Find real past JAMB, questions from {subject}.</p>

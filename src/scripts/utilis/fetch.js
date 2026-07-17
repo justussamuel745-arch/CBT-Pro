@@ -92,13 +92,24 @@ export async function fetchUserInfo(token, setUserInfo, setProfileFields) {
     }
   }
   
+  let blob;
+  
+  if (data.profilePic){
+    const res = await fetch(url + data.profilePic)
+    if (response.ok){
+      blob = await res.blob();
+    }
+  }
+  
   saveUser({
     ...data,
+    blob: blob,
     id: 'current-user'
   })
   
   setUserInfo({
     ...data,
+    blob: blob,
     id: 'current-user'
   })
   //setUserInfo(data);

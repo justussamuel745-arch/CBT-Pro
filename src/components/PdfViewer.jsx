@@ -29,7 +29,7 @@ export function PDFViewer({ fileUrl }) {
                     fileUrl={fileUrl}
                     plugins={[defaultLayoutPluginInstance]}
                     // Slight zoom in so text is bigger and sharper
-                    defaultScale={SpecialZoomLevel.PageWidth * 1.15} 
+                    defaultScale={SpecialZoomLevel.PageWidth} 
                     theme="light"
                     renderMode="canvas"
                     transformGetDocumentParams={(options) => ({
