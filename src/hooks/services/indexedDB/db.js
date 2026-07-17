@@ -6,7 +6,7 @@
 */
 
 const DB_NAME = "CBTPro";
-const DB_VERSION = 4;
+const DB_VERSION = 5;
 
 export function openDB() {
   return new Promise((resolve, reject) => {
@@ -89,6 +89,39 @@ export function openDB() {
         db.createObjectStore("images", {
           keyPath: "id",
         });
+      }
+
+      // Games Store
+      if (!db.objectStoreNames.contains("games")) {
+        const gamesStore = db.createObjectStore("games", {
+          keyPath: "id",
+        });
+
+        // Single-field indexes
+        gamesStore.createIndex("subject", "subject", {
+          unique: false,
+        });
+
+        gamesStore.createIndex("league", "league", {
+          unique: false,
+        });
+
+        gamesStore.createIndex("level", "level", {
+          unique: false,
+        });
+
+        // Compound indexes
+        gamesStore.createIndex(
+          "subject_league",
+          ["subject", "league"],
+          { unique: false }
+        );
+
+        gamesStore.createIndex(
+          "subject_league_level",
+          ["subject", "league", "level"],
+          { unique: false }
+        );
       }
     };
 

@@ -259,7 +259,7 @@ export function StudyTwo() {
         <div className="study-two-card">
           <h3 className="study-two-card-title">Start Study Session</h3>
           <div className="study-two-action-grid">
-            <Link to="/search.html" className="study-two-action-card">
+            <Link to={`/search?subject=${subject.name}`} className="study-two-action-card">
               <div className="study-two-action-icon"><i className="fas fa-search"></i></div>
               <div className="study-two-action-title"> Search</div>
               <div className="study-two-action-desc">Search past questions quickly</div>

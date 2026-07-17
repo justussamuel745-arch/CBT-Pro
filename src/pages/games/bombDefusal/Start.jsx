@@ -1,35 +1,40 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
+import { useSearchParams, useNavigate } from 'react-router';
+import { useGameContext } from '../../../context/GameContext';
+import './Start.css';
 
 /* ============================================================
-   BOMB DEFUSAL CHAMPIONSHIP — CBT Pro
-   Design language: "Reactor Core" tactical HUD
-   Palette: void navy / cyan core / danger red / success green / amber warn
-   Display type: Rajdhani (condensed technical) — Body: Inter
-   Signature element: segmented hex "defusal core" ring + scanline frames
-   ============================================================ */
+   BOMB DEFUSAL CHAMPIONSHIP — CBT Pro (Per-League Timing)
+   Same light "Reactor Core" HUD structure as before.
 
-const FONT_IMPORT = `
-@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600;700&family=Share+Tech+Mono&display=swap');
-`;
+   UPDATE (this revision):
+   - Each question's time limit is fixed by LEAGUE, not by
+     answer streaks: Rookie 60s, Professional 90s, Elite 120s,
+     National 150s, World 180s, Legend 210s (+30s per league).
+   - Correct/wrong answers no longer add or remove time.
+     A wrong answer (or a question timing out) only costs
+     25% Bomb Stability, same as before. 0% stability = explosion.
+   - League screen now has a link back to Subject Selection.
+   ============================================================ */
 
 /* ---------- Data ---------- */
 
 const QUESTION_BANK = [
-  { subject: "Mathematics", q: "If 2x + 5 = 17, what is the value of x?", options: ["4", "5", "6", "7"], a: 2 },
-  { subject: "Mathematics", q: "What is the value of sin 30°?", options: ["1/2", "√3/2", "1", "0"], a: 0 },
-  { subject: "Mathematics", q: "Simplify: 3(2x - 4) + 5", options: ["6x - 7", "6x - 12", "6x + 5", "6x - 17"], a: 0 },
-  { subject: "English", q: "Choose the correctly spelt word.", options: ["Occassion", "Occasion", "Ocasion", "Occaision"], a: 1 },
-  { subject: "English", q: "Identify the synonym of 'Abundant'.", options: ["Scarce", "Plentiful", "Empty", "Rare"], a: 1 },
-  { subject: "English", q: "'She ___ to school every day.' Fill the gap.", options: ["go", "goes", "going", "gone"], a: 1 },
-  { subject: "Physics", q: "The SI unit of electric current is the:", options: ["Volt", "Ohm", "Ampere", "Watt"], a: 2 },
-  { subject: "Physics", q: "Which law states that force equals mass times acceleration?", options: ["Newton's 1st Law", "Newton's 2nd Law", "Newton's 3rd Law", "Law of Gravitation"], a: 1 },
-  { subject: "Chemistry", q: "What is the chemical symbol for Sodium?", options: ["So", "Sd", "Na", "S"], a: 2 },
-  { subject: "Chemistry", q: "The pH of a neutral solution at 25°C is:", options: ["0", "7", "14", "1"], a: 1 },
-  { subject: "Biology", q: "The powerhouse of the cell is the:", options: ["Nucleus", "Ribosome", "Mitochondrion", "Golgi body"], a: 2 },
-  { subject: "Biology", q: "Photosynthesis mainly occurs in the plant's:", options: ["Roots", "Stem", "Leaves", "Flowers"], a: 2 },
-  { subject: "Geography", q: "Which is the longest river in Nigeria?", options: ["Benue", "Niger", "Kaduna", "Cross River"], a: 1 },
-  { subject: "Economics", q: "The law of demand states that as price rises, quantity demanded:", options: ["Rises", "Falls", "Stays constant", "Doubles"], a: 1 },
-  { subject: "Government", q: "The arm of government responsible for making laws is the:", options: ["Executive", "Judiciary", "Legislature", "Civil Service"], a: 2 },
+  { subject: "Mathematics", topic: "Linear Equations", note: "Isolate the unknown by applying inverse operations to both sides.", q: "If 2x + 5 = 17, what is the value of x?", options: ["4", "5", "6", "7"], a: 2 },
+  { subject: "Mathematics", topic: "Trigonometry", note: "Recall the standard sine values for common angles (0°, 30°, 45°, 60°, 90°).", q: "What is the value of sin 30°?", options: ["1/2", "√3/2", "1", "0"], a: 0 },
+  { subject: "Mathematics", topic: "Algebraic Simplification", note: "Expand the bracket first, then collect like terms.", q: "Simplify: 3(2x - 4) + 5", options: ["6x - 7", "6x - 12", "6x + 5", "6x - 17"], a: 0 },
+  { subject: "English", topic: "Spelling", note: "Watch for commonly misspelt double-consonant words.", q: "Choose the correctly spelt word.", options: ["Occassion", "Occasion", "Ocasion", "Occaision"], a: 1 },
+  { subject: "English", topic: "Synonyms & Antonyms", note: "Look for the word closest in meaning to 'plentiful'.", q: "Identify the synonym of 'Abundant'.", options: ["Scarce", "Plentiful", "Empty", "Rare"], a: 1 },
+  { subject: "English", topic: "Lexis & Structure", note: "Subject-verb agreement: 'She' takes the singular verb form.", q: "'She ___ to school every day.' Fill the gap.", options: ["go", "goes", "going", "gone"], a: 1 },
+  { subject: "Physics", topic: "Electricity", note: "The base SI unit for current is named after André-Marie Ampère.", q: "The SI unit of electric current is the:", options: ["Volt", "Ohm", "Ampere", "Watt"], a: 2 },
+  { subject: "Physics", topic: "Newton's Laws", note: "Force equals mass multiplied by acceleration — F = ma.", q: "Which law states that force equals mass times acceleration?", options: ["Newton's 1st Law", "Newton's 2nd Law", "Newton's 3rd Law", "Law of Gravitation"], a: 1 },
+  { subject: "Chemistry", topic: "Periodic Table", note: "Sodium's symbol comes from its Latin name, Natrium.", q: "What is the chemical symbol for Sodium?", options: ["So", "Sd", "Na", "S"], a: 2 },
+  { subject: "Chemistry", topic: "Acids, Bases & Salts", note: "A neutral solution sits exactly in the middle of the pH scale.", q: "The pH of a neutral solution at 25°C is:", options: ["0", "7", "14", "1"], a: 1 },
+  { subject: "Biology", topic: "Cell Structure", note: "This organelle generates most of the cell's ATP through respiration.", q: "The powerhouse of the cell is the:", options: ["Nucleus", "Ribosome", "Mitochondrion", "Golgi body"], a: 2 },
+  { subject: "Biology", topic: "Nutrition in Plants", note: "Chlorophyll, needed for photosynthesis, is concentrated in leaf cells.", q: "Photosynthesis mainly occurs in the plant's:", options: ["Roots", "Stem", "Leaves", "Flowers"], a: 2 },
+  { subject: "Geography", topic: "Regional Geography", note: "This river runs through Niger, Guinea, Mali and Nigeria before reaching the Atlantic.", q: "Which is the longest river in Nigeria?", options: ["Benue", "Niger", "Kaduna", "Cross River"], a: 1 },
+  { subject: "Economics", topic: "Demand & Supply", note: "Demand curves slope downward: price and quantity demanded move oppositely.", q: "The law of demand states that as price rises, quantity demanded:", options: ["Rises", "Falls", "Stays constant", "Doubles"], a: 1 },
+  { subject: "Government", topic: "Organs of Government", note: "Law-making is constitutionally assigned to the parliament/assembly.", q: "The arm of government responsible for making laws is the:", options: ["Executive", "Judiciary", "Legislature", "Civil Service"], a: 2 },
 ];
 
 const LEAGUES = [
@@ -43,8 +48,25 @@ const LEAGUES = [
 
 const BOMB_TYPES = ["Timer Device", "Cyber Device", "Chemical Rig", "Wired Charge", "Signal Jammer"];
 
+const HINTS = [
+  { id: "freeze", label: "Freeze", icon: "fa-snowflake", desc: "Pause the timer for 8s" },
+  { id: "review", label: "Topic", icon: "fa-book-open", desc: "Reveal the topic & a quick note" },
+  { id: "fifty", label: "50:50", icon: "fa-percent", desc: "Remove two wrong options" },
+  { id: "addTime", label: "+20s", icon: "fa-clock", desc: "Add 20 seconds to this question" },
+];
+
+/* ============================================================
+   LEAGUE QUESTION TIME – THE KEY LINE
+   60s for Rookie (tier 1), +30s per tier.
+   Tier 2 = 90s, Tier 3 = 120s, ..., Tier 6 = 210s.
+   ============================================================ */
+function leagueQuestionTime(tier) {
+  return 60 + (tier - 1) * 30;
+}
+
 function buildMissions(league) {
   const count = 5;
+  const questionTime = leagueQuestionTime(league.tier);
   return Array.from({ length: count }).map((_, i) => {
     const isBoss = i === count - 1;
     return {
@@ -54,7 +76,7 @@ function buildMissions(league) {
       bombType: isBoss ? "Nuclear Core" : BOMB_TYPES[i % BOMB_TYPES.length],
       difficulty: Math.min(5, league.tier + i - 2 < 1 ? 1 : league.tier + Math.floor(i / 2)),
       questions: isBoss ? 10 : 6 + i,
-      time: isBoss ? 120 : 60 + i * 10,
+      questionTime,
       xp: (isBoss ? 500 : 150) + league.tier * 50 + i * 20,
       coins: (isBoss ? 300 : 100) + league.tier * 30,
       boss: isBoss,
@@ -69,6 +91,13 @@ function shuffle(arr) {
     [a[i], a[j]] = [a[j], a[i]];
   }
   return a;
+}
+
+function starsFromStability(stability) {
+  if (stability >= 100) return 3;
+  if (stability >= 50) return 2;
+  if (stability > 0) return 1;
+  return 0;
 }
 
 /* ---------- Small shared HUD pieces ---------- */
@@ -94,8 +123,6 @@ function Stars({ count, max = 5 }) {
   );
 }
 
-/* ---------- Progress states derived from progress % ---------- */
-
 function coreState(progress) {
   if (progress >= 80) return "success";
   if (progress >= 40) return "warn";
@@ -104,16 +131,23 @@ function coreState(progress) {
 
 /* ============================================================
    SCREEN: HOME / LEAGUE SELECT
+   Includes the "Subject Selection" back button
    ============================================================ */
 
-function LeagueScreen({ progressState, onSelectLeague }) {
+function LeagueScreen({ progressState, onSelectLeague, onBackToSubjects }) {
   return (
     <div className="bomb-home">
       <div className="bomb-home-scanline" />
+
+      {/* ========== BACK TO SUBJECT SELECTION ========== */}
+      <button className="bomb-home-back" onClick={() => onBackToSubjects && onBackToSubjects()}>
+        <i className="fa-solid fa-arrow-left" /> Subject Selection
+      </button>
+
       <header className="bomb-home-header">
         <p className="bomb-home-eyebrow">CBT PRO · TACTICAL DIVISION</p>
         <h1 className="bomb-home-title">Bomb Defusal Championship</h1>
-        <p className="bomb-home-sub">Every device is armed with real JAMB questions. Answer fast. Answer right. Defuse.</p>
+        <p className="bomb-home-sub">Every device is armed with real JAMB questions. Higher leagues give you more time per question — but every miss still costs stability.</p>
       </header>
 
       <div className="bomb-home-stats">
@@ -145,6 +179,8 @@ function LeagueScreen({ progressState, onSelectLeague }) {
                   {status === "locked" ? "🔒" : status === "complete" ? "🏆" : status === "current" ? "🟢" : "⭐"}
                 </span>
                 <span className="bomb-home-rung-name">{league.name}</span>
+                {/* Show per‑question time right on the league row */}
+                <span className="bomb-home-rung-time hud-mono">{leagueQuestionTime(league.tier)}s / Q</span>
                 <span className="bomb-home-rung-arrow">›</span>
               </button>
             </li>
@@ -208,7 +244,7 @@ function MissionCardScreen({ mission, onBack, onStart }) {
 
         <div className="bomb-card-grid">
           <div className="bomb-card-stat"><span>Questions</span><strong>{mission.questions}</strong></div>
-          <div className="bomb-card-stat"><span>Time</span><strong>{mission.time}s</strong></div>
+          <div className="bomb-card-stat"><span>Time / Question</span><strong>{mission.questionTime}s</strong></div>
           <div className="bomb-card-stat"><span>Reward XP</span><strong>{mission.xp}</strong></div>
           <div className="bomb-card-stat"><span>Coins</span><strong>{mission.coins}</strong></div>
         </div>
@@ -233,11 +269,21 @@ function BriefingScreen({ mission, onStart }) {
       <dl className="bomb-brief-list">
         <div className="bomb-brief-row"><dt>Bomb Type</dt><dd>{mission.bombType}</dd></div>
         <div className="bomb-brief-row"><dt>Threat Level</dt><dd className={mission.boss ? "bomb-brief-threat--critical" : "bomb-brief-threat--high"}>{mission.boss ? "CRITICAL" : "HIGH"}</dd></div>
-        <div className="bomb-brief-row"><dt>Time Limit</dt><dd>{mission.time} Seconds</dd></div>
+        <div className="bomb-brief-row"><dt>Time / Question</dt><dd>{mission.questionTime} Seconds</dd></div>
         <div className="bomb-brief-row"><dt>Questions</dt><dd>{mission.questions}</dd></div>
+        <div className="bomb-brief-row"><dt>Stability</dt><dd>100% · -25% per miss</dd></div>
         <div className="bomb-brief-row"><dt>Reward</dt><dd>{mission.xp} XP · {mission.coins} Coins</dd></div>
       </dl>
       <div className="bomb-brief-rule" />
+      <p className="bomb-brief-hints-label hud-mono">AVAILABLE HINTS</p>
+      <div className="bomb-brief-hints">
+        {HINTS.map((h) => (
+          <div className="bomb-brief-hint" key={h.id}>
+            <span className="bomb-brief-hint-icon"><i className={`fa-solid ${h.icon}`} /></span>
+            <span className="bomb-brief-hint-label">{h.label}</span>
+          </div>
+        ))}
+      </div>
       <button className="bomb-brief-start" onClick={onStart}>Press Start</button>
     </div>
   );
@@ -268,6 +314,10 @@ function CountdownScreen({ onDone }) {
 
 /* ============================================================
    SCREEN: GAMEPLAY
+   Each question has its own fixed timer (set by league). No time
+   is added or removed for correct/wrong answers — only Bomb
+   Stability changes (-25% per wrong answer OR per timeout).
+   Fail condition: stability hits 0%. Win: finish every question.
    ============================================================ */
 
 function DefusalCore({ progress, state }) {
@@ -288,21 +338,87 @@ function DefusalCore({ progress, state }) {
   );
 }
 
+function StabilityMeter({ stability, shake }) {
+  const state = stability >= 75 ? "success" : stability >= 50 ? "warn" : "danger";
+  return (
+    <div className={`bomb-play-stability bomb-play-stability--${state} ${shake ? "bomb-play-stability--hit" : ""}`}>
+      <div className="bomb-play-stability-bar">
+        {[0, 1, 2, 3].map((s) => (
+          <span
+            key={s}
+            className={`bomb-play-stability-seg ${stability > s * 25 ? "bomb-play-stability-seg--on" : ""}`}
+          />
+        ))}
+      </div>
+      <span className="bomb-play-stability-label hud-mono">
+        <i className="fa-solid fa-triangle-exclamation" /> {stability}% STABILITY
+      </span>
+    </div>
+  );
+}
+
+function HintBar({ hintsUsed, onUse, disabled }) {
+  return (
+    <div className="bomb-play-hints">
+      {HINTS.map((h) => {
+        const used = hintsUsed[h.id];
+        return (
+          <button
+            key={h.id}
+            className={`bomb-play-hint ${used ? "bomb-play-hint--used" : ""}`}
+            disabled={used || disabled}
+            onClick={() => onUse(h.id)}
+            title={h.desc}
+          >
+            <span className="bomb-play-hint-icon"><i className={`fa-solid ${h.icon}`} /></span>
+            <span className="bomb-play-hint-label">{h.label}</span>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+function ReviewModal({ current, onClose }) {
+  return (
+    <div className="bomb-play-modal-backdrop" onClick={onClose}>
+      <div className="bomb-play-modal" onClick={(e) => e.stopPropagation()}>
+        <button className="bomb-play-modal-close" onClick={onClose}><i className="fa-solid fa-xmark" /></button>
+        <span className="bomb-play-modal-icon"><i className="fa-solid fa-book-open" /></span>
+        <p className="bomb-play-modal-eyebrow hud-mono">TOPIC REVIEW</p>
+        <h3 className="bomb-play-modal-topic">{current.topic}</h3>
+        <p className="bomb-play-modal-note">{current.note}</p>
+        <button className="bomb-play-modal-ok" onClick={onClose}>Got it</button>
+      </div>
+    </div>
+  );
+}
+
 function GameplayScreen({ mission, onFinish }) {
   const [order] = useState(() => shuffle(QUESTION_BANK).slice(0, mission.questions));
   const [qIndex, setQIndex] = useState(0);
-  const [lives, setLives] = useState(3);
-  const [timeLeft, setTimeLeft] = useState(mission.time);
+  const [answered, setAnswered] = useState(0);
+  const [timeLeft, setTimeLeft] = useState(mission.questionTime);
+  const [stability, setStability] = useState(100);
+  const [stabilityHit, setStabilityHit] = useState(false);
   const [combo, setCombo] = useState(0);
   const [correct, setCorrect] = useState(0);
   const [wrong, setWrong] = useState(0);
   const [flash, setFlash] = useState(null); // 'correct' | 'wrong' | null
-  const [selected, setSelected] = useState(null);
+  const [selected, setSelected] = useState(null); // -1 = timed out
   const [floatText, setFloatText] = useState(null);
+  const [frozenTicks, setFrozenTicks] = useState(0);
+  const [eliminated, setEliminated] = useState([]);
+  const [hintsUsed, setHintsUsed] = useState({ freeze: false, review: false, fifty: false, addTime: false });
+  const [showReview, setShowReview] = useState(false);
   const finishedRef = useRef(false);
+  const selectedRef = useRef(null);
 
-  const progress = Math.min(100, (correct / mission.questions) * 100);
+  useEffect(() => { selectedRef.current = selected; }, [selected]);
+
+  const progress = Math.min(100, (answered / mission.questions) * 100);
   const state = coreState(progress);
+  const current = order[qIndex];
 
   const finish = useCallback((outcome) => {
     if (finishedRef.current) return;
@@ -311,68 +427,110 @@ function GameplayScreen({ mission, onFinish }) {
       outcome,
       correct,
       wrong,
-      timeLeft: Math.max(0, timeLeft),
       combo,
-      accuracy: mission.questions ? Math.round((correct / (correct + wrong || 1)) * 100) : 0,
+      stability,
+      accuracy: correct + wrong ? Math.round((correct / (correct + wrong)) * 100) : 0,
     });
-  }, [onFinish, correct, wrong, timeLeft, combo, mission.questions]);
+  }, [onFinish, correct, wrong, combo, stability]);
 
-  // timer
+  // only fail condition now: stability hits zero
   useEffect(() => {
-    if (finishedRef.current) return;
-    if (timeLeft <= 0) { finish("failure"); return; }
+    if (stability <= 0 && !finishedRef.current) finish("failure");
+  }, [stability, finish]);
+
+  // reset per question
+  useEffect(() => {
+    setEliminated([]);
+    setTimeLeft(mission.questionTime);
+  }, [qIndex, mission.questionTime]);
+
+  // per-question countdown (fresh interval each question)
+  useEffect(() => {
     const t = setInterval(() => {
-      setTimeLeft((v) => {
-        if (v <= 1) { clearInterval(t); return 0; }
-        return v - 1;
+      if (finishedRef.current || selectedRef.current !== null) return;
+      setFrozenTicks((f) => {
+        if (f > 0) return f - 1;
+        setTimeLeft((v) => Math.max(0, v - 1));
+        return 0;
       });
     }, 1000);
     return () => clearInterval(t);
-  }, [timeLeft <= 0]); // eslint-disable-line
+  }, [qIndex]);
 
+  // a question timing out counts the same as a wrong answer
   useEffect(() => {
-    if (timeLeft === 0 && !finishedRef.current) finish("failure");
-  }, [timeLeft, finish]);
+    if (timeLeft === 0 && selectedRef.current === null && !finishedRef.current) {
+      handleTimeout();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [timeLeft]);
 
-  useEffect(() => {
-    if (lives <= 0 && !finishedRef.current) finish("failure");
-  }, [lives, finish]);
+  function endQuestion(nextAnswered) {
+    setTimeout(() => {
+      if (finishedRef.current) return;
+      setFlash(null);
+      setFloatText(null);
+      setSelected(null);
+      if (nextAnswered >= order.length) {
+        finish("victory");
+        return;
+      }
+      setQIndex((q) => q + 1);
+    }, 700);
+  }
 
-  const current = order[qIndex];
+  function handleTimeout() {
+    if (finishedRef.current || selectedRef.current !== null) return;
+    setSelected(-1);
+    setFlash("wrong");
+    setCombo(0);
+    setWrong((w) => w + 1);
+    setStability((s) => Math.max(0, s - 25));
+    setStabilityHit(true);
+    setTimeout(() => setStabilityHit(false), 500);
+    setFloatText("Time's up!");
+    const nextAnswered = answered + 1;
+    setAnswered(nextAnswered);
+    endQuestion(nextAnswered);
+  }
 
   function handleAnswer(i) {
     if (selected !== null || finishedRef.current) return;
     setSelected(i);
     const isCorrect = i === current.a;
+    const nextAnswered = answered + 1;
+
     if (isCorrect) {
       setFlash("correct");
       setCombo((c) => c + 1);
       setCorrect((c) => c + 1);
-      setTimeLeft((t) => t + 3);
-      setFloatText("+3s");
     } else {
       setFlash("wrong");
       setCombo(0);
       setWrong((w) => w + 1);
-      setLives((l) => l - 1);
-      setTimeLeft((t) => Math.max(0, t - 5));
-      setFloatText("-5s");
+      setStability((s) => Math.max(0, s - 25));
+      setStabilityHit(true);
+      setTimeout(() => setStabilityHit(false), 500);
     }
+    setAnswered(nextAnswered);
+    endQuestion(nextAnswered);
+  }
 
-    setTimeout(() => {
-      setFlash(null);
-      setFloatText(null);
-      setSelected(null);
-      if (isCorrect && correct + 1 >= mission.questions) {
-        finish("victory");
-        return;
-      }
-      if (qIndex + 1 >= order.length) {
-        finish(correct + (isCorrect ? 1 : 0) >= mission.questions ? "victory" : "failure");
-        return;
-      }
-      setQIndex((q) => q + 1);
-    }, 620);
+  function useHint(id) {
+    if (hintsUsed[id] || finishedRef.current || selected !== null) return;
+    setHintsUsed((h) => ({ ...h, [id]: true }));
+    if (id === "freeze") {
+      setFrozenTicks((f) => f + 8);
+    } else if (id === "addTime") {
+      setTimeLeft((t) => t + 20);
+      setFloatText("+20s");
+      setTimeout(() => setFloatText(null), 900);
+    } else if (id === "fifty") {
+      const wrongIdx = current.options.map((_, i) => i).filter((i) => i !== current.a);
+      setEliminated(shuffle(wrongIdx).slice(0, 2));
+    } else if (id === "review") {
+      setShowReview(true);
+    }
   }
 
   const timerBand =
@@ -381,14 +539,18 @@ function GameplayScreen({ mission, onFinish }) {
   return (
     <div className={`bomb-play bomb-play--${flash || "idle"}`}>
       <div className="bomb-play-top">
-        <div className="bomb-play-lives">
-          {Array.from({ length: 3 }).map((_, i) => (
-            <span key={i} className={i < lives ? "bomb-play-life bomb-play-life--on" : "bomb-play-life"}>♥</span>
-          ))}
+        <div className="bomb-play-qtotal">
+          <span className="bomb-play-qtotal-label">Progress</span>
+          <span className="bomb-play-qtotal-value">{answered}/{order.length}</span>
         </div>
-        <div className={`bomb-play-timer bomb-play-timer--${timerBand}`}>{String(timeLeft).padStart(2, "0")}s</div>
+        <div className={`bomb-play-timer bomb-play-timer--${timerBand} ${frozenTicks > 0 ? "bomb-play-timer--frozen" : ""}`}>
+          {frozenTicks > 0 ? <i className="fa-solid fa-snowflake bomb-play-timer-freezeicon" /> : null}
+          {String(timeLeft).padStart(2, "0")}s
+        </div>
         <DefusalCore progress={progress} state={state} />
       </div>
+
+      <StabilityMeter stability={stability} shake={stabilityHit} />
 
       <div className="bomb-play-meta">
         <span className="bomb-play-mission-name">{mission.name}</span>
@@ -396,28 +558,39 @@ function GameplayScreen({ mission, onFinish }) {
       </div>
 
       {combo > 1 && <div className="bomb-play-combo" key={combo}>COMBO x{combo}</div>}
-      {floatText && <div className={`bomb-play-float bomb-play-float--${flash}`}>{floatText}</div>}
+      {floatText && <div className={`bomb-play-float bomb-play-float--${flash === "wrong" ? "wrong" : "hint"}`}>{floatText}</div>}
 
       <div className="bomb-play-question-wrap">
         <p className="bomb-play-subject">{current.subject}</p>
         <h3 className="bomb-play-question">{current.q}</h3>
       </div>
 
+      <HintBar hintsUsed={hintsUsed} onUse={useHint} disabled={selected !== null} />
+
       <div className="bomb-play-answers">
         {current.options.map((opt, i) => {
+          const isEliminated = eliminated.includes(i);
           let cls = "bomb-play-answer";
+          if (isEliminated) cls += " bomb-play-answer--eliminated";
           if (selected !== null) {
             if (i === current.a) cls += " bomb-play-answer--correct";
             else if (i === selected) cls += " bomb-play-answer--wrong";
           }
           return (
-            <button key={i} className={cls} onClick={() => handleAnswer(i)} disabled={selected !== null}>
+            <button
+              key={i}
+              className={cls}
+              onClick={() => handleAnswer(i)}
+              disabled={selected !== null || isEliminated}
+            >
               <span className="bomb-play-answer-letter">{"ABCD"[i]}</span>
-              <span className="bomb-play-answer-text">{opt}</span>
+              <span className="bomb-play-answer-text">{isEliminated ? "Removed" : opt}</span>
             </button>
           );
         })}
       </div>
+
+      {showReview && <ReviewModal current={current} onClose={() => setShowReview(false)} />}
     </div>
   );
 }
@@ -428,7 +601,7 @@ function GameplayScreen({ mission, onFinish }) {
 
 function ResultScreen({ mission, result, onContinue, onRetry, onExit }) {
   const isVictory = result.outcome === "victory";
-  const stars = isVictory ? (result.accuracy >= 90 ? 3 : result.accuracy >= 70 ? 2 : 1) : 0;
+  const stars = starsFromStability(result.stability);
 
   if (isVictory) {
     return (
@@ -442,8 +615,8 @@ function ResultScreen({ mission, result, onContinue, onRetry, onExit }) {
           ))}
         </div>
         <div className="bomb-victory-stats">
+          <div><span>Stability Left</span><strong>{result.stability}%</strong></div>
           <div><span>Accuracy</span><strong>{result.accuracy}%</strong></div>
-          <div><span>Time Left</span><strong>{result.timeLeft}s</strong></div>
           <div><span>Correct</span><strong>{result.correct}</strong></div>
           <div><span>Wrong</span><strong>{result.wrong}</strong></div>
           <div><span>Best Combo</span><strong>x{result.combo}</strong></div>
@@ -463,9 +636,9 @@ function ResultScreen({ mission, result, onContinue, onRetry, onExit }) {
       <p className="bomb-fail-tag">MISSION FAILED</p>
       <h2 className="bomb-fail-title">Bomb Exploded</h2>
       <div className="bomb-fail-stats">
+        <div><span>Stability</span><strong>{result.stability}%</strong></div>
         <div><span>Correct</span><strong>{result.correct}</strong></div>
         <div><span>Wrong</span><strong>{result.wrong}</strong></div>
-        <div><span>Accuracy</span><strong>{result.accuracy}%</strong></div>
       </div>
       <div className="bomb-fail-actions">
         <button className="bomb-fail-retry" onClick={onRetry}>Retry</button>
@@ -477,10 +650,12 @@ function ResultScreen({ mission, result, onContinue, onRetry, onExit }) {
 
 /* ============================================================
    ROOT APP
+   Pass onBackToSubjects to wire the league screen's back link
+   to your subject-selection route/component.
    ============================================================ */
 
 export function Start() {
-  const [screen, setScreen] = useState("leagues"); // leagues | map | card | briefing | countdown | playing | result
+  const [screen, setScreen] = useState("leagues");
   const [league, setLeague] = useState(null);
   const [mission, setMission] = useState(null);
   const [result, setResult] = useState(null);
@@ -488,12 +663,20 @@ export function Start() {
     totalXP: 0,
     totalCoins: 0,
     defused: 0,
-    completedMissions: {}, // "leagueId-index": true
+    completedMissions: {},
     leagueStatus: {
       rookie: "current", professional: "locked", elite: "locked",
       national: "locked", world: "locked", legend: "locked",
     },
   });
+  
+  console.log(progressState);
+  
+  const [searchParams] = useSearchParams()
+  const subject = searchParams.get('subject')
+  const navigate = useNavigate()
+  
+  console.log(subject);
 
   function missionStatus(leagueId, index) {
     if (progressState.completedMissions[`${leagueId}-${index}`]) return "complete";
@@ -501,27 +684,11 @@ export function Start() {
     return prevDone ? "current" : "locked";
   }
 
-  function handleSelectLeague(l) {
-    setLeague(l);
-    setScreen("map");
-  }
-
-  function handleSelectMission(m) {
-    setMission(m);
-    setScreen("card");
-  }
-
-  function handleBeginBriefing() {
-    setScreen("briefing");
-  }
-
-  function handleStartGame() {
-    setScreen("countdown");
-  }
-
-  function handleCountdownDone() {
-    setScreen("playing");
-  }
+  function handleSelectLeague(l) { setLeague(l); setScreen("map"); }
+  function handleSelectMission(m) { setMission(m); setScreen("card"); }
+  function handleBeginBriefing() { setScreen("briefing"); }
+  function handleStartGame() { setScreen("countdown"); }
+  function handleCountdownDone() { setScreen("playing"); }
 
   function handleFinish(res) {
     setResult(res);
@@ -550,235 +717,29 @@ export function Start() {
     setScreen("result");
   }
 
-  function handleContinue() {
-    setScreen("map");
-  }
-  function handleRetry() {
-    setScreen("briefing");
-  }
-  function handleExit() {
-    setScreen("map");
-  }
+  function handleContinue() { setScreen("map"); }
+  function handleRetry() { setScreen("briefing"); }
+  function handleExit() { setScreen("map"); }
+  
+  function onBackToSubjects() { navigate('/game/bomb-defusal')  }
 
   return (
     <div className="bomb-root">
-      <style>{`
-        ${FONT_IMPORT}
-        .bomb-root {
-          --void: #060A14;
-          --panel: #0E1526;
-          --panel2: #121B31;
-          --line: #1D2A46;
-          --cyan: #22D3EE;
-          --cyan-dim: #0E7490;
-          --danger: #FF4757;
-          --success: #2ED573;
-          --amber: #FFC048;
-          --text: #E7EDF7;
-          --text-dim: #7C8AA8;
-          font-family: 'Inter', system-ui, sans-serif;
-          background: radial-gradient(circle at 50% 0%, #0C1428 0%, var(--void) 60%);
-          color: var(--text);
-          min-height: 100vh;
-          width: 100%;
-          box-sizing: border-box;
-          padding: 20px 16px 40px;
-          position: relative;
-          overflow-x: hidden;
-        }
-        .bomb-root * { box-sizing: border-box; }
-        .bomb-root button { font-family: inherit; cursor: pointer; border: none; }
-        .hud-display { font-family: 'Rajdhani', sans-serif; }
-        .hud-mono { font-family: 'Share Tech Mono', monospace; }
-
-        /* corner frame signature element */
-        .hud-corner { position: absolute; width: 14px; height: 14px; border: 2px solid var(--cyan); opacity: .75; }
-        .hud-corner--tl { top: -1px; left: -1px; border-right: none; border-bottom: none; }
-        .hud-corner--tr { top: -1px; right: -1px; border-left: none; border-bottom: none; }
-        .hud-corner--bl { bottom: -1px; left: -1px; border-right: none; border-top: none; }
-        .hud-corner--br { bottom: -1px; right: -1px; border-left: none; border-top: none; }
-        .hud-corner--danger { border-color: var(--danger); }
-
-        .hud-stars { display: inline-flex; gap: 2px; }
-        .hud-star { color: #2A3455; font-size: 15px; }
-        .hud-star--on { color: var(--amber); }
-
-        /* ---------- HOME ---------- */
-        .bomb-home { max-width: 480px; margin: 0 auto; position: relative; }
-        .bomb-home-header { text-align: center; margin-bottom: 22px; }
-        .bomb-home-eyebrow { font-family: 'Share Tech Mono', monospace; font-size: 11px; letter-spacing: 2.5px; color: var(--cyan); margin: 0 0 8px; }
-        .bomb-home-title { font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 30px; letter-spacing: .5px; margin: 0 0 8px; line-height: 1.1; }
-        .bomb-home-sub { color: var(--text-dim); font-size: 13.5px; line-height: 1.5; margin: 0 auto; max-width: 340px; }
-        .bomb-home-stats { display: flex; gap: 10px; margin-bottom: 24px; }
-        .bomb-home-stat { flex: 1; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 10px 8px; text-align: center; }
-        .bomb-home-stat-label { display: block; font-size: 10.5px; color: var(--text-dim); letter-spacing: 1px; margin-bottom: 4px; }
-        .bomb-home-stat-value { font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 20px; color: var(--cyan); }
-        .bomb-home-ladder { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
-        .bomb-home-rung-btn {
-          width: 100%; display: flex; align-items: center; gap: 12px;
-          background: var(--panel); border: 1px solid var(--line); border-radius: 12px;
-          padding: 14px 16px; color: var(--text); text-align: left;
-        }
-        .bomb-home-rung--locked .bomb-home-rung-btn { opacity: .45; }
-        .bomb-home-rung--current .bomb-home-rung-btn { border-color: var(--cyan); box-shadow: 0 0 0 1px var(--cyan), 0 0 18px rgba(34,211,238,.25); }
-        .bomb-home-rung--complete .bomb-home-rung-btn { border-color: var(--amber); }
-        .bomb-home-rung-icon { font-size: 18px; }
-        .bomb-home-rung-name { flex: 1; font-family: 'Rajdhani', sans-serif; font-weight: 600; font-size: 17px; letter-spacing: .3px; }
-        .bomb-home-rung-arrow { color: var(--text-dim); }
-
-        /* ---------- MISSION MAP ---------- */
-        .bomb-map { max-width: 480px; margin: 0 auto; }
-        .bomb-map-header { display: flex; align-items: center; gap: 12px; margin-bottom: 26px; }
-        .bomb-map-back { background: none; color: var(--cyan); font-size: 14px; padding: 4px 0; }
-        .bomb-map-title { font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 22px; margin: 0; }
-        .bomb-map-path { display: flex; flex-direction: column; align-items: center; }
-        .bomb-map-node {
-          position: relative; width: 76px; height: 76px; border-radius: 18px;
-          background: var(--panel); border: 1px solid var(--line);
-          display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
-        }
-        .bomb-map-node--locked { opacity: .35; }
-        .bomb-map-node--current { border-color: var(--cyan); box-shadow: 0 0 22px rgba(34,211,238,.35); }
-        .bomb-map-node--complete { border-color: var(--success); background: linear-gradient(180deg, rgba(46,213,115,.12), transparent); }
-        .bomb-map-node--boss { width: 92px; height: 92px; border-radius: 22px; border-color: var(--danger); }
-        .bomb-map-node-icon { font-size: 22px; }
-        .bomb-map-node-label { font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 12px; color: var(--text-dim); }
-        .bomb-map-connector { width: 2px; height: 30px; background: linear-gradient(var(--line), var(--cyan-dim)); }
-
-        /* ---------- MISSION CARD ---------- */
-        .bomb-card-screen { max-width: 420px; margin: 0 auto; }
-        .bomb-card-back { background: none; color: var(--cyan); font-size: 14px; margin-bottom: 18px; }
-        .bomb-card { position: relative; background: var(--panel); border: 1px solid var(--line); border-radius: 18px; padding: 26px 22px; }
-        .bomb-card-eyebrow { font-family: 'Share Tech Mono', monospace; font-size: 11px; letter-spacing: 2px; color: var(--cyan); margin: 0 0 6px; }
-        .bomb-card-name { font-family: 'Rajdhani', sans-serif; font-size: 26px; font-weight: 700; margin: 0 0 4px; }
-        .bomb-card-bombtype { color: var(--text-dim); font-size: 13.5px; margin: 0 0 10px; }
-        .bomb-card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 20px 0; }
-        .bomb-card-stat { background: var(--panel2); border-radius: 10px; padding: 10px 12px; }
-        .bomb-card-stat span { display: block; font-size: 11px; color: var(--text-dim); margin-bottom: 3px; }
-        .bomb-card-stat strong { font-family: 'Rajdhani', sans-serif; font-size: 18px; }
-        .bomb-card-start { width: 100%; padding: 15px; border-radius: 12px; background: var(--cyan); color: #04141C; font-weight: 700; font-family: 'Rajdhani', sans-serif; font-size: 16px; letter-spacing: .5px; }
-
-        /* ---------- BRIEFING ---------- */
-        .bomb-brief { max-width: 420px; margin: 60px auto 0; text-align: center; position: relative; }
-        .bomb-brief-scanline { position: absolute; inset: 0; background: repeating-linear-gradient(0deg, rgba(34,211,238,.04) 0px, transparent 2px, transparent 4px); pointer-events: none; }
-        .bomb-brief-tag { font-family: 'Share Tech Mono', monospace; color: var(--danger); letter-spacing: 3px; font-size: 12px; margin: 0 0 10px; }
-        .bomb-brief-name { font-family: 'Rajdhani', sans-serif; font-size: 30px; font-weight: 700; margin: 0 0 16px; }
-        .bomb-brief-rule { height: 1px; background: linear-gradient(90deg, transparent, var(--line), transparent); margin: 18px 0; }
-        .bomb-brief-list { margin: 0; }
-        .bomb-brief-row { display: flex; justify-content: space-between; padding: 9px 4px; border-bottom: 1px dashed var(--line); font-size: 14px; }
-        .bomb-brief-row dt { color: var(--text-dim); }
-        .bomb-brief-row dd { margin: 0; font-family: 'Rajdhani', sans-serif; font-weight: 700; }
-        .bomb-brief-threat--high { color: var(--amber); }
-        .bomb-brief-threat--critical { color: var(--danger); }
-        .bomb-brief-start { margin-top: 10px; width: 100%; padding: 16px; border-radius: 12px; background: var(--danger); color: #fff; font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 17px; letter-spacing: 1px; }
-
-        /* ---------- COUNTDOWN ---------- */
-        .bomb-count { position: fixed; inset: 0; background: var(--void); display: flex; align-items: center; justify-content: center; z-index: 50; }
-        .bomb-count-flash { position: absolute; inset: 0; background: var(--cyan); opacity: 0; animation: bombFlash .5s ease-out; }
-        @keyframes bombFlash { 0% { opacity: .35; } 100% { opacity: 0; } }
-        .bomb-count-number { font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 88px; color: var(--cyan); text-shadow: 0 0 40px rgba(34,211,238,.6); animation: bombPop .5s ease; }
-        @keyframes bombPop { 0% { transform: scale(.4); opacity: 0; } 60% { transform: scale(1.1); opacity: 1; } 100% { transform: scale(1); } }
-
-        /* ---------- GAMEPLAY ---------- */
-        .bomb-play { max-width: 480px; margin: 0 auto; transition: background .2s; border-radius: 20px; padding: 4px; }
-        .bomb-play--correct { animation: bombPulseGood .5s ease; }
-        .bomb-play--wrong { animation: bombShake .4s ease; }
-        @keyframes bombPulseGood { 0% { box-shadow: 0 0 0 0 rgba(46,213,115,.5); } 100% { box-shadow: 0 0 0 20px rgba(46,213,115,0); } }
-        @keyframes bombShake { 0%,100% { transform: translateX(0); } 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
-        .bomb-play-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 6px; }
-        .bomb-play-lives { display: flex; gap: 4px; font-size: 18px; }
-        .bomb-play-life { color: #2A3455; }
-        .bomb-play-life--on { color: var(--danger); }
-        .bomb-play-timer { font-family: 'Share Tech Mono', monospace; font-size: 22px; padding: 4px 10px; border-radius: 8px; background: var(--panel); border: 1px solid var(--line); }
-        .bomb-play-timer--normal { color: var(--text); }
-        .bomb-play-timer--warn { color: var(--amber); }
-        .bomb-play-timer--danger { color: #FF7A5C; }
-        .bomb-play-timer--flash, .bomb-play-timer--critical { color: var(--danger); animation: bombTimerFlash .5s infinite; }
-        @keyframes bombTimerFlash { 50% { opacity: .3; } }
-        .bomb-play-core { width: 52px; height: 52px; transform: rotate(-90deg); }
-        .bomb-play-core-track { fill: none; stroke: var(--line); stroke-width: 8; }
-        .bomb-play-core-fill { fill: none; stroke-width: 8; stroke-linecap: round; transition: stroke-dashoffset .4s ease; }
-        .bomb-play-core--primary .bomb-play-core-fill { stroke: var(--cyan); }
-        .bomb-play-core--warn .bomb-play-core-fill { stroke: var(--amber); }
-        .bomb-play-core--success .bomb-play-core-fill { stroke: var(--success); }
-        .bomb-play-core-text { transform: rotate(90deg) translate(0,0); transform-origin: 50px 50px; font-size: 20px; fill: var(--text); font-family: 'Share Tech Mono', monospace; }
-        .bomb-play-meta { display: flex; justify-content: space-between; font-size: 12.5px; color: var(--text-dim); margin: 10px 2px 16px; }
-        .bomb-play-mission-name { font-weight: 600; color: var(--text); }
-        .bomb-play-combo { position: relative; text-align: center; font-family: 'Rajdhani', sans-serif; font-weight: 700; color: var(--cyan); letter-spacing: 1px; margin-bottom: 8px; animation: bombComboPop .5s ease; }
-        @keyframes bombComboPop { 0% { transform: translateY(6px) scale(.8); opacity: 0; } 100% { transform: translateY(0) scale(1); opacity: 1; } }
-        .bomb-play-float { text-align: center; font-family: 'Share Tech Mono', monospace; font-size: 14px; margin-bottom: 8px; animation: bombFloatUp .6s ease forwards; }
-        .bomb-play-float--correct { color: var(--success); }
-        .bomb-play-float--wrong { color: var(--danger); }
-        @keyframes bombFloatUp { 0% { transform: translateY(0); opacity: 1; } 100% { transform: translateY(-14px); opacity: 0; } }
-        .bomb-play-question-wrap { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 22px 18px; margin-bottom: 18px; min-height: 96px; }
-        .bomb-play-subject { font-size: 11px; letter-spacing: 1.5px; color: var(--cyan); margin: 0 0 8px; text-transform: uppercase; }
-        .bomb-play-question { font-family: 'Rajdhani', sans-serif; font-weight: 600; font-size: 19px; line-height: 1.35; margin: 0; }
-        .bomb-play-answers { display: flex; flex-direction: column; gap: 10px; }
-        .bomb-play-answer { display: flex; align-items: center; gap: 12px; width: 100%; padding: 15px 16px; border-radius: 12px; background: var(--panel); border: 1px solid var(--line); color: var(--text); font-size: 15px; text-align: left; }
-        .bomb-play-answer-letter { width: 26px; height: 26px; flex-shrink: 0; border-radius: 7px; background: var(--panel2); display: flex; align-items: center; justify-content: center; font-family: 'Rajdhani', sans-serif; font-weight: 700; color: var(--cyan); font-size: 13px; }
-        .bomb-play-answer--correct { border-color: var(--success); background: rgba(46,213,115,.12); }
-        .bomb-play-answer--wrong { border-color: var(--danger); background: rgba(255,71,87,.12); }
-
-        /* ---------- VICTORY ---------- */
-        .bomb-victory { max-width: 420px; margin: 40px auto 0; text-align: center; position: relative; }
-        .bomb-victory-glow { position: absolute; top: -40px; left: 50%; transform: translateX(-50%); width: 260px; height: 260px; background: radial-gradient(circle, rgba(46,213,115,.28), transparent 70%); pointer-events: none; }
-        .bomb-victory-tag { font-family: 'Share Tech Mono', monospace; color: var(--success); letter-spacing: 3px; font-size: 12px; margin: 0 0 8px; position: relative; }
-        .bomb-victory-title { font-family: 'Rajdhani', sans-serif; font-size: 32px; font-weight: 700; margin: 0 0 14px; position: relative; }
-        .bomb-victory-stars { font-size: 30px; margin-bottom: 20px; position: relative; }
-        .bomb-victory-star { color: #2A3455; margin: 0 3px; }
-        .bomb-victory-star--on { color: var(--amber); text-shadow: 0 0 14px rgba(255,192,72,.6); }
-        .bomb-victory-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; position: relative; }
-        .bomb-victory-stats div { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 12px; }
-        .bomb-victory-stats span { display: block; font-size: 11px; color: var(--text-dim); margin-bottom: 4px; }
-        .bomb-victory-stats strong { font-family: 'Rajdhani', sans-serif; font-size: 18px; }
-        .bomb-victory-rewards { display: flex; justify-content: center; gap: 12px; margin-bottom: 22px; position: relative; }
-        .bomb-victory-reward { background: rgba(46,213,115,.12); border: 1px solid var(--success); color: var(--success); padding: 8px 14px; border-radius: 20px; font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 14px; }
-        .bomb-victory-continue { width: 100%; padding: 16px; border-radius: 12px; background: var(--success); color: #04180C; font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 16px; position: relative; }
-
-        /* ---------- FAILURE ---------- */
-        .bomb-fail { max-width: 420px; margin: 60px auto 0; text-align: center; position: relative; }
-        .bomb-fail-flash { position: absolute; inset: -40px; background: radial-gradient(circle, rgba(255,71,87,.25), transparent 65%); animation: bombFailPulse 1.2s ease infinite; pointer-events: none; }
-        @keyframes bombFailPulse { 50% { opacity: .5; } }
-        .bomb-fail-tag { font-family: 'Share Tech Mono', monospace; color: var(--danger); letter-spacing: 3px; font-size: 12px; margin: 0 0 8px; position: relative; }
-        .bomb-fail-title { font-family: 'Rajdhani', sans-serif; font-size: 30px; font-weight: 700; margin: 0 0 20px; position: relative; }
-        .bomb-fail-stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 24px; position: relative; }
-        .bomb-fail-stats div { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 12px 6px; }
-        .bomb-fail-stats span { display: block; font-size: 10.5px; color: var(--text-dim); margin-bottom: 4px; }
-        .bomb-fail-stats strong { font-family: 'Rajdhani', sans-serif; font-size: 17px; }
-        .bomb-fail-actions { display: flex; gap: 10px; position: relative; }
-        .bomb-fail-retry { flex: 1; padding: 15px; border-radius: 12px; background: var(--danger); color: #fff; font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 15px; }
-        .bomb-fail-exit { flex: 1; padding: 15px; border-radius: 12px; background: var(--panel); border: 1px solid var(--line); color: var(--text); font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 15px; }
-      `}</style>
-
+      
       {screen === "leagues" && (
-        <LeagueScreen progressState={progressState} onSelectLeague={handleSelectLeague} />
+        <LeagueScreen progressState={progressState} onSelectLeague={handleSelectLeague} onBackToSubjects={onBackToSubjects} />
       )}
       {screen === "map" && league && (
-        <MissionMapScreen
-          league={league}
-          missionStatus={missionStatus}
-          onBack={() => setScreen("leagues")}
-          onSelectMission={handleSelectMission}
-        />
+        <MissionMapScreen league={league} missionStatus={missionStatus} onBack={() => setScreen("leagues")} onSelectMission={handleSelectMission} />
       )}
       {screen === "card" && mission && (
         <MissionCardScreen mission={mission} onBack={() => setScreen("map")} onStart={handleBeginBriefing} />
       )}
-      {screen === "briefing" && mission && (
-        <BriefingScreen mission={mission} onStart={handleStartGame} />
-      )}
+      {screen === "briefing" && mission && <BriefingScreen mission={mission} onStart={handleStartGame} />}
       {screen === "countdown" && <CountdownScreen onDone={handleCountdownDone} />}
-      {screen === "playing" && mission && (
-        <GameplayScreen mission={mission} onFinish={handleFinish} />
-      )}
+      {screen === "playing" && mission && <GameplayScreen mission={mission} onFinish={handleFinish} />}
       {screen === "result" && mission && result && (
-        <ResultScreen
-          mission={mission}
-          result={result}
-          onContinue={handleContinue}
-          onRetry={handleRetry}
-          onExit={handleExit}
-        />
+        <ResultScreen mission={mission} result={result} onContinue={handleContinue} onRetry={handleRetry} onExit={handleExit} />
       )}
     </div>
   );
