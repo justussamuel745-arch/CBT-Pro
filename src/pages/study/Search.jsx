@@ -61,7 +61,7 @@ function DetailModal({ item, onClose }) {
           {item.options.map(opt => (
             <li key={opt.id} className={`pq-modal-option ${opt.id === item.correctAnswers.join('') ? "pq-modal-option--correct" : ""}`}>
               <span className="pq-modal-option-letter">{opt.id.toUpperCase()}</span>
-              <span className="pq-modal-option-text">{opt.option}</span>
+              <span className="pq-modal-option-text" dangerouslySetInnerHTML={{__html: opt.option}} />
               {opt.id === item.correctAnswers.join('') && <i className="fa-solid fa-circle-check pq-modal-option-check" />}
             </li>
           ))}

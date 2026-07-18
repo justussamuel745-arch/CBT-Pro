@@ -18,12 +18,11 @@ import { Loading } from './components/Loading';
 import { Invalid } from './components/Invalid';
 import { Syllabus } from './pages/Syllabus';
 import { Dashboard } from './pages/Dashboard';
-import { ProctectedAdminRoute } from './routes/ProtectedAdminRoute';
-const Games  = lazy(() => import('./pages/games/Games.jsx'))
+const Games = lazy(() => import('./pages/games/Games.jsx'))
 const Delete = lazy(() => import('./pages/Delete.jsx'));
 const ResetPassword = lazy(() => import('./pages/auth/ResetPassword.jsx'));
 const ForgotPassword = lazy(() => import('./pages/auth/ForgotPassword.jsx'));
-const Pages = lazy(() => import('./pages/admin/Pages.jsx'));
+const Admin = lazy(() => import('./pages/admin/Admin.jsx'));
 import { fetchDataGet, fetchUserInfo, fetchHistory } from './scripts/utilis/fetch';
 import { on } from './scripts/utilis/submitHistory';
 import { getUser } from './hooks/services/indexedDB/users';
@@ -53,14 +52,14 @@ function App() {
         setIsLoading(false)
       }
     }
-    
+
     const userExists = async () => {
       const user = await getUser()
-      if (!user || Object.keys(user).length === 0){
+      if (!user || Object.keys(user).length === 0) {
         setIsLoading(false)
         return
       }
-      setToken(crypto.randomUUID()) 
+      setToken(crypto.randomUUID())
       // since user if offline when the page first open
       // the token passed in that state is not a valid token
       // just put it there to make the ui behave as if the user is signed in
@@ -76,8 +75,8 @@ function App() {
       const userHistory = await getHistory(user?._id)
       setHistoryData(userHistory)
     }
-    
-    
+
+
 
     if (navigator.onLine) {
       on(token, setToken, setHistoryData)
@@ -85,7 +84,7 @@ function App() {
     } else {
       userExists()
     }
-    
+
     const onlineListener = async () => {
       on(token, setToken, setHistoryData)
     }
@@ -113,7 +112,7 @@ function App() {
                 <ResetPassword />
               </Suspense>
             } />
-            
+
             <Route path="/legal" element={<Legal />} />
             <Route element={<ProtectedRoutes />}>
               <Route path="/study/*" element={<Study />} />
@@ -128,18 +127,16 @@ function App() {
                 <Suspense fallback={<Loading />}>
                   <Games />
                 </Suspense>
-                } />
+              } />
               <Route path="/delete" element={
                 <Suspense fallback={<Loading />}>
                   <Delete />
                 </Suspense>
               } />
-              <Route path="/admin/users" element={
-                <ProctectedAdminRoute>
-                  <Suspense fallback={<Loading />}>
-                    <Pages />
-                  </Suspense>
-                </ProctectedAdminRoute>
+              <Route path="/admin/*" element={
+                <Suspense fallback={<Loading />}>
+                  <Admin />
+                </Suspense>
               } />
             </Route>
             <Route path="*" element={<Invalid />} />

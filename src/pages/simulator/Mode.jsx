@@ -205,8 +205,7 @@ export function Mode() {
         });
         
         setAnswers(answersVariable)
-        
-        saveAllImages(data)
+        navigator.onLine && saveAllImages(data)
       } catch (err) {
         alert(err.message)
         console.error('Error:', err.message);

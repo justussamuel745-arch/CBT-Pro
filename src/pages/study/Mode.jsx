@@ -146,6 +146,7 @@ export function Mode() {
             throw { status: response.status, error: data.message || data.error || 'failed_to_load' }
           }
           await saveQuestions(data)
+          saveAllImages(data)
         } else {
           const subject = studyConfig.subject
           const years = studyConfig.years
@@ -169,7 +170,6 @@ export function Mode() {
         
         setRecords(data.map(d => d.id ? {id: d.id, isBookmarked: false} : null))
         setProgressList(data.map((d, index) => index + 1))
-        saveAllImages(data)
       } catch (err) {
         if (!err.status){
           setModal('connection_lost')

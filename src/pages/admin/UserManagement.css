@@ -342,6 +342,76 @@
   font-size: .875rem;
 }
 
+/* ---- Pagination ---- */
+.a-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .75rem;
+  padding: .875rem 1.25rem;
+  border-top: 1px solid var(--c-border);
+  flex-wrap: wrap;
+}
+
+.a-pagination-info {
+  font-size: .8rem;
+  color: var(--c-muted);
+  white-space: nowrap;
+}
+
+.a-pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: .25rem;
+  margin-left: auto;
+}
+
+.a-page-btn {
+  min-width: 32px;
+  height: 32px;
+  padding: 0 .5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--c-border);
+  background: var(--c-surface);
+  border-radius: 6px;
+  font-size: .8rem;
+  font-weight: 600;
+  font-family: var(--font);
+  color: var(--c-muted);
+  cursor: pointer;
+  transition: all .15s ease;
+}
+
+.a-page-btn:hover:not(:disabled) {
+  background: var(--c-bg);
+  color: var(--c-text);
+  border-color: var(--c-muted);
+}
+
+.a-page-btn.is-active {
+  background: var(--c-primary);
+  border-color: var(--c-primary);
+  color: #fff;
+}
+
+.a-page-btn.is-active:hover {
+  background: var(--c-primary-hover);
+}
+
+.a-page-btn:disabled {
+  opacity: .4;
+  cursor: not-allowed;
+}
+
+.a-page-dots {
+  padding: 0 .3rem;
+  color: var(--c-muted);
+  font-size: .8rem;
+  user-select: none;
+}
+
 /* ---- Drawer (Modal) ---- */
 .a-drawer-mask {
   position: fixed;
@@ -754,6 +824,28 @@
     justify-content: flex-end;
     width: 100%;
     gap: 0.5rem;
+  }
+  
+  /* Pagination mobile layout */
+  .a-pagination {
+    flex-direction: column;
+    align-items: stretch;
+    background: var(--c-surface);
+    border: 1px solid var(--c-border);
+    border-top: 1px solid var(--c-border);
+    border-radius: var(--c-radius);
+    box-shadow: var(--c-shadow-sm);
+    padding: 1rem;
+  }
+  
+  .a-pagination-info {
+    text-align: center;
+  }
+  
+  .a-pagination-controls {
+    margin-left: 0;
+    justify-content: center;
+    flex-wrap: wrap;
   }
   
   /* Drawer UI Adjustments for Mobile */

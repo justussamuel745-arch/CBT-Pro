@@ -1,18 +1,19 @@
-import { useContext } from 'react';
-import AdminContext from '../context/AdminContext';
-import { Ic } from '../../../scripts/utilis/Ic';
+import { useNavigate } from 'react-router';
+import { useAdminContext } from '../../context/AdminContext';
+import { Ic } from '../../scripts/utilis/Ic';
 import './Nav.css';
 
 export function Nav({ sidebarOpen, setSidebarOpen }) {
-  const { page, setPage, stats } = useContext(AdminContext)
+  const { stats, page } = useAdminContext()
+  const navigate = useNavigate()
   
   const NAV = [
-    { key: 'home', icon: <Ic.Home />, label: 'Home' },
+    { key: '', icon: <Ic.Home />, label: 'Home' },
     { key: 'users', icon: <Ic.Users />, label: 'Users' },
-    { key: 'payments', icon: <Ic.Card />, label: 'Payments' },
+//     { key: 'payments', icon: <Ic.Card />, label: 'Payments' },
     { key: 'reports', icon: <Ic.Flag />, label: 'Reported Questions' },
     { key: 'feedback', icon: <Ic.Feedback />, label: 'Feedback', badge: stats?.unread },
-    { key: 'settings', icon: <Ic.Settings />, label: 'Settings' },
+//     { key: 'settings', icon: <Ic.Settings />, label: 'Settings' },
   ];
 
   return (
@@ -26,7 +27,7 @@ export function Nav({ sidebarOpen, setSidebarOpen }) {
         <ul className="admin-nav">
           {NAV.map(n => (
             <li key={n.key} className={`admin-nav-item ${page === n.key ? 'is-active' : ''}`}
-              onClick={() => { setSidebarOpen(false); setPage(n.key) }}>
+              onClick={() => { setSidebarOpen(false); navigate(`/${n.key ? `admin/${n.key === 'users' ? '' : n.key}` : ''}`) }}>
               {n.icon} {n.label}
               {n.badge > 0 && <span className="admin-nav-badge">{n.badge}</span>}
             </li>

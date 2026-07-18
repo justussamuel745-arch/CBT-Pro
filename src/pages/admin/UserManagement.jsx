@@ -1,11 +1,14 @@
 import { useState, useEffect, useMemo, useContext } from 'react';
 import UserContext from '../../context/UserContext';
-import AdminContext from './context/AdminContext';
+import { useAdminContext } from '../../context/AdminContext';
 import { fetchWithAuth } from '../../scripts/utilis/fetch';
 import { url } from '../../scripts/utilis/url';
 import { ModalStripe, ToastProvider, useToast, CSS } from '../../components/NotificationSystem';
-import { Nav } from './components/Nav';
+import { Nav } from './Nav';
 import './UserManagement.css';
+
+// ==================== CONSTANTS ====================
+const USERS_PER_PAGE = 10;
 
 // ==================== HELPERS ====================
 const ROLE_COLORS = {
@@ -20,6 +23,18 @@ const avatarColor = (name) => AVATAR_COLORS[(name.charCodeAt(0) || 0) % AVATAR_C
 const initials = (name) => name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
 const fmt = (d) => d ? new Date(d).toLocaleDateString('en-NG', { year: 'numeric', month: 'short', day: 'numeric' }) : '—';
 
+// Builds a compact page-number list with ellipses, e.g. [1, '...', 4, 5, 6, '...', 12]
+const getPageNumbers = (currentPage, totalPages) => {
+  const delta = 1;
+  const range = [];
+  for (let i = Math.max(2, currentPage - delta); i <= Math.min(totalPages - 1, currentPage + delta); i++) {
+    range.push(i);
+  }
+  if (currentPage - delta > 2) range.unshift('...');
+  if (currentPage + delta < totalPages - 1) range.push('...');
+  return [1, ...range, ...(totalPages > 1 ? [totalPages] : [])];
+};
+
 // Icons
 const IconSearch = () => <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" /></svg>;
 const IconMenu = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M3 12h18M3 6h18M3 18h18" /></svg>;
@@ -32,13 +47,16 @@ const IconPlay = () => <svg width="13" height="13" viewBox="0 0 24 24" fill="non
 const IconTrash = () => <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><polyline points="3 6 5 6 21 6" /><path d="M19 6l-1 14H6L5 6m5 0V4h4v2" /></svg>;
 const IconEdit = () => <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" /><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" /></svg>;
 const IconWarn = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" /><line x1="12" y1="9" x2="12" y2="13" /><line x1="12" y1="17" x2="12.01" y2="17" /></svg>;
+const IconChevronLeft = () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.3" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6" /></svg>;
+const IconChevronRight = () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.3" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6" /></svg>;
 
 // ==================== COMPONENT ====================
 function UserManagementInner() {
   const { token, setToken } = useContext(UserContext)
-  const { users, setUsers, payments } = useContext(AdminContext)
+  const { users, setUsers, payments, setPage } = useAdminContext()
   const [search, setSearch] = useState('');
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const [drawer, setDrawer] = useState(null);
   const [drawerTab, setDrawerTab] = useState('profile');
@@ -54,7 +72,6 @@ function UserManagementInner() {
   const [deleteBtn, setDeleteBtn] = useState(null)
 
   const toast = useToast()
-  
   /* Notification modal */
   const [modal, setModal] = useState(null);
   const closeModal = () => setModal(null);
@@ -65,6 +82,9 @@ function UserManagementInner() {
     el.id = "__ns_styles";
     el.textContent = CSS[0];
     document.head.appendChild(el);
+    
+    setPage('users')
+    
     return () => document.getElementById("__ns_styles")?.remove();
   }, []);
 
@@ -74,6 +94,26 @@ function UserManagementInner() {
     if (!q) return users;
     return users.filter(u => u.fullName.toLowerCase().includes(q) || u.email.toLowerCase().includes(q) || u.phoneNumber.includes(q));
   }, [users, search]);
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / USERS_PER_PAGE));
+
+  const paginated = useMemo(() => {
+    const start = (currentPage - 1) * USERS_PER_PAGE;
+    return filtered.slice(start, start + USERS_PER_PAGE);
+  }, [filtered, currentPage]);
+
+  // Reset to page 1 whenever the search query changes
+  useEffect(() => { setCurrentPage(1); }, [search]);
+
+  // Keep currentPage in range if the list shrinks (e.g. after a delete)
+  useEffect(() => {
+    if (currentPage > totalPages) setCurrentPage(totalPages);
+  }, [totalPages, currentPage]);
+
+  const goToPage = (p) => {
+    if (p < 1 || p > totalPages || p === currentPage) return;
+    setCurrentPage(p);
+  };
 
   const userPayments = (id) => payments.filter(p => p.user === id);
 
@@ -333,7 +373,7 @@ function UserManagementInner() {
                     <tr><td colSpan="7">
                       <div className="a-empty"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" /></svg><p>No users match your search.</p></div>
                     </td></tr>
-                  ) : filtered.map(user => (
+                  ) : paginated.map(user => (
                     <tr key={user._id} onClick={() => openDrawer(user)}>
                       <td data-label="User">
                         <div className="a-user-cell">
@@ -373,6 +413,27 @@ function UserManagementInner() {
                 </tbody>
               </table>
             </div>
+
+            {filtered.length > 0 && totalPages > 1 && (
+              <div className="a-pagination">
+                <span className="a-pagination-info">
+                  Showing {(currentPage - 1) * USERS_PER_PAGE + 1}–{Math.min(currentPage * USERS_PER_PAGE, filtered.length)} of {filtered.length}
+                </span>
+                <div className="a-pagination-controls">
+                  <button className="a-page-btn" disabled={currentPage === 1} onClick={() => goToPage(currentPage - 1)} aria-label="Previous page">
+                    <IconChevronLeft />
+                  </button>
+                  {getPageNumbers(currentPage, totalPages).map((p, i) => (
+                    p === '...'
+                      ? <span key={`dots-${i}`} className="a-page-dots">…</span>
+                      : <button key={p} className={`a-page-btn ${p === currentPage ? 'is-active' : ''}`} onClick={() => goToPage(p)}>{p}</button>
+                  ))}
+                  <button className="a-page-btn" disabled={currentPage === totalPages} onClick={() => goToPage(currentPage + 1)} aria-label="Next page">
+                    <IconChevronRight />
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>

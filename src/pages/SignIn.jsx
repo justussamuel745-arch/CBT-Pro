@@ -197,8 +197,8 @@ function Auth() {
         type: "success",
         icon: "✓",
         title: "Welcome back!",
-        message: "You're signed in as <strong>" + email + "</strong>. Go to your Home Page…",
-        primaryLabel: "Go to Home Page",
+        message: "You're signed in as <strong>" + email + "</strong>. Go to your Dashboard…",
+        primaryLabel: "Go to your Dashboard",
         onPrimary: () => {
           setModal(null);
           // toast.push({ type: "success", title: "Signed in", message: "Welcome back! Redirecting…" });

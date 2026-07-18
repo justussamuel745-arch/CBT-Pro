@@ -8,7 +8,7 @@ let MENU_SECTIONS = [
     title: "Admin Control",
     links: [
       {
-        icon: "fa-user-shield", label: 'Management', to: '/admin/users'
+        icon: "fa-user-shield", label: 'Management', to: '/admin/'
       }
     ]
   },

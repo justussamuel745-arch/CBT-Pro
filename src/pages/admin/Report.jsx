@@ -1,8 +1,9 @@
 import { useState, useEffect, useContext } from 'react';
-import './AdminReports.css';
+import './Report.css';
 import UserContext from '../../context/UserContext';
-import { Nav } from './components/Nav';
-import { fetchReports } from './utils/scripts/adminFetch';
+import { useAdminContext } from '../../context/AdminContext';
+import { Nav } from './Nav';
+import { fetchReports } from './utils/adminFetch';
 import { fetchWithAuth } from '../../scripts/utilis/fetch';
 
 const CATEGORY_LABELS = {
@@ -254,8 +255,9 @@ function ReportDrawer({ report, onClose, onStatusChange, onDelete }) {
 // ─────────────────────────────────────────────────────────────
 // MAIN PAGE
 // ─────────────────────────────────────────────────────────────
-export function AdminReports() {
+export function Report() {
   const { token, setToken } = useContext(UserContext);
+  const { setPage } = useAdminContext()
   const [reports, setReports]     = useState([]);
   const [filter, setFilter]       = useState('all');
   const [search, setSearch]       = useState('');
@@ -266,7 +268,7 @@ export function AdminReports() {
   // Close drawer on Escape
   useEffect(() => {
     fetchReports(token, setToken, setReports)
-    
+    setPage('reports')
     function onKey(e) { if (e.key === 'Escape') setSelected(null); }
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);

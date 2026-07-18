@@ -97,7 +97,7 @@ export function Dashboard() {
           <button className="dash-avatar-btn" aria-label="Account">
             <span className="dash-avatar">
               <img 
-                src={`${ navigator.onLine ? `${url}${userInfo?.profilePic}` : `${URL.createObjectURL(userInfo.blob)}`}`}
+                src={`${ navigator.onLine ? `${url}${userInfo?.profilePic}` : `${userInfo.blob && URL.createObjectURL(userInfo.blob)}`}`}
                 style={{
                   width: '100%',
                   borderRadius: '12px',

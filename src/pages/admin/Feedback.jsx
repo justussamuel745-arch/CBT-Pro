@@ -1,8 +1,8 @@
 import { useState, useMemo, useEffect, useContext } from 'react';
 import UserContext from '../../context/UserContext';
-import AdminContext from './context/AdminContext';
+import { useAdminContext } from '../../context/AdminContext';
 import { fetchWithAuth } from '../../scripts/utilis/fetch';
-import { Nav } from './components/Nav';
+import { Nav } from './Nav';
 import './Feedback.css';
 
 const TYPE_META = {
@@ -58,14 +58,18 @@ const fmtFull = (d) => d ? new Date(d).toLocaleString('en-NG', { dateStyle: 'med
 // ==================== COMPONENT ====================
 export function Feedback() {
   const { token, setToken } = useContext(UserContext)
-  const { items, setItems, stats } = useContext(AdminContext)
+  const { items, setItems, stats, setPage } = useAdminContext()
   const [filter, setFilter] = useState('All');
   const [search, setSearch] = useState('');
   const [drawer, setDrawer] = useState(null);
   const [deleteModal, setDeleteModal] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [toast, setToast] = useState(null);
-
+  
+  useEffect(() => {
+    setPage('feedback')
+  },[])
+  
   // Auto-dismiss toast
   useEffect(() => {
     if (!toast) return;
