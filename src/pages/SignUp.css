@@ -408,3 +408,4 @@
   .register-alert-title { font-weight: 700; margin-bottom: .15rem; }
   .register-alert-dismiss { background: none; border: none; cursor: pointer; opacity: .5; font-size: 1rem; padding: 0; flex-shrink: 0; transition: opacity .15s; line-height: 1; }
   .register-alert-dismiss:hover { opacity: 1; }
+  

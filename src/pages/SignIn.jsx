@@ -2,6 +2,7 @@ import { useState, useEffect, createContext, useContext, useRef } from "react";
 import { useNavigate } from 'react-router';
 import { Ic } from '../scripts/utilis/Ic'
 import UserContext from '../context/UserContext.jsx';
+import { GoogleAuth } from '../components/GoogleAuth';
 import { fetchDataPost, fetchUserInfo, fetchHistory } from '../scripts/utilis/fetch.js';
 import './SignIn.css';
 
@@ -9,7 +10,7 @@ import './SignIn.css';
 // TOAST CONTEXT
 // ─────────────────────────────────────────────────────────────
 const ToastCtx = createContext(null);
-const useToast = () => useContext(ToastCtx);
+export const useToast = () => useContext(ToastCtx);
 let _tid = 0;
 
 function ToastProvider({ children }) {
@@ -207,7 +208,20 @@ function Auth() {
       });
     } catch (err) {
       console.log(err);
-      if (err.errors === 'wrong_password'){
+      if (err.errors === 'GOOGLE_SIGNIN_REQUIRED'){
+        setModal({
+          type: "error",
+          icon: <Ic.X />,
+          title: "Sign in with Google",
+          message:
+            "This email is linked to a Google account. To continue, please sign in using the 'Continue with Google' button below. After signing in, you can add a password later from your account settings if you wish.",
+          primaryLabel: "OK",
+          secondaryLabel: "Try Again",
+          onPrimary: () => {
+            setModal(null);
+          }
+        });
+      } else if (err.errors === 'wrong_password'){
         setFormAlert({ kind: "error", title: "Incorrect password", message: "The password you entered doesn't match this account. Try again or reset your password." });
         setErrors({ password: "Incorrect password." });
         toast.push({ type: "error", title: "Sign in failed", message: "Incorrect password." });
@@ -254,7 +268,6 @@ function Auth() {
       <div className="auth-page">
         <div className="auth-wrapper">
           <div className="auth-card">
-
             <div className="auth-header">
               <h1>Welcome Back</h1>
               <p>Access your mock tests, AI tutor, and results.</p>
@@ -346,6 +359,8 @@ function Auth() {
               </button>
 
             </div>{/* end.auth-form */}
+            
+            <GoogleAuth dividerLabel={"or continue with"} action={"continue_with"}/>
 
             <div className="auth-footer">
               Don&apos;t have an account? <a href="/signup">Sign up free</a>

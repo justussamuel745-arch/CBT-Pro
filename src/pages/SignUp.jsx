@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, createContext, useContext, useCallback } from 'react'
 import { Link, useNavigate } from 'react-router';
+import { GoogleAuth } from '../components/GoogleAuth';
 import { fetchDataPost } from '../scripts/utilis/fetch'
 import { Ic } from '../scripts/utilis/Ic'
 import './SignUp.css';
@@ -357,6 +358,8 @@ function Register() {
                 {loading? <><span className="register-spinner" /> Creating account…</> : "Create account"}
               </button>
             </form>
+            
+            <GoogleAuth dividerLabel={"or sign up with"} action={"signup_with"} />
 
             <div className="register-footer">
               Already have an account? <Link to="/signin">Sign In</Link>

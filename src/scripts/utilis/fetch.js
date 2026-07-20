@@ -95,8 +95,8 @@ export async function fetchUserInfo(token, setUserInfo, setProfileFields) {
   let blob;
   
   if (data.profilePic){
-    const res = await fetch(url + data.profilePic)
-    if (response.ok){
+    const res = await fetch(data.profilePic)
+    if (res.ok){
       blob = await res.blob();
     }
   }

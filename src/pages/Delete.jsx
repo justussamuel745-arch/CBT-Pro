@@ -1,15 +1,21 @@
 import { useState, useEffect, useContext } from "react";
 import { Link, useNavigate } from 'react-router';
+import { GoogleLogin } from "@react-oauth/google";
 import UserContext from '../context/UserContext.jsx';
-import { fetchWithAuth } from '../scripts/utilis/fetch.js';
-import { ToastProvider, useToast, ModalDestruct, CSS } from '../components/NotificationSystem'
+import { fetchWithAuth, fetchDataGet } from '../scripts/utilis/fetch.js';
+import { ToastProvider, useToast, ModalDestruct, CSS } from '../components/NotificationSystem';
+import { deleteUser } from '../hooks/services/indexedDB/users';
 import './Delete.css';
 
 function DeleteWithToast() {
-  const { token, setToken, error, setError } = useContext(UserContext);
+  const { token, setToken, userInfo, error, setError } = useContext(UserContext);
   const toast = useToast()
   const navigate = useNavigate()
+
+  const isGoogleOnly = userInfo?.authProvider === 'google';
+
   const [password, setPassword] = useState("");
+  const [googleToken, setGoogleToken] = useState(null);
   const [confirmed, setConfirmed] = useState(false);
   const [loading, setLoading] = useState(false);
   const [btnText, setBtnText] = useState("Delete Account");
@@ -17,7 +23,9 @@ function DeleteWithToast() {
   const [modal, setModal] = useState(null);
   const closeModal = () => setModal(null);
 
-  const isDisabled = !password.trim() || !confirmed || loading;
+  const isDisabled = isGoogleOnly
+    ? (!googleToken || !confirmed || loading)
+    : (!password.trim() || !confirmed || loading);
 
   /*===== Render Notification Style ======*/
   useEffect(() => {
@@ -28,39 +36,58 @@ function DeleteWithToast() {
     return () => document.getElementById("__ns_styles")?.remove();
   }, []);
 
-
   const handlePasswordChange = (e) => {
     setPassword(e.target.value);
-    if (error) setError(""); // clear error when user types
+    if (error) setError("");
+  };
+
+  const handleGoogleVerify = (credentialResponse) => {
+    setGoogleToken(credentialResponse.credential);
+    if (error) setError("");
+    toast.push({ variant: 'pill', type: 'success', message: 'Google account verified.' });
   };
 
   const deleteUser = async () => {
-
     setLoading(true);
     setBtnText("Verifying...");
 
     try {
-      const response = await fetchWithAuth(token, setToken, `/api/settings?password=${password}`, { method: 'DELETE' })
+      const body = isGoogleOnly
+        ? { googleToken }
+        : { password };
+
+      const response = await fetchWithAuth(token, setToken, `/api/settings/delete`, {
+        method: 'POST',
+        body: JSON.stringify(body)
+      });
       const data = await response.json().catch(() => ({}))
       if (!response.ok) {
         throw { status: response.status, error: data?.message || data?.error || 'Request failed. Try again later.' }
       }
-
+      await Promise.all([
+        deleteUser(),
+        fetchDataGet('/api/logout')
+      ])
 
       setBtnText("Deleting...");
-      // Proceed with deletion
       setToken(null)
       navigate('/signup')
 
     } catch (err) {
-      if (!err.status){
-        toast.push({ variant: 'pill', type: 'error',   message: "Couldn't connect to server." });
+      if (!err.status) {
+        toast.push({ variant: 'pill', type: 'error', message: "Couldn't connect to server." });
       } else if (err.error === 'wrong_password') {
         setError('Incorrect password.')
-      } else if (err.status >= 500){
-        toast.push({ variant: 'pill', type: 'error',   message: "Unexpected error. Try again later" });
+      } else if (err.error === 'GOOGLE_ACCOUNT_MISMATCH') {
+        setError('This Google account doesn\'t match the one linked to your CBT Pro account. Please verify with the correct Google account.')
+        setGoogleToken(null);
+      } else if (err.status === 401 && isGoogleOnly) {
+        setError('Google verification failed or expired.')
+        setGoogleToken(null);
+      } else if (err.status >= 500) {
+        toast.push({ variant: 'pill', type: 'error', message: "Unexpected error. Try again later" });
       } else {
-        toast.push({ variant: 'pill', type: 'error',   message: err.error });
+        toast.push({ variant: 'pill', type: 'error', message: err.error });
       }
 
       setBtnText("Delete Account");
@@ -101,36 +128,56 @@ function DeleteWithToast() {
             <h3>Before you delete, please review the following:</h3>
             <ul>
               <li>Permanent data loss: All CBT test results, assessment scores, progress tracking, and saved practice sessions will be permanently erased and cannot be restored.</li>
-
               <li>Subscription & billing: Your CBT Pro subscription will be canceled immediately. You will lose access to premium assessments, advanced analytics, and priority support. No prorated refund will be issued for the current billing period.</li>
-
               <li>Reactivation requires new subscription: If you sign up again in the future, you must purchase a new CBT Pro subscription to regain access to all premium features. Your previous subscription and benefits will not carry over.</li>
-
               <li>Account access: You will lose access to your account, profile settings, and personalized recommendations. Your email and username will be released and may be used by another user.</li>
-
               <li>Irreversible action: Once deletion is confirmed, your account cannot be recovered, reactivated, or merged with a future account.</li>
-
               <li>Compliance records: We may retain minimal records required by law, such as transaction receipts, for tax and compliance purposes. These records do not include your CBT results or personal content.</li>
-
               <li>Starting over: If you decide to return, you will need to create a new account and complete onboarding from the beginning. Past progress and history will not be available.</li>
             </ul>
           </div>
 
           <form className="delete-form" onSubmit={(e) => { e.preventDefault(); setModal('delete_confirm') }} noValidate>
-            <div className="delete-form-group">
-              <label htmlFor="password">Enter your password to confirm</label>
-              <input
-                type="password"
-                value={password}
-                onChange={handlePasswordChange}
-                placeholder="Your current password"
-                autoComplete="off"
-                required
-                aria-describedby="passwordError"
-                className={error ? "error" : ""}
-              />
-              {error && <div className="form-error">{error}</div>}
-            </div>
+
+            {isGoogleOnly ? (
+              <div className="delete-form-group">
+                <label>Verify your Google account to confirm</label>
+                <p className="delete-google-hint">
+                  Your account uses Google Sign-In and has no password. Re-verify with Google below to confirm it's you.
+                </p>
+                <div className="delete-google-wrap">
+                  <GoogleLogin
+                    onSuccess={handleGoogleVerify}
+                    onError={() => {
+                      setError('Google verification failed. Please try again.');
+                      toast.push({ variant: 'pill', type: 'error', message: 'Google verification failed.' });
+                    }}
+                    shape="pill"
+                    theme="outline"
+                    auto_select={false}
+                  />
+                </div>
+                {googleToken && !error && (
+                  <div className="delete-google-verified">✓ Google account verified</div>
+                )}
+                {error && <div className="form-error">{error}</div>}
+              </div>
+            ) : (
+              <div className="delete-form-group">
+                <label htmlFor="password">Enter your password to confirm</label>
+                <input
+                  type="password"
+                  value={password}
+                  onChange={handlePasswordChange}
+                  placeholder="Your current password"
+                  autoComplete="off"
+                  required
+                  aria-describedby="passwordError"
+                  className={error ? "error" : ""}
+                />
+                {error && <div className="form-error">{error}</div>}
+              </div>
+            )}
 
             <div className="delete-checkbox-group">
               <input

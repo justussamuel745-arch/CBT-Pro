@@ -8,7 +8,7 @@
     box-sizing: border-box;
   }
   
-  :root {
+    :root {
     --primary: #4f46e5;
     --primary-dark: #4338ca;
     --primary-light: #eef2ff;
@@ -631,7 +631,7 @@
   }
   
   @keyframes auth-icon-shake {
-
+    
     0%,
     100% {
       transform: translateX(0);

@@ -761,3 +761,180 @@
     width: 100%;
   }
 }
+
+/* ── Google account card ── */
+.settings-google-card {
+  position: relative;
+  overflow: hidden;
+  border-color: var(--settings-info-border);
+}
+
+.settings-google-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--gradient);
+}
+
+.settings-google-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.settings-google-badge {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: #fff;
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: var(--shadow);
+}
+
+.settings-google-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--settings-info-text);
+  background: var(--settings-info-bg);
+  border: 1px solid var(--settings-info-border);
+  padding: 0.2rem 0.65rem;
+  border-radius: 20px;
+}
+
+.settings-google-pill-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--settings-online);
+  flex-shrink: 0;
+}
+
+.settings-google-lead {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin-bottom: 1.25rem;
+}
+
+.settings-google-perks {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+  padding: 1rem 1.125rem;
+  background: var(--bg);
+  border-radius: var(--radius-sm);
+  margin-bottom: 1.5rem;
+}
+
+.settings-google-perk {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  font-size: 0.85rem;
+  color: var(--text);
+  font-weight: 500;
+}
+
+.settings-google-perk-icon {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--success);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.settings-google-perk-icon svg {
+  width: 12px;
+  height: 12px;
+}
+
+/* ── Add-password modal card ── */
+.settings-modal-card {
+  background: var(--card);
+  border-radius: var(--radius);
+  width: 100%;
+  max-width: 420px;
+  box-shadow: 0 24px 60px rgb(0 0 0 / 0.18);
+  padding: 2rem;
+  position: relative;
+  animation: settings-modal-in 0.22s cubic-bezier(0.34, 1.4, 0.64, 1);
+}
+
+@keyframes settings-modal-in {
+  from { opacity: 0; transform: scale(0.9) translateY(14px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.settings-modal-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: none;
+  background: var(--bg);
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+}
+
+.settings-modal-close:hover {
+  background: var(--border);
+  color: var(--text);
+}
+
+.settings-modal-icon-ring {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--primary-light);
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.25rem;
+}
+
+.settings-modal-title {
+  font-size: 1.15rem;
+  font-weight: 800;
+  margin-bottom: 0.4rem;
+  letter-spacing: -0.01em;
+}
+
+.settings-modal-desc {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  line-height: 1.55;
+  margin-bottom: 1.5rem;
+}
+
+.settings-modal-desc strong {
+  color: var(--text);
+}
+
+.settings-modal-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+  margin-top: 1.5rem;
+}

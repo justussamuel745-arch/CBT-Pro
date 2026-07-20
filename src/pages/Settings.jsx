@@ -1,8 +1,7 @@
-import { useState, useEffect, useRef, useContext } from 'react';
+import { useState, useEffect, useRef, useContext, memo} from 'react';
 import { Link, useNavigate } from 'react-router';
 import UserContext from '../context/UserContext.jsx';
 import { fetchDataGet, fetchWithAuth } from '../scripts/utilis/fetch.js';
-import { url } from '../scripts/utilis/url.js';
 import { ToastProvider, useToast, ModalCentered, ModalDestruct, CSS } from '../components/NotificationSystem';
 import { Ic } from '../scripts/utilis/Ic'
 import defaultAvatar from '../assets/images/avatar.jpg';
@@ -20,17 +19,17 @@ const PWD_MIN_LENGTH = 6;
 function passwordStrength(pw) {
   if (!pw) return { pct: 0, color: 'transparent', label: '' };
   let score = 0;
-  if (pw.length >= 6)  score++;
+  if (pw.length >= 6) score++;
   if (pw.length >= 10) score++;
   if (/[A-Z]/.test(pw)) score++;
   if (/[0-9]/.test(pw)) score++;
   if (/[^A-Za-z0-9]/.test(pw)) score++;
   const levels = [
-    { label: 'Too short',   color: '#ef4444', pct: 15 },
-    { label: 'Weak',        color: '#ef4444', pct: 30 },
-    { label: 'Fair',        color: '#f59e0b', pct: 50 },
-    { label: 'Good',        color: '#4f46e5', pct: 72 },
-    { label: 'Strong',      color: '#10b981', pct: 90 },
+    { label: 'Too short', color: '#ef4444', pct: 15 },
+    { label: 'Weak', color: '#ef4444', pct: 30 },
+    { label: 'Fair', color: '#f59e0b', pct: 50 },
+    { label: 'Good', color: '#4f46e5', pct: 72 },
+    { label: 'Strong', color: '#10b981', pct: 90 },
     { label: 'Very strong', color: '#10b981', pct: 100 },
   ];
   return levels[Math.min(score, 5)];
@@ -40,26 +39,15 @@ function passwordStrength(pw) {
 // USER IMAGE
 // ─────────────────────────────────────────────────────────────
 
-function UserImage({ avatarPreview, userInfo }){
-  if (!navigator.onLine && userInfo.blob){
+function UserImage({ avatarPreview, userInfo }) {
     return (
       <img
-        src={avatarPreview || `${URL.createObjectURL(userInfo.blob)}`}
+        src={avatarPreview || `${userInfo.blob ? URL.createObjectURL(userInfo.blob) : ''}`}
         alt="Profile avatar"
         onError={(e) => { e.target.src = defaultAvatar; }}
         style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }}
       />
     )
-  } else {
-    return (
-      <img
-        src={avatarPreview || `${url}${userInfo.profilePic}`}
-        alt="Profile avatar"
-        onError={(e) => { e.target.src = defaultAvatar; }}
-        style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }}
-      />
-    )
-  }
 }
 
 // ─────────────────────────────────────────────────────────────
@@ -78,6 +66,184 @@ function SettingsSkeleton() {
     </div>
   );
 }
+
+const AddPasswordModal = memo(function AddPasswordModal({ userInfo, setUserInfo, modal, setModal }) {
+  // Add-password modal state
+  const { token, setToken } = useContext(UserContext)
+  const [newPwdOnly, setNewPwdOnly] = useState({ newPwd: '', confirmPwd: '' });
+  const [newPwdOnlyErrors, setNewPwdOnlyErrors] = useState({});
+  const [newPwdOnlyLoading, setNewPwdOnlyLoading] = useState(false);
+  const [showNewOnly, setShowNewOnly] = useState(false);
+  const [showConfirmOnly, setShowConfirmOnly] = useState(false);
+  
+  const toast = useToast()
+
+  function validateNewPwdOnly(p) {
+    const errs = {};
+    if (!p.newPwd) {
+      errs.newPwd = 'Enter a password.';
+    } else if (p.newPwd.length < PWD_MIN_LENGTH) {
+      errs.newPwd = `Must be at least ${PWD_MIN_LENGTH} characters.`;
+    }
+    if (!p.confirmPwd) {
+      errs.confirmPwd = 'Confirm your password.';
+    } else if (p.newPwd && p.confirmPwd !== p.newPwd) {
+      errs.confirmPwd = 'Passwords do not match.';
+    }
+    return errs;
+  }
+
+  async function addPassword(e) {
+    e.preventDefault();
+    const errs = validateNewPwdOnly(newPwdOnly);
+    if (Object.keys(errs).length) {
+      setNewPwdOnlyErrors(errs);
+      return;
+    }
+
+    setNewPwdOnlyLoading(true);
+    try {
+      const response = await fetchWithAuth(token, setToken, '/api/settings/account', {
+        method: 'POST',
+        body: JSON.stringify({ newPassword: newPwdOnly.newPwd }),
+      });
+      const data = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        throw { status: response.status, error: data.error || data.message };
+      }
+
+      setUserInfo(u => ({ ...u, authProvider: 'local' }));
+      setNewPwdOnly({ newPwd: '', confirmPwd: '' });
+      setModal('password_added');
+    } catch (err) {
+      if (!err.status) {
+        toast.push({ type: 'error', title: 'No connection', message: 'Check your internet and try again.' });
+      } else if (err.status >= 500) {
+        toast.push({ type: 'error', title: 'Server error', message: 'Something went wrong. Please try again later.' });
+      } else {
+        toast.push({ type: 'error', title: 'Could not set password', message: err.error || 'Please try again.' });
+      }
+    } finally {
+      setNewPwdOnlyLoading(false);
+    }
+  }
+
+  return (
+    <>
+      <div className="ns-overlay" onClick={() => setModal(null)}>
+        <div onClick={e => e.stopPropagation()} style={{ width: '100%', display: 'flex', justifyContent: 'center', padding: '0 1rem' }}>
+          <form onSubmit={addPassword} className="settings-modal-card" noValidate>
+            <button type="button" className="settings-modal-close" onClick={() => setModal(null)}>
+              <Ic.X />
+            </button>
+
+            <div className="settings-modal-icon-ring">
+              <Ic.Lock />
+            </div>
+
+            <h3 className="settings-modal-title">Add a password</h3>
+            <p className="settings-modal-desc">
+              Create a password for <strong>{userInfo.email}</strong> so you can sign in without Google too.
+            </p>
+
+            <div className="settings-form-group">
+              <label className="settings-form-label">New password</label>
+              <div className="settings-pwd-wrap">
+                <input
+                  type={showNewOnly ? 'text' : 'password'}
+                  className={`settings-form-input ${newPwdOnlyErrors.newPwd ? 'settings-input-error' : ''}`}
+                  placeholder="Enter a password"
+                  value={newPwdOnly.newPwd}
+                  onChange={e => {
+                    setNewPwdOnly(p => ({ ...p, newPwd: e.target.value }));
+                    if (newPwdOnlyErrors.newPwd) setNewPwdOnlyErrors(p => { const n = { ...p }; delete n.newPwd; return n; });
+                  }}
+                  autoComplete="new-password"
+                  autoFocus
+                />
+                <button type="button" className="settings-pwd-toggle" onClick={() => setShowNewOnly(p => !p)}>
+                  {showNewOnly ? <Ic.EyeOff /> : <Ic.Eye />}
+                </button>
+              </div>
+              {newPwdOnlyErrors.newPwd && <p className="settings-form-error"><Ic.X />{newPwdOnlyErrors.newPwd}</p>}
+
+              {newPwdOnly.newPwd && (
+                <div className="settings-pwd-strength">
+                  <div className="settings-pwd-strength-bar">
+                    <div
+                      className="settings-pwd-strength-fill"
+                      style={{ width: `${passwordStrength(newPwdOnly.newPwd).pct}%`, background: passwordStrength(newPwdOnly.newPwd).color }}
+                    />
+                  </div>
+                  <div className="settings-pwd-strength-label" style={{ color: passwordStrength(newPwdOnly.newPwd).color }}>
+                    {passwordStrength(newPwdOnly.newPwd).label}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className="settings-form-group">
+              <label className="settings-form-label">Confirm password</label>
+              <div className="settings-pwd-wrap">
+                <input
+                  type={showConfirmOnly ? 'text' : 'password'}
+                  className={`settings-form-input ${newPwdOnlyErrors.confirmPwd ? 'settings-input-error' : ''}`}
+                  placeholder="Confirm your password"
+                  value={newPwdOnly.confirmPwd}
+                  onChange={e => {
+                    setNewPwdOnly(p => ({ ...p, confirmPwd: e.target.value }));
+                    if (newPwdOnlyErrors.confirmPwd) setNewPwdOnlyErrors(p => { const n = { ...p }; delete n.confirmPwd; return n; });
+                  }}
+                  autoComplete="new-password"
+                />
+                <button type="button" className="settings-pwd-toggle" onClick={() => setShowConfirmOnly(p => !p)}>
+                  {showConfirmOnly ? <Ic.EyeOff /> : <Ic.Eye />}
+                </button>
+              </div>
+              {newPwdOnlyErrors.confirmPwd
+                ? <p className="settings-form-error"><Ic.X />{newPwdOnlyErrors.confirmPwd}</p>
+                : newPwdOnly.confirmPwd && newPwdOnly.newPwd && newPwdOnly.confirmPwd === newPwdOnly.newPwd && (
+                  <p className="settings-form-hint-success"><Ic.Check />Passwords match</p>
+                )
+              }
+            </div>
+
+            <div className="settings-modal-actions">
+              <button type="submit" className="btn btn-primary" disabled={newPwdOnlyLoading} style={{
+                width: '100%',
+                pointerEvents: 'auto',
+                opacity: newPwdOnlyLoading ? '0.5' : '1'
+              }}>
+                {newPwdOnlyLoading
+                  ? <span className="settings-btn-loading"><span className="settings-spinner" />Setting password…</span>
+                  : 'Set password'
+                }
+              </button>
+              <button type="button" className="btn btn-outline" style={{ width: '100%' }} onClick={() => setModal(null)}>
+                Cancel
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      {modal === 'password_added' && (
+        <div className="ns-overlay" onClick={() => setModal(null)}>
+          <div onClick={e => e.stopPropagation()} style={{ width: '100%', display: 'flex', justifyContent: 'center', padding: '0 1rem' }}>
+            <ModalCentered
+              type="success"
+              title="Password added"
+              body="You can now sign in with your email and password, or continue using Google — whichever is easiest."
+              primaryLabel="Done"
+              onClose={() => setModal(null)}
+            />
+          </div>
+        </div>
+      )}
+    </>
+  )
+})
 
 // ─────────────────────────────────────────────────────────────
 // MAIN COMPONENT (inner — uses useToast)
@@ -131,9 +297,9 @@ function SettingsInner() {
         if (cancelled) return;
         setUserInfo(data);
         setProfileFields({
-          fullName:    data.fullName    || '',
+          fullName: data.fullName || '',
           phoneNumber: data.phoneNumber || '',
-          targetExam:  data.targetExam  || 'JAMB UTME 2027',
+          targetExam: data.targetExam || 'JAMB UTME 2027',
           targetScore: data.targetScore || '',
         });
       } catch (err) {
@@ -149,7 +315,7 @@ function SettingsInner() {
         console.error('Error:', err);
       }
     }
-    if (!userInfo){
+    if (!userInfo) {
       fetchUserInfo();
     }
     return () => { cancelled = true; };
@@ -218,14 +384,14 @@ function SettingsInner() {
 
     return errs;
   }
-  
+
   // check whenever userInfo changes
   useEffect(() => {
-    async function indexDbSave(userInfo){
+    async function indexDbSave(userInfo) {
       await saveUser(userInfo)
     }
-    
-    if (!isMounted){
+
+    if (!isMounted) {
       isMounted.current = true
     } else {
       indexDbSave({
@@ -233,7 +399,7 @@ function SettingsInner() {
         id: 'current-user'
       })
     }
-  },[userInfo])
+  }, [userInfo])
 
   // ── Update profile ──
   async function updateProfile(e) {
@@ -266,7 +432,19 @@ function SettingsInner() {
       if (!res.ok) {
         throw { status: res.status, error: data.error || data.message || 'Failed to update profile.' };
       }
-      setUserInfo(data)
+      let blob;
+      if (data.profilePic !== userInfo.profilePic){
+        console.log('profilePic changed');
+        const res = await fetch(data.profilePic)
+        if (res.ok){
+          blob = await res.blob();
+        }
+      }
+      setUserInfo(u => ({
+        ...u,
+        data,
+        blob: blob ? blob : u.blob
+      }))
       setProfileDirty(false);
       setModal('profile_saved');
     } catch (err) {
@@ -285,9 +463,9 @@ function SettingsInner() {
   function discardProfileChanges() {
     if (!userInfo) return;
     setProfileFields({
-      fullName:    userInfo.fullName    || '',
+      fullName: userInfo.fullName || '',
       phoneNumber: userInfo.phoneNumber || '',
-      targetExam:  userInfo.targetExam  || 'JAMB UTME 2027',
+      targetExam: userInfo.targetExam || 'JAMB UTME 2027',
       targetScore: userInfo.targetScore || '',
     });
     setAvatarPreview(null);
@@ -392,8 +570,8 @@ function SettingsInner() {
   const newPwdStrength = passwordStrength(pwd.newPwd);
   const pwdReqs = [
     { met: pwd.newPwd.length >= PWD_MIN_LENGTH, label: `At least ${PWD_MIN_LENGTH} characters` },
-    { met: /[A-Z]/.test(pwd.newPwd),             label: 'One uppercase letter' },
-    { met: /[0-9]/.test(pwd.newPwd),             label: 'One number' },
+    { met: /[A-Z]/.test(pwd.newPwd), label: 'One uppercase letter' },
+    { met: /[0-9]/.test(pwd.newPwd), label: 'One number' },
   ];
 
   // ── Loading state ──
@@ -599,7 +777,7 @@ function SettingsInner() {
                   </div>
 
                   <div className="settings-button-group">
-                    <button type="submit" className="btn btn-primary" disabled={profileLoading || !profileDirty} style={{pointerEvents: 'auto', opacity: !(profileLoading || !profileDirty) ? '1' : ''}}>
+                    <button type="submit" className="btn btn-primary" disabled={profileLoading || !profileDirty} style={{ pointerEvents: 'auto', opacity: !(profileLoading || !profileDirty) ? '1' : '' }}>
                       {profileLoading
                         ? <span className="settings-btn-loading"><span className="settings-spinner" />Saving…</span>
                         : 'Save changes'
@@ -648,100 +826,154 @@ function SettingsInner() {
 
                 {/* Change password */}
                 <form onSubmit={updatePwd} className="settings-card" noValidate>
-                  <h3 className="settings-card-title">
-                    <span className="settings-card-title-icon"><Ic.Lock /></span>
-                    Change password
-                  </h3>
-                  <p className="settings-card-desc">Use a strong, unique password to keep your account secure</p>
+                  {/* Change password — only for users who signed up with email/password */}
+                  {userInfo.authProvider !== 'google' ? (
+                    <form onSubmit={updatePwd} className="settings-card" noValidate>
+                      <h3 className="settings-card-title">
+                        <span className="settings-card-title-icon"><Ic.Lock /></span>
+                        Change password
+                      </h3>
+                      <p className="settings-card-desc">Use a strong, unique password to keep your account secure</p>
 
-                  {/* Current password */}
-                  <div className="settings-form-group">
-                    <label className="settings-form-label">Current password</label>
-                    <div className="settings-pwd-wrap">
-                      <input
-                        type={showCurrent ? 'text' : 'password'}
-                        className={`settings-form-input ${pwdErrors.current ? 'settings-input-error' : ''}`}
-                        placeholder="Enter current password"
-                        value={pwd.current}
-                        onChange={e => setPwdField('current', e.target.value)}
-                        autoComplete="current-password"
-                      />
-                      <button type="button" className="settings-pwd-toggle" onClick={() => setShowCurrent(p => !p)}>
-                        {showCurrent ? <Ic.EyeOff /> : <Ic.Eye />}
-                      </button>
-                    </div>
-                    {pwdErrors.current && <p className="settings-form-error"><Ic.X />{pwdErrors.current}</p>}
-                  </div>
-
-                  {/* New password */}
-                  <div className="settings-form-group">
-                    <label className="settings-form-label">New password</label>
-                    <div className="settings-pwd-wrap">
-                      <input
-                        type={showNew ? 'text' : 'password'}
-                        className={`settings-form-input ${pwdErrors.newPwd ? 'settings-input-error' : ''}`}
-                        placeholder="Enter new password"
-                        value={pwd.newPwd}
-                        onChange={e => setPwdField('newPwd', e.target.value)}
-                        autoComplete="new-password"
-                      />
-                      <button type="button" className="settings-pwd-toggle" onClick={() => setShowNew(p => !p)}>
-                        {showNew ? <Ic.EyeOff /> : <Ic.Eye />}
-                      </button>
-                    </div>
-                    {pwdErrors.newPwd && <p className="settings-form-error"><Ic.X />{pwdErrors.newPwd}</p>}
-
-                    {pwd.newPwd && (
-                      <div className="settings-pwd-strength">
-                        <div className="settings-pwd-strength-bar">
-                          <div className="settings-pwd-strength-fill" style={{ width: `${newPwdStrength.pct}%`, background: newPwdStrength.color }} />
+                      {/* Current password */}
+                      <div className="settings-form-group">
+                        <label className="settings-form-label">Current password</label>
+                        <div className="settings-pwd-wrap">
+                          <input
+                            type={showCurrent ? 'text' : 'password'}
+                            className={`settings-form-input ${pwdErrors.current ? 'settings-input-error' : ''}`}
+                            placeholder="Enter current password"
+                            value={pwd.current}
+                            onChange={e => setPwdField('current', e.target.value)}
+                            autoComplete="current-password"
+                          />
+                          <button type="button" className="settings-pwd-toggle" onClick={() => setShowCurrent(p => !p)}>
+                            {showCurrent ? <Ic.EyeOff /> : <Ic.Eye />}
+                          </button>
                         </div>
-                        <div className="settings-pwd-strength-label" style={{ color: newPwdStrength.color }}>{newPwdStrength.label}</div>
+                        {pwdErrors.current && <p className="settings-form-error"><Ic.X />{pwdErrors.current}</p>}
                       </div>
-                    )}
 
-                    <div className="settings-pwd-reqs">
-                      {pwdReqs.map(r => (
-                        <div key={r.label} className={`settings-pwd-req ${r.met ? 'met' : ''}`}>
-                          <span className="settings-pwd-req-icon">{r.met && <Ic.Check />}</span>
-                          {r.label}
+                      {/* New password */}
+                      <div className="settings-form-group">
+                        <label className="settings-form-label">New password</label>
+                        <div className="settings-pwd-wrap">
+                          <input
+                            type={showNew ? 'text' : 'password'}
+                            className={`settings-form-input ${pwdErrors.newPwd ? 'settings-input-error' : ''}`}
+                            placeholder="Enter new password"
+                            value={pwd.newPwd}
+                            onChange={e => setPwdField('newPwd', e.target.value)}
+                            autoComplete="new-password"
+                          />
+                          <button type="button" className="settings-pwd-toggle" onClick={() => setShowNew(p => !p)}>
+                            {showNew ? <Ic.EyeOff /> : <Ic.Eye />}
+                          </button>
                         </div>
-                      ))}
-                    </div>
-                  </div>
+                        {pwdErrors.newPwd && <p className="settings-form-error"><Ic.X />{pwdErrors.newPwd}</p>}
 
-                  {/* Confirm password */}
-                  <div className="settings-form-group">
-                    <label className="settings-form-label">Confirm new password</label>
-                    <div className="settings-pwd-wrap">
-                      <input
-                        type={showConfirm ? 'text' : 'password'}
-                        className={`settings-form-input ${pwdErrors.confirmPwd ? 'settings-input-error' : ''}`}
-                        placeholder="Confirm new password"
-                        value={pwd.confirmPwd}
-                        onChange={e => setPwdField('confirmPwd', e.target.value)}
-                        autoComplete="new-password"
-                      />
-                      <button type="button" className="settings-pwd-toggle" onClick={() => setShowConfirm(p => !p)}>
-                        {showConfirm ? <Ic.EyeOff /> : <Ic.Eye />}
-                      </button>
-                    </div>
-                    {pwdErrors.confirmPwd
-                      ? <p className="settings-form-error"><Ic.X />{pwdErrors.confirmPwd}</p>
-                      : pwd.confirmPwd && pwd.newPwd && pwd.confirmPwd === pwd.newPwd && (
-                        <p className="settings-form-hint-success"><Ic.Check />Passwords match</p>
-                      )
-                    }
-                  </div>
+                        {pwd.newPwd && (
+                          <div className="settings-pwd-strength">
+                            <div className="settings-pwd-strength-bar">
+                              <div className="settings-pwd-strength-fill" style={{ width: `${newPwdStrength.pct}%`, background: newPwdStrength.color }} />
+                            </div>
+                            <div className="settings-pwd-strength-label" style={{ color: newPwdStrength.color }}>{newPwdStrength.label}</div>
+                          </div>
+                        )}
 
-                  <div className="settings-button-group">
-                    <button type="submit" className="btn btn-primary" disabled={pwdLoading} style={{pointerEvents: 'auto', opacity: !pwdLoading ? '1' : ''}}>
-                      {pwdLoading
-                        ? <span className="settings-btn-loading"><span className="settings-spinner" />Updating…</span>
-                        : 'Update password'
-                      }
-                    </button>
-                  </div>
+                        <div className="settings-pwd-reqs">
+                          {pwdReqs.map(r => (
+                            <div key={r.label} className={`settings-pwd-req ${r.met ? 'met' : ''}`}>
+                              <span className="settings-pwd-req-icon">{r.met && <Ic.Check />}</span>
+                              {r.label}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Confirm password */}
+                      <div className="settings-form-group">
+                        <label className="settings-form-label">Confirm new password</label>
+                        <div className="settings-pwd-wrap">
+                          <input
+                            type={showConfirm ? 'text' : 'password'}
+                            className={`settings-form-input ${pwdErrors.confirmPwd ? 'settings-input-error' : ''}`}
+                            placeholder="Confirm new password"
+                            value={pwd.confirmPwd}
+                            onChange={e => setPwdField('confirmPwd', e.target.value)}
+                            autoComplete="new-password"
+                          />
+                          <button type="button" className="settings-pwd-toggle" onClick={() => setShowConfirm(p => !p)}>
+                            {showConfirm ? <Ic.EyeOff /> : <Ic.Eye />}
+                          </button>
+                        </div>
+                        {pwdErrors.confirmPwd
+                          ? <p className="settings-form-error"><Ic.X />{pwdErrors.confirmPwd}</p>
+                          : pwd.confirmPwd && pwd.newPwd && pwd.confirmPwd === pwd.newPwd && (
+                            <p className="settings-form-hint-success"><Ic.Check />Passwords match</p>
+                          )
+                        }
+                      </div>
+
+                      <div className="settings-button-group">
+                        <button type="submit" className="btn btn-primary" disabled={pwdLoading} style={{ pointerEvents: 'auto', opacity: !pwdLoading ? '1' : '' }}>
+                          {pwdLoading
+                            ? <span className="settings-btn-loading"><span className="settings-spinner" />Updating…</span>
+                            : 'Update password'
+                          }
+                        </button>
+                      </div>
+                    </form>
+                  ) : (
+                    <div className="settings-card settings-google-card">
+                      <div className="settings-google-header">
+                        <div className="settings-google-badge">
+                          <svg width="26" height="26" viewBox="0 0 48 48">
+                            <path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.9 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.1 8 3l5.7-5.7C34.5 6.1 29.5 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.7-.4-3.5z" />
+                            <path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.6 15.9 18.9 13 24 13c3.1 0 5.8 1.1 8 3l5.7-5.7C34.5 6.1 29.5 4 24 4 16.3 4 9.7 8.3 6.3 14.7z" />
+                            <path fill="#4CAF50" d="M24 44c5.4 0 10.3-2.1 14-5.5l-6.5-5.3C29.4 35 26.8 36 24 36c-5.3 0-9.7-3.1-11.3-7.6l-6.5 5C9.6 39.6 16.2 44 24 44z" />
+                            <path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.4-2.4 4.4-4.4 5.9l6.5 5.3C39.9 36.9 44 31 44 24c0-1.3-.1-2.7-.4-3.5z" />
+                          </svg>
+                        </div>
+                        <div>
+                          <h3 className="settings-card-title" style={{ marginBottom: '0.3rem' }}>Password</h3>
+                          <span className="settings-google-pill">
+                            <span className="settings-google-pill-dot" />
+                            created via Google
+                          </span>
+                        </div>
+                      </div>
+
+                      <p className="settings-google-lead">
+                        Your account was created with Google, so there&apos;s no password set yet.
+                        Add one below to also sign in with your email — handy as a backup if you ever lose Google access.
+                      </p>
+
+                      <div className="settings-google-perks">
+                        <div className="settings-google-perk">
+                          <span className="settings-google-perk-icon"><Ic.Check /></span>
+                          Sign in even without a Google session
+                        </div>
+                        <div className="settings-google-perk">
+                          <span className="settings-google-perk-icon"><Ic.Check /></span>
+                          Extra layer of account security
+                        </div>
+                        <div className="settings-google-perk">
+                          <span className="settings-google-perk-icon"><Ic.Check /></span>
+                          Google Sign-In keeps working as normal
+                        </div>
+                      </div>
+
+                      <div className="settings-button-group">
+                        <button type="button" className="btn btn-primary" onClick={() => setModal('add_password')} style={{
+                          pointerEvents: 'auto',
+                          opacity: '1'
+                        }}>
+                          <Ic.Lock /> Add a password
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </form>
               </div>
 
@@ -802,7 +1034,7 @@ function SettingsInner() {
 
               {/* ════════════ ACCOUNT ACTIONS TAB ════════════ */}
               <div className={`settings-content ${activeTab === 'danger' ? 'active' : ''}`}>
-              
+
                 <div className="settings-card settings-danger-zone">
                   <h3 className="settings-card-title">
                     <span className="settings-card-title-icon"><Ic.Warn /></span>
@@ -819,7 +1051,7 @@ function SettingsInner() {
                       </span>
                     </button>
                   </div>
-                  
+
                   <div className="settings-danger-item">
                     <div className="settings-danger-item-title">Logout of account</div>
                     <div className="settings-danger-item-desc">Sign out of your account on this device. You&apos;ll need to log in again to access your data.</div>
@@ -846,6 +1078,9 @@ function SettingsInner() {
           </div>
 
           {/* ── Modals ── */}
+
+          {modal === 'add_password' && <AddPasswordModal userInfo={userInfo} setUserInfo={setUserInfo} modal={modal} setModal={setModal} />}
+
           {modal === 'profile_saved' && (
             <div className="ns-overlay" onClick={() => setModal(null)}>
               <div onClick={e => e.stopPropagation()} style={{ width: '100%', display: 'flex', justifyContent: 'center', padding: '0 1rem' }}>
@@ -874,24 +1109,24 @@ function SettingsInner() {
             </div>
           )}
           {modal === 'clear_data' && (
-          <div className="ns-overlay" onClick={() => setModal(null)}>
-            <div onClick={e => e.stopPropagation()} style={{ width: '100%', display: 'flex', justifyContent: 'center', padding: '0 1rem' }}>
-              <ModalDestruct
-                title="Clear offline data?"
-                body="This will remove all offline questions and locally stored data from this device. Your account and online data will remain unchanged."
-                warningText="You'll need an internet connection to access or restore offline content again."
-                primaryLabel="Clear offline data"
-                onPrimary={async () => { 
-                  setModal(null)
-                  await deleteAllQuestions()
-                  await clearImages()
-                  toast.push({ type: 'success', title: 'Data Cleared', message: 'Offline data cleared' });
-                }}
-                onClose={() => setModal(null)}
-              />
+            <div className="ns-overlay" onClick={() => setModal(null)}>
+              <div onClick={e => e.stopPropagation()} style={{ width: '100%', display: 'flex', justifyContent: 'center', padding: '0 1rem' }}>
+                <ModalDestruct
+                  title="Clear offline data?"
+                  body="This will remove all offline questions and locally stored data from this device. Your account and online data will remain unchanged."
+                  warningText="You'll need an internet connection to access or restore offline content again."
+                  primaryLabel="Clear offline data"
+                  onPrimary={async () => {
+                    setModal(null)
+                    await deleteAllQuestions()
+                    await clearImages()
+                    toast.push({ type: 'success', title: 'Data Cleared', message: 'Offline data cleared' });
+                  }}
+                  onClose={() => setModal(null)}
+                />
+              </div>
             </div>
-          </div>
-        )}
+          )}
         </main>
       </div>
     </>

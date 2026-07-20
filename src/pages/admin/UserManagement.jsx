@@ -2,7 +2,6 @@ import { useState, useEffect, useMemo, useContext } from 'react';
 import UserContext from '../../context/UserContext';
 import { useAdminContext } from '../../context/AdminContext';
 import { fetchWithAuth } from '../../scripts/utilis/fetch';
-import { url } from '../../scripts/utilis/url';
 import { ModalStripe, ToastProvider, useToast, CSS } from '../../components/NotificationSystem';
 import { Nav } from './Nav';
 import './UserManagement.css';
@@ -320,7 +319,7 @@ function UserManagementInner() {
 
   const Avatar = ({ user, size = 34, className = 'a-avatar' }) => (
     user.profilePic
-      ? <img className={className} src={`${url}${user.profilePic}`} alt={user.fullName} style={{ width: size, height: size }} />
+      ? <img className={className} src={`${user.profilePic}`} alt={user.fullName} style={{ width: size, height: size }} />
       : <span className={className} style={{ width: size, height: size, background: avatarColor(user.fullName), fontSize: size * .35 }}>{initials(user.fullName)}</span>
   );
 
