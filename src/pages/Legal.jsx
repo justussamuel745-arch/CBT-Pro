@@ -1,6 +1,6 @@
-import { useState } from 'react'
-import { Link } from 'react-router'
-import './Legal.css'
+import { useState } from 'react';
+import { Link } from 'react-router';
+import './Legal.css';
 
 export function Legal(){
   // TABS NAVIGATION STATE

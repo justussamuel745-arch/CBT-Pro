@@ -1,9 +1,10 @@
 import './Loading.css';
 
-export function Loading(){
+export function Loading() {
   return (
     <div id="loader">
       <div className="spinner"></div>
+      <div className="label">Loading…</div>
     </div>
-  )
+  );
 }

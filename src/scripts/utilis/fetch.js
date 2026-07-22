@@ -1,6 +1,7 @@
 import { url } from './url.js'
 import { saveUser } from '../../hooks/services/indexedDB/users.js';
-import { saveHistory } from '../../hooks/services/indexedDB/history.js'
+import { saveHistory } from '../../hooks/services/indexedDB/history.js';
+import { decrypt, encrypt } from './crypto.js'
 
 export async function fetchDataPost(formData, path) {
   const response = await fetch(`${url}${path}`, {
@@ -66,8 +67,9 @@ export async function fetchWithAuth(token, setToken, path, options = {}) {
 
     if (!refreshRes.ok) throw new Error('Refresh failed');
 
-    const { accessToken: newToken } = await refreshRes.json();
-    if (!newToken) throw new Error('No new token');
+    const { data: encryptedTokenInfo } = await refreshRes.json();
+    if (!encryptedTokenInfo) throw new Error('No new token');
+    const newToken = decrypt(encryptedTokenInfo).accessToken
     setToken(newToken); // update state
     response = await makeRequest(newToken); // retry original request
   }
@@ -85,12 +87,13 @@ export async function fetchUserInfo(token, setUserInfo, setProfileFields) {
     },
     credentials: 'include'
   })
-  const data = await response.json().catch(() => ({}))
+  const d = await response.json().catch(() => ({}))
   if (!response.ok) {
     throw {
       status: response.status
     }
   }
+  const data = decrypt(d.data)
   
   let blob;
   
@@ -102,7 +105,10 @@ export async function fetchUserInfo(token, setUserInfo, setProfileFields) {
   }
   
   saveUser({
-    ...data,
+    "info": encrypt({
+      ...data,
+      accessToken: token
+    }),
     blob: blob,
     id: 'current-user'
   })

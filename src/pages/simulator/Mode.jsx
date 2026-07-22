@@ -17,6 +17,7 @@ import { ModalStripe,  CSS } from '../../components/NotificationSystem';
 import { getRandomQuestions } from '../../hooks/services/examQuestions';
 import { saveQuestions } from '../../hooks/services/indexedDB/questions';
 import { saveAllImages } from '../../hooks/services/indexedDB/images';
+import { encrypt, decrypt } from '../../scripts/utilis/crypto';
 
 import './Mode.css';
 
@@ -147,13 +148,20 @@ export function Mode() {
               body: JSON.stringify(reqData)
             });
           }
-          data = await response.json().catch(() => ({}));
+          const d = await response.json().catch(() => ({}));
           if (!response.ok){
-            throw { status: response.status, error: data.message || 'Something went wrong. Try again' };
+            throw { status: response.status, error: d.message || 'Something went wrong. Try again' };
           }
+          data = decrypt(d)
           
           // Saving question to indexDB
-          await saveQuestions(data)
+          await saveQuestions(
+            data.map(d => ({
+              ...d, 
+              correctAnswers: encrypt(d.correctAnswers),
+              explanation: encrypt(d.explanation)
+            }))
+          )
           
         } else {
           const offlineInfo = reqData.subjects.map(sub => {
@@ -176,7 +184,11 @@ export function Mode() {
               `Some selected subjects are not fully available in offline mode.\n\n${details}\n\nConnect to the internet to stay updated with the latest questions, or start the exam online.`
             );
           } else {
-            data = indexDbData.questions
+            data = indexDbData.questions.map(q => ({
+              ...q, 
+              correctAnswers: decrypt(d.correctAnswers),
+              explanation: decrypt(d.explanation)
+            }))
           }
         }
         setExamQuestions(data)

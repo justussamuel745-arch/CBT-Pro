@@ -18,6 +18,7 @@ import { Loading } from './components/Loading';
 import { Invalid } from './components/Invalid';
 import { Syllabus } from './pages/Syllabus';
 import { Dashboard } from './pages/Dashboard';
+import PWAUpdateToast from './components/PWAUpdateToast';
 const Games = lazy(() => import('./pages/games/Games.jsx'))
 const Delete = lazy(() => import('./pages/Delete.jsx'));
 const ResetPassword = lazy(() => import('./pages/auth/ResetPassword.jsx'));
@@ -27,7 +28,7 @@ import { fetchDataGet, fetchUserInfo, fetchHistory } from './scripts/utilis/fetc
 import { on } from './scripts/utilis/submitHistory';
 import { getUser } from './hooks/services/indexedDB/users';
 import { getHistory } from './hooks/services/indexedDB/history';
-import PWAUpdateToast from './components/PWAUpdateToast';
+import { decrypt } from './scripts/utilis/crypto';
 import './App.css';
 
 function App() {
@@ -38,13 +39,14 @@ function App() {
     const refresh = async () => {
       try {
         const response = await fetchDataGet('/api/refresh')
-        setToken(response.accessToken)
-        setIsActivated(response.isActivated)
-        setIsAdmin(response.isAdmin)
+        const d = decrypt(response.data)
+        setToken(d.accessToken)
+        setIsActivated(d.isActivated)
+        setIsAdmin(d.isAdmin)
         /*========= Fetching Data for Settings Page ===========*/
-        await fetchUserInfo(response.accessToken, setUserInfo, setProfileFields)
+        await fetchUserInfo(d.accessToken, setUserInfo, setProfileFields)
         /*========= Fetching User History ===========*/
-        await fetchHistory(response.accessToken, setHistoryData)
+        await fetchHistory(d.accessToken, setHistoryData)
 
       } catch (err) {
         console.error('Error:', err);
@@ -54,15 +56,18 @@ function App() {
     }
 
     const userExists = async () => {
-      const user = await getUser()
-      if (!user || Object.keys(user).length === 0) {
+      const encrypted = await getUser()
+      if (!encrypted || Object.keys(encrypted).length === 0) {
         setIsLoading(false)
         return
       }
-      setToken(crypto.randomUUID())
-      // since user if offline when the page first open
-      // the token passed in that state is not a valid token
-      // just put it there to make the ui behave as if the user is signed in
+      const user = {
+        ...decrypt(encrypted.info),
+        blob: encrypted.blob,
+        id: encrypted.id
+      }
+      setToken(user?.accessToken)
+      delete user.accessToken
       setUserInfo(user)
       setProfileFields({
         fullName: user?.fullName || '',
@@ -79,8 +84,8 @@ function App() {
 
 
     if (navigator.onLine) {
-      on(token, setToken, setHistoryData)
       refresh()
+      on(token, setToken, setHistoryData)
     } else {
       userExists()
     }

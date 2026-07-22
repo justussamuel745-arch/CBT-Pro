@@ -4,6 +4,7 @@ import UserContext from '../context/UserContext.jsx';
 import { subjectsData } from '../scripts/data/subjectsData.js'
 import { formatName } from '../scripts/utilis/formatName.js';
 import { Image } from '../components/Image';
+import { decrypt, encrypt } from '../scripts/utilis/crypto';
 import './Bookmark.css'
 
 const ExpensiveBmkModal = memo(({ modalQsInfo, setModalQsInfo }) => {
@@ -43,7 +44,7 @@ const ExpensiveBmkModal = memo(({ modalQsInfo, setModalQsInfo }) => {
                 </div>
                 <div className="bookmark-modal-answer">✓ Correct Answer: {qs.correctAnswers.join(' ').toUpperCase()}</div>
                 <div className="bookmark-modal-explanation">
-                  <div className="bookmark-modal-explanation-title">Explanation</div>{qs.explanation.text}
+                  <div className="bookmark-modal-explanation-title">Explanation</div><span dangerouslySetInnerHTML={{__html: qs.explanation.text}} />
                 </div>
               </div>
             </div>
@@ -66,7 +67,7 @@ export function Bookmark() {
   const subjectsBmkRef = useRef([])
   
   useEffect(() => {
-    const bookmarks = JSON.parse(localStorage.getItem('bookmarks')) || []
+    const bookmarks = decrypt(JSON.parse(localStorage.getItem('bookmarks'))) || []
     const data = bookmarks.filter(bmk => bmk.userId === userInfo._id)
     setBookmarkData(data)
     setNoBmkFound(data.length === 0 ? true : false)
@@ -137,7 +138,7 @@ export function Bookmark() {
     const filter = bookmarkData.filter(b => b.id !== qsId)
     setBookmarkData(filter)
     setNoBmkFound(filter.length <= 0 || updatedBookmarks.length <= 0 ? true : false)
-    localStorage.setItem('bookmarks', JSON.stringify(filter));
+    localStorage.setItem('bookmarks', JSON.stringify(encrypt(filter)));
   }
   
   return (
@@ -185,7 +186,7 @@ export function Bookmark() {
                   <div className="bookmark-question">
                     {qs.question?.instruction && <><strong>{qs.question.instruction}</strong><br/></>}
                     {qs.question?.comprehension && <><strong dangerouslySetInnerHTML={{__html: qs.question.comprehension}} /><br/></>}
-                    {!(typeof qs.question === 'object') ? qs.question : qs.question.qs}
+                    {!(typeof qs.question === 'object') ? <span dangerouslySetInnerHTML={{__html: qs.question }} /> : qs.question.qs}
                   </div>
                   <div className="bookmark-badges">
                     <span className="bookmark-badge">{formatName(qs.subject)}</span>

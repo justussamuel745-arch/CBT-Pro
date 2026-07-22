@@ -7,7 +7,7 @@ import { ToastProvider, useToast, ModalDestruct, CSS } from '../components/Notif
 import { deleteUser } from '../hooks/services/indexedDB/users';
 import './Delete.css';
 
-function DeleteWithToast() {
+function DeleteInner() {
   const { token, setToken, userInfo, error, setError } = useContext(UserContext);
   const toast = useToast()
   const navigate = useNavigate()
@@ -225,7 +225,7 @@ function DeleteWithToast() {
 export default function Delete() {
   return (
     <ToastProvider position="top-right">
-      <DeleteWithToast />
+      <DeleteInner />
     </ToastProvider>
   );
 }

@@ -8,6 +8,7 @@ import 'katex/dist/katex.min.css';
 import UserContext from '../context/UserContext';
 import { fetchWithAuth } from '../scripts/utilis/fetch';
 import { saveUser } from '../hooks/services/indexedDB/users.js';
+import { decrypt } from '../scripts/utilis/crypto';
 import './AstraAIModal.css'
 
 
@@ -229,11 +230,12 @@ export const AstraAIModal = memo(function AstraAIModal({ setChatWithAI, chatMess
         body: JSON.stringify({ question: message }),
       });
 
-      const data = await response.json().catch(() => ({}));
+      const d = await response.json().catch(() => ({}));
 
       if (!response.ok) {
-        throw { status: response.status, error: data.error || 'Failed to generate response' };
+        throw { status: response.status, error: d.error || 'Failed to generate response' };
       }
+      const data = decrypt(d.reply)
 
       // Replace typing indicator with the real response
       setChatMessages(prev => prev.map(msg =>

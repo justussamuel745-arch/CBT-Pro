@@ -4,6 +4,7 @@ import { Ic } from '../scripts/utilis/Ic'
 import UserContext from '../context/UserContext.jsx';
 import { GoogleAuth } from '../components/GoogleAuth';
 import { fetchDataPost, fetchUserInfo, fetchHistory } from '../scripts/utilis/fetch.js';
+import { decrypt } from '../scripts/utilis/crypto';
 import './SignIn.css';
 
 // ─────────────────────────────────────────────────────────────
@@ -187,13 +188,14 @@ function Auth() {
     setErrors({});
     try {
       const response = await fetchDataPost({email, password}, '/api/auth');
-      setToken(response.accessToken)
-      setIsActivated(response.isActivated)
-      setIsAdmin(response.isAdmin)
+      const d = decrypt(response.data)
+      setToken(d.accessToken)
+      setIsActivated(d.isActivated)
+      setIsAdmin(d.isAdmin)
       /*========= Fetching Data for Settings Page ===========*/
-      fetchUserInfo(response.accessToken, setUserInfo, setProfileFields)
+      fetchUserInfo(d.accessToken, setUserInfo, setProfileFields)
       /*========= Fetching Data for History Page ===========*/
-      fetchHistory(response.accessToken, setHistoryData)
+      fetchHistory(d.accessToken, setHistoryData)
       setModal({
         type: "success",
         icon: "✓",

@@ -17,6 +17,7 @@ import { ModalStripe, CSS } from '../../components/NotificationSystem';
 import { ReportQuestionModal } from "../../components/ReportQuestionModal";
 import { saveQuestions, getQuestions } from '../../hooks/services/indexedDB/questions';
 import { saveAllImages } from '../../hooks/services/indexedDB/images';
+import { decrypt, encrypt } from '../../scripts/utilis/crypto';
 import './Mode.css'
 
 const Notification = memo(({type, title, body, primaryLabel, onPrimary, onClose, closeLabel }) => {
@@ -141,10 +142,11 @@ export function Mode() {
         if (cancelled) return
         if (navigator.onLine){
           const response = await fetchWithAuth(token, setToken, '/api/study', { method: 'POST', body: JSON.stringify(studyConfig)})
-          data = await response.json().catch(() => ({}))
+          const d = await response.json().catch(() => ({}))
           if (!response.ok){
-            throw { status: response.status, error: data.message || data.error || 'failed_to_load' }
+            throw { status: response.status, error: d.message || d.error || 'failed_to_load' }
           }
+          data = decrypt(d)
           await saveQuestions(data)
           saveAllImages(data)
         } else {
@@ -160,7 +162,11 @@ export function Mode() {
           if (qs.length === 0) {
             throw { status: 404, error: 'no_questions_found_offline' }
           } else {
-            data = qs.splice(0, 100)
+            data = qs.splice(0, 100).map(q => ({
+              ...q,
+              correctAnswers: decrypt(q.correctAnswers),
+              explanation: decrypt(q.explanation)
+            }))
             setModal('available_questions') 
           }
         }
@@ -333,14 +339,14 @@ export function Mode() {
                 setToggleBmk(toggle)
                 setCurrentBmkCheck(toggle)
                 setRecords(prev => prev.map(r => r.id === currentQuestion[0].id ? {...r, isBookmarked: toggle} : r))
-                const questionsStorage = JSON.parse(localStorage.getItem('bookmarks')) || []
+                const questionsStorage = decrypt(JSON.parse(localStorage.getItem('bookmarks'))) || []
                 const currentQ = currentQuestion[0]
 
                 const updatedStorage = toggle
                 ? [...questionsStorage.filter(qs => qs.id !== currentQ.id), { userId: userInfo._id, ...currentQ}]
                 : questionsStorage.filter(qs => qs.id !== currentQ.id)
 
-                localStorage.setItem('bookmarks', JSON.stringify(updatedStorage))
+                localStorage.setItem('bookmarks', JSON.stringify(encrypt(updatedStorage)))
                 
               }}>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

@@ -1,5 +1,7 @@
+import { encrypt, decrypt } from './crypto.js';
+
 export function calculateScore(userId, examQuestions, answers, timeTaken, timeAllocated) {
-  let bookmarks = JSON.parse(localStorage.getItem('bookmarks')) || []
+  let bookmarks = decrypt(JSON.parse(localStorage.getItem('bookmarks'))) || []
   const subjectStats = {};
 
   let totalCorrect = 0;
@@ -17,7 +19,7 @@ export function calculateScore(userId, examQuestions, answers, timeTaken, timeAl
         userId,
         ...question
       })
-      localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
+      localStorage.setItem('bookmarks', JSON.stringify(encrypt(bookmarks)));
     }
 
     if (!subjectStats[subject]) {

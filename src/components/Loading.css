@@ -1,35 +1,51 @@
-  #loader {
-    position: fixed;
-    inset: 0;
-    /* top:0 right:0 bottom:0 left:0 */
-    background: white;
-    /* dark bg, change as you want */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 9999;
-    transition: opacity 0.3s ease;
+#loader {
+  position: fixed;
+  inset: 0;
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  z-index: 9999;
+  transition: opacity 0.4s ease;
+}
+
+#loader.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.spinner {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    var(--primary, #4f46e5) 180deg,
+    #22d3ee 300deg,
+    transparent 360deg
+  );
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 4px), #000 calc(100% - 4px));
+  mask: radial-gradient(farthest-side, transparent calc(100% - 4px), #000 calc(100% - 4px));
+  animation: spin 1.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
   }
-  
-  /* Hide loader */
-  #loader.hidden {
-    opacity: 0;
-    pointer-events: none;
-  }
-  
-  /* Spinner */
+}
+
+.label {
+  color: #9ca3af;
+  font-size: 14px;
+  letter-spacing: 0.01em;
+}
+
+@media (prefers-reduced-motion: reduce) {
   .spinner {
-    width: 60px;
-    height: 60px;
-    border: 5px solid rgba(255, 255, 255, 0.2);
-    border-top-color: #3b82f6;
-    /* blue spinner */
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
+    animation: none;
   }
-  
-  @keyframes spin {
-    to {
-      transform: rotate(360deg);
-    }
-  }
+}

@@ -4,23 +4,21 @@ import UserContext from '../context/UserContext';
 import { fetchWithAuth } from '../scripts/utilis/fetch';
 import { calculateScore } from '../scripts/utilis/calculateScore';
 import { saveHistory } from '../hooks/services/indexedDB/history';
+import { encrypt, decrypt } from '../scripts/utilis/crypto';
+import './CountdownTimer.css';
 
 export function CountdownTimer({ onFinish, hours, minutes, skipAutoSubmit }) {
   const { token, setToken, answers, setExamResults, examQuestions, userInfo, setHistoryData } = useContext(UserContext)
   const navigate = useNavigate()
   const countdownTime = (60 * 60 * hours) + (60 * minutes)
-  const [timeLeft, setTimeLeft] = useState(countdownTime); // 2 hours in seconds
+  const [timeLeft, setTimeLeft] = useState(countdownTime);
 
   useEffect(() => {
     if (timeLeft <= 0) {
-      onFinish?.(); // optional callback when timer hits 0
+      onFinish?.();
       return;
     }
-
-    const interval = setInterval(() => {
-      setTimeLeft(prev => prev - 1);
-    }, 1000);
-
+    const interval = setInterval(() => setTimeLeft(prev => prev - 1), 1000);
     return () => clearInterval(interval);
   }, [timeLeft, onFinish]);
 
@@ -28,16 +26,12 @@ export function CountdownTimer({ onFinish, hours, minutes, skipAutoSubmit }) {
     const newHistory = {
       userId: userInfo._id,
       testId: crypto.randomUUID(),
-      subjects,
-      score,
-      timeSpent: timeTaken,
-      question,
-      performance
+      subjects, score, timeSpent: timeTaken, question, performance
     }
     if (!navigator.onLine){
-      const unsavedHistory = JSON.parse(localStorage.getItem('unsavedHistory')) || []
+      const unsavedHistory = decrypt(JSON.parse(localStorage.getItem('unsavedHistory'))) || []
       unsavedHistory.push(newHistory)
-      localStorage.setItem('unsavedHistory', JSON.stringify(unsavedHistory));
+      localStorage.setItem('unsavedHistory', JSON.stringify(encrypt(unsavedHistory)));
       return
     }
     try {
@@ -46,18 +40,15 @@ export function CountdownTimer({ onFinish, hours, minutes, skipAutoSubmit }) {
         body: JSON.stringify(newHistory)
       })
       const data = await response.json().catch(() => ({}))
-      if (!response.ok) {
-        throw { status: response.status, error: newHistory }
-      }
+      if (!response.ok) throw { status: response.status, error: newHistory }
       setHistoryData(data)
       saveHistory(data)
     } catch (err) {
       if (typeof err?.error === 'object' || err.status !== 404){
-        const unsavedHistory = JSON.parse(localStorage.getItem('unsavedHistory')) || []
+        const unsavedHistory = decrypt(JSON.parse(localStorage.getItem('unsavedHistory'))) || []
         unsavedHistory.push(err.error)
-        localStorage.setItem('unsavedHistory', JSON.stringify(unsavedHistory));
+        localStorage.setItem('unsavedHistory', JSON.stringify(encrypt(unsavedHistory)));
       }
-      
     }
   }
 
@@ -92,11 +83,24 @@ export function CountdownTimer({ onFinish, hours, minutes, skipAutoSubmit }) {
     return `${hrs}:${mins.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
   };
 
+  const RADIUS = 13;
+  const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
+  const fraction = timeLeft / countdownTime;
+  const dashOffset = CIRCUMFERENCE * (1 - fraction);
+  const status = timeLeft < 300 ? 'danger' : fraction < 0.2 ? 'warning' : 'normal';
+
   return (
-    <span style={{
-      color: timeLeft < 300 ? 'var(--danger)' : 'var(--text)' // turn red under 5 min
-    }}>
-      ⏱ {formatTime(timeLeft)}
-    </span>
+    <div className="countdown-timer" data-status={status}>
+      <svg className="countdown-timer__ring" viewBox="0 0 32 32">
+        <circle className="countdown-timer__ring-bg" cx="16" cy="16" r={RADIUS} />
+        <circle
+          className="countdown-timer__ring-fill"
+          cx="16" cy="16" r={RADIUS}
+          strokeDasharray={CIRCUMFERENCE}
+          strokeDashoffset={dashOffset}
+        />
+      </svg>
+      <span className="countdown-timer__digits">{formatTime(timeLeft)}</span>
+    </div>
   );
 }

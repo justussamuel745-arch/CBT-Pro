@@ -1,0 +1,51 @@
+.countdown-timer {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: #f1f0ff;
+  border-radius: 999px;
+  padding: 6px 12px 6px 6px;
+}
+
+.countdown-timer__ring {
+  width: 26px;
+  height: 26px;
+  flex-shrink: 0;
+  transform: rotate(-90deg);
+}
+
+.countdown-timer__ring-bg {
+  fill: none;
+  stroke: rgba(20, 184, 166, 0.15);
+  stroke-width: 3;
+}
+
+.countdown-timer__ring-fill {
+  fill: none;
+  stroke: #14b8a6;
+  stroke-width: 3;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 1s linear, stroke 0.3s ease;
+}
+
+.countdown-timer__digits {
+  font-size: 14px;
+  font-weight: 700;
+  color: #1f2937;
+  font-variant-numeric: tabular-nums;
+  transition: color 0.3s ease;
+}
+
+.countdown-timer[data-status="warning"] .countdown-timer__ring-fill { stroke: #f59e0b; }
+.countdown-timer[data-status="warning"] .countdown-timer__digits { color: #f59e0b; }
+.countdown-timer[data-status="warning"] .countdown-timer__ring-bg { stroke: rgba(245, 158, 11, 0.15); }
+
+.countdown-timer[data-status="danger"] .countdown-timer__ring-fill { stroke: #ef4444; }
+.countdown-timer[data-status="danger"] .countdown-timer__digits { color: #ef4444; }
+.countdown-timer[data-status="danger"] .countdown-timer__ring-bg { stroke: rgba(239, 68, 68, 0.15); }
+.countdown-timer[data-status="danger"] .countdown-timer__ring-fill { animation: pulse 1s ease-in-out infinite; }
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}

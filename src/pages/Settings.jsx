@@ -8,6 +8,7 @@ import defaultAvatar from '../assets/images/avatar.jpg';
 import { saveUser, deleteUser } from '../hooks/services/indexedDB/users';
 import { deleteAllQuestions } from '../hooks/services/indexedDB/questions';
 import { clearImages } from '../hooks/services/indexedDB/images';
+import { encrypt, decrypt } from '../scripts/utilis/crypto';
 import './Settings.css';
 
 
@@ -290,11 +291,12 @@ function SettingsInner() {
     async function fetchUserInfo() {
       try {
         const response = await fetchWithAuth(token, setToken, '/api/settings', { method: 'GET' });
-        const data = await response.json().catch(() => ({}));
+        const d = await response.json().catch(() => ({}));
         if (!response.ok) {
-          throw { status: response.status, error: data.error || data.message || 'Something went wrong. Try again later.' };
+          throw { status: response.status, error: d.error || d.message || 'Something went wrong. Try again later.' };
         }
         if (cancelled) return;
+        const data = decrypt(d.data)
         setUserInfo(data);
         setProfileFields({
           fullName: data.fullName || '',
@@ -394,8 +396,16 @@ function SettingsInner() {
     if (!isMounted) {
       isMounted.current = true
     } else {
+      const saveEncrypted = {
+        ...userInfo
+      }
+      delete saveEncrypted.blob
       indexDbSave({
-        ...userInfo,
+        "info": encrypt({
+          ...saveEncrypted,
+          accessToken: token
+        }),
+        blob: userInfo.blob,
         id: 'current-user'
       })
     }
@@ -427,11 +437,12 @@ function SettingsInner() {
         headers: { authorization: `Bearer ${token}` },
         body: formData,
       });
-      const data = await res.json().catch(() => ({}));
+      const d = await res.json().catch(() => ({}));
 
       if (!res.ok) {
-        throw { status: res.status, error: data.error || data.message || 'Failed to update profile.' };
+        throw { status: res.status, error: d.error || d.message || 'Failed to update profile.' };
       }
+      const data = decrypt(d.data)
       let blob;
       if (data.profilePic !== userInfo.profilePic){
         console.log('profilePic changed');
@@ -789,6 +800,7 @@ function SettingsInner() {
                   </div>
                 </form>
               </div>
+              
 
               {/* ════════════ SECURITY TAB ════════════ */}
               <div className={`settings-content ${activeTab === 'account' ? 'active' : ''}`}>
@@ -824,8 +836,6 @@ function SettingsInner() {
                   </div>
                 </div>
 
-                {/* Change password */}
-                <form onSubmit={updatePwd} className="settings-card" noValidate>
                   {/* Change password — only for users who signed up with email/password */}
                   {userInfo.authProvider !== 'google' ? (
                     <form onSubmit={updatePwd} className="settings-card" noValidate>
@@ -974,7 +984,6 @@ function SettingsInner() {
                       </div>
                     </div>
                   )}
-                </form>
               </div>
 
               {/* ════════════ NOTIFICATIONS TAB ════════════ */}

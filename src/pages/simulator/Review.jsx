@@ -379,9 +379,10 @@ export function Review() {
                   <div className="mode-answer-section show">
                     <div className="mode-answer-header">Correct Answer</div>
                     <div className="mode-answer-correct">Option {ques.correctAnswers.join('').toUpperCase()}</div>
-                    <div className="mode-answer-explanation">
+                    <div className="mode-answer-explanation" dangerouslySetInnerHTML={{
+                      __html: ques.explanation.text
+                    }}>
                       {/* Work on image */}
-                      {ques.explanation.text}
                     </div>
                   </div>
                 </div>

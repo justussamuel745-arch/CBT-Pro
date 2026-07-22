@@ -65,15 +65,8 @@ function FeedbackInner(){
         toast.push({ variant: 'pill', type: 'error', message: "Something went wrong. Please try again later" });
       }
       console.error('Error:', err);
+      setIsDisabled(false)
     }
-  }
-  
-  function getFeedbackType(event){
-    setFeedbackType(event.target.value)
-  }
-  
-  function getFeedbackComment(event){
-    setFeedbackComment(event.target.value)
   }
   
   return (
@@ -113,7 +106,7 @@ function FeedbackInner(){
                   <label className="feedback-label" htmlFor="feedbackType">
                     Feedback Type <span className="feedback-required">*</span>
                   </label>
-                  <select className="feedback-select" name="feedbackType" onChange={getFeedbackType} required>
+                  <select className="feedback-select" name="feedbackType" onChange={(e) => setFeedbackType(e.target.value)} required>
                     <option value="">Select feedback type...</option>
                     <option value="Business">Business</option>
                     <option value="Technical Issues">Technical Issues</option>
@@ -135,7 +128,7 @@ function FeedbackInner(){
                     placeholder="Tell us what's on your mind... For bugs, please include steps to reproduce the issue."
                     required
                     minLength="10"
-                    onChange={getFeedbackComment}
+                    onChange={(e) => setFeedbackComment(e.target.value)}
                   ></textarea>
                   {(error && (typeof error === 'object') && (error.feild === 'feedbackComment') && <div className="feedback-error">{error.message}</div>) || <div className="feedback-hint">Minimum 10 characters. Be as detailed as possible.</div> }
                 </div>

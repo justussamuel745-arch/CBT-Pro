@@ -4,7 +4,8 @@ import UserContext from '../../context/UserContext';
 import { fetchWithAuth } from '../../scripts/utilis/fetch';
 import { ToastProvider, useToast, CSS } from '../../components/NotificationSystem';
 import { Image } from '../../components/Image';
-import { formatName } from '../../scripts/utilis/formatName.js'
+import { formatName } from '../../scripts/utilis/formatName.js';
+import { decrypt } from '../../scripts/utilis/crypto';
 import './Search.css';
 
 const EXAM_TYPES = ["JAMB"];
@@ -119,10 +120,11 @@ function SearchInner() {
       const response = await fetchWithAuth(token, setToken, `/api/search?subject=${subject.toLowerCase()}${year !== 'All' ? `&year=${year}` : ''}${query ? `&keyword=${query}` : ''}`, {
         method: 'GET'
       })
-      const data = await response.json().catch(() => ({}))
+      const d = await response.json().catch(() => ({}))
       if (!response.ok){
-        throw { status: response.status, error: data?.message || data.errror || 'Failed to complete search.'}
+        throw { status: response.status, error: d?.message || d?.error || 'Failed to complete search.'}
       }
+      const data = decrypt(d.data)
       setResults(data);
       setHasSearched(true);
       
