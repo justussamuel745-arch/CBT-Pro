@@ -6,6 +6,7 @@ import { formatTime } from '../scripts/utilis/formatTime';
 import { formatDate } from '../scripts/utilis/formatDate';
 import { ToastProvider, useToast, CSS } from '../components/NotificationSystem';
 import { removeHistory } from '../hooks/services/indexedDB/history';
+import { decrypt } from '../scripts/utilis/crypto';
 import './History.css';
 
 const ExpensiveHistoryModal = memo(({modalInfo, setModalInfo, getScoreClass, formatDate, formatTime}) => {
@@ -103,7 +104,7 @@ function HistoryInner() {
       fetchHistory()
     }
     
-    const unsavedHistory = JSON.parse(localStorage.getItem('unsavedHistory'))
+    const unsavedHistory = decrypt(JSON.parse(localStorage.getItem('unsavedHistory')))
     if (unsavedHistory && Array.isArray(unsavedHistory)){
       toast.push({
         variant: 'pill',
@@ -150,7 +151,7 @@ function HistoryInner() {
       ? data.historyData
       : []
       setHistoryData(filteredHistory)
-      removeHistory(id)
+      await removeHistory(id)
       
     } catch (err) {
       console.error('Error:', err);

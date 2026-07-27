@@ -6,11 +6,8 @@ import remarkGfm from 'remark-gfm';
 import rehypeKatex from 'rehype-katex';
 import 'katex/dist/katex.min.css';
 import UserContext from '../context/UserContext';
-import { fetchWithAuth } from '../scripts/utilis/fetch';
-import { saveUser } from '../hooks/services/indexedDB/users.js';
-import { decrypt } from '../scripts/utilis/crypto';
 import './AstraAIModal.css'
-
+import { useAskAi } from '../scripts/utilis/useAskAi';
 
 // ─────────────────────────────────────────────────────────────
 // INTERNET STATUS  (isolated memo — no re-render leak upward)
@@ -182,8 +179,9 @@ const MessageBubble = memo(function MessageBubble({ msg }) {
 // MAIN MODAL
 // ─────────────────────────────────────────────────────────────
 export const AstraAIModal = memo(function AstraAIModal({ setChatWithAI, chatMessages, setChatMessages}) {
-  const { token, setToken, userInfo, setUserInfo } = useContext(UserContext);
+  const { userInfo } = useContext(UserContext);
   const navigate = useNavigate()
+  const onAskAi = useAskAi()
   const [userMsg,  setUserMsg]  = useState('');
   const [disabled, setDisabled] = useState(false);
 
@@ -225,27 +223,14 @@ export const AstraAIModal = memo(function AstraAIModal({ setChatWithAI, chatMess
     }
 
     try {
-      const response = await fetchWithAuth(token, setToken, '/api/ai/explain', {
-        method: 'POST',
-        body: JSON.stringify({ question: message }),
-      });
-
-      const d = await response.json().catch(() => ({}));
-
-      if (!response.ok) {
-        throw { status: response.status, error: d.error || 'Failed to generate response' };
-      }
-      const data = decrypt(d.reply)
+      const data = await onAskAi({ message })
 
       // Replace typing indicator with the real response
       setChatMessages(prev => prev.map(msg =>
         msg.id === typingId
-          ? { ...msg, message: data.answer, description: undefined }
+          ? { ...msg, message: data, description: undefined }
           : msg
       ));
-      
-      setUserInfo(prev => ({...prev, aiCredits: data.creditsLeft}))
-      const newInfo = await saveUser({...userInfo, aiCredits: data.creditsLeft, id: 'current-user'})
 
     } catch (err) {
       let errorText;
@@ -267,7 +252,7 @@ export const AstraAIModal = memo(function AstraAIModal({ setChatWithAI, chatMess
       setDisabled(false);
       textareaRef.current?.focus();
     }
-  }, [userMsg, disabled, token, setToken, setChatMessages]);
+  }, [userMsg, disabled, setChatMessages]);
 
   // ── Enter to send (Shift+Enter = newline) ──
   const handleKeyDown = useCallback((e) => {

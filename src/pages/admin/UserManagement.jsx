@@ -85,7 +85,7 @@ function UserManagementInner() {
     setPage('users')
     
     return () => document.getElementById("__ns_styles")?.remove();
-  }, []);
+  }, [setPage]);
 
 
   const filtered = useMemo(() => {

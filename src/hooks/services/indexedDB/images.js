@@ -80,7 +80,7 @@ export async function saveAllImages(data) {
       }
       const path = data[i].id
       const extention = data[i].image?.url.slice(-3)
-      const result = await saveImage(`${url}/images/questions/${path}.${extention}`)
+      await saveImage(`${url}/images/questions/${path}.${extention}`)
 
     } catch (err) {
       console.log(err);

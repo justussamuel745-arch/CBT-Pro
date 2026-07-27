@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useSearchParams, useNavigate} from 'react-router';
 import UserContext from '../../context/UserContext';
 import { fetchWithAuth } from '../../scripts/utilis/fetch';

@@ -47,7 +47,7 @@ function DeleteInner() {
     toast.push({ variant: 'pill', type: 'success', message: 'Google account verified.' });
   };
 
-  const deleteUser = async () => {
+  const deleteUserAccount = async () => {
     setLoading(true);
     setBtnText("Verifying...");
 
@@ -143,7 +143,7 @@ function DeleteInner() {
               <div className="delete-form-group">
                 <label>Verify your Google account to confirm</label>
                 <p className="delete-google-hint">
-                  Your account uses Google Sign-In and has no password. Re-verify with Google below to confirm it's you.
+                  Your account uses Google Sign-In and has no password. Re-verify with Google below to confirm it&apos;s you.
                 </p>
                 <div className="delete-google-wrap">
                   <GoogleLogin
@@ -211,7 +211,7 @@ function DeleteInner() {
                 body="This will permanently delete your account, profile data, and all associated content. You won’t be able to recover anything after deletion."
                 warningText="This action cannot be undone. All data will be removed from our servers immediately."
                 primaryLabel="Delete account"
-                onPrimary={() => { deleteUser(); closeModal(); }}
+                onPrimary={() => { deleteUserAccount(); closeModal(); }}
                 onClose={closeModal}
               />
             </div>

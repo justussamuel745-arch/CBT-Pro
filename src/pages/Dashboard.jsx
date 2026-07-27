@@ -2,7 +2,6 @@ import { useState, useContext } from "react";
 import { Link } from 'react-router';
 import UserContext from '../context/UserContext';
 import { Menu } from '../components/Menu';
-import { url } from '../scripts/utilis/url';
 import { InstallAppBanner } from '../components/InstallAppBanner';
 import "./Dashboard.css";
 
@@ -103,7 +102,7 @@ export function Dashboard() {
                   borderRadius: '12px',
                   display: `${!imgExist ? 'none' : 'inline'}`
                 }}
-                onError={(event) => setImgExist(false) }
+                onError={() => setImgExist(false) }
               />
               {!imgExist && initials }
             </span>

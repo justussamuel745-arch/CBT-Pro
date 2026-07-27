@@ -14,6 +14,7 @@ import { formatName } from '../../scripts/utilis/formatName';
 import { Image } from '../../components/Image'
 import { ModalDialog, CSS } from '../../components/NotificationSystem';
 import { ReportQuestionModal } from "../../components/ReportQuestionModal";
+import { AnswerCard } from '../../components/AnswerCard';
 
 export function Review() {
   const {  isActivated, examConfig, answers, examQuestions } = useContext(UserContext);
@@ -29,6 +30,7 @@ export function Review() {
   const [progressList, setProgressList] = useState([])
   const [progressBadge, setProgressDadge] = useState(null)
   const [chatWithAI, setChatWithAI] = useState(false)
+  const [aiExplanations, setAiExplantions] = useState([])
   
   const [modal, setModal] = useState(null);
   const closeModal = () => setModal(null);
@@ -376,15 +378,15 @@ export function Review() {
                       )
                     })
                   }
-                  <div className="mode-answer-section show">
-                    <div className="mode-answer-header">Correct Answer</div>
-                    <div className="mode-answer-correct">Option {ques.correctAnswers.join('').toUpperCase()}</div>
-                    <div className="mode-answer-explanation" dangerouslySetInnerHTML={{
-                      __html: ques.explanation.text
-                    }}>
-                      {/* Work on image */}
-                    </div>
-                  </div>
+                  <AnswerCard 
+                    explanation={ques.explanation.text}
+                    correctAnswers={ques.correctAnswers}
+                    ques={ques}
+                    setChatWithAI={setChatWithAI}
+                    setChatMessages={setChatMessages}
+                    aiExplanations={aiExplanations}
+                    setAiExplantions={setAiExplantions}
+                  />
                 </div>
               )
               )

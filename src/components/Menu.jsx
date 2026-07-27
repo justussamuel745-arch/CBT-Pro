@@ -1,4 +1,4 @@
-import { useState, memo } from 'react';
+import { memo } from 'react';
 import { Link } from 'react-router';
 import './Menu.css';
 

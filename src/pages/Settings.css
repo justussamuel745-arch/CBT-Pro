@@ -39,6 +39,7 @@
   box-shadow: var(--shadow);
 }
 
+
 .settings-nav-item {
   display: flex;
   align-items: center;

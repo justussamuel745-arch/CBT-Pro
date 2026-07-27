@@ -15,12 +15,14 @@ import { Image } from '../../components/Image'
 import { formatName } from '../../scripts/utilis/formatName.js';
 import { ModalStripe, CSS } from '../../components/NotificationSystem';
 import { ReportQuestionModal } from "../../components/ReportQuestionModal";
+import { AnswerCard } from '../../components/AnswerCard';
+import { Loading } from '../../components/Loading';
 import { saveQuestions, getQuestions } from '../../hooks/services/indexedDB/questions';
 import { saveAllImages } from '../../hooks/services/indexedDB/images';
 import { decrypt, encrypt } from '../../scripts/utilis/crypto';
 import './Mode.css'
 
-const Notification = memo(({type, title, body, primaryLabel, onPrimary, onClose, closeLabel }) => {
+const Notification = memo(function Notification({type, title, body, primaryLabel, onPrimary, onClose, closeLabel }){
   return (
     <div className="ns-overlay" onClick={onClose}>
       <div onClick={e => e.stopPropagation()} style={{ width: '100%', display: 'flex', justifyContent: 'center', padding: '0 1rem' }}>
@@ -38,28 +40,8 @@ const Notification = memo(({type, title, body, primaryLabel, onPrimary, onClose,
   )
 })
 
-const AnswerCard = memo(({ explanation, correctAnswers }) => {
-  return (
-    <>
-      <div className="mode-answer-section">
-        <div className="mode-answer-header">Correct Answer</div>
-        <div className="mode-answer-correct">Option {correctAnswers}</div>
-        <div className="mode-answer-explanation">
-          {/* Work on image */}
-          <Markdown 
-            remarkPlugins={[remarkGfm, remarkMath]} // 1. Markdown extensions first
-            rehypePlugins={[rehypeRaw, rehypeKatex]} // 2. HTML parser, then formula renderer
-          >
-            {explanation}
-          </Markdown>
-        </div>
-      </div>
-    </>
-  )
-})
-
 export function Mode() {
-  const { token, setToken, studyConfig, userInfo } = useContext(UserContext)
+  const { token, setToken, studyConfig, userInfo, setUserInfo } = useContext(UserContext)
   const navigate = useNavigate()
   const [toggleCalc, setToggleCalc] = useState(false);
   const [toggleNav, setToggleNav] = useState(false);
@@ -75,6 +57,7 @@ export function Mode() {
   const [refresh, setRefresh] = useState(false)
   const [toggleBmk, setToggleBmk] = useState(false)
   const [currentBmkCheck, setCurrentBmkCheck] = useState(null)
+  const [aiExplanations, setAiExplantions] = useState([])
   
   /*============= AI Modal ===========*/
   const [chatMessages, setChatMessages] = useState([{
@@ -147,7 +130,13 @@ export function Mode() {
             throw { status: response.status, error: d.message || d.error || 'failed_to_load' }
           }
           data = decrypt(d)
-          await saveQuestions(data)
+          await saveQuestions(
+            data.map(d => ({
+              ...d, 
+              correctAnswers: encrypt(d.correctAnswers),
+              explanation: encrypt(d.explanation)
+            }))
+          )
           saveAllImages(data)
         } else {
           const subject = studyConfig.subject
@@ -174,7 +163,7 @@ export function Mode() {
         const currentQuestionVar = data[currentIdx]
         setCurrentQuestion([currentQuestionVar])
         
-        setRecords(data.map(d => d.id ? {id: d.id, isBookmarked: false} : null))
+        setRecords(data.map(d => ({id: d?.id ?? crypto.randomUUID(), isBookmarked: false})))
         setProgressList(data.map((d, index) => index + 1))
       } catch (err) {
         if (!err.status){
@@ -188,7 +177,8 @@ export function Mode() {
     }
     fetchStudyQuestions()
     return () => { cancelled = true }
-  },[token, setToken, studyConfig, setQuestions, setCurrentQuestion, refresh])
+     // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[refresh])
   
   
   function getSelectedOption(qsId, id = 'invalid'){
@@ -227,17 +217,17 @@ export function Mode() {
   },[records])
   
   useEffect(() => {
-    if (!(questions.length <= 0)){
+    if (questions.length > 0){
       const currentQsObj = questions[currentIdx]
       setCurrentQuestion([currentQsObj])
       const currentQsId = currentQsObj.id
-      const findRecord = records.find(record => record.id === currentQsId)
+      const findRecord = records.find(record => record?.id === currentQsId)
       if (findRecord?.correct){
         setOptionsCheck(findRecord)
         setDisplayAnswer(true)
       }
-      setToggleBmk(findRecord.isBookmarked)
-      setCurrentBmkCheck(findRecord.isBookmarked)
+      setToggleBmk(findRecord?.isBookmarked)
+      setCurrentBmkCheck(findRecord?.isBookmarked)
     }
   },[currentIdx, toggleNav])
   
@@ -256,8 +246,11 @@ export function Mode() {
     const increaseCurrentIdx = currentIdx + 1
     if (increaseCurrentIdx >= questions.length){
       setCurrentIdx(0)
-      setOptionsCheck(null)
-      setDisplayAnswer(false)
+      if (currentIdx !== 0){
+        // making sure the CurrentIdx value change before update this line
+        setOptionsCheck(null)
+        setDisplayAnswer(false)
+      }
       return
     }
     setCurrentIdx(increaseCurrentIdx)
@@ -283,7 +276,7 @@ export function Mode() {
   
   
   const subjectId = useCallback(() => {
-    return subjectsData.find(subject => subject.name === studyConfig.subject).id
+    return subjectsData.find(subject => subject.name === studyConfig.subject)?.id
   },[])
   
   /*=== report question modal ===*/
@@ -291,15 +284,15 @@ export function Mode() {
    setOpen(false) 
   },[setOpen])
   
-  if (!questions){
-    return <div>Loading...</div>
+  if (questions.length === 0){
+    return <Loading />
   }
   
   return (
     <>
       <title>Review | CBT Pro</title>
       
-      {chatWithAI && <AstraAIModal setChatWithAI={setChatWithAI} chatMessages={chatMessages} setChatMessages={setChatMessages}/>}
+      {chatWithAI && <AstraAIModal setChatWithAI={setChatWithAI} chatMessages={chatMessages} setChatMessages={setChatMessages} />}
       
       <div className="mode-page no-select" aria-live="polite">
 
@@ -339,7 +332,8 @@ export function Mode() {
                 setToggleBmk(toggle)
                 setCurrentBmkCheck(toggle)
                 setRecords(prev => prev.map(r => r.id === currentQuestion[0].id ? {...r, isBookmarked: toggle} : r))
-                const questionsStorage = decrypt(JSON.parse(localStorage.getItem('bookmarks'))) || []
+                const raw = localStorage.getItem('bookmarks')
+                const questionsStorage = raw ? (decrypt(JSON.parse(raw)) || []) : []
                 const currentQ = currentQuestion[0]
 
                 const updatedStorage = toggle
@@ -454,7 +448,19 @@ export function Mode() {
                         )
                       })
                     }
-                    {displayAnswer && <AnswerCard explanation={ques.explanation.text} correctAnswers={ques.correctAnswers.join(' ').toUpperCase()}/>}
+                    {displayAnswer && 
+                      (
+                        <AnswerCard 
+                          explanation={ques.explanation.text} 
+                          correctAnswers={ques.correctAnswers.join(' ').toUpperCase()} 
+                          ques={ques} 
+                          setChatWithAI={setChatWithAI}
+                          setChatMessages={setChatMessages}
+                          aiExplanations={aiExplanations}
+                          setAiExplantions={setAiExplantions}
+                        />
+                      )
+                    }
                   </div>
                   
                   <div className="mode-actions">

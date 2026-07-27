@@ -4,7 +4,7 @@ import { GoogleLogin } from "@react-oauth/google";
 import { url } from '../scripts/utilis/url';
 import UserContext from '../context/UserContext.jsx';
 import { Loading } from './Loading';
-import { fetchDataPost, fetchUserInfo, fetchHistory } from '../scripts/utilis/fetch.js';
+import { fetchUserInfo, fetchHistory } from '../scripts/utilis/fetch.js';
 import { useToast } from '../pages/SignIn';
 import { decrypt } from '../scripts/utilis/crypto';
 import './GoogleAuth.css';

@@ -2,8 +2,7 @@ import { fetchWithAuth } from './fetch.js';
 import { encrypt, decrypt } from './crypto.js';
 
 export async function on(token, setToken, setHistoryData) {
-      const unsavedHistory =
-        decrypt(JSON.parse(localStorage.getItem('unsavedHistory'))) || [];
+      const unsavedHistory = decrypt(JSON.parse(localStorage.getItem('unsavedHistory'))) || [];
 
       if (!unsavedHistory || unsavedHistory.length === 0 || !Array.isArray(unsavedHistory)) {
         return;

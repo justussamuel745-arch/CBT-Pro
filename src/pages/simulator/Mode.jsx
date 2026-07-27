@@ -186,8 +186,8 @@ export function Mode() {
           } else {
             data = indexDbData.questions.map(q => ({
               ...q, 
-              correctAnswers: decrypt(d.correctAnswers),
-              explanation: decrypt(d.explanation)
+              correctAnswers: decrypt(q.correctAnswers),
+              explanation: decrypt(q.explanation)
             }))
           }
         }

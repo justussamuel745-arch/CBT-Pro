@@ -192,10 +192,11 @@ function Auth() {
       setToken(d.accessToken)
       setIsActivated(d.isActivated)
       setIsAdmin(d.isAdmin)
-      /*========= Fetching Data for Settings Page ===========*/
-      fetchUserInfo(d.accessToken, setUserInfo, setProfileFields)
-      /*========= Fetching Data for History Page ===========*/
-      fetchHistory(d.accessToken, setHistoryData)
+      await Promise.all([
+        fetchUserInfo(d.accessToken, setUserInfo, setProfileFields),
+        fetchHistory(d.accessToken, setHistoryData)
+      ])
+      
       setModal({
         type: "success",
         icon: "✓",
@@ -324,7 +325,7 @@ function Auth() {
                     className="auth-password-toggle"
                     onClick={() => setShowPw(p =>!p)}
                   >
-                    {!showPw? <i className="fas fa-eye-slash"></i> : <i className="fas fa-eye"></i>}
+                    {showPw ? <i className="fas fa-eye-slash"></i> : <i className="fas fa-eye"></i>}
                   </button>
                 </div>
                 {errors.password && (

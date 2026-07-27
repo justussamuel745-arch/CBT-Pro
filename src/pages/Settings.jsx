@@ -297,7 +297,20 @@ function SettingsInner() {
         }
         if (cancelled) return;
         const data = decrypt(d.data)
-        setUserInfo(data);
+        let blob;
+  
+        if (data.profilePic){
+          const res = await fetch(data.profilePic)
+          if (res.ok){
+            blob = await res.blob();
+          }
+        }
+        
+        setUserInfo({
+          ...data,
+          blob: blob,
+          id: 'current-user'
+        })
         setProfileFields({
           fullName: data.fullName || '',
           phoneNumber: data.phoneNumber || '',
@@ -392,22 +405,17 @@ function SettingsInner() {
     async function indexDbSave(userInfo) {
       await saveUser(userInfo)
     }
-
-    if (!isMounted) {
+    
+    if (!isMounted.current) {
       isMounted.current = true
     } else {
-      const saveEncrypted = {
-        ...userInfo
-      }
-      delete saveEncrypted.blob
+      const saveEncrypted = { ...userInfo };
+      delete saveEncrypted.blob;
       indexDbSave({
-        "info": encrypt({
-          ...saveEncrypted,
-          accessToken: token
-        }),
+        info: encrypt({ ...saveEncrypted, accessToken: token }),
         blob: userInfo.blob,
-        id: 'current-user'
-      })
+        id: 'current-user',
+      });
     }
   }, [userInfo])
 
@@ -445,7 +453,6 @@ function SettingsInner() {
       const data = decrypt(d.data)
       let blob;
       if (data.profilePic !== userInfo.profilePic){
-        console.log('profilePic changed');
         const res = await fetch(data.profilePic)
         if (res.ok){
           blob = await res.blob();
@@ -453,7 +460,7 @@ function SettingsInner() {
       }
       setUserInfo(u => ({
         ...u,
-        data,
+        ...data,
         blob: blob ? blob : u.blob
       }))
       setProfileDirty(false);

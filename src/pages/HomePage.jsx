@@ -8,7 +8,7 @@ import { InstallAppBanner } from '../components/InstallAppBanner';
 import './HomePage.css'
 
 export function HomePage() {
-  const { token, isActivated, userInfo} = useContext(UserContext)
+  const { token, isActivated } = useContext(UserContext)
   const navigate = useNavigate()
   
   return (

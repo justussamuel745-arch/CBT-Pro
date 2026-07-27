@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { GameContext } from './GameContext';
 
 export default function GameProvider({ children }){

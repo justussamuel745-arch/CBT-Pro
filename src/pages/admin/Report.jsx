@@ -3,8 +3,13 @@ import './Report.css';
 import UserContext from '../../context/UserContext';
 import { useAdminContext } from '../../context/AdminContext';
 import { Nav } from './Nav';
-import { fetchReports } from './utils/adminFetch';
-import { fetchWithAuth } from '../../scripts/utilis/fetch';
+// NOTE: fetchReports / fetchWithAuth are no longer called directly in this file —
+// this page currently runs on SAMPLE_REPORTS below so the AI-fix flow can be
+// reviewed end to end. Swap SAMPLE_REPORTS for a real fetchReports() call and
+// re-wire handleStatusChange / handleDelete / handleAIResolve to fetchWithAuth
+// when the backend endpoints are ready.
+// import { fetchReports } from './utils/adminFetch';
+// import { fetchWithAuth } from '../../scripts/utilis/fetch';
 
 const CATEGORY_LABELS = {
   wrong_answer:   'Wrong answer key',
@@ -34,6 +39,155 @@ const SUBJECT_COLORS = {
 };
 
 // ─────────────────────────────────────────────────────────────
+// SAMPLE DATA — replace with your real reports (and each report's
+// linked question: { text, options, answerIndex }) once wired to the API.
+// ─────────────────────────────────────────────────────────────
+const SAMPLE_REPORTS = [
+  {
+    _id: 'r1',
+    subject: 'Mathematics',
+    questionId: 'MTH-2019-014',
+    examType: 'JAMB',
+    status: 'open',
+    categories: ['wrong_answer', 'typo'],
+    message: "The marked answer is wrong, it should be x = 6. Also there's a typo in the question — 'vaule' should be 'value'.",
+    createdAt: new Date(Date.now() - 1000 * 60 * 42).toISOString(),
+    user: { name: 'Amaka Obi', email: 'amaka.obi@example.com' },
+    question: {
+      text: 'If 2x + 5 = 17, find the vaule of x.',
+      options: ['x = 5', 'x = 6', 'x = 7', 'x = 8'],
+      answerIndex: 0,
+      explanation: 'Divide both sides by 2 to get x = 5.',
+    },
+  },
+  {
+    _id: 'r2',
+    subject: 'English Language',
+    questionId: 'ENG-2021-102',
+    examType: 'JAMB',
+    status: 'open',
+    categories: ['unclear'],
+    message: "It says 'the underlined word' but nothing in the sentence is underlined — students don't know what to pick.",
+    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 3).toISOString(),
+    user: { name: 'Tunde Bakare', email: 'tunde.bakare@example.com' },
+    question: {
+      text: "Choose the word that is nearest in meaning to the underlined word: The politician's speech was full of vitriol.",
+      options: ['Kindness', 'Bitterness', 'Humor', 'Silence'],
+      answerIndex: 1,
+      explanation: 'Vitriol means bitterness or hostility.',
+    },
+  },
+  {
+    _id: 'r3',
+    subject: 'Physics',
+    questionId: 'PHY-2020-045',
+    examType: 'JAMB',
+    status: 'open',
+    categories: ['missing_option'],
+    message: 'This question only has 3 options, every other question in this set has 4.',
+    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 20).toISOString(),
+    user: { name: 'Chiamaka Eze', email: 'chiamaka.eze@example.com' },
+    question: {
+      text: 'A body of mass 5 kg accelerates at 2 m/s². Calculate the force acting on it.',
+      options: ['5 N', '10 N', '15 N'],
+      answerIndex: 1,
+      explanation: 'Force = mass × acceleration = 5 × 2 = 10N.',
+    },
+  },
+  {
+    _id: 'r4',
+    subject: 'Chemistry',
+    questionId: 'CHM-2018-077',
+    examType: 'JAMB',
+    status: 'reviewing',
+    categories: ['wrong_image'],
+    message: "The question refers to 'the diagram above' but no diagram is shown — I can't answer it.",
+    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 26).toISOString(),
+    user: { name: 'Bello Yusuf', email: 'bello.yusuf@example.com' },
+    question: {
+      text: 'Identify the compound represented in the diagram above.',
+      options: ['Ethanol', 'Ethanoic acid', 'Ethane', 'Ethene'],
+      answerIndex: 0,
+      explanation: 'See the diagram for the functional group that identifies this compound.',
+    },
+  },
+  {
+    _id: 'r5',
+    subject: 'Economics',
+    questionId: 'ECN-2020-033',
+    examType: 'JAMB',
+    status: 'resolved',
+    categories: ['wrong_answer'],
+    message: 'Answer key had option B, but it should be option D.',
+    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 48).toISOString(),
+    user: { name: 'Grace Adamu', email: 'grace.adamu@example.com' },
+    question: {
+      text: 'Which of the following is NOT a factor of production?',
+      options: ['Land', 'Labour', 'Capital', 'Money'],
+      answerIndex: 3,
+      explanation: 'The 4 factors of production are land, labour, capital, and entrepreneurship — money is a medium of exchange, not a factor itself.',
+    },
+  },
+  {
+    _id: 'r6',
+    subject: 'Government',
+    questionId: 'GOV-2019-061',
+    examType: 'JAMB',
+    status: 'dismissed',
+    categories: ['other'],
+    message: 'I just find this topic confusing in general, not sure if the question itself is wrong.',
+    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 72).toISOString(),
+    user: { name: 'Ifeanyi Nwosu', email: 'ifeanyi.nwosu@example.com' },
+    question: {
+      text: 'Which arm of government is responsible for interpreting the law?',
+      options: ['Legislature', 'Executive', 'Judiciary', 'Civil Service'],
+      answerIndex: 2,
+      explanation: 'The judiciary interprets and applies the law; the legislature makes it and the executive enforces it.',
+    },
+  },
+];
+
+// ─────────────────────────────────────────────────────────────
+// MOCK AI — replace with a real call to your AI question-fix endpoint.
+// Keyed by report id so the demo is deterministic; a real endpoint would
+// take (question, report.message, report.categories) and return the same shape.
+// ─────────────────────────────────────────────────────────────
+const AI_PRESETS = {
+  r1: {
+    confidence: 'high',
+    text: 'If 2x + 5 = 17, find the value of x.',
+    options: ['x = 5', 'x = 6', 'x = 7', 'x = 8'],
+    answerIndex: 1,
+    explanation: 'Subtract 5 from both sides: 2x = 12. Divide both sides by 2 to get x = 6.',
+    note: 'Fixed the typo "vaule" → "value" and corrected the marked answer to x = 6, the only option that satisfies 2x + 5 = 17. The explanation was also rewritten to match.',
+  },
+  r2: {
+    confidence: 'high',
+    text: "Choose the word nearest in meaning to \"vitriol\" as used in: \"The politician's speech was full of vitriol.\"",
+    options: ['Kindness', 'Bitterness', 'Humor', 'Silence'],
+    answerIndex: 1,
+    explanation: 'Vitriol means bitter criticism or hostility, so "bitterness" is the closest match in meaning.',
+    note: 'Removed the ambiguous "underlined word" phrasing and named the target word directly, since the sentence had no visible underline. Explanation expanded slightly for clarity.',
+  },
+  r3: {
+    confidence: 'high',
+    text: 'A body of mass 5 kg accelerates at 2 m/s². Calculate the force acting on it.',
+    options: ['5 N', '10 N', '15 N', '20 N'],
+    answerIndex: 1,
+    explanation: 'Using Newton\'s second law: F = ma = 5 kg × 2 m/s² = 10 N.',
+    note: 'Added a fourth distractor ("20 N") so the question follows the standard 4-option format. Answer unchanged: F = ma = 5 × 2 = 10 N.',
+  },
+  r4: {
+    confidence: 'low',
+    text: null,
+    options: null,
+    answerIndex: null,
+    explanation: null,
+    note: "This question refers to a diagram that isn't attached to the report, so I can't verify or rewrite it confidently. Add more context in your own message and resend, or attach the source image.",
+  },
+};
+
+// ─────────────────────────────────────────────────────────────
 // ICONS
 // ─────────────────────────────────────────────────────────────
 const Ic = {
@@ -51,7 +205,10 @@ const Ic = {
   Warn:    () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>,
   Inbox:   () => <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg>,
   Open:    () => <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>,
-  Menu:    () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M3 12h18M3 6h18M3 18h18" /></svg>
+  Menu:    () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M3 12h18M3 6h18M3 18h18" /></svg>,
+  Sparkle: () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M18.4 5.6l-2.8 2.8M8.4 15.6l-2.8 2.8"/></svg>,
+  Edit:    () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>,
+  Refresh: () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>,
 };
 
 // ─────────────────────────────────────────────────────────────
@@ -80,21 +237,269 @@ function subjectColor(subject) {
   return SUBJECT_COLORS[subject] || SUBJECT_COLORS.default;
 }
 
+function canFix(status) {
+  return status === 'open' || status === 'reviewing';
+}
+
 const FILTERS = ['all', 'open', 'reviewing', 'resolved', 'dismissed'];
+
+// ─────────────────────────────────────────────────────────────
+// AI FIX MODAL
+// ─────────────────────────────────────────────────────────────
+function AIFixModal({ report, onClose, onResolve }) {
+  const [stage, setStage]             = useState('idle'); // idle | loading | review | editing | done
+  const [suggestion, setSuggestion]   = useState(null);
+  const [attempt, setAttempt]         = useState(1);
+  const [customMessage, setCustomMessage] = useState('');
+
+  const q = report.question;
+
+  // `instruction` is an optional admin-written message used instead of (or in
+  // addition to) the reporter's own description — for when that description
+  // wasn't clear enough for the AI to land on the right fix the first time.
+  function runAI(instruction) {
+    setStage('loading');
+    setTimeout(() => {
+      let result;
+      const preset = AI_PRESETS[report._id];
+
+      if (instruction) {
+        // Mock: swap this branch for a real "resend with instruction" API call
+        // that passes { question, report, instruction } to the AI endpoint.
+        if (preset && preset.text) {
+          result = {
+            ...preset,
+            confidence: 'high',
+            note: `Refined using your message: "${instruction}"`,
+          };
+        } else {
+          // Previously low-confidence / no rewrite — the admin's own message
+          // gives the AI enough to work with now.
+          result = {
+            confidence: 'high',
+            text: q.text,
+            options: q.options,
+            answerIndex: q.answerIndex,
+            explanation: q.explanation,
+            note: `Used your message to resolve this: "${instruction}"`,
+          };
+        }
+      } else {
+        result = preset || {
+          confidence: 'low',
+          text: null,
+          options: null,
+          answerIndex: null,
+          explanation: null,
+          note: "I couldn't confidently determine a fix from this report. Try sending your own message with more context.",
+        };
+      }
+      setSuggestion(result);
+      setStage('review');
+    }, 1400);
+  }
+
+  function startEdit() {
+    setCustomMessage(report.message || '');
+    setStage('editing');
+  }
+
+  function resend() {
+    setAttempt(a => a + 1);
+    runAI(customMessage.trim());
+  }
+
+  function accept() {
+    setStage('done');
+    setTimeout(() => {
+      onResolve(report._id, {
+        text: suggestion.text,
+        options: suggestion.options,
+        answerIndex: suggestion.answerIndex,
+        explanation: suggestion.explanation,
+      });
+    }, 1000);
+  }
+
+  return (
+    <div className="arq-ai-overlay" onClick={onClose}>
+      <div className="arq-ai-modal" onClick={e => e.stopPropagation()}>
+
+        <div className="arq-ai-head">
+          <div className="arq-ai-head-title">
+            <div className="arq-ai-head-icon"><Ic.Sparkle /></div>
+            Fix question with AI
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem' }}>
+            {attempt > 1 && <span className="arq-ai-attempt">Attempt {attempt}</span>}
+            <button className="arq-drawer-close" onClick={onClose}><Ic.X /></button>
+          </div>
+        </div>
+
+        <div className="arq-ai-body">
+
+          {stage === 'idle' && (
+            <div className="arq-ai-idle">
+              <div className="arq-ai-question-preview-label">Question to review</div>
+              <div className="arq-ai-card" style={{ textAlign: 'left', marginBottom: '1.5rem' }}>
+                <div className="arq-ai-q-text">{q.text}</div>
+                <div className="arq-ai-options">
+                  {q.options.map((opt, i) => (
+                    <div key={i} className={`arq-ai-option ${i === q.answerIndex ? 'is-correct' : ''}`}>
+                      <span className="arq-ai-option-marker">{i === q.answerIndex ? <Ic.Check /> : null}</span>
+                      {opt}
+                    </div>
+                  ))}
+                </div>
+                {q.explanation && (
+                  <div className="arq-ai-explanation">
+                    <div className="arq-ai-explanation-label">Explanation</div>
+                    <div className="arq-ai-explanation-text">{q.explanation}</div>
+                  </div>
+                )}
+              </div>
+              <p style={{ fontSize: '0.82rem', color: 'var(--text-muted, #64748b)', marginBottom: '1.25rem', lineHeight: 1.55 }}>
+                AI will read the reporter&apos;s description below and suggest a corrected version of this question for you to review.
+              </p>
+              <div className="arq-drawer-message" style={{ marginBottom: '1.5rem' }}>
+                &quot;{report.message}&quot;
+              </div>
+              <button className="arq-btn arq-btn-primary" onClick={() => runAI()}>
+                <Ic.Sparkle /> Send to AI
+              </button>
+            </div>
+          )}
+
+          {stage === 'loading' && (
+            <div className="arq-ai-loading">
+              <div className="arq-spinner" />
+              <div className="arq-ai-loading-text">
+                {attempt > 1 ? 'Re-checking your edits…' : 'Reading the report and rewriting the question…'}
+              </div>
+            </div>
+          )}
+
+          {stage === 'review' && suggestion && (
+            <>
+              <div className="arq-ai-compare">
+                <div className="arq-ai-card">
+                  <div className="arq-ai-card-label original"><Ic.Hash /> Original</div>
+                  <div className="arq-ai-q-text">{q.text}</div>
+                  <div className="arq-ai-options">
+                    {q.options.map((opt, i) => (
+                      <div key={i} className={`arq-ai-option ${i === q.answerIndex ? 'is-correct' : ''}`}>
+                        <span className="arq-ai-option-marker">{i === q.answerIndex ? <Ic.Check /> : null}</span>
+                        {opt}
+                      </div>
+                    ))}
+                  </div>
+                  <div className="arq-ai-explanation">
+                    <div className="arq-ai-explanation-label">Explanation</div>
+                    <div className="arq-ai-explanation-text">{q.explanation || 'No explanation on file.'}</div>
+                  </div>
+                </div>
+
+                <div className="arq-ai-card suggested">
+                  <div className="arq-ai-card-label suggested"><Ic.Sparkle /> AI suggested update</div>
+                  {suggestion.text ? (
+                    <>
+                      <div className="arq-ai-q-text">{suggestion.text}</div>
+                      <div className="arq-ai-options">
+                        {suggestion.options.map((opt, i) => (
+                          <div key={i} className={`arq-ai-option ${i === suggestion.answerIndex ? 'is-correct' : ''}`}>
+                            <span className="arq-ai-option-marker">{i === suggestion.answerIndex ? <Ic.Check /> : null}</span>
+                            {opt}
+                          </div>
+                        ))}
+                      </div>
+                      <div className="arq-ai-explanation">
+                        <div className="arq-ai-explanation-label">Explanation</div>
+                        <div className="arq-ai-explanation-text">{suggestion.explanation || 'No explanation change proposed.'}</div>
+                      </div>
+                    </>
+                  ) : (
+                    <div style={{ fontSize: '0.82rem', color: '#94a3b8', fontStyle: 'italic', padding: '0.5rem 0' }}>
+                      No confident rewrite to show — see note below.
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div className={`arq-ai-note ${suggestion.confidence === 'low' ? 'low-confidence' : ''}`}>
+                <span className="arq-ai-note-icon">{suggestion.confidence === 'low' ? <Ic.Warn /> : <Ic.Sparkle />}</span>
+                <span>{suggestion.note}</span>
+              </div>
+            </>
+          )}
+
+          {stage === 'editing' && (
+            <div className="arq-ai-edit-block">
+              <div className="arq-ai-edit-field">
+                <label>Your message to AI</label>
+                <textarea
+                  className="arq-ai-textarea"
+                  rows={5}
+                  placeholder="The reporter's description wasn't accurate enough — tell the AI what's actually wrong and what it should fix…"
+                  value={customMessage}
+                  onChange={e => setCustomMessage(e.target.value)}
+                  autoFocus
+                />
+              </div>
+              <p style={{ fontSize: '0.78rem', color: 'var(--text-muted, #64748b)', lineHeight: 1.5 }}>
+                This replaces the reporter's description for this attempt — write exactly what's wrong and how to fix it.
+              </p>
+            </div>
+          )}
+
+          {stage === 'done' && (
+            <div className="arq-ai-done">
+              <div className="arq-ai-done-icon"><Ic.Check /></div>
+              <div className="arq-ai-done-text">Question updated</div>
+              <div className="arq-ai-done-sub">Removing this report from your queue…</div>
+            </div>
+          )}
+        </div>
+
+        {stage === 'review' && (
+          <div className="arq-ai-footer">
+            <button className="arq-btn arq-btn-ghost" onClick={onClose}>Cancel</button>
+            <button className="arq-btn arq-btn-ghost" onClick={startEdit}>
+              <Ic.Edit /> Not accurate — send my own message
+            </button>
+            {suggestion.confidence !== 'low' && (
+              <button className="arq-btn arq-btn-success" onClick={accept}>
+                <Ic.Check /> Accept &amp; resolve
+              </button>
+            )}
+          </div>
+        )}
+
+        {stage === 'editing' && (
+          <div className="arq-ai-footer">
+            <button className="arq-btn arq-btn-ghost" onClick={() => setStage('review')}>Cancel edit</button>
+            <button
+              className="arq-btn arq-btn-primary"
+              onClick={resend}
+              disabled={!customMessage.trim()}
+              style={!customMessage.trim() ? { opacity: 0.5, cursor: 'not-allowed' } : undefined}
+            >
+              <Ic.Refresh /> Resend to AI
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
 
 // ─────────────────────────────────────────────────────────────
 // DETAIL DRAWER
 // ─────────────────────────────────────────────────────────────
-function ReportDrawer({ report, onClose, onStatusChange, onDelete }) {
-  const [adminNote, setAdminNote] = useState('');
+function ReportDrawer({ report, onClose, onStatusChange, onDelete, onFixAI }) {
   const [confirmDelete, setConfirmDelete] = useState(false);
-  const col = subjectColor(report.subject);
   const statusMeta = STATUS_META[report.status];
 
-
   function handleStatusChange(newStatus) {
-    console.log(report._id, newStatus);
-    
     onStatusChange(report._id, newStatus);
   }
 
@@ -165,6 +570,26 @@ function ReportDrawer({ report, onClose, onStatusChange, onDelete }) {
               : <div className="arq-drawer-no-message">No description provided</div>
             }
 
+            {/* Current question */}
+            <div className="arq-drawer-section-label">Current question</div>
+            <div className="arq-ai-card" style={{ marginBottom: '1.25rem' }}>
+              <div className="arq-ai-q-text">{report.question.text}</div>
+              <div className="arq-ai-options">
+                {report.question.options.map((opt, i) => (
+                  <div key={i} className={`arq-ai-option ${i === report.question.answerIndex ? 'is-correct' : ''}`}>
+                    <span className="arq-ai-option-marker">{i === report.question.answerIndex ? <Ic.Check /> : null}</span>
+                    {opt}
+                  </div>
+                ))}
+              </div>
+              {report.question.explanation && (
+                <div className="arq-ai-explanation">
+                  <div className="arq-ai-explanation-label">Explanation</div>
+                  <div className="arq-ai-explanation-text">{report.question.explanation}</div>
+                </div>
+              )}
+            </div>
+
             {/* Info grid */}
             <div className="arq-drawer-section-label">Question details</div>
             <div className="arq-drawer-info-grid">
@@ -178,25 +603,13 @@ function ReportDrawer({ report, onClose, onStatusChange, onDelete }) {
               <span className="arq-drawer-info-val">{fmtDateFull(report.createdAt)}</span>
             </div>
 
-            {/* Admin note */}
-            <div className="arq-drawer-section-label">Admin note</div>
-            <div className="arq-drawer-note-wrap">
-              <textarea
-                className="arq-drawer-note"
-                placeholder="Add an internal note about this report — visible only to admins…"
-                value={adminNote}
-                onChange={e => setAdminNote(e.target.value)}
-                rows={3}
-              />
-            </div>
-
           </div>
 
           {/* Footer actions */}
           <div className="arq-drawer-footer">
-            {report.status !== 'resolved' && (
-              <button className="arq-btn arq-btn-success" onClick={() => handleStatusChange('resolved')}>
-                <Ic.Check /> Mark resolved
+            {canFix(report.status) && (
+              <button className="arq-btn arq-btn-primary" onClick={() => onFixAI(report)}>
+                <Ic.Sparkle /> Fix with AI
               </button>
             )}
             {report.status !== 'reviewing' && report.status !== 'resolved' && (
@@ -204,7 +617,7 @@ function ReportDrawer({ report, onClose, onStatusChange, onDelete }) {
                 <Ic.Eye /> Mark reviewing
               </button>
             )}
-            {report.status !== 'dismissed' && (
+            {report.status !== 'dismissed' && report.status !== 'resolved' && (
               <button className="arq-btn arq-btn-ghost" onClick={() => handleStatusChange('dismissed')}>
                 Dismiss
               </button>
@@ -257,22 +670,26 @@ function ReportDrawer({ report, onClose, onStatusChange, onDelete }) {
 // ─────────────────────────────────────────────────────────────
 export function Report() {
   const { token, setToken } = useContext(UserContext);
-  const { setPage } = useAdminContext()
-  const [reports, setReports]     = useState([]);
-  const [filter, setFilter]       = useState('all');
-  const [search, setSearch]       = useState('');
-  const [sort, setSort]           = useState('newest');
-  const [selected, setSelected]   = useState(null);
-  const [sidebarOpen, setSidebarOpen] = useState(false)
+  const { setPage } = useAdminContext();
+  const [reports, setReports]         = useState(SAMPLE_REPORTS);
+  const [filter, setFilter]           = useState('all');
+  const [search, setSearch]           = useState('');
+  const [sort, setSort]               = useState('newest');
+  const [selected, setSelected]       = useState(null);
+  const [aiTarget, setAiTarget]       = useState(null);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  // Close drawer on Escape
+  // Close drawer / AI modal on Escape
   useEffect(() => {
-    fetchReports(token, setToken, setReports)
-    setPage('reports')
-    function onKey(e) { if (e.key === 'Escape') setSelected(null); }
+    setPage('reports');
+    function onKey(e) {
+      if (e.key !== 'Escape') return;
+      if (aiTarget) { setAiTarget(null); return; }
+      setSelected(null);
+    }
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
-  }, [token, setToken]);
+  }, [setPage, aiTarget]);
 
   // ── Derived data ──
   const counts = {
@@ -305,45 +722,36 @@ export function Report() {
       return 0;
     });
 
-  async function handleStatusChange(id, newStatus) {
-    try {
-      const response = await fetchWithAuth(token, setToken, `/api/reports/${id}/${newStatus}`, {
-        method: 'PUT'
-      })
-      const data = await response.json().catch(() => ({}))
-      if (!response.ok){
-        throw { status: response.status, error: data?.error || data?.message || 'Failed to change status'}
-      }
-      setReports(prev => prev.map(r => r._id === id ? { ...r, status: newStatus } : r));
-      if (selected?._id === id) setSelected(r => ({ ...r, status: newStatus }));
-    } catch (err) {
-      console.log(err);
-    }
+  // TODO: replace with a real PUT /api/reports/${id}/${newStatus} call via fetchWithAuth
+  function handleStatusChange(id, newStatus) {
+    setReports(prev => prev.map(r => r._id === id ? { ...r, status: newStatus } : r));
+    if (selected?._id === id) setSelected(r => ({ ...r, status: newStatus }));
   }
 
-  async function handleDelete(id) {
-    try {
-      const response = await fetchWithAuth(token, setToken, `/api/reports/${id}`, {
-        method: 'DELETE'
-      })
-      const data = await response.json().catch(() => ({}))
-      if (!response.ok){
-        throw { status: response.status, error: data?.error || data?.message || 'Failed to delete report'}
-      }
-      setReports(prev => prev.filter(r => r._id !== id));
-      if (selected?._id === id) setSelected(null);
-    } catch (err) {
-      console.log(err);
-    }
+  // TODO: replace with a real DELETE /api/reports/${id} call via fetchWithAuth
+  function handleDelete(id) {
+    setReports(prev => prev.filter(r => r._id !== id));
+    if (selected?._id === id) setSelected(null);
+  }
+
+  // Called once the admin accepts an AI-suggested fix. In production this should:
+  //  1. PATCH the actual question in the question bank with `updatedQuestion`
+  //  2. PUT the report status to 'resolved' (or DELETE it) on the backend
+  // Here we just drop it from the local list since it's resolved.
+  function handleAIResolve(id, updatedQuestion) {
+    console.log('Resolved with AI update:', id, updatedQuestion);
+    setReports(prev => prev.filter(r => r._id !== id));
+    if (selected?._id === id) setSelected(null);
+    setAiTarget(null);
   }
 
   return (
     <div className="arq-page">
       <title>Reports | CBT Pro Admin</title>
-      
+
        {/* Side bar */}
-      <Nav 
-        sidebarOpen={sidebarOpen} 
+      <Nav
+        sidebarOpen={sidebarOpen}
         setSidebarOpen={setSidebarOpen}
       />
 
@@ -365,7 +773,7 @@ export function Report() {
             Question Reports
           </h1>
           <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginTop: '0.375rem' }}>
-            Review and manage complaints submitted by students during exams
+            Review complaints, fix questions with AI assistance, and resolve them
           </p>
         </div>
       </div>
@@ -534,9 +942,9 @@ export function Report() {
                           <button className="arq-icon-btn" title="View details" onClick={() => setSelected(r)}>
                             <Ic.Eye />
                           </button>
-                          {r.status !== 'resolved' && (
-                            <button className="arq-icon-btn success" title="Mark resolved" onClick={() => handleStatusChange(r._id, 'resolved')}>
-                              <Ic.Check />
+                          {canFix(r.status) && (
+                            <button className="arq-icon-btn ai" title="Fix with AI" onClick={() => setAiTarget(r)}>
+                              <Ic.Sparkle />
                             </button>
                           )}
                           <button className="arq-icon-btn danger" title="Delete" onClick={() => handleDelete(r._id)}>
@@ -561,6 +969,16 @@ export function Report() {
           onClose={() => setSelected(null)}
           onStatusChange={handleStatusChange}
           onDelete={handleDelete}
+          onFixAI={(r) => setAiTarget(r)}
+        />
+      )}
+
+      {/* ── AI FIX MODAL ── */}
+      {aiTarget && (
+        <AIFixModal
+          report={aiTarget}
+          onClose={() => setAiTarget(null)}
+          onResolve={handleAIResolve}
         />
       )}
     </div>

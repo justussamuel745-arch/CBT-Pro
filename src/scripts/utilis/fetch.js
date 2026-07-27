@@ -104,7 +104,20 @@ export async function fetchUserInfo(token, setUserInfo, setProfileFields) {
     }
   }
   
-  saveUser({
+  setUserInfo({
+    ...data,
+    blob: blob,
+    id: 'current-user'
+  })
+  
+  setProfileFields({
+    fullName: data.fullName || '',
+    phoneNumber: data.phoneNumber || '',
+    targetExam: data.targetExam || 'JAMB UTME 2027',
+    targetScore: data.targetScore || '',
+  });
+  
+  await saveUser({
     "info": encrypt({
       ...data,
       accessToken: token
@@ -112,19 +125,6 @@ export async function fetchUserInfo(token, setUserInfo, setProfileFields) {
     blob: blob,
     id: 'current-user'
   })
-  
-  setUserInfo({
-    ...data,
-    blob: blob,
-    id: 'current-user'
-  })
-  //setUserInfo(data);
-  setProfileFields({
-    fullName: data.fullName || '',
-    phoneNumber: data.phoneNumber || '',
-    targetExam: data.targetExam || 'JAMB UTME 2027',
-    targetScore: data.targetScore || '',
-  });
 }
 
 export async function fetchHistory(token, setHistoryData) {
