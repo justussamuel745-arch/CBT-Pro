@@ -417,6 +417,7 @@
 .mode-answer-explanation {
   line-height: 1.7;
   color: var(--text);
+  padding: 8px;
 }
 
 .mode-answer-image {

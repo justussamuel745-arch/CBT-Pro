@@ -1,10 +1,5 @@
 import { useState, memo, useEffect } from 'react';
-import Markdown from 'react-markdown'
-import remarkGfm from 'remark-gfm'
-import remarkMath from 'remark-math'
-import rehypeKatex from 'rehype-katex'
-import rehypeRaw from 'rehype-raw'
-import 'katex/dist/katex.min.css' // don't forget CSS or formulas won't style
+import { MarkdownContent } from './MarkdownContent';
 import { useAskAi } from '../scripts/utilis/useAskAi';
 
 export const AnswerCard = memo(function AnswerCard({ explanation, correctAnswers, ques, setChatWithAI, setChatMessages, aiExplanations, setAiExplantions }){
@@ -104,12 +99,9 @@ export const AnswerCard = memo(function AnswerCard({ explanation, correctAnswers
         <div className="mode-answer-correct">Option {correctAnswers}</div>
         <div className="mode-answer-explanation">
           {/* Work on image */}
-          <Markdown 
-            remarkPlugins={[remarkGfm, remarkMath]} // 1. Markdown extensions first
-            rehypePlugins={[rehypeRaw, rehypeKatex]} // 2. HTML parser, then formula renderer
-          >
+          <MarkdownContent>
             {explanation}
-          </Markdown>
+          </MarkdownContent>
         </div>
       </div>
     )
@@ -120,9 +112,9 @@ export const AnswerCard = memo(function AnswerCard({ explanation, correctAnswers
       <div className="mode-answer-header">Correct Answer</div>
       <div className="mode-answer-correct">Option {correctAnswers}</div>
       <div className="mode-answer-explanation">
-        <Markdown remarkPlugins={[remarkGfm, remarkMath]} rehypePlugins={[rehypeRaw, rehypeKatex]}>
+        <MarkdownContent>
           {explanation}
-        </Markdown>
+        </MarkdownContent>
       </div>
 
       <button className="mode-ai-trigger" onClick={handleAskAi} disabled={aiLoading}>
@@ -154,9 +146,9 @@ export const AnswerCard = memo(function AnswerCard({ explanation, correctAnswers
                   <i className="fa-solid fa-sparkles"></i> Astra&apos;s Approach
                 </div>
                 <span className="mode-ai-response-content">
-                  <Markdown remarkPlugins={[remarkGfm, remarkMath]} rehypePlugins={[rehypeRaw, rehypeKatex]}>
+                  <MarkdownContent>
                     {aiResponse}
-                  </Markdown>
+                  </MarkdownContent>
                 </span>
               </div>
 

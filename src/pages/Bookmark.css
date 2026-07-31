@@ -346,6 +346,13 @@
   font-size: 0.95rem;
 }
 
+.bookmark-modal-explanation ol{
+  list-style: none;
+}
+.bookmark-modal-explanation ul{
+  list-style: none;
+}
+
 .bookmark-modal-explanation-title {
   font-weight: 700;
   margin-bottom: 0.5rem;

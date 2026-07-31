@@ -1,11 +1,6 @@
 import { useState, useEffect, useContext, useRef, memo, useCallback } from 'react';
 import { useNavigate } from 'react-router';
-import Markdown from 'react-markdown'
-import remarkGfm from 'remark-gfm'
-import remarkMath from 'remark-math'
-import rehypeKatex from 'rehype-katex'
-import rehypeRaw from 'rehype-raw'
-import 'katex/dist/katex.min.css' // don't forget CSS or formulas won't style
+import { MarkdownContent } from '../../components/MarkdownContent';
 import UserContext from '../../context/UserContext.jsx';
 import { fetchWithAuth } from '../../scripts/utilis/fetch.js';
 import { formatName } from '../../scripts/utilis/formatName.js';
@@ -533,25 +528,19 @@ export function Mode() {
                       
                       <Image id={ques.id} ext={ques.image?.url} />
                       
-                      {ques.question.instruction && <><strong>{ques.question.instruction}</strong><br /></>}
+                      {ques.question.instruction && <><strong><MarkdownContent>{ques.question.instruction}</MarkdownContent></strong><br /></>}
                       {ques.question.comprehension && <><strong dangerouslySetInnerHTML={{__html: ques.question.comprehension}}></strong><br/></>}
                       {
                         ques.question?.qs 
                         ? (
-                            <Markdown 
-                              remarkPlugins={[remarkGfm, remarkMath]} // 1. Markdown extensions first
-                              rehypePlugins={[rehypeRaw, rehypeKatex]} // 2. HTML parser, then formula renderer
-                            >
+                            <MarkdownContent>
                               {ques.question.qs}
-                            </Markdown>
+                            </MarkdownContent>
                           )
                         : (
-                            <Markdown 
-                              remarkPlugins={[remarkGfm, remarkMath]} // 1. Markdown extensions first
-                              rehypePlugins={[rehypeRaw, rehypeKatex]} // 2. HTML parser, then formula renderer
-                            >
+                            <MarkdownContent >
                               {ques.question}
-                            </Markdown>
+                            </MarkdownContent>
                           )
                       }
                     </div>
@@ -563,7 +552,11 @@ export function Mode() {
                              <div className={`exam-option ${opt.id === userAnswer && 'selected'}`} key={opt.id} onClick={selectedOpt} data-selected-id={opt.id} data-id={ques.id}>
                                 <div className="exam-option-key">{opt.id.toUpperCase()}</div>
                                 <div className="exam-option-content">
-                                  <div className="exam-option-text" dangerouslySetInnerHTML={{__html: opt.option}} />
+                                  <div className="exam-option-text">
+                                    <MarkdownContent>
+                                      { opt.option }
+                                    </MarkdownContent>
+                                  </div>
                                 </div>
                               </div>
                           ) 

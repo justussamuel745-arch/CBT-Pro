@@ -1,6 +1,7 @@
 import { useState, useEffect, useContext } from "react";
 import { useSearchParams, useNavigate} from 'react-router';
 import UserContext from '../../context/UserContext';
+import { MarkdownContent } from '../../components/MarkdownContent';
 import { fetchWithAuth } from '../../scripts/utilis/fetch';
 import { ToastProvider, useToast, CSS } from '../../components/NotificationSystem';
 import { Image } from '../../components/Image';
@@ -56,13 +57,21 @@ function DetailModal({ item, onClose }) {
         
         <Image id={item.id} ext={item.image?.url} />
         { typeof item.question === 'object' && item.question?.comprehension && <h4 className="pq-modal-question" dangerouslySetInnerHTML={{__html: item.question.comprehension}}></h4> }
-        <p className="pq-modal-question" dangerouslySetInnerHTML={{__html: typeof item.question !== 'object' ? item.question : item.question?.qs}}></p>
+        <p className="pq-modal-question">
+          <MarkdownContent>
+            {typeof item.question !== 'object' ? item.question : item.question?.qs}
+          </MarkdownContent>
+        </p>
 
         <ul className="pq-modal-options">
           {item.options.map(opt => (
             <li key={opt.id} className={`pq-modal-option ${opt.id === item.correctAnswers.join('') ? "pq-modal-option--correct" : ""}`}>
               <span className="pq-modal-option-letter">{opt.id.toUpperCase()}</span>
-              <span className="pq-modal-option-text" dangerouslySetInnerHTML={{__html: opt.option}} />
+              <span className="pq-modal-option-text">
+                <MarkdownContent>
+                  { opt.option }
+                </MarkdownContent>
+              </span>
               {opt.id === item.correctAnswers.join('') && <i className="fa-solid fa-circle-check pq-modal-option-check" />}
             </li>
           ))}
@@ -70,7 +79,11 @@ function DetailModal({ item, onClose }) {
 
         <div className="pq-modal-explanation">
           <p className="pq-modal-explanation-label"><i className="fa-solid fa-lightbulb" /> Explanation</p>
-          <p className="pq-modal-explanation-text" dangerouslySetInnerHTML={{__html: item.explanation?.text}}></p>
+          <p className="pq-modal-explanation-text">
+            <MarkdownContent>
+              { item.explanation?.text }
+            </MarkdownContent>
+          </p>
         </div>
       </div>
     </div>

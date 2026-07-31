@@ -1,7 +1,8 @@
 import { useState, useEffect, useContext, useCallback, useRef,  memo } from 'react';
 import { Link } from 'react-router';
 import UserContext from '../context/UserContext.jsx';
-import { subjectsData } from '../scripts/data/subjectsData.js'
+import { MarkdownContent } from '../components/MarkdownContent';
+import { subjectsData } from '../scripts/data/subjectsData.js';
 import { formatName } from '../scripts/utilis/formatName.js';
 import { Image } from '../components/Image';
 import { decrypt, encrypt } from '../scripts/utilis/crypto';
@@ -26,9 +27,9 @@ const ExpensiveBmkModal = memo(({ modalQsInfo, setModalQsInfo }) => {
                 <div className="bookmark-modal-meta">UTME {formatName(qs.subject)} • {qs.topic}</div>
                 <div className="bookmark-modal-question">
                   <Image id={qs.id} ext={qs.image?.url} />
-                  {qs.question?.instruction && <><strong>{qs.question.instruction}</strong><br/></>}
+                  {qs.question?.instruction && <><strong><MarkdownContent>{ qs.question.instruction }</MarkdownContent></strong><br/></>}
                   {qs.question?.comprehension && <><strong dangerouslySetInnerHTML={{__html: qs.question.comprehension}} /><br/></>}
-                  {!(typeof qs.question === 'object') ? qs.question : qs.question.qs}
+                  <MarkdownContent>{!(typeof qs.question === 'object') ? qs.question : qs.question.qs}</MarkdownContent>
                 </div>
                 <div className="bookmark-modal-options">
                   {
@@ -36,7 +37,9 @@ const ExpensiveBmkModal = memo(({ modalQsInfo, setModalQsInfo }) => {
                       (
                         <div className={`bookmark-modal-option ${qs.correctAnswers.includes(opt.id) && 'correct'}`} key={opt.id}>
                           <div className="bookmark-modal-option-key">{opt.id.toUpperCase()}</div>
-                          <div dangerouslySetInnerHTML={{__html: opt.option}} />
+                          <div>
+                            <MarkdownContent>{ opt.option }</MarkdownContent>
+                          </div>
                         </div>
                       )
                     )
@@ -44,7 +47,10 @@ const ExpensiveBmkModal = memo(({ modalQsInfo, setModalQsInfo }) => {
                 </div>
                 <div className="bookmark-modal-answer">✓ Correct Answer: {qs.correctAnswers.join(' ').toUpperCase()}</div>
                 <div className="bookmark-modal-explanation">
-                  <div className="bookmark-modal-explanation-title">Explanation</div><span dangerouslySetInnerHTML={{__html: qs.explanation.text}} />
+                  <div className="bookmark-modal-explanation-title">Explanation</div>
+                    <span>
+                      <MarkdownContent>{qs.explanation.text}</MarkdownContent>
+                    </span>
                 </div>
               </div>
             </div>
@@ -184,9 +190,9 @@ export function Bookmark() {
               <div className="bookmark-card" key={qs.id}>
                 <div className="bookmark-content">
                   <div className="bookmark-question">
-                    {qs.question?.instruction && <><strong>{qs.question.instruction}</strong><br/></>}
+                    {qs.question?.instruction && <><strong><MarkdownContent>{ qs.question.instruction }</MarkdownContent></strong><br/></>}
                     {qs.question?.comprehension && <><strong dangerouslySetInnerHTML={{__html: qs.question.comprehension}} /><br/></>}
-                    {!(typeof qs.question === 'object') ? <span dangerouslySetInnerHTML={{__html: qs.question }} /> : qs.question.qs}
+                    <MarkdownContent>{!(typeof qs.question === 'object') ? qs.question : qs.question.qs}</MarkdownContent>
                   </div>
                   <div className="bookmark-badges">
                     <span className="bookmark-badge">{formatName(qs.subject)}</span>

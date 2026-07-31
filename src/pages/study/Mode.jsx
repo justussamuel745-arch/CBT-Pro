@@ -1,11 +1,6 @@
 import { useState, useEffect, useContext, useRef, memo, useCallback} from 'react'
 import { useNavigate } from 'react-router';
-import Markdown from 'react-markdown'
-import remarkGfm from 'remark-gfm'
-import remarkMath from 'remark-math'
-import rehypeKatex from 'rehype-katex'
-import rehypeRaw from 'rehype-raw'
-import 'katex/dist/katex.min.css' // don't forget CSS or formulas won't style
+import { MarkdownContent } from '../../components/MarkdownContent';
 import UserContext from '../../context/UserContext.jsx';
 import { Calculator } from '../../components/Calculator.jsx'
 import { AstraAIModal } from '../../components/AstraAIModal'
@@ -58,6 +53,7 @@ export function Mode() {
   const [toggleBmk, setToggleBmk] = useState(false)
   const [currentBmkCheck, setCurrentBmkCheck] = useState(null)
   const [aiExplanations, setAiExplantions] = useState([])
+  const [loading, setLoading] = useState(true)
   
   /*============= AI Modal ===========*/
   const [chatMessages, setChatMessages] = useState([{
@@ -173,6 +169,8 @@ export function Mode() {
         } else {
           setModal(err.error)
         }
+      } finally {
+        setLoading(false)
       }
     }
     fetchStudyQuestions()
@@ -284,7 +282,7 @@ export function Mode() {
    setOpen(false) 
   },[setOpen])
   
-  if (questions.length === 0){
+  if (loading){
     return <Loading />
   }
   
@@ -395,24 +393,18 @@ export function Mode() {
                     
                       <Image id={ques.id} ext={ques.image?.url} />
                       
-                      {typeof ques.question === 'object' && ques.question?.instruction && <><strong>{ques.question.instruction}</strong><br /></>}
+                      {typeof ques.question === 'object' && ques.question?.instruction && <><strong><MarkdownContent>{ques.question.instruction}</MarkdownContent></strong><br /></>}
                       {typeof ques.question === 'object' && ques.question?.comprehension && <><strong dangerouslySetInnerHTML={{ __html: ques.question.comprehension }} /><br /></>}
                       {ques.question?.qs 
                         ? (
-                            <Markdown 
-                              remarkPlugins={[remarkGfm, remarkMath]} // 1. Markdown extensions first
-                              rehypePlugins={[rehypeRaw, rehypeKatex]} // 2. HTML parser, then formula renderer
-                            >
+                            <MarkdownContent>
                               {ques.question.qs}
-                            </Markdown>
+                            </MarkdownContent>
                           )
                         : (
-                            <Markdown 
-                              remarkPlugins={[remarkGfm, remarkMath]} // 1. Markdown extensions first
-                              rehypePlugins={[rehypeRaw, rehypeKatex]} // 2. HTML parser, then formula renderer
-                            >
+                            <MarkdownContent >
                               {ques.question}
-                            </Markdown>
+                            </MarkdownContent>
                           )
                       }
                     </div>
@@ -441,7 +433,11 @@ export function Mode() {
                             <div className={`mode-option ${classBadge()}`}>
                               <div className="mode-option-key">{opt.id.toUpperCase()}</div>
                               <div className="mode-option-content">
-                                <div className="mode-option-text" dangerouslySetInnerHTML={{__html: opt.option}} />
+                                <div className="mode-option-text">
+                                  <MarkdownContent>
+                                    { opt.option }
+                                  </MarkdownContent>
+                                </div>
                               </div>
                             </div>
                           </div>

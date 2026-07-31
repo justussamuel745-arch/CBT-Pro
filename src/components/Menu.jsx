@@ -51,7 +51,7 @@ let MENU_SECTIONS = [
 
 export const Menu = memo(function Menu({ menuOpen, setMenuOpen, isAdmin }) {
 
-  if (!isAdmin){
+  if (!isAdmin) {
     MENU_SECTIONS = MENU_SECTIONS.filter(m => m.title !== 'Admin Control')
   }
   return (
