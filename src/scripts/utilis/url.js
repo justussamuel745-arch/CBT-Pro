@@ -1,2 +1,2 @@
-//export const url = 'https://cbt-pro-backend.onrender.com'
-export const url = 'http://localhost:3000'
+export const url = 'https://cbt-pro-backend.onrender.com'
+//export const url = 'http://localhost:3000'
