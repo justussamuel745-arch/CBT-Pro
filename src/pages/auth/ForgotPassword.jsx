@@ -4,7 +4,7 @@ import { fetchDataPost } from '../../scripts/utilis/fetch'
 import { ToastProvider, useToast, CSS } from '../../components/NotificationSystem'
 import './ForgotPassword.css'
 
-function ForgotPwdWithNotifications() {
+function ForgotPasswordInner() {
   const toast = useToast()
   const [email, setEmail] = useState('')
   const [error, setError] = useState(null)
@@ -95,7 +95,7 @@ function ForgotPwdWithNotifications() {
             </form>
 
             <div className="forget-back">
-              Remember your password? <Link to="/signin">Back to Login</Link>
+              Remember your password? <Link to="/auth">Back to Login</Link>
             </div>
           </div>
 
@@ -118,10 +118,10 @@ function ForgotPwdWithNotifications() {
   )
 }
 
-export default function ForgotPassword(){
+export function ForgotPassword(){
   return (
     <ToastProvider position="top-right">
-      <ForgotPwdWithNotifications />
+      <ForgotPasswordInner />
     </ToastProvider>
   )
 }

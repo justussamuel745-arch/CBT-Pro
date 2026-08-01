@@ -5,7 +5,7 @@ import { ToastProvider, useToast, CSS } from '../../components/NotificationSyste
 import { Message } from '../../components/Message'
 import './ResetPassword.css';
 
-function ResetPasswordWithNotification() {
+function ResetPasswordInner() {
   const navigate = useNavigate()
   const toast = useToast()
   const [formData, setFormData] = useState({ password: '', confirmPassword: '' })
@@ -85,8 +85,9 @@ function ResetPasswordWithNotification() {
   }
 
   if (!resetToken) {
-    return <Navigate to="/forgot-password" />
+    return <Navigate to="/auth/forgot-password" />
   }
+  
   return (
     <>
       <title>Reset Password - CBT Pro</title>
@@ -98,7 +99,7 @@ function ResetPasswordWithNotification() {
           </div>
         </div>
       </nav>
-
+      
       <div className="reset-wrapper" ref={formElementRef}>
         <div className="reset-card">
 
@@ -153,7 +154,7 @@ function ResetPasswordWithNotification() {
           </div>
         </div>
       </div>
-
+      
       {
         success && <Message title="Password Reset!" message="Your password has been updated successfully. You can now login with your new password." action={() => navigate('/signin')} btnLabel="Sign In" />
       }
@@ -164,7 +165,7 @@ function ResetPasswordWithNotification() {
 export default function ResetPassword() {
   return (
     <ToastProvider position="top-right">
-      <ResetPasswordWithNotification />
+      <ResetPasswordInner />
     </ToastProvider>
   );
 }

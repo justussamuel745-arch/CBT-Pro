@@ -6,8 +6,6 @@ import { HomePage } from './pages/HomePage';
 import { Study } from './pages/study/Study';
 import { Simulator } from './pages/simulator/Simulator';
 import { About } from './pages/About';
-import { SignUp } from './pages/SignUp';
-import { SignIn } from './pages/SignIn';
 import { Feedback } from './pages/Feedback';
 import { Legal } from './pages/Legal';
 import { Payment } from './pages/Payment';
@@ -19,17 +17,17 @@ import { Invalid } from './components/Invalid';
 import { Syllabus } from './pages/Syllabus';
 import { Dashboard } from './pages/Dashboard';
 import PWAUpdateToast from './components/PWAUpdateToast';
+import Auth  from './pages/auth/Auth';
 import { fetchDataGet, fetchUserInfo, fetchHistory } from './scripts/utilis/fetch';
 import { on } from './scripts/utilis/submitHistory';
-import { getUser } from './hooks/services/indexedDB/users';
+import { getUser, deleteUser } from './hooks/services/indexedDB/users';
 import { getHistory } from './hooks/services/indexedDB/history';
+import { deleteAllQuestions } from './hooks/services/indexedDB/questions';
 import { decrypt } from './scripts/utilis/crypto';
 import './App.css';
 
 const Games = lazy(() => import('./pages/games/Games.jsx'));
 const Delete = lazy(() => import('./pages/Delete.jsx'));
-const ResetPassword = lazy(() => import('./pages/auth/ResetPassword.jsx'));
-const ForgotPassword = lazy(() => import('./pages/auth/ForgotPassword.jsx'));
 const Admin = lazy(() => import('./pages/admin/Admin.jsx'));
 
 function App() {
@@ -51,6 +49,9 @@ function App() {
     const refresh = async () => {
       const response = await fetchDataGet('/api/refresh');
       const d = decrypt(response.data);
+      if (d?.activationExpired){
+        await deleteAllQuestions()
+      }
       setToken(d.accessToken);
       setIsActivated(d.isActivated);
       setIsAdmin(d.isAdmin);
@@ -101,7 +102,10 @@ function App() {
         const accessToken = await refresh();
         await on(accessToken, setToken, setHistoryData);
       } catch (err) {
-        console.error('Error refreshing session:', err);
+        console.error('Error refreshing session:', err.error);
+        if (err.status === 401){
+          deleteUser()
+        }
       } finally {
         setIsLoading(false);
       }
@@ -121,25 +125,8 @@ function App() {
     <>
       <Routes>
         <Route index element={token ? <Dashboard /> : <HomePage />} />
+        <Route path="/auth/*" element={<Auth />} />
         <Route path="/about" element={<About />} />
-        <Route path="/signup" element={<SignUp />} />
-        <Route path="/signin" element={<SignIn />} />
-        <Route
-          path="/forgot-password"
-          element={
-            <Suspense fallback={<Loading />}>
-              <ForgotPassword />
-            </Suspense>
-          }
-        />
-        <Route
-          path="/reset-password"
-          element={
-            <Suspense fallback={<Loading />}>
-              <ResetPassword />
-            </Suspense>
-          }
-        />
         <Route path="/legal" element={<Legal />} />
 
         <Route element={<ProtectedRoutes />}>

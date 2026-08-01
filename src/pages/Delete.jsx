@@ -71,7 +71,7 @@ function DeleteInner() {
 
       setBtnText("Deleting...");
       setToken(null)
-      navigate('/signup')
+      navigate('/auth/signup')
 
     } catch (err) {
       if (!err.status) {

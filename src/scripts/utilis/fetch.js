@@ -34,7 +34,7 @@ export async function fetchDataGet(path) {
 
   const data = response.json().catch(() => ({}))
   if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.status} `);
+    throw { status: response.status, error: `HTTP error! status: ${response.status} `}
   }
   return data
 }

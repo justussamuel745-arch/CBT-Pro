@@ -26,8 +26,8 @@ export function HomePage() {
                 </>
               ): 
               ( <>
-                  <Link to="/signin" className="btn btn-outline">Sign In</Link>
-                  <Link to="/signup" className="btn btn-primary">Sign Up</Link>
+                  <Link to="/auth" className="btn btn-outline">Sign In</Link>
+                  <Link to="/auth/signup" className="btn btn-primary">Sign Up</Link>
                 </>
               ) 
             }
@@ -159,7 +159,7 @@ export function HomePage() {
           <div className="cta">
             <h2>Your 300+ Score Starts Today</h2>
             <p>Stop guessing. Start practicing. Everything you need to prepare like a top JAMB candidate.</p>
-              <Link to="/signup" className="btn btn-hero">Create Free Account</Link> 
+              <Link to="/auth/signup" className="btn btn-hero">Create Free Account</Link> 
           </div>
         </section>
       </main>
