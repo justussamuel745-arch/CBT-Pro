@@ -38,6 +38,7 @@ export function Mode() {
   const [systemUpdate, setSystemUpdate] = useState(0)
   const [isActive, setIsActive] = useState(true)
   const [allUnansweredQsLength, setAllUnansweredQsLength] = useState(0)
+  const [loading, setLoading] = useState(true)
   
   // Modals
   const [modal, setModal] = useState(null);
@@ -76,32 +77,18 @@ export function Mode() {
   }, []);
   
   useEffect(() => {
-  let isBlocked = false
-  window.history.pushState(null, '', window.location.pathname)
-
-  const handlePopState = () => {
-    if (isBlocked) {
-      // ignore rapid double back
-      window.history.pushState(null, '', window.location.pathname)
-      return
-    }
-
-    isBlocked = true
-    const leave = window.confirm('Leave exam? Your answers will not be submitted.')
-
-    if (leave) {
-      skipAutoSubmit.current = true
-      navigate('/simulator')
-    } else {
-      // replace instead of push to avoid stacking states
-      window.history.replaceState(null, '', window.location.pathname)
-      setTimeout(() => { isBlocked = false }, 100) // unlock after stack settles
-    }
-  }
-
-  window.addEventListener('popstate', handlePopState)
-  return () => window.removeEventListener('popstate', handlePopState)
-}, [navigate])
+    window.history.pushState({ examGuard: true }, '', window.location.pathname);
+  
+    const handlePopState = () => {
+      // Always immediately re-push — this neutralizes every back press,
+      // no matter how fast or how many times it's pressed.
+      window.history.pushState({ examGuard: true }, '', window.location.pathname);
+      setModal('leave_exam');
+    };
+  
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
   
   const updateProgresslist = useCallback((data, currentSub) => {
     const totalQsArr = []
@@ -217,6 +204,8 @@ export function Mode() {
         alert(err.message)
         console.error('Error:', err.message);
         navigate('/simulator');
+      } finally {
+        setLoading(false)
       }
     }
     fetchQuestions();
@@ -455,8 +444,8 @@ export function Mode() {
   }
   
   if (!isActive) return <Loading />
-  // if (!examData) return <Loading />
-  // uncomment those line of code after development since strict mode is making the useEffect run twice
+  if (!loading) return <Loading />
+  // comment the loading check statement above during developement
 
   return (
     <>
@@ -651,6 +640,25 @@ export function Mode() {
                 }
                 primaryLabel="Submit Exam"
                 onPrimary={() => setIsActive(prev => !prev)}
+                onClose={closeModal}
+              />
+            </div>
+          </div>
+        )}
+        {modal === 'leave_exam' && (
+          <div className="ns-overlay" onClick={closeModal}>
+            <div onClick={e => e.stopPropagation()} style={{ width: '100%', display: 'flex', justifyContent: 'center', padding: '0 1rem' }}>
+              <ModalStripe
+                type="warning"
+                title="Leave Exam?"
+                body="Your answers will not be submitted if you leave now."
+                primaryLabel="Leave Exam"
+                secondaryLabel="Stay"
+                onPrimary={() => {
+                  skipAutoSubmit.current = true;
+                  closeModal();
+                  navigate('/simulator');
+                }}
                 onClose={closeModal}
               />
             </div>
