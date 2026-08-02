@@ -444,7 +444,7 @@ export function Mode() {
   }
   
   if (!isActive) return <Loading />
-  if (!loading) return <Loading />
+  if (loading) return <Loading />
   // comment the loading check statement above during developement
 
   return (
