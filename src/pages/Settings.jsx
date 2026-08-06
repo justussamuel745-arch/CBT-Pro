@@ -6,7 +6,7 @@ import { ToastProvider, useToast, ModalCentered, ModalDestruct, CSS } from '../c
 import { Ic } from '../scripts/utilis/Ic'
 import defaultAvatar from '../assets/images/avatar.jpg';
 import { saveUser, deleteUser } from '../hooks/services/indexedDB/users';
-import { deleteAllQuestions } from '../hooks/services/indexedDB/questions';
+import { deleteAllQuestions, saveQuestions } from '../hooks/services/indexedDB/questions';
 import { clearImages } from '../hooks/services/indexedDB/images';
 import { encrypt, decrypt } from '../scripts/utilis/crypto';
 import './Settings.css';
@@ -458,6 +458,17 @@ function SettingsInner() {
         if (res.ok) {
           blob = await res.blob();
         }
+      }
+      
+      if (data?.pendingClientUpdates && data?.pendingClientUpdates.length >= 1){
+        await saveQuestions(data.pendingClientUpdates.map(q => (
+          {
+            ...q,
+            correctAnswers: encrypt(q.correctAnswers),
+            explanation: encrypt(q.explanation)
+          }
+        )))
+        delete data.pendingClientUpdates
       }
       setUserInfo(u => ({
         ...u,
