@@ -1,0 +1,402 @@
+ .ntf-page * { box-sizing: border-box; scrollbar-width: none; -ms-overflow-style: none; }
+.ntf-page *::-webkit-scrollbar { display: none; }
+
+/* =====================================
+LOCAL ADDITIONS — only for gaps the shared :root doesn't cover.
+Everything else below reuses --primary, --accent, --success, --danger,
+--c-info, --c-success-light, --c-error-light, --text-muted, --border, etc.
+======================================*/
+.ntf-page {
+  --ntf-premium: #7c3aed;
+  --ntf-premium-bg: #ede9fe;
+  --ntf-cyan-bg: #cffafe;
+  --ntf-unread-border: #c7d2fe;
+}
+
+.ntf-page {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  max-width: 720px;
+  margin: 0 auto;
+  min-height: 100vh;
+  padding: 0 0 40px;
+}
+
+/* =====================================
+TOPBAR — flat gradient header (no rounded bottom corners) + a
+separate underline tab bar beneath it. Both stick together.
+======================================*/
+.ntf-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.ntf-header {
+  background: var(--gradient);
+  padding: 16px 20px;
+  color: #fff;
+}
+
+.ntf-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.ntf-header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.ntf-back-btn {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(255,255,255,0.28);
+  background: rgba(255,255,255,0.14);
+  color: #fff;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.ntf-back-btn:hover { background: rgba(255,255,255,0.24); }
+.ntf-back-btn:active { transform: translateX(-2px); }
+
+.ntf-bell-wrap {
+  position: relative;
+  flex-shrink: 0;
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  background: rgba(255,255,255,0.16);
+  border-radius: var(--radius-sm);
+}
+
+.ntf-bell-icon { font-size: 1rem; }
+
+.ntf-bell-ping {
+  position: absolute; top: -3px; right: -3px;
+  width: 10px; height: 10px; border-radius: 50%;
+  background: var(--danger); opacity: 0.75;
+  animation: ntf-ping 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+@keyframes ntf-ping {
+  0% { transform: scale(1); opacity: 0.75; }
+  75%, 100% { transform: scale(2.2); opacity: 0; }
+}
+
+.ntf-bell-badge {
+  position: absolute; top: -6px; right: -6px;
+  min-width: 17px; height: 17px; padding: 0 4px;
+  border-radius: 999px; background: var(--danger);
+  border: 2px solid var(--primary); color: #fff;
+  font-size: 0.6rem; font-weight: 800;
+  display: grid; place-items: center;
+}
+
+.ntf-header h1 {
+  font-size: 1.2rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+
+.ntf-header-sub {
+  margin-top: 2px;
+  font-size: 0.78rem;
+  color: rgba(255,255,255,0.85);
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ntf-header-sub strong { color: #fff; font-weight: 800; }
+
+.ntf-icon-btn {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(255,255,255,0.28);
+  background: rgba(255,255,255,0.14);
+  color: #fff;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.ntf-icon-btn:hover { background: rgba(255,255,255,0.24); }
+.ntf-icon-btn:active { transform: scale(0.94); }
+
+/* underline tab bar — sits on a plain surface below the gradient */
+.ntf-tabs {
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
+  background: var(--card);
+  border-bottom: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  padding: 0 16px;
+}
+
+.ntf-tab {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 10px;
+  border: none;
+  border-bottom: 2px solid transparent;
+  background: none;
+  color: var(--text-muted);
+  font-family: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.ntf-tab i { font-size: 0.75rem; }
+
+.ntf-tab.active {
+  color: var(--primary);
+  border-bottom-color: var(--primary);
+}
+
+.ntf-tab-count {
+  background: var(--bg);
+  border-radius: 999px;
+  padding: 1px 7px;
+  font-size: 0.68rem;
+  color: var(--text-muted);
+}
+
+.ntf-tab.active .ntf-tab-count {
+  background: var(--primary-light);
+  color: var(--primary-dark);
+}
+
+/* body content */
+.ntf-body { padding: 22px 20px 0; }
+
+.ntf-group-label {
+  font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--text-muted); margin: 22px 4px 10px;
+}
+.ntf-group-label:first-child { margin-top: 0; }
+
+.ntf-list { display: flex; flex-direction: column; gap: 10px; }
+
+/* =====================================
+CARD
+======================================*/
+.ntf-card {
+  position: relative;
+  display: flex;
+  gap: 13px;
+  align-items: flex-start;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 15px 40px 15px 16px;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.ntf-card:hover { box-shadow: var(--shadow); border-color: var(--ntf-unread-border); transform: translateY(-1px); }
+.ntf-card:active { transform: translateY(0) scale(0.995); }
+
+.ntf-card.unread { background: var(--primary-light); border-color: var(--ntf-unread-border); }
+
+.ntf-card.unread::before {
+  content: '';
+  position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+  background: var(--gradient);
+  border-radius: 0 4px 4px 0;
+}
+
+.ntf-card-icon {
+  flex-shrink: 0;
+  width: 42px; height: 42px; border-radius: 12px;
+  display: grid; place-items: center;
+  font-size: 1rem; color: #fff;
+  box-shadow: 0 4px 10px -4px rgba(15, 23, 42, 0.35);
+}
+
+.ntf-card-main { flex: 1; min-width: 0; }
+
+.ntf-card-eyebrow {
+  display: flex; align-items: center; gap: 7px;
+  font-size: 0.7rem; font-weight: 700;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+
+.ntf-eyebrow-type {
+  display: inline-flex; align-items: center; gap: 5px;
+  text-transform: uppercase; letter-spacing: 0.04em;
+}
+
+.ntf-eyebrow-type i { font-size: 0.68rem; }
+.ntf-eyebrow-sep { color: var(--border); }
+.ntf-eyebrow-time { font-weight: 600; color: var(--text-muted); text-transform: none; letter-spacing: 0; }
+
+.ntf-eyebrow-new {
+  margin-left: 2px;
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: var(--c-error-light);
+  color: var(--danger-dark);
+  font-size: 0.62rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.ntf-card-title {
+  font-size: 0.94rem;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.35;
+}
+
+/* Expand/collapse — unchanged behavior: fixed collapsed height + fade mask */
+.ntf-message-wrap {
+  position: relative;
+  max-height: 2.9em;
+  overflow: hidden;
+  transition: max-height 0.35s ease;
+  margin-top: 3px;
+}
+
+.ntf-message-wrap.expanded { max-height: 600px; }
+
+.ntf-card-message {
+  font-size: 0.83rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.ntf-message-fade {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 1.5em;
+  background: linear-gradient(to bottom, transparent, var(--card));
+  pointer-events: none;
+}
+
+.ntf-card.unread .ntf-message-fade {
+  background: linear-gradient(to bottom, transparent, var(--primary-light));
+}
+
+.ntf-card-controls {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 9px;
+  flex-wrap: wrap;
+}
+
+.ntf-expand-toggle {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 0; border: none; background: none;
+  color: var(--primary); font-family: inherit;
+  font-size: 0.76rem; font-weight: 700; cursor: pointer;
+}
+
+.ntf-expand-toggle:hover { color: var(--primary-dark); text-decoration: underline; }
+.ntf-expand-toggle i { font-size: 0.62rem; transition: transform 0.15s ease; }
+.ntf-expand-toggle i.flipped { transform: rotate(180deg); }
+
+/* link — simple, clean pill */
+.ntf-card-link {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  margin-top: 8px;
+  margin-bottom: 8px;
+  background: var(--primary-light);
+  color: var(--primary-dark);
+  font-size: 0.76rem; font-weight: 700;
+  text-decoration: none;
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.ntf-card-link:hover { background: #e0e3ff; }
+.ntf-card-link:active { transform: scale(0.97); }
+.ntf-card-link i { font-size: 0.66rem; }
+.ntf-card-link i:last-child { transition: transform 0.15s ease; }
+.ntf-card-link:hover i:last-child { transform: translateX(2px); }
+
+/* delete — unchanged behavior, floating corner button */
+.ntf-card-delete {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 24px;
+  height: 24px;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  font-size: 0.7rem;
+  opacity: 0;
+  transition: opacity 0.15s ease, background 0.15s ease, color 0.15s ease;
+}
+
+.ntf-card:hover .ntf-card-delete,
+.ntf-card:focus-within .ntf-card-delete { opacity: 1; }
+
+.ntf-card-delete:hover { background: var(--c-error-light); color: var(--danger); }
+
+/* empty state */
+.ntf-empty { text-align: center; padding: 70px 20px 40px; color: var(--text-muted); }
+.ntf-empty i { font-size: 2.4rem; color: var(--border); margin-bottom: 14px; }
+.ntf-empty h3 { font-size: 1rem; color: var(--text); font-weight: 700; margin-bottom: 5px; }
+.ntf-empty p { font-size: 0.85rem; }
+
+/* toast */
+.ntf-toast {
+  position: fixed; left: 50%; bottom: 24px; transform: translate(-50%, 20px);
+  background: var(--text); color: #fff;
+  padding: 11px 18px; border-radius: 999px;
+  font-size: 0.82rem; font-weight: 600;
+  display: flex; align-items: center; gap: 8px;
+  box-shadow: var(--shadow-lg);
+  opacity: 0; pointer-events: none;
+  transition: all 0.25s ease; z-index: 100;
+}
+
+.ntf-toast.show { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; }
+.ntf-toast i { color: var(--success); }
+
+@media (max-width: 480px) {
+  .ntf-header { padding: 14px 16px; }
+  .ntf-body { padding: 18px 16px 0; }
+  .ntf-header h1 { font-size: 1.05rem; }
+  .ntf-header-sub { max-width: 160px; }
+  .ntf-bell-wrap { width: 34px; height: 34px; }
+  .ntf-back-btn, .ntf-icon-btn { width: 32px; height: 32px; }
+  .ntf-card { padding: 13px 36px 13px 13px; }
+  .ntf-card-icon { width: 38px; height: 38px; font-size: 0.9rem; }
+  .ntf-card-delete { top: 8px; right: 8px; }
+}

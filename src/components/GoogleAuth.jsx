@@ -5,7 +5,7 @@ import { url } from '../scripts/utilis/url';
 import UserContext from '../context/UserContext.jsx';
 import { Loading } from './Loading';
 import { fetchUserInfo, fetchHistory } from '../scripts/utilis/fetch.js';
-import { useToast } from '../pages/SignIn';
+import { useToast } from '../pages/auth/Signin';
 import { decrypt } from '../scripts/utilis/crypto';
 import './GoogleAuth.css';
 

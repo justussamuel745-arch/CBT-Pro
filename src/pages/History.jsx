@@ -36,7 +36,7 @@ const ExpensiveHistoryModal = memo(({modalInfo, setModalInfo, getScoreClass, for
 
 
                 return (
-                  <div key={item._id}>
+                  <div key={item.testId}>
                     <div className="history-modal-header">
                       <h2>{item.title}</h2>
                       <div className="history-modal-date">{formatDate(item.createdAt)}</div>
@@ -91,6 +91,8 @@ function HistoryInner() {
           setHistoryData([])
           return
         }
+        
+        setHistoryData(data)
       } catch (err) {
         console.error('Error:', err);
         toast.push({
@@ -102,15 +104,6 @@ function HistoryInner() {
     }
     if (!historyData){
       fetchHistory()
-    }
-    
-    const unsavedHistory = decrypt(JSON.parse(localStorage.getItem('unsavedHistory')))
-    if (unsavedHistory && Array.isArray(unsavedHistory)){
-      toast.push({
-        variant: 'pill',
-        type: 'info',
-        message: 'Connect to sync current results',
-      });
     }
     
     /*========== Inject Notification styles =========*/
@@ -128,7 +121,7 @@ function HistoryInner() {
   }, [])
 
   function viewDetails(id) {
-    setModalInfo([historyData.find(h => h._id === id)])
+    setModalInfo([historyData.find(h => h.testId === id)])
   }
   
   async function deleteHistory(id){
@@ -147,12 +140,8 @@ function HistoryInner() {
       if (!response.ok){
         throw { status: response.status }
       }
-      const filteredHistory = data?.historyData
-      ? data.historyData
-      : []
-      setHistoryData(filteredHistory)
+      setHistoryData(prev => prev.filter(h => h.testId !== id))
       await removeHistory(id)
-      
     } catch (err) {
       console.error('Error:', err);
     } finally {
@@ -199,7 +188,7 @@ function HistoryInner() {
             const subjects = [...item.subjects]
             const subjectsPreview = subjects.splice(0, 3).join(', ') + (subjects.length > 3 ? '...' : '')
             return (
-              <div className="history-card" key={item._id}>
+              <div className="history-card" key={item.testId}>
                 <div className="history-card-top">
                   <div>
                     <div className="history-card-title">{item.title}</div>
@@ -219,10 +208,10 @@ function HistoryInner() {
                 <div className="history-subjects-preview">{subjectsPreview}</div>
 
                 <div className="history-card-actions">
-                  <button className="btn btn-outline history-btn-sm" onClick={() => viewDetails(item._id)}>View Details</button>
-                  <button className="btn btn-danger history-btn-sm" onClick={() => deleteHistory(item._id)} disabled={disable && item._id === disable ? true : false} style={{
-                    opacity: `${disable && item._id === disable ? '0.5' : '1'}`
-                  }}>{disable && item._id === disable ? 'Deleting...' : 'Delete'}</button>
+                  <button className="btn btn-outline history-btn-sm" onClick={() => viewDetails(item.testId)}>View Details</button>
+                  <button className="btn btn-danger history-btn-sm" onClick={() => deleteHistory(item.testId)} disabled={disable && item.testId === disable ? true : false} style={{
+                    opacity: `${disable && item.testId === disable ? '0.5' : '1'}`
+                  }}>{disable && item.testId === disable ? 'Deleting...' : 'Delete'}</button>
                 </div>
               </div>
             )

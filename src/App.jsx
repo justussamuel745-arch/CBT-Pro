@@ -18,6 +18,7 @@ import { Syllabus } from './pages/Syllabus';
 import { Dashboard } from './pages/Dashboard';
 import PWAUpdateToast from './components/PWAUpdateToast';
 import Auth  from './pages/auth/Auth';
+import Notifications  from './pages/Notifications';
 import { fetchDataGet, fetchUserInfo, fetchHistory } from './scripts/utilis/fetch';
 import { on } from './scripts/utilis/submitHistory';
 import { getUser, deleteUser } from './hooks/services/indexedDB/users';
@@ -57,7 +58,7 @@ function App() {
       setIsAdmin(d.isAdmin);
       await Promise.all([
         fetchUserInfo(d.accessToken, setUserInfo, setProfileFields),
-        fetchHistory(d.accessToken, setHistoryData),
+        fetchHistory(d.accessToken, setToken, setHistoryData),
       ]);
       return d.accessToken;
     };
@@ -100,7 +101,6 @@ function App() {
       }
       try {
         const accessToken = await refresh();
-        await on(accessToken, setToken, setHistoryData);
       } catch (err) {
         console.error('Error refreshing session:', err.error);
         if (err.status === 401){
@@ -130,6 +130,7 @@ function App() {
         <Route path="/legal" element={<Legal />} />
 
         <Route element={<ProtectedRoutes />}>
+          <Route path="/notifications" element={<Notifications />} />
           <Route path="/study/*" element={<Study />} />
           <Route path="/simulator/*" element={<Simulator />} />
           <Route path="/feedback" element={<Feedback />} />

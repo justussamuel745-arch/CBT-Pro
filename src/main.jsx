@@ -2,7 +2,8 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { BrowserRouter } from 'react-router'
-import UserProvider from './context/UserProvider.jsx'
+import UserProvider from './context/UserProvider.jsx';
+import { NotificationProvider } from './context/NotificationContext';
 import { registerSW } from "virtual:pwa-register";
 import './index.css'
 import App from './App.jsx'
@@ -23,9 +24,11 @@ createRoot(document.getElementById('root')).render(
     <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}
     >
       <UserProvider>
-        <BrowserRouter>
-          <App />
-        </BrowserRouter>
+        <NotificationProvider>
+          <BrowserRouter>
+            <App />
+          </BrowserRouter>
+        </NotificationProvider>
       </UserProvider>
     </GoogleOAuthProvider>
   </StrictMode>

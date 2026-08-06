@@ -6,7 +6,7 @@
 */
 
 const DB_NAME = "CBTPro";
-const DB_VERSION = 5;
+const DB_VERSION = 9;
 
 export function openDB() {
   return new Promise((resolve, reject) => {
@@ -72,7 +72,7 @@ export function openDB() {
       // history store
       if (!db.objectStoreNames.contains("history")) {
         const historyStore = db.createObjectStore("history", {
-          keyPath: "_id",
+          keyPath: "testId",
         });
 
         historyStore.createIndex("createdAt", "createdAt", {
@@ -121,6 +121,126 @@ export function openDB() {
           "subject_league_level",
           ["subject", "league", "level"],
           { unique: false }
+        );
+      }
+
+      // Notifications Store
+      if (!db.objectStoreNames.contains("notifications")) {
+        const notificationsStore = db.createObjectStore(
+          "notifications",
+          {
+            keyPath: "_id",
+          }
+        );
+
+        // Single-field indexes
+        notificationsStore.createIndex(
+          "userId",
+          "userId",
+          {
+            unique: false,
+          }
+        );
+
+        notificationsStore.createIndex(
+          "isRead",
+          "isRead",
+          {
+            unique: false,
+          }
+        );
+
+        notificationsStore.createIndex(
+          "createdAt",
+          "createdAt",
+          {
+            unique: false,
+          }
+        );
+
+        // Compound indexes
+        notificationsStore.createIndex(
+          "userId_createdAt",
+          ["userId", "createdAt"],
+          {
+            unique: false,
+          }
+        );
+
+        notificationsStore.createIndex(
+          "userId_isRead",
+          ["userId", "isRead"],
+          {
+            unique: false,
+          }
+        );
+      }
+
+      // Notification Queue Store
+      if (!db.objectStoreNames.contains("notificationQueue")) {
+        const queueStore = db.createObjectStore(
+          "notificationQueue",
+          {
+            keyPath: "id",
+          }
+        );
+
+        // Single-field indexes
+        queueStore.createIndex(
+          "userId",
+          "userId",
+          {
+            unique: false,
+          }
+        );
+
+        queueStore.createIndex(
+          "notificationId",
+          "notificationId",
+          {
+            unique: false,
+          }
+        );
+
+        queueStore.createIndex(
+          "action",
+          "action",
+          {
+            unique: false,
+          }
+        );
+
+        queueStore.createIndex(
+          "status",
+          "status",
+          {
+            unique: false,
+          }
+        );
+
+        queueStore.createIndex(
+          "createdAt",
+          "createdAt",
+          {
+            unique: false,
+          }
+        );
+
+        // Compound indexes
+        queueStore.createIndex(
+          "userId_status",
+          ["userId", "status"],
+          {
+            unique: false,
+          }
+        );
+
+        queueStore.createIndex(
+          "userId_action",
+          ["userId", "action"],
+          {
+            unique: false,
+          }
         );
       }
     };

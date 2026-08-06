@@ -1,7 +1,9 @@
 import { url } from './url.js'
 import { saveUser } from '../../hooks/services/indexedDB/users.js';
-import { saveHistory } from '../../hooks/services/indexedDB/history.js';
-import { decrypt, encrypt } from './crypto.js'
+import { saveHistory, clearHistory } from '../../hooks/services/indexedDB/history.js';
+import { decrypt, encrypt } from './crypto.js';
+import { saveQuestions } from '../../hooks/services/indexedDB/questions.js'
+import { on } from './submitHistory.js';
 
 export async function fetchDataPost(formData, path) {
   const response = await fetch(`${url}${path}`, {
@@ -95,6 +97,19 @@ export async function fetchUserInfo(token, setUserInfo, setProfileFields) {
   }
   const data = decrypt(d.data)
   
+  if (data?.pendingClientUpdates && data.pendingClientUpdates.length >= 1){
+    const qs = data.pendingClientUpdates.map(q => 
+      ({
+        ...q,
+        correctAnswers: encrypt(q.correctAnswers),
+        explanation: encrypt(q.explanation)
+      })
+    )
+    await saveQuestions(qs)
+    delete data.pendingClientUpdates
+    console.log(data);
+  }
+  
   let blob;
   
   if (data.profilePic){
@@ -127,7 +142,8 @@ export async function fetchUserInfo(token, setUserInfo, setProfileFields) {
   })
 }
 
-export async function fetchHistory(token, setHistoryData) {
+export async function fetchHistory(token, setToken, setHistoryData) {
+  await on(token, setToken, setHistoryData);
   const response = await fetch(`${url}/api/history`, {
     method: 'GET',
     headers: {
@@ -145,10 +161,14 @@ export async function fetchHistory(token, setHistoryData) {
   
   if (response.status === 204){
     setHistoryData([])
+    await clearHistory()
     return
   }
   
   setHistoryData(data)
-  saveHistory(data)
+  await Promise.all([
+    clearHistory(),
+    saveHistory(data)
+  ])
 }
 

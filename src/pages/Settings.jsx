@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useContext, memo} from 'react';
+import { useState, useEffect, useRef, useContext, memo } from 'react';
 import { Link, useNavigate } from 'react-router';
 import UserContext from '../context/UserContext.jsx';
 import { fetchDataGet, fetchWithAuth } from '../scripts/utilis/fetch.js';
@@ -41,14 +41,14 @@ function passwordStrength(pw) {
 // ─────────────────────────────────────────────────────────────
 
 function UserImage({ avatarPreview, userInfo }) {
-    return (
-      <img
-        src={avatarPreview || `${userInfo.blob ? URL.createObjectURL(userInfo.blob) : ''}`}
-        alt="Profile avatar"
-        onError={(e) => { e.target.src = defaultAvatar; }}
-        style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }}
-      />
-    )
+  return (
+    <img
+      src={avatarPreview || `${userInfo.blob ? URL.createObjectURL(userInfo.blob) : ''}`}
+      alt="Profile avatar"
+      onError={(e) => { e.target.src = defaultAvatar; }}
+      style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }}
+    />
+  )
 }
 
 // ─────────────────────────────────────────────────────────────
@@ -76,7 +76,7 @@ const AddPasswordModal = memo(function AddPasswordModal({ userInfo, setUserInfo,
   const [newPwdOnlyLoading, setNewPwdOnlyLoading] = useState(false);
   const [showNewOnly, setShowNewOnly] = useState(false);
   const [showConfirmOnly, setShowConfirmOnly] = useState(false);
-  
+
   const toast = useToast()
 
   function validateNewPwdOnly(p) {
@@ -272,10 +272,10 @@ function SettingsInner() {
 
   // Notification preferences (local-only until backend wired)
   const [prefs, setPrefs] = useState({
-    examReminders: true,
-    creditAlerts: true,
-    productUpdates: false,
-    marketingEmails: false,
+    announcements: true,
+    reminders: true,
+    marketing: false,
+    subscription: true,
   });
 
   // Modals
@@ -298,14 +298,14 @@ function SettingsInner() {
         if (cancelled) return;
         const data = decrypt(d.data)
         let blob;
-  
-        if (data.profilePic){
+
+        if (data.profilePic) {
           const res = await fetch(data.profilePic)
-          if (res.ok){
+          if (res.ok) {
             blob = await res.blob();
           }
         }
-        
+
         setUserInfo({
           ...data,
           blob: blob,
@@ -333,6 +333,7 @@ function SettingsInner() {
     if (!userInfo) {
       fetchUserInfo();
     }
+    setPrefs(prev => userInfo ? ( userInfo?.notificationSettings ?? prev ) : prev)
     return () => { cancelled = true; };
   }, [token, setToken, setProfileFields, setUserInfo]);
 
@@ -405,7 +406,7 @@ function SettingsInner() {
     async function indexDbSave(userInfo) {
       await saveUser(userInfo)
     }
-    
+
     if (!isMounted.current) {
       isMounted.current = true
     } else {
@@ -452,9 +453,9 @@ function SettingsInner() {
       }
       const data = decrypt(d.data)
       let blob;
-      if (data.profilePic !== userInfo.profilePic){
+      if (data.profilePic !== userInfo.profilePic) {
         const res = await fetch(data.profilePic)
-        if (res.ok){
+        if (res.ok) {
           blob = await res.blob();
         }
       }
@@ -563,14 +564,25 @@ function SettingsInner() {
   }
 
   // ── Notification preference toggle ──
-  function togglePref(key) {
-    setPrefs(p => {
-      const next = { ...p, [key]: !p[key] };
-      // Wire this to your backend, e.g.:
-      // fetchWithAuth(token, setToken, '/api/settings/preferences', { method: 'POST', body: JSON.stringify(next) });
+  async function togglePref(key) {
+    if (!navigator.onLine) return toast.push({ type: 'error', title: 'No connection', message: 'Check your internet and try again.' });
+    const next = { ...prefs, [key]: !prefs[key] }
+    try {
+      const response = await fetchWithAuth(token, setToken, '/api/notifications/settings/', { method: 'PATCH', body: JSON.stringify(next) });
+      if (!response.ok){
+        throw { status: response.status }
+      }
+      setPrefs(next)
       toast.push({ type: 'success', title: 'Preference saved', message: 'Your notification settings have been updated.', duration: 2500 });
-      return next;
-    });
+    } catch (err) {
+      if (!err.status){
+        toast.push({ type: 'error', title: 'No connection', message: 'Check your internet and try again.' });
+      } else if (err.status >= 500) {
+        toast.push({ type: 'error', title: 'Server error', message: 'Something went wrong. Please try again later.' });
+      } else {
+        toast.push({ type: 'error', title: 'Update failed', message: 'Failed' });
+      }
+    }
   }
 
   // ── Logout ──
@@ -807,7 +819,7 @@ function SettingsInner() {
                   </div>
                 </form>
               </div>
-              
+
 
               {/* ════════════ SECURITY TAB ════════════ */}
               <div className={`settings-content ${activeTab === 'account' ? 'active' : ''}`}>
@@ -843,154 +855,154 @@ function SettingsInner() {
                   </div>
                 </div>
 
-                  {/* Change password — only for users who signed up with email/password */}
-                  {userInfo.authProvider !== 'google' ? (
-                    <form onSubmit={updatePwd} className="settings-card" noValidate>
-                      <h3 className="settings-card-title">
-                        <span className="settings-card-title-icon"><Ic.Lock /></span>
-                        Change password
-                      </h3>
-                      <p className="settings-card-desc">Use a strong, unique password to keep your account secure</p>
+                {/* Change password — only for users who signed up with email/password */}
+                {userInfo.authProvider !== 'google' ? (
+                  <form onSubmit={updatePwd} className="settings-card" noValidate>
+                    <h3 className="settings-card-title">
+                      <span className="settings-card-title-icon"><Ic.Lock /></span>
+                      Change password
+                    </h3>
+                    <p className="settings-card-desc">Use a strong, unique password to keep your account secure</p>
 
-                      {/* Current password */}
-                      <div className="settings-form-group">
-                        <label className="settings-form-label">Current password</label>
-                        <div className="settings-pwd-wrap">
-                          <input
-                            type={showCurrent ? 'text' : 'password'}
-                            className={`settings-form-input ${pwdErrors.current ? 'settings-input-error' : ''}`}
-                            placeholder="Enter current password"
-                            value={pwd.current}
-                            onChange={e => setPwdField('current', e.target.value)}
-                            autoComplete="current-password"
-                          />
-                          <button type="button" className="settings-pwd-toggle" onClick={() => setShowCurrent(p => !p)}>
-                            {showCurrent ? <Ic.EyeOff /> : <Ic.Eye />}
-                          </button>
-                        </div>
-                        {pwdErrors.current && <p className="settings-form-error"><Ic.X />{pwdErrors.current}</p>}
+                    {/* Current password */}
+                    <div className="settings-form-group">
+                      <label className="settings-form-label">Current password</label>
+                      <div className="settings-pwd-wrap">
+                        <input
+                          type={showCurrent ? 'text' : 'password'}
+                          className={`settings-form-input ${pwdErrors.current ? 'settings-input-error' : ''}`}
+                          placeholder="Enter current password"
+                          value={pwd.current}
+                          onChange={e => setPwdField('current', e.target.value)}
+                          autoComplete="current-password"
+                        />
+                        <button type="button" className="settings-pwd-toggle" onClick={() => setShowCurrent(p => !p)}>
+                          {showCurrent ? <Ic.EyeOff /> : <Ic.Eye />}
+                        </button>
                       </div>
+                      {pwdErrors.current && <p className="settings-form-error"><Ic.X />{pwdErrors.current}</p>}
+                    </div>
 
-                      {/* New password */}
-                      <div className="settings-form-group">
-                        <label className="settings-form-label">New password</label>
-                        <div className="settings-pwd-wrap">
-                          <input
-                            type={showNew ? 'text' : 'password'}
-                            className={`settings-form-input ${pwdErrors.newPwd ? 'settings-input-error' : ''}`}
-                            placeholder="Enter new password"
-                            value={pwd.newPwd}
-                            onChange={e => setPwdField('newPwd', e.target.value)}
-                            autoComplete="new-password"
-                          />
-                          <button type="button" className="settings-pwd-toggle" onClick={() => setShowNew(p => !p)}>
-                            {showNew ? <Ic.EyeOff /> : <Ic.Eye />}
-                          </button>
-                        </div>
-                        {pwdErrors.newPwd && <p className="settings-form-error"><Ic.X />{pwdErrors.newPwd}</p>}
+                    {/* New password */}
+                    <div className="settings-form-group">
+                      <label className="settings-form-label">New password</label>
+                      <div className="settings-pwd-wrap">
+                        <input
+                          type={showNew ? 'text' : 'password'}
+                          className={`settings-form-input ${pwdErrors.newPwd ? 'settings-input-error' : ''}`}
+                          placeholder="Enter new password"
+                          value={pwd.newPwd}
+                          onChange={e => setPwdField('newPwd', e.target.value)}
+                          autoComplete="new-password"
+                        />
+                        <button type="button" className="settings-pwd-toggle" onClick={() => setShowNew(p => !p)}>
+                          {showNew ? <Ic.EyeOff /> : <Ic.Eye />}
+                        </button>
+                      </div>
+                      {pwdErrors.newPwd && <p className="settings-form-error"><Ic.X />{pwdErrors.newPwd}</p>}
 
-                        {pwd.newPwd && (
-                          <div className="settings-pwd-strength">
-                            <div className="settings-pwd-strength-bar">
-                              <div className="settings-pwd-strength-fill" style={{ width: `${newPwdStrength.pct}%`, background: newPwdStrength.color }} />
-                            </div>
-                            <div className="settings-pwd-strength-label" style={{ color: newPwdStrength.color }}>{newPwdStrength.label}</div>
+                      {pwd.newPwd && (
+                        <div className="settings-pwd-strength">
+                          <div className="settings-pwd-strength-bar">
+                            <div className="settings-pwd-strength-fill" style={{ width: `${newPwdStrength.pct}%`, background: newPwdStrength.color }} />
                           </div>
-                        )}
+                          <div className="settings-pwd-strength-label" style={{ color: newPwdStrength.color }}>{newPwdStrength.label}</div>
+                        </div>
+                      )}
 
-                        <div className="settings-pwd-reqs">
-                          {pwdReqs.map(r => (
-                            <div key={r.label} className={`settings-pwd-req ${r.met ? 'met' : ''}`}>
-                              <span className="settings-pwd-req-icon">{r.met && <Ic.Check />}</span>
-                              {r.label}
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-
-                      {/* Confirm password */}
-                      <div className="settings-form-group">
-                        <label className="settings-form-label">Confirm new password</label>
-                        <div className="settings-pwd-wrap">
-                          <input
-                            type={showConfirm ? 'text' : 'password'}
-                            className={`settings-form-input ${pwdErrors.confirmPwd ? 'settings-input-error' : ''}`}
-                            placeholder="Confirm new password"
-                            value={pwd.confirmPwd}
-                            onChange={e => setPwdField('confirmPwd', e.target.value)}
-                            autoComplete="new-password"
-                          />
-                          <button type="button" className="settings-pwd-toggle" onClick={() => setShowConfirm(p => !p)}>
-                            {showConfirm ? <Ic.EyeOff /> : <Ic.Eye />}
-                          </button>
-                        </div>
-                        {pwdErrors.confirmPwd
-                          ? <p className="settings-form-error"><Ic.X />{pwdErrors.confirmPwd}</p>
-                          : pwd.confirmPwd && pwd.newPwd && pwd.confirmPwd === pwd.newPwd && (
-                            <p className="settings-form-hint-success"><Ic.Check />Passwords match</p>
-                          )
-                        }
-                      </div>
-
-                      <div className="settings-button-group">
-                        <button type="submit" className="btn btn-primary" disabled={pwdLoading} style={{ pointerEvents: 'auto', opacity: !pwdLoading ? '1' : '' }}>
-                          {pwdLoading
-                            ? <span className="settings-btn-loading"><span className="settings-spinner" />Updating…</span>
-                            : 'Update password'
-                          }
-                        </button>
-                      </div>
-                    </form>
-                  ) : (
-                    <div className="settings-card settings-google-card">
-                      <div className="settings-google-header">
-                        <div className="settings-google-badge">
-                          <svg width="26" height="26" viewBox="0 0 48 48">
-                            <path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.9 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.1 8 3l5.7-5.7C34.5 6.1 29.5 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.7-.4-3.5z" />
-                            <path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.6 15.9 18.9 13 24 13c3.1 0 5.8 1.1 8 3l5.7-5.7C34.5 6.1 29.5 4 24 4 16.3 4 9.7 8.3 6.3 14.7z" />
-                            <path fill="#4CAF50" d="M24 44c5.4 0 10.3-2.1 14-5.5l-6.5-5.3C29.4 35 26.8 36 24 36c-5.3 0-9.7-3.1-11.3-7.6l-6.5 5C9.6 39.6 16.2 44 24 44z" />
-                            <path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.4-2.4 4.4-4.4 5.9l6.5 5.3C39.9 36.9 44 31 44 24c0-1.3-.1-2.7-.4-3.5z" />
-                          </svg>
-                        </div>
-                        <div>
-                          <h3 className="settings-card-title" style={{ marginBottom: '0.3rem' }}>Password</h3>
-                          <span className="settings-google-pill">
-                            <span className="settings-google-pill-dot" />
-                            created via Google
-                          </span>
-                        </div>
-                      </div>
-
-                      <p className="settings-google-lead">
-                        Your account was created with Google, so there&apos;s no password set yet.
-                        Add one below to also sign in with your email — handy as a backup if you ever lose Google access.
-                      </p>
-
-                      <div className="settings-google-perks">
-                        <div className="settings-google-perk">
-                          <span className="settings-google-perk-icon"><Ic.Check /></span>
-                          Sign in even without a Google session
-                        </div>
-                        <div className="settings-google-perk">
-                          <span className="settings-google-perk-icon"><Ic.Check /></span>
-                          Extra layer of account security
-                        </div>
-                        <div className="settings-google-perk">
-                          <span className="settings-google-perk-icon"><Ic.Check /></span>
-                          Google Sign-In keeps working as normal
-                        </div>
-                      </div>
-
-                      <div className="settings-button-group">
-                        <button type="button" className="btn btn-primary" onClick={() => setModal('add_password')} style={{
-                          pointerEvents: 'auto',
-                          opacity: '1'
-                        }}>
-                          <Ic.Lock /> Add a password
-                        </button>
+                      <div className="settings-pwd-reqs">
+                        {pwdReqs.map(r => (
+                          <div key={r.label} className={`settings-pwd-req ${r.met ? 'met' : ''}`}>
+                            <span className="settings-pwd-req-icon">{r.met && <Ic.Check />}</span>
+                            {r.label}
+                          </div>
+                        ))}
                       </div>
                     </div>
-                  )}
+
+                    {/* Confirm password */}
+                    <div className="settings-form-group">
+                      <label className="settings-form-label">Confirm new password</label>
+                      <div className="settings-pwd-wrap">
+                        <input
+                          type={showConfirm ? 'text' : 'password'}
+                          className={`settings-form-input ${pwdErrors.confirmPwd ? 'settings-input-error' : ''}`}
+                          placeholder="Confirm new password"
+                          value={pwd.confirmPwd}
+                          onChange={e => setPwdField('confirmPwd', e.target.value)}
+                          autoComplete="new-password"
+                        />
+                        <button type="button" className="settings-pwd-toggle" onClick={() => setShowConfirm(p => !p)}>
+                          {showConfirm ? <Ic.EyeOff /> : <Ic.Eye />}
+                        </button>
+                      </div>
+                      {pwdErrors.confirmPwd
+                        ? <p className="settings-form-error"><Ic.X />{pwdErrors.confirmPwd}</p>
+                        : pwd.confirmPwd && pwd.newPwd && pwd.confirmPwd === pwd.newPwd && (
+                          <p className="settings-form-hint-success"><Ic.Check />Passwords match</p>
+                        )
+                      }
+                    </div>
+
+                    <div className="settings-button-group">
+                      <button type="submit" className="btn btn-primary" disabled={pwdLoading} style={{ pointerEvents: 'auto', opacity: !pwdLoading ? '1' : '' }}>
+                        {pwdLoading
+                          ? <span className="settings-btn-loading"><span className="settings-spinner" />Updating…</span>
+                          : 'Update password'
+                        }
+                      </button>
+                    </div>
+                  </form>
+                ) : (
+                  <div className="settings-card settings-google-card">
+                    <div className="settings-google-header">
+                      <div className="settings-google-badge">
+                        <svg width="26" height="26" viewBox="0 0 48 48">
+                          <path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.9 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.1 8 3l5.7-5.7C34.5 6.1 29.5 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.7-.4-3.5z" />
+                          <path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.6 15.9 18.9 13 24 13c3.1 0 5.8 1.1 8 3l5.7-5.7C34.5 6.1 29.5 4 24 4 16.3 4 9.7 8.3 6.3 14.7z" />
+                          <path fill="#4CAF50" d="M24 44c5.4 0 10.3-2.1 14-5.5l-6.5-5.3C29.4 35 26.8 36 24 36c-5.3 0-9.7-3.1-11.3-7.6l-6.5 5C9.6 39.6 16.2 44 24 44z" />
+                          <path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.4-2.4 4.4-4.4 5.9l6.5 5.3C39.9 36.9 44 31 44 24c0-1.3-.1-2.7-.4-3.5z" />
+                        </svg>
+                      </div>
+                      <div>
+                        <h3 className="settings-card-title" style={{ marginBottom: '0.3rem' }}>Password</h3>
+                        <span className="settings-google-pill">
+                          <span className="settings-google-pill-dot" />
+                          created via Google
+                        </span>
+                      </div>
+                    </div>
+
+                    <p className="settings-google-lead">
+                      Your account was created with Google, so there&apos;s no password set yet.
+                      Add one below to also sign in with your email — handy as a backup if you ever lose Google access.
+                    </p>
+
+                    <div className="settings-google-perks">
+                      <div className="settings-google-perk">
+                        <span className="settings-google-perk-icon"><Ic.Check /></span>
+                        Sign in even without a Google session
+                      </div>
+                      <div className="settings-google-perk">
+                        <span className="settings-google-perk-icon"><Ic.Check /></span>
+                        Extra layer of account security
+                      </div>
+                      <div className="settings-google-perk">
+                        <span className="settings-google-perk-icon"><Ic.Check /></span>
+                        Google Sign-In keeps working as normal
+                      </div>
+                    </div>
+
+                    <div className="settings-button-group">
+                      <button type="button" className="btn btn-primary" onClick={() => setModal('add_password')} style={{
+                        pointerEvents: 'auto',
+                        opacity: '1'
+                      }}>
+                        <Ic.Lock /> Add a password
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* ════════════ NOTIFICATIONS TAB ════════════ */}
@@ -1004,47 +1016,84 @@ function SettingsInner() {
 
                   <div className="settings-toggle-row">
                     <div className="settings-toggle-info">
-                      <div className="settings-toggle-title">Exam reminders</div>
-                      <div className="settings-toggle-desc">Get notified before scheduled mock tests and exam deadlines</div>
+                      <div className="settings-toggle-title">
+                        Announcements
+                      </div>
+                      <div className="settings-toggle-desc">
+                        Receive important announcements about new features, maintenance, service updates and other important CBT Pro news.
+                      </div>
                     </div>
+
                     <label className="settings-switch">
-                      <input type="checkbox" checked={prefs.examReminders} onChange={() => togglePref('examReminders')} />
+                      <input
+                        type="checkbox"
+                        checked={prefs.announcements}
+                        onChange={() => togglePref("announcements")}
+                      />
                       <span className="settings-switch-track" />
                     </label>
                   </div>
 
                   <div className="settings-toggle-row">
                     <div className="settings-toggle-info">
-                      <div className="settings-toggle-title">AI credit alerts</div>
-                      <div className="settings-toggle-desc">Get notified when your AI credits are running low</div>
+                      <div className="settings-toggle-title">
+                        Reminders
+                      </div>
+                      <div className="settings-toggle-desc">
+                        Receive reminders about your study schedule, practice sessions, mock tests and upcoming examinations.
+                      </div>
                     </div>
+
                     <label className="settings-switch">
-                      <input type="checkbox" checked={prefs.creditAlerts} onChange={() => togglePref('creditAlerts')} />
+                      <input
+                        type="checkbox"
+                        checked={prefs.reminders}
+                        onChange={() => togglePref("reminders")}
+                      />
                       <span className="settings-switch-track" />
                     </label>
                   </div>
 
                   <div className="settings-toggle-row">
                     <div className="settings-toggle-info">
-                      <div className="settings-toggle-title">Product updates</div>
-                      <div className="settings-toggle-desc">News about new features and improvements to CBT Pro</div>
+                      <div className="settings-toggle-title">
+                        Promotional updates
+                      </div>
+                      <div className="settings-toggle-desc">
+                        Receive notifications about special offers, discounts, new products and promotional campaigns from CBT Pro.
+                      </div>
                     </div>
+
                     <label className="settings-switch">
-                      <input type="checkbox" checked={prefs.productUpdates} onChange={() => togglePref('productUpdates')} />
+                      <input
+                        type="checkbox"
+                        checked={prefs.marketing}
+                        onChange={() => togglePref("marketing")}
+                      />
                       <span className="settings-switch-track" />
                     </label>
                   </div>
 
                   <div className="settings-toggle-row">
                     <div className="settings-toggle-info">
-                      <div className="settings-toggle-title">Marketing emails</div>
-                      <div className="settings-toggle-desc">Promotions, discounts, and study tips sent to your inbox</div>
+                      <div className="settings-toggle-title">
+                        Subscription & AI Credits
+                      </div>
+                      <div className="settings-toggle-desc">
+                        Receive notifications about your subscription status, premium access, renewals, and alerts when your AI credits are running low.
+                      </div>
                     </div>
+
                     <label className="settings-switch">
-                      <input type="checkbox" checked={prefs.marketingEmails} onChange={() => togglePref('marketingEmails')} />
+                      <input
+                        type="checkbox"
+                        checked={prefs.subscription}
+                        onChange={() => togglePref("subscription")}
+                      />
                       <span className="settings-switch-track" />
                     </label>
                   </div>
+
                 </div>
               </div>
 

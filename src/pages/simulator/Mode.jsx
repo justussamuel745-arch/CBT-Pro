@@ -444,8 +444,7 @@ export function Mode() {
   }
   
   if (!isActive) return <Loading />
-  if (loading) return <Loading />
-  // comment the loading check statement above during developement
+  if (loading && import.meta.env.VITE_ENV === 'production') return <Loading />
 
   return (
     <>

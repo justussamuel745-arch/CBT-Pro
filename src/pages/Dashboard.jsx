@@ -3,6 +3,8 @@ import { Link } from 'react-router';
 import UserContext from '../context/UserContext';
 import { Menu } from '../components/Menu';
 import { InstallAppBanner } from '../components/InstallAppBanner';
+import usePushNotifications from '../hooks/usePushNotifications';
+import { useNotifications } from '../context/NotificationContext';
 import "./Dashboard.css";
 
 const DASHBOARD_CARDS = [
@@ -59,6 +61,7 @@ function getGreeting() {
 
 export function Dashboard() {
   const { isActivated, userInfo, isAdmin } = useContext(UserContext)
+  const { unreadCount } = useNotifications();
   const userName = userInfo?.fullName || '';
   const [menuOpen, setMenuOpen] = useState(false);
   const [bannerDismissed, setBannerDismissed] = useState(false);
@@ -67,6 +70,8 @@ export function Dashboard() {
   const showBanner = !isActivated && !bannerDismissed;
 
   const firstName = userName?.split(" ")[0];
+
+  usePushNotifications()
 
   const initials = userName
     .split(" ")
@@ -92,23 +97,29 @@ export function Dashboard() {
         </div>
 
         <div className="dash-header-right">
+          <Link to="/notifications" className="dash-icon-btn" aria-label="Notifications" aria-expanded="false">
+            <i className="fa-regular fa-bell"></i>
+            {
+              unreadCount ? <span className="dash-badge">{ unreadCount }</span> : ''
+            }
+          </Link>
 
           <button className="dash-avatar-btn" aria-label="Account">
             <span className="dash-avatar">
-              <img 
+              <img
                 src={`${userInfo.blob && URL.createObjectURL(userInfo.blob)}`}
                 style={{
                   width: '100%',
                   borderRadius: '12px',
                   display: `${!imgExist ? 'none' : 'inline'}`
                 }}
-                onError={() => setImgExist(false) }
+                onError={() => setImgExist(false)}
               />
-              {!imgExist && initials }
+              {!imgExist && initials}
             </span>
           </button>
         </div>
-        
+
         <Menu menuOpen={menuOpen} setMenuOpen={setMenuOpen} isAdmin={isAdmin} />
       </header>
 
@@ -167,7 +178,7 @@ export function Dashboard() {
           </div>
         </div>
       </main>
-      
+
       <InstallAppBanner />
     </div>
   );

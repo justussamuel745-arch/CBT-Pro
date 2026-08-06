@@ -1,28 +1,31 @@
 import { openDB } from './db.js';
 
+
 export async function saveHistory(history) {
   const db = await openDB();
 
   return new Promise((resolve, reject) => {
-    // Open a readwrite transaction
     const transaction = db.transaction("history", "readwrite");
     const store = transaction.objectStore("history");
 
-    // Handle both single items and arrays
     const items = Array.isArray(history) ? history : [history];
-    items.forEach(item => store.put(item));
 
-    // Listen to the transaction completion instead of individual requests
+    // add createdAt to each item before saving
+    const modifiedItems = items.map(item => ({
+      ...item,
+      score: item.score.obtained,
+      total: item.score.over
+    }));
+
+    modifiedItems.forEach(item => store.put(item));
+
     transaction.oncomplete = () => {
-      resolve(history); 
+      resolve(modifiedItems);
     };
 
-    transaction.onerror = () => {
-      reject(transaction.error);
-    };
+    transaction.onerror = () => reject(transaction.error);
   });
 }
-
 
 
 export async function getHistory(userId) {
@@ -51,8 +54,8 @@ export async function getHistory(userId) {
   });
 }
 
-export async function removeHistory(_id) {
-  if (!_id) {
+export async function removeHistory(testId) {
+  if (!testId) {
     throw new Error("History ID is required.");
   }
 
@@ -63,7 +66,7 @@ export async function removeHistory(_id) {
 
     const store = transaction.objectStore("history");
 
-    const request = store.delete(_id);
+    const request = store.delete(testId);
 
     request.onsuccess = () => {
       resolve(true);
@@ -72,5 +75,19 @@ export async function removeHistory(_id) {
     request.onerror = () => {
       reject(request.error);
     };
+  });
+}
+
+
+export async function clearHistory() {
+  const db = await openDB();
+
+  return new Promise((resolve, reject) => {
+    const transaction = db.transaction("history", "readwrite");
+    const store = transaction.objectStore("history");
+    store.clear();
+
+    transaction.oncomplete = () => resolve(true);
+    transaction.onerror = () => reject(transaction.error);
   });
 }

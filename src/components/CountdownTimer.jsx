@@ -7,6 +7,12 @@ import { saveHistory } from '../hooks/services/indexedDB/history';
 import { encrypt, decrypt } from '../scripts/utilis/crypto';
 import './CountdownTimer.css';
 
+function generateObjectId() {
+  return [...Array(24)]
+    .map(() => Math.floor(Math.random() * 16).toString(16))
+    .join('');
+}
+
 export function CountdownTimer({ onFinish, hours, minutes, skipAutoSubmit }) {
   const { token, setToken, answers, setExamResults, examQuestions, userInfo, setHistoryData } = useContext(UserContext)
   const navigate = useNavigate()
@@ -25,11 +31,20 @@ export function CountdownTimer({ onFinish, hours, minutes, skipAutoSubmit }) {
   async function submitHistory({ subjects, score, timeTaken, performance }, question) {
     const newHistory = {
       userId: userInfo._id,
-      testId: crypto.randomUUID(),
-      subjects, score, timeSpent: timeTaken, question, performance
+      testId: generateObjectId(),
+      subjects, 
+      score: score.obtained,
+      total: score.over,
+      timeSpent: timeTaken, 
+      question, 
+      performance,
+      createdAt: new Date().toISOString()
     }
+    const savedHistory = await saveHistory(newHistory)
+    setHistoryData(prev => ([...prev, ...savedHistory]))
     if (!navigator.onLine){
-      const unsavedHistory = decrypt(JSON.parse(localStorage.getItem('unsavedHistory'))) || []
+      const unsavedHistoryRaw = JSON.parse(localStorage.getItem('unsavedHistory'))
+      const unsavedHistory = unsavedHistoryRaw ? decrypt(unsavedHistoryRaw) : []
       unsavedHistory.push(newHistory)
       localStorage.setItem('unsavedHistory', JSON.stringify(encrypt(unsavedHistory)));
       return
@@ -39,10 +54,7 @@ export function CountdownTimer({ onFinish, hours, minutes, skipAutoSubmit }) {
         method: 'POST',
         body: JSON.stringify(newHistory)
       })
-      const data = await response.json().catch(() => ({}))
       if (!response.ok) throw { status: response.status, error: newHistory }
-      setHistoryData(data)
-      saveHistory(data)
     } catch (err) {
       if (typeof err?.error === 'object' || err.status !== 404){
         const unsavedHistory = decrypt(JSON.parse(localStorage.getItem('unsavedHistory'))) || []

@@ -6,6 +6,7 @@ import { GoogleAuth } from '../../components/GoogleAuth';
 import { fetchDataPost, fetchUserInfo, fetchHistory } from '../../scripts/utilis/fetch.js';
 import { decrypt } from '../../scripts/utilis/crypto';
 import { deleteAllQuestions } from '../../hooks/services/indexedDB/questions';
+import pushNotificationService from '../../services/pushNotificationService';
 import './Signin.css';
 
 // ─────────────────────────────────────────────────────────────
@@ -193,12 +194,14 @@ function SigninInner() {
       if (d?.activationExpired){
         await deleteAllQuestions()
       }
+      // uncomment during production
+      //await pushNotificationService.enable(d.accessToken);
       setToken(d.accessToken)
       setIsActivated(d.isActivated)
       setIsAdmin(d.isAdmin)
       await Promise.all([
         fetchUserInfo(d.accessToken, setUserInfo, setProfileFields),
-        fetchHistory(d.accessToken, setHistoryData)
+        fetchHistory(d.accessToken, setToken, setHistoryData)
       ])
       
       setModal({

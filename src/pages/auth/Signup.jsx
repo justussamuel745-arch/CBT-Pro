@@ -18,7 +18,7 @@ function ToastProvider({ children }) {
       const toast = p.find(t => t.id === id);
       // Only navigate if user clicked X and toast type is success
       if (dismissType){
-        if (toast?.type === "success") navigate('/signin');
+        if (toast?.type === "success") navigate('/auth/');
       }
       
       return p.map(t => t.id === id? {...t, exiting: true } : t);

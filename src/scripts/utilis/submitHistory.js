@@ -2,7 +2,10 @@ import { fetchWithAuth } from './fetch.js';
 import { encrypt, decrypt } from './crypto.js';
 
 export async function on(token, setToken, setHistoryData) {
-      const unsavedHistory = decrypt(JSON.parse(localStorage.getItem('unsavedHistory'))) || [];
+      const unsavedHistoryRaw = JSON.parse(localStorage.getItem('unsavedHistory'));
+      let unsavedHistory = unsavedHistoryRaw
+      ? decrypt(unsavedHistoryRaw)
+      : []
 
       if (!unsavedHistory || unsavedHistory.length === 0 || !Array.isArray(unsavedHistory)) {
         return;
@@ -31,8 +34,6 @@ export async function on(token, setToken, setHistoryData) {
           if (!response.ok) {
             throw new Error(`HTTP ${response.status}`);
           }
-          
-          setHistoryData(data)
 
           // Success: do nothing.
           // Since we don't push it into failedHistory,
