@@ -1,0 +1,305 @@
+/* =====================================
+   EXAM DETAIL MODAL
+   Uses global tokens from :root (--primary, --accent, --gradient, etc.)
+   All classes prefixed with `examdetail-`.
+   ====================================== */
+
+.examdetail-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.55);
+  backdrop-filter: blur(3px);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  z-index: 200;
+  padding: 0;
+}
+
+.examdetail-sheet {
+  width: 100%;
+  max-width: 480px;
+  max-height: 88vh;
+  background: var(--card);
+  border-radius: var(--radius) var(--radius) 0 0;
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: examdetail-slide-up 0.22s ease;
+}
+
+@keyframes examdetail-slide-up {
+  from { transform: translateY(24px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@media (min-width: 640px) {
+  .examdetail-overlay {
+    align-items: center;
+  }
+  .examdetail-sheet {
+    border-radius: var(--radius);
+    max-height: 85vh;
+  }
+}
+
+/* ---------- Header ---------- */
+
+.examdetail-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.25rem 1.25rem 1rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.examdetail-header__eyebrow {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--primary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.3rem;
+}
+
+.examdetail-header__title {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.01em;
+}
+
+.examdetail-close {
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  border-radius: 50%;
+  border: none;
+  background: var(--bg);
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.examdetail-close:hover {
+  background: var(--primary-light);
+  color: var(--primary);
+}
+
+/* ---------- Countdown / ready banner ---------- */
+
+.examdetail-countdown {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  background: var(--gradient);
+  color: #fff;
+  padding: 1rem;
+  margin: 1rem 1.25rem 0;
+  border-radius: var(--radius-sm);
+}
+
+.examdetail-countdown__label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  opacity: 0.85;
+}
+
+.examdetail-countdown__value {
+  display: flex;
+  align-items: baseline;
+  gap: 0.25rem;
+  font-size: 1.4rem;
+  font-weight: 800;
+}
+
+.examdetail-countdown__value em {
+  font-size: 0.8rem;
+  font-weight: 600;
+  font-style: normal;
+  opacity: 0.8;
+  margin-right: 0.5rem;
+}
+
+.examdetail-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin: 1rem 1.25rem 0;
+  padding: 0.8rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+.examdetail-banner--ready {
+  background: #f0fdf4;
+  color: var(--success);
+  border: 1px solid #bbf7d0;
+}
+
+/* ---------- Body ---------- */
+
+.examdetail-body {
+  padding: 1rem 1.25rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.examdetail-row {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.examdetail-row__icon {
+  width: 34px;
+  height: 34px;
+  min-width: 34px;
+  border-radius: 10px;
+  background: var(--primary-light);
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+}
+
+.examdetail-row__body {
+  flex: 1;
+  min-width: 0;
+  padding-top: 0.15rem;
+}
+
+.examdetail-row__label {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  margin-bottom: 0.25rem;
+}
+
+.examdetail-row__value {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.examdetail-muted {
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+/* Subject chips */
+
+.examdetail-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.examdetail-chip {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--primary);
+  background: var(--primary-light);
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+}
+
+/* Settings tags */
+
+.examdetail-settings {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.examdetail-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  padding: 0.3rem 0.65rem;
+  border-radius: 999px;
+}
+
+.examdetail-tag i {
+  font-size: 0.65rem;
+}
+
+.examdetail-tag--on {
+  color: var(--success);
+  background: #f0fdf4;
+  border-color: #bbf7d0;
+}
+
+/* ---------- Actions ---------- */
+
+.examdetail-actions {
+  display: flex;
+  gap: 0.6rem;
+  padding: 1rem 1.25rem;
+  border-top: 1px solid var(--border);
+}
+
+.examdetail-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  padding: 0.75rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.88rem;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+}
+
+.examdetail-btn--primary {
+  background: var(--gradient);
+  color: #fff;
+  box-shadow: var(--shadow);
+}
+
+.examdetail-btn--primary:hover {
+  transform: translateY(-2px);
+}
+
+.examdetail-btn--ghost {
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+.examdetail-btn--ghost:hover {
+  background: var(--primary-light);
+  color: var(--primary);
+  border-color: var(--primary);
+}
+
+.examdetail-btn--danger:hover {
+  background: #fef2f2;
+  color: var(--danger);
+  border-color: var(--danger);
+}

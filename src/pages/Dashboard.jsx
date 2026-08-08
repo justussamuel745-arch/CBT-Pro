@@ -72,6 +72,7 @@ export function Dashboard() {
   const firstName = userName?.split(" ")[0];
 
   usePushNotifications()
+  
 
   const initials = userName
     .split(" ")

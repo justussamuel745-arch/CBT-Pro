@@ -1,0 +1,356 @@
+/* =====================================
+   SCHEDULE EXAM PAGE
+   Uses global tokens from :root (--primary, --accent, --gradient, etc.)
+   All classes prefixed with `examform-`.
+   ====================================== */
+
+.examform-page {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 1.25rem 1rem 2rem;
+}
+
+/* ---------- Header ---------- */
+
+.examform-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.9rem;
+  margin-bottom: 1.75rem;
+}
+
+.examform-back {
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--text);
+  font-size: 0.9rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.examform-back:hover {
+  background: var(--primary-light);
+  color: var(--primary);
+  transform: translateX(-2px);
+}
+
+.examform-header__title {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.02em;
+}
+
+.examform-header__subtitle {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-top: 0.2rem;
+}
+
+/* ---------- Form / sections ---------- */
+
+.examform-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.examform-section {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+  box-shadow: var(--shadow);
+}
+
+.examform-section__title {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--text);
+  margin-bottom: 0.9rem;
+  letter-spacing: -0.01em;
+}
+
+.examform-section__hint {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: -0.6rem;
+  margin-bottom: 0.9rem;
+}
+
+.examform-field {
+  margin-bottom: 1rem;
+}
+
+.examform-field:last-child {
+  margin-bottom: 0;
+}
+
+.examform-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.examform-row .examform-field {
+  margin-bottom: 0;
+}
+
+.examform-label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 0.4rem;
+}
+
+.examform-optional {
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+/* ---------- Inputs ---------- */
+
+.examform-input,
+.examform-select,
+.examform-textarea {
+  width: 100%;
+  font-family: inherit;
+  font-size: 0.9rem;
+  color: var(--text);
+  background: var(--bg);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 0.65rem 0.8rem;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.examform-input:focus,
+.examform-select:focus,
+.examform-textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgb(79 70 229 / 0.12);
+}
+
+.examform-textarea {
+  resize: vertical;
+  min-height: 72px;
+}
+
+.examform-target {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.examform-target .examform-input {
+  max-width: 140px;
+}
+
+.examform-target__max {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+/* ---------- Subjects ---------- */
+
+.examform-subjects {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 0.6rem;
+}
+
+.examform-subject {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.6rem 0.75rem;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease, color 0.15s ease;
+}
+
+.examform-subject input {
+  display: none;
+}
+
+.examform-subject__check {
+  width: 18px;
+  height: 18px;
+  min-width: 18px;
+  border-radius: 5px;
+  border: 1.5px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.6rem;
+  color: transparent;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.examform-subject--checked {
+  border-color: var(--primary);
+  background: var(--primary-light);
+  color: var(--primary);
+}
+
+.examform-subject--checked .examform-subject__check {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #fff;
+}
+
+/* ---------- Segmented control (difficulty) ---------- */
+
+.examform-segmented {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.4rem;
+}
+
+.examform-segmented__btn {
+  padding: 0.55rem 0.4rem;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--border);
+  background: var(--bg);
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.examform-segmented__btn--active {
+  background: var(--gradient);
+  border-color: transparent;
+  color: #fff;
+  box-shadow: 0 4px 10px rgb(79 70 229 / 0.3);
+}
+
+/* ---------- Toggle rows ---------- */
+
+.examform-toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 0;
+  border-top: 1px solid var(--border);
+}
+
+.examform-field + .examform-toggle-row,
+.examform-toggle-row:first-of-type {
+  border-top: 1px solid var(--border);
+}
+
+.examform-toggle-row__label {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.examform-toggle-row__hint {
+  font-size: 0.76rem;
+  color: var(--text-muted);
+  margin-top: 0.1rem;
+}
+
+.examform-switch {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 26px;
+  flex-shrink: 0;
+}
+
+.examform-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.examform-switch__track {
+  position: absolute;
+  inset: 0;
+  background: var(--border);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.examform-switch__track::before {
+  content: "";
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  left: 3px;
+  top: 3px;
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.25);
+  transition: transform 0.2s ease;
+}
+
+.examform-switch input:checked + .examform-switch__track {
+  background: var(--gradient);
+}
+
+.examform-switch input:checked + .examform-switch__track::before {
+  transform: translateX(18px);
+}
+
+/* ---------- Save footer ---------- */
+
+.examform-footer {
+  position: sticky;
+  bottom: 0.75rem;
+}
+
+.examform-save {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.9rem;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: var(--gradient);
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: var(--shadow-lg);
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.examform-save:hover:not(:disabled) {
+  transform: translateY(-2px);
+}
+
+.examform-save:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media (max-width: 480px) {
+  .examform-row {
+    grid-template-columns: 1fr;
+  }
+  .examform-segmented {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

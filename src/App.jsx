@@ -19,6 +19,7 @@ import { Dashboard } from './pages/Dashboard';
 import PWAUpdateToast from './components/PWAUpdateToast';
 import Auth  from './pages/auth/Auth';
 import Notifications  from './pages/Notifications';
+import ExamPlanners from './pages/examPlanner/ExamPlanners.jsx';
 import { fetchDataGet, fetchUserInfo, fetchHistory } from './scripts/utilis/fetch';
 import { on } from './scripts/utilis/submitHistory';
 import { getUser, deleteUser } from './hooks/services/indexedDB/users';
@@ -126,6 +127,7 @@ function App() {
       <Routes>
         <Route index element={token ? <Dashboard /> : <HomePage />} />
         <Route path="/auth/*" element={<Auth />} />
+        <Route path="/examplanner/*" element={<ExamPlanners />} />
         <Route path="/about" element={<About />} />
         <Route path="/legal" element={<Legal />} />
 

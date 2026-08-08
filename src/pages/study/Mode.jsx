@@ -479,6 +479,7 @@ export function Mode() {
                     <button className={`mode-progress-btn ${index === currentIdx && 'active'} ${progressBadge && (progressBadge.correct.includes(list) && 'correct')} ${progressBadge && (progressBadge.wrong.includes(list) && 'wrong')} ${progressBadge && (progressBadge.viewed.includes(list) && 'selected')}`} key={index} onClick={() => 
                       { 
                         setCurrentIdx(index); 
+                        if (index === currentIdx) return
                         setToggleNav(false)
                         setDisplayAnswer(false)
                         setOptionsCheck(null)

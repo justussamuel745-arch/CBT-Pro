@@ -1,0 +1,347 @@
+/* =====================================
+   EXAM PLANNER PAGE
+   Uses global tokens from :root (--primary, --accent, --gradient, etc.)
+   All classes prefixed with `planner-` per project convention.
+   ====================================== */
+
+.planner-page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 1.25rem 1rem 6rem;
+  position: relative;
+}
+
+/* ---------- Summary card ---------- */
+
+.planner-summary {
+  background: var(--gradient);
+  border-radius: var(--radius);
+  padding: 1.75rem 1.5rem;
+  box-shadow: var(--shadow-lg);
+  margin-bottom: 2rem;
+  color: #fff;
+}
+
+.planner-summary__heading {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 800;
+  font-size: 1.05rem;
+  letter-spacing: -0.01em;
+  margin-bottom: 1.25rem;
+  opacity: 0.95;
+}
+
+.planner-summary__heading i {
+  font-size: 1rem;
+}
+
+.planner-summary__stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 0.75rem;
+}
+
+.planner-stat {
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: var(--radius-sm);
+  padding: 0.9rem 0.75rem;
+  text-align: center;
+  backdrop-filter: blur(6px);
+}
+
+.planner-stat__icon {
+  font-size: 0.9rem;
+  opacity: 0.85;
+  margin-bottom: 0.4rem;
+  display: block;
+}
+
+.planner-stat__value {
+  font-size: 1.5rem;
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.planner-stat__label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  opacity: 0.85;
+  margin-top: 0.25rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+/* ---------- Section header ---------- */
+
+.planner-section {
+  margin-bottom: 2rem;
+}
+
+.planner-section__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.planner-section__title {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.01em;
+}
+
+/* ---------- Buttons ---------- */
+
+.planner-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.6rem 1rem;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  font-size: 0.85rem;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+  white-space: nowrap;
+}
+
+.planner-btn--primary {
+  background: var(--gradient);
+  color: #fff;
+  box-shadow: 0 4px 12px rgb(79 70 229 / 0.3);
+}
+
+.planner-btn--primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgb(79 70 229 / 0.4);
+}
+
+.planner-btn--sm {
+  padding: 0.5rem 0.85rem;
+  font-size: 0.8rem;
+}
+
+.planner-btn--ghost {
+  background: var(--bg);
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+  flex: 1;
+}
+
+.planner-btn--ghost:hover {
+  background: var(--primary-light);
+  color: var(--primary);
+  border-color: var(--primary);
+}
+
+.planner-btn--danger:hover {
+  background: #fef2f2;
+  color: var(--danger);
+  border-color: var(--danger);
+}
+
+/* ---------- Exam grid & cards ---------- */
+
+.planner-exam-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1rem;
+}
+
+.planner-exam-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.1rem;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.planner-exam-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.planner-exam-card__soon {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--warning);
+  margin-top: -0.3rem;
+}
+
+.planner-exam-card__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--warning);
+  animation: planner-pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes planner-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(1.4); }
+}
+
+.planner-exam-card__name {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.01em;
+}
+
+.planner-exam-card__datetime {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+.planner-exam-card__sep {
+  opacity: 0.5;
+}
+
+.planner-exam-card__target {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--bg);
+  border-radius: var(--radius-sm);
+  padding: 0.55rem 0.75rem;
+}
+
+.planner-exam-card__target-label {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.planner-exam-card__target-value {
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--primary);
+}
+
+.planner-exam-card__countdown {
+  display: flex;
+  align-items: baseline;
+  gap: 0.2rem;
+  justify-content: center;
+  padding: 0.4rem 0;
+  border-top: 1px dashed var(--border);
+  border-bottom: 1px dashed var(--border);
+}
+
+.planner-exam-card__countdown-num {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.planner-exam-card__countdown-unit {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  font-weight: 600;
+  margin-right: 0.5rem;
+}
+
+.planner-exam-card__countdown-ready {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--success);
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.planner-exam-card__actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.planner-exam-card__actions .planner-btn {
+  justify-content: center;
+}
+
+/* ---------- Empty state ---------- */
+
+.planner-empty {
+  background: var(--card);
+  border: 1.5px dashed var(--border);
+  border-radius: var(--radius);
+  padding: 2.5rem 1.5rem;
+  text-align: center;
+}
+
+.planner-empty__icon {
+  width: 56px;
+  height: 56px;
+  margin: 0 auto 1rem;
+  border-radius: 50%;
+  background: var(--primary-light);
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+}
+
+.planner-empty__title {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--text);
+  margin-bottom: 0.4rem;
+}
+
+.planner-empty__text {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  max-width: 320px;
+  margin: 0 auto 1.25rem;
+}
+
+/* ---------- Floating action button (mobile) ---------- */
+
+.planner-fab {
+  display: none;
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: none;
+  background: var(--gradient);
+  color: #fff;
+  font-size: 1.2rem;
+  box-shadow: 0 8px 20px rgb(79 70 229 / 0.4);
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+}
+
+@media (max-width: 640px) {
+  .planner-fab {
+    display: flex;
+  }
+  .planner-section__header .planner-btn--primary.planner-btn--sm {
+    display: none;
+  }
+  .planner-summary__stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

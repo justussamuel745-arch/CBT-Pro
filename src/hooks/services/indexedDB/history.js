@@ -13,8 +13,6 @@ export async function saveHistory(history) {
     // add createdAt to each item before saving
     const modifiedItems = items.map(item => ({
       ...item,
-      score: item.score.obtained,
-      total: item.score.over
     }));
 
     modifiedItems.forEach(item => store.put(item));

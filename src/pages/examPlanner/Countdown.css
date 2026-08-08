@@ -1,0 +1,117 @@
+/* =====================================
+   COUNTDOWN COMPONENT
+   Uses global tokens from :root. Shared by dashboard cards,
+   exam detail sheet, and the exam-ready screen.
+   All classes prefixed with `countdown`.
+   ====================================== */
+
+/* ---------- Ready state ---------- */
+
+.countdown--ready {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-weight: 700;
+  color: var(--success);
+}
+
+.countdown--ready.countdown--full {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: var(--radius-sm);
+  padding: 0.8rem;
+  font-size: 0.9rem;
+}
+
+.countdown--ready.countdown--compact {
+  font-size: 0.8rem;
+}
+
+/* ---------- Compact variant (cards) ---------- */
+
+.countdown--compact {
+  display: flex;
+  align-items: baseline;
+  gap: 0.15rem;
+  justify-content: center;
+  padding: 0.4rem 0;
+}
+
+.countdown--compact .countdown__num {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.countdown--compact .countdown__unit {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  font-weight: 600;
+  margin-right: 0.4rem;
+}
+
+.countdown--compact.countdown--urgent .countdown__num {
+  color: var(--warning);
+}
+
+/* ---------- Full variant (detail / exam-ready screen) ---------- */
+
+.countdown--full {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--gradient);
+  color: #fff;
+  padding: 1.1rem;
+  border-radius: var(--radius-sm);
+}
+
+.countdown__title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  opacity: 0.85;
+}
+
+.countdown__units {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.countdown__unit-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 46px;
+}
+
+.countdown__value {
+  font-size: 1.6rem;
+  font-weight: 800;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.countdown__label {
+  font-size: 0.62rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  opacity: 0.8;
+  margin-top: 0.2rem;
+}
+
+.countdown__colon {
+  font-size: 1.3rem;
+  font-weight: 700;
+  opacity: 0.6;
+  margin-bottom: 1rem;
+}
+
+.countdown--full.countdown--urgent {
+  background: linear-gradient(135deg, var(--warning) 0%, #f97316 100%);
+}
