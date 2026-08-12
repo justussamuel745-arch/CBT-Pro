@@ -1,11 +1,11 @@
 import { Routes, Route } from 'react-router'
-import { Subjects } from './Subjects'
-import { Config } from './Config';
-import { Mode } from './Mode'
-import { Search } from './Search';
+import Subjects  from './Subjects'
+import Config from './Config';
+import Mode from './Mode';
+import Search from './Search';
 import { ProtectStudyRoute } from '../../routes/ProtectStudyRoute'
 
-export function Study(){
+export default function Study(){
   return (
     <Routes>
       <Route path="/" element={<Subjects />} />

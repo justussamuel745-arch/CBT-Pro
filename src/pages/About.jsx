@@ -2,7 +2,7 @@ import { Link } from 'react-router';
 import { Footer } from '../components/Footer';
 import './About.css';
 
-export function About(){
+export default function About(){
   return (
     <>
       <title>About Us | CBT Pro</title>

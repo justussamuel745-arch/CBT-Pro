@@ -1,4 +1,5 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
+import Countdown, { useLiveCountdown } from "./Countdown";
 import "./ExamPlanner.css";
 
 /* ============================================================
@@ -28,18 +29,6 @@ const MOCK_UPCOMING = [
   },
 ];
 
-/* Countdown helper — returns { days, hours, urgent } */
-function useCountdown(targetDate) {
-  return useMemo(() => {
-    const diff = new Date(targetDate).getTime() - Date.now();
-    if (diff <= 0) return { days: 0, hours: 0, minutes: 0, ready: true };
-    const days = Math.floor(diff / 86400000);
-    const hours = Math.floor((diff % 86400000) / 3600000);
-    const minutes = Math.floor((diff % 3600000) / 60000);
-    return { days, hours, minutes, ready: false, urgent: diff < 86400000 };
-  }, [targetDate]);
-}
-
 function formatExamDate(iso) {
   const d = new Date(iso);
   const date = d.toLocaleDateString("en-GB", {
@@ -67,7 +56,7 @@ function PlannerStat({ icon, value, label }) {
 
 function UpcomingExamCard({ exam, onView, onEdit, onCancel }) {
   const { date, time } = formatExamDate(exam.date);
-  const countdown = useCountdown(exam.date);
+  const countdown = useLiveCountdown(exam.date);
 
   return (
     <article className="planner-exam-card">
@@ -94,18 +83,7 @@ function UpcomingExamCard({ exam, onView, onEdit, onCancel }) {
       </div>
 
       <div className="planner-exam-card__countdown">
-        {countdown.ready ? (
-          <span className="planner-exam-card__countdown-ready">
-            <i className="fa-solid fa-bolt" aria-hidden="true"></i> Ready to start
-          </span>
-        ) : (
-          <>
-            <span className="planner-exam-card__countdown-num">{countdown.days}</span>
-            <span className="planner-exam-card__countdown-unit">d</span>
-            <span className="planner-exam-card__countdown-num">{countdown.hours}</span>
-            <span className="planner-exam-card__countdown-unit">h</span>
-          </>
-        )}
+        <Countdown targetDate={exam.date} variant="compact" readyLabel="Ready to start" />
       </div>
 
       <div className="planner-exam-card__actions">

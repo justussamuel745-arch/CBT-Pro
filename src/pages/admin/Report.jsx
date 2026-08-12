@@ -1,12 +1,11 @@
-import { useState, useEffect, useContext, memo } from 'react';
+import { useState, useEffect, memo } from 'react';
 import './Report.css';
-import UserContext from '../../context/UserContext';
 import { MarkdownContent } from '../../components/MarkdownContent';
-import { useAdminContext } from '../../context/AdminContext';
 import { Nav } from './Nav';
 import { Loading } from '../../components/Loading';
 import { decrypt } from '../../scripts/utilis/crypto';
-import { fetchWithAuth } from '../../scripts/utilis/fetch';
+import { request } from '../../scripts/utilis/fetch';
+import { adminStore } from '../../stores/AdminStore';
 
 const CATEGORY_LABELS = {
   wrong_answer:   'Wrong answer key',
@@ -373,7 +372,6 @@ const EditableQuestionForm = memo(function EditableQuestionForm({
 // each attempt is individually editable and individually acceptable
 // ─────────────────────────────────────────────────────────────
 const AIFixModal = memo(function AIFixModal({ report, onClose, onResolve, showToast, onNewAttempt }) {
-  const { token, setToken } = useContext(UserContext);
   const attempts = report.aiSuggestions || []
   const hasExistingAttempts = (report.aiSuggestions || []).length > 0;
 
@@ -402,16 +400,14 @@ const AIFixModal = memo(function AIFixModal({ report, onClose, onResolve, showTo
   async function runAI(messageUsed) {
     setStage('loading');
     try {
-      const res = await fetchWithAuth(token, setToken, '/api/reports/fix', {
+      const res = await request.auth('/api/reports/fix', {
         method: 'POST',
         body: JSON.stringify({
           reportId: report._id,
           customMessage: messageSource === 'custom' ? messageUsed : undefined,
         }),
       });
-      const body = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(body.message || 'AI fix failed');
-
+      const { body } = res
       const { suggestion } = decrypt(body.data);
       onNewAttempt(report._id, suggestion)
       setStage('review');
@@ -482,7 +478,7 @@ const AIFixModal = memo(function AIFixModal({ report, onClose, onResolve, showTo
     const edited = editedAttempts[attemptObj.attempt];
     setStage('accepting');
     try {
-      const res = await fetchWithAuth(token, setToken, '/api/reports/fix/accept', {
+      await request.auth('/api/reports/fix/accept', {
         method: 'POST',
         body: JSON.stringify({
           reportId: report._id,
@@ -490,9 +486,7 @@ const AIFixModal = memo(function AIFixModal({ report, onClose, onResolve, showTo
           overrides: edited || undefined,
         }),
       });
-      const body = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(body.message || 'Failed to accept fix.');
-
+      
       setStage('done');
       showToast('success', 'Question updated and report resolved.');
       setTimeout(() => onResolve(report._id), 900);
@@ -760,7 +754,6 @@ const AIFixModal = memo(function AIFixModal({ report, onClose, onResolve, showTo
 // MANUAL FIX MODAL — edit the reported question directly, no AI
 // ─────────────────────────────────────────────────────────────
 const ManualFixModal = memo(function ManualFixModal({ report, onClose, onResolve, showToast }) {
-  const { token, setToken } = useContext(UserContext);
   const q = report.question;
 
   const [stage, setStage] = useState('editing'); // editing | saving | done
@@ -808,7 +801,7 @@ const ManualFixModal = memo(function ManualFixModal({ report, onClose, onResolve
 
     setStage('saving');
     try {
-      const res = await fetchWithAuth(token, setToken, '/api/reports/fix/manual', {
+      await request.auth('/api/reports/fix/manual', {
         method: 'POST',
         body: JSON.stringify({
           reportId: report._id,
@@ -822,9 +815,7 @@ const ManualFixModal = memo(function ManualFixModal({ report, onClose, onResolve
           },
         }),
       });
-      const body = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(body.message || 'Failed to save manual fix.');
-
+      
       setStage('done');
       showToast('success', 'Question updated and report resolved.');
       setTimeout(() => onResolve(report._id), 900);
@@ -1068,9 +1059,8 @@ const ReportDrawer = memo(function ReportDrawer({ report, onClose, onStatusChang
 // ─────────────────────────────────────────────────────────────
 // MAIN PAGE
 // ─────────────────────────────────────────────────────────────
-export function Report() {
-  const { token, setToken } = useContext(UserContext);
-  const { setPage } = useAdminContext();
+export default function Report() {
+  const { setPage } = adminStore()
   const [reports, setReports]         = useState([]);
   const [filter, setFilter]           = useState('all');
   const [search, setSearch]           = useState('');
@@ -1089,9 +1079,8 @@ export function Report() {
     // GET /api/reports — loads the report queue
     async function loadReports() {
       try {
-        const res = await fetchWithAuth(token, setToken, '/api/reports/', { method: 'GET' });
-        const data = await res.json().catch(() => ({}));
-        if (!res.ok) throw new Error(data.message || 'Failed to load reports.');
+        const res = await request.auth('/api/reports/', { method: 'GET' });
+        const data = res.body
         setReports(data);
       } catch (err) {
         console.error('Error:', err);
@@ -1160,10 +1149,7 @@ export function Report() {
   // PUT /api/reports/:id/:status
   async function handleStatusChange(id, newStatus) {
     try {
-      const res = await fetchWithAuth(token, setToken, `/api/reports/${id}/${newStatus}`, { method: 'PUT' });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(data.message || 'Failed to update status.');
-
+      await request.auth(`/api/reports/${id}/${newStatus}`, { method: 'PUT' });
       setReports(prev => prev.map(r => r._id === id ? { ...r, status: newStatus } : r));
       if (selected?._id === id) setSelected(r => ({ ...r, status: newStatus }));
       showToast('success', `Report marked as ${newStatus}.`);
@@ -1176,10 +1162,8 @@ export function Report() {
   // DELETE /api/reports/:id
   async function handleDelete(id) {
     try {
-      const res = await fetchWithAuth(token, setToken, `/api/reports/${id}`, { method: 'DELETE' });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(data.message || 'Failed to delete report.');
-
+      await request.auth(`/api/reports/${id}`, { method: 'DELETE' });
+      
       setReports(prev => prev.filter(r => r._id !== id));
       if (selected?._id === id) setSelected(null);
       showToast('success', 'Report deleted.');

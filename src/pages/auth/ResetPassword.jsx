@@ -1,11 +1,12 @@
 import { useState, useEffect, useRef } from 'react';
 import { useSearchParams, Link, Navigate, useNavigate } from 'react-router';
-import { fetchDataPost } from '../../scripts/utilis/fetch.js'
 import { ToastProvider, useToast, CSS } from '../../components/NotificationSystem';
-import { Message } from '../../components/Message'
+import { Message } from '../../components/Message';
+import { authStore } from '../../stores/authStore';
 import './ResetPassword.css';
 
 function ResetPasswordInner() {
+  const resetPassword = authStore(state => state.resetPassword)
   const navigate = useNavigate()
   const toast = useToast()
   const [formData, setFormData] = useState({ password: '', confirmPassword: '' })
@@ -26,7 +27,7 @@ function ResetPasswordInner() {
     return () => document.getElementById("__ns_styles")?.remove();
   }, []);
 
-  async function resetPassword(event) {
+  async function resetPwd(event) {
     event.preventDefault()
     const { password, confirmPassword } = formData;
     if (!password) {
@@ -59,7 +60,7 @@ function ResetPasswordInner() {
     }
 
     try {
-      await fetchDataPost(reqData, '/api/password/reset-password')
+      await resetPassword(reqData)
       formElementRef.current.style.display = 'none'
       navRef.current.style.display = 'none'
       toast.push({
@@ -77,7 +78,7 @@ function ResetPasswordInner() {
       } else if (err.status >= 500) {
         toast.push({ variant: 'pill', type: 'error', message: "Unexpected error. Try again later" });
       } else {
-        toast.push({ variant: 'pill', type: 'error', message: err.errors || "Request failed. Try again later" });
+        toast.push({ variant: 'pill', type: 'error', message: err.error || "Request failed. Try again later" });
       }
       btnElementRef.current.disabled = false
       btnElementRef.current.textContent = 'Reset Password'
@@ -110,7 +111,7 @@ function ResetPasswordInner() {
               <p className="reset-subtitle">Enter a strong password you haven’t used before.</p>
             </div>
 
-            <form className="reset-form" onSubmit={resetPassword}>
+            <form className="reset-form" onSubmit={resetPwd}>
               <input type="hidden" value={resetToken} />
 
               <div className="reset-group">

@@ -1,14 +1,15 @@
-import { useState, useEffect, useRef, useContext, memo } from 'react';
+import { useState, useEffect, useRef, memo } from 'react';
 import { Link, useNavigate } from 'react-router';
-import UserContext from '../context/UserContext.jsx';
-import { fetchDataGet, fetchWithAuth } from '../scripts/utilis/fetch.js';
 import { ToastProvider, useToast, ModalCentered, ModalDestruct, CSS } from '../components/NotificationSystem';
 import { Ic } from '../scripts/utilis/Ic'
 import defaultAvatar from '../assets/images/avatar.jpg';
-import { saveUser, deleteUser } from '../hooks/services/indexedDB/users';
+import { saveUser } from '../hooks/services/indexedDB/users';
 import { deleteAllQuestions, saveQuestions } from '../hooks/services/indexedDB/questions';
 import { clearImages } from '../hooks/services/indexedDB/images';
 import { encrypt, decrypt } from '../scripts/utilis/crypto';
+import { request } from '../scripts/utilis/request';
+import { authStore } from '../stores/authStore';
+import { userStore } from '../stores/userStore';
 import './Settings.css';
 
 
@@ -40,7 +41,7 @@ function passwordStrength(pw) {
 // USER IMAGE
 // ─────────────────────────────────────────────────────────────
 
-function UserImage({ avatarPreview, userInfo }) {
+const UserImage = memo(function UserImage({ avatarPreview, userInfo }) {
   return (
     <img
       src={avatarPreview || `${userInfo.blob ? URL.createObjectURL(userInfo.blob) : ''}`}
@@ -49,7 +50,7 @@ function UserImage({ avatarPreview, userInfo }) {
       style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }}
     />
   )
-}
+})
 
 // ─────────────────────────────────────────────────────────────
 // SKELETON LOADER
@@ -70,7 +71,6 @@ function SettingsSkeleton() {
 
 const AddPasswordModal = memo(function AddPasswordModal({ userInfo, setUserInfo, modal, setModal }) {
   // Add-password modal state
-  const { token, setToken } = useContext(UserContext)
   const [newPwdOnly, setNewPwdOnly] = useState({ newPwd: '', confirmPwd: '' });
   const [newPwdOnlyErrors, setNewPwdOnlyErrors] = useState({});
   const [newPwdOnlyLoading, setNewPwdOnlyLoading] = useState(false);
@@ -104,17 +104,12 @@ const AddPasswordModal = memo(function AddPasswordModal({ userInfo, setUserInfo,
 
     setNewPwdOnlyLoading(true);
     try {
-      const response = await fetchWithAuth(token, setToken, '/api/settings/account', {
+      await request.auth('/api/settings/account', {
         method: 'POST',
         body: JSON.stringify({ newPassword: newPwdOnly.newPwd }),
       });
-      const data = await response.json().catch(() => ({}));
 
-      if (!response.ok) {
-        throw { status: response.status, error: data.error || data.message };
-      }
-
-      setUserInfo(u => ({ ...u, authProvider: 'local' }));
+      setUserInfo(prev => ({ ...prev, authProvider: 'local' }));
       setNewPwdOnly({ newPwd: '', confirmPwd: '' });
       setModal('password_added');
     } catch (err) {
@@ -251,7 +246,13 @@ const AddPasswordModal = memo(function AddPasswordModal({ userInfo, setUserInfo,
 // ─────────────────────────────────────────────────────────────
 function SettingsInner() {
   const navigate = useNavigate()
-  const { token, setToken, userInfo, setUserInfo, profileFields, setProfileFields } = useContext(UserContext);
+  const token = authStore(state => state.token)
+  const logout = authStore(state => state.logout)
+  const userInfo = userStore((state) => state.userInfo);
+  const setUserInfo = userStore((state) => state.setUserInfo);
+  const profileFields = userStore((state) => state.profileFields);
+  const setProfileFields = userStore((state) => state.setProfileFields);
+  const fetchUserInfo = userStore((state) => state.fetchUserInfo);
   const toast = useToast();
 
   const [loadError, setLoadError] = useState(false);
@@ -288,37 +289,12 @@ function SettingsInner() {
   // ── Fetch user info ──
   useEffect(() => {
     let cancelled = false;
-    async function fetchUserInfo() {
+    if (!userInfo) {
       try {
-        const response = await fetchWithAuth(token, setToken, '/api/settings', { method: 'GET' });
-        const d = await response.json().catch(() => ({}));
-        if (!response.ok) {
-          throw { status: response.status, error: d.error || d.message || 'Something went wrong. Try again later.' };
-        }
-        if (cancelled) return;
-        const data = decrypt(d.data)
-        let blob;
-
-        if (data.profilePic) {
-          const res = await fetch(data.profilePic)
-          if (res.ok) {
-            blob = await res.blob();
-          }
-        }
-
-        setUserInfo({
-          ...data,
-          blob: blob,
-          id: 'current-user'
-        })
-        setProfileFields({
-          fullName: data.fullName || '',
-          phoneNumber: data.phoneNumber || '',
-          targetExam: data.targetExam || 'JAMB UTME 2027',
-          targetScore: data.targetScore || '',
-        });
+        fetchUserInfo()
       } catch (err) {
         if (cancelled) return;
+        console.error('Error:', err);
         setLoadError(true);
         if (!err.status) {
           toast.push({ type: 'error', title: 'No connection', message: 'Check your internet and try again.' });
@@ -327,15 +303,11 @@ function SettingsInner() {
         } else {
           toast.push({ type: 'error', title: 'Could not load settings', message: err.error });
         }
-        console.error('Error:', err);
       }
-    }
-    if (!userInfo) {
-      fetchUserInfo();
     }
     setPrefs(prev => userInfo ? ( userInfo?.notificationSettings ?? prev ) : prev)
     return () => { cancelled = true; };
-  }, [token, setToken, setProfileFields, setUserInfo]);
+  }, [setPrefs, userInfo, setLoadError]);
 
   // ── Cleanup object URLs ──
   useEffect(() => {
@@ -365,10 +337,10 @@ function SettingsInner() {
 
   // ── Profile field setter ──
   function setProfileField(key, value) {
-    setProfileFields(p => ({ ...p, [key]: value }));
+    setProfileFields(prev => ({ ...prev, [key]: value }));
     setProfileDirty(true);
     if (profileErrors[key]) {
-      setProfileErrors(p => { const n = { ...p }; delete n[key]; return n; });
+      setProfileErrors(prev => {const n = { ...prev }; delete n[key]; return n});
     }
   }
 
@@ -441,23 +413,25 @@ function SettingsInner() {
       const formData = new FormData(form);
       // Email is intentionally excluded — read-only field, never submitted
 
-      const res = await fetchWithAuth(token, setToken, '/api/settings/profile', {
+      const res = await request.auth('/api/settings/profile', {
         method: 'POST',
         headers: { authorization: `Bearer ${token}` },
         body: formData,
       });
-      const d = await res.json().catch(() => ({}));
-
-      if (!res.ok) {
-        throw { status: res.status, error: d.error || d.message || 'Failed to update profile.' };
-      }
-      const data = decrypt(d.data)
+      const data = decrypt(res.body.data)
+      
       let blob;
       if (data.profilePic !== userInfo.profilePic) {
-        const res = await fetch(data.profilePic)
-        if (res.ok) {
-          blob = await res.blob();
+        try {
+          const res = await fetch(data.profilePic)
+          if (res.ok) {
+            blob = await res.blob();
+          }
+        } catch (err) {
+          console.error('Error:', err);
+          toast.push({ type: 'error', title: 'Update failed', message: 'Failed to load profile pic' });
         }
+        
       }
       
       if (data?.pendingClientUpdates && data?.pendingClientUpdates.length >= 1){
@@ -470,10 +444,10 @@ function SettingsInner() {
         )))
         delete data.pendingClientUpdates
       }
-      setUserInfo(u => ({
-        ...u,
+      setUserInfo(prev => ({
+        ...prev,
         ...data,
-        blob: blob ? blob : u.blob
+        blob: blob ? blob : prev.blob
       }))
       setProfileDirty(false);
       setModal('profile_saved');
@@ -545,15 +519,10 @@ function SettingsInner() {
 
     setPwdLoading(true);
     try {
-      const response = await fetchWithAuth(token, setToken, '/api/settings/account', {
+      await request.auth('/api/settings/account', {
         method: 'POST',
         body: JSON.stringify({ currentPassword: pwd.current, newPassword: pwd.newPwd }),
       });
-      const data = await response.json().catch(() => ({}));
-
-      if (!response.ok) {
-        throw { status: response.status, error: data.error || data.message };
-      }
 
       setPwd({ current: '', newPwd: '', confirmPwd: '' });
       setModal('password_updated');
@@ -579,10 +548,7 @@ function SettingsInner() {
     if (!navigator.onLine) return toast.push({ type: 'error', title: 'No connection', message: 'Check your internet and try again.' });
     const next = { ...prefs, [key]: !prefs[key] }
     try {
-      const response = await fetchWithAuth(token, setToken, '/api/notifications/settings/', { method: 'PATCH', body: JSON.stringify(next) });
-      if (!response.ok){
-        throw { status: response.status }
-      }
+      await request.auth('/api/notifications/settings/', { method: 'PATCH', body: JSON.stringify(next) });
       setPrefs(next)
       toast.push({ type: 'success', title: 'Preference saved', message: 'Your notification settings have been updated.', duration: 2500 });
     } catch (err) {
@@ -597,11 +563,9 @@ function SettingsInner() {
   }
 
   // ── Logout ──
-  async function logoutUser() {
+  function logoutUser() {
     try {
-      await fetchDataGet('/api/logout');
-      await deleteUser()
-      setToken(null)
+      logout()
     } catch (err) {
       console.error('Fetch error:', err);
       toast.push({ type: 'error', title: 'Logout failed', message: 'Please try again.' });
@@ -1212,7 +1176,7 @@ function SettingsInner() {
 // ─────────────────────────────────────────────────────────────
 // EXPORT — wraps in ToastProvider + injects NotificationSystem CSS
 // ─────────────────────────────────────────────────────────────
-export function Settings() {
+export default function Settings() {
   useEffect(() => {
     const existing = document.getElementById('__ns_styles');
     if (existing) return;

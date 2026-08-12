@@ -1,12 +1,10 @@
-import { useState, useRef, useEffect, useContext, memo } from 'react';
+import { useState, useRef, useEffect, memo } from 'react';
 import { useNavigate } from 'react-router';
 import { GoogleLogin } from "@react-oauth/google";
-import { url } from '../scripts/utilis/url';
-import UserContext from '../context/UserContext.jsx';
 import { Loading } from './Loading';
-import { fetchUserInfo, fetchHistory } from '../scripts/utilis/fetch.js';
 import { useToast } from '../pages/auth/Signin';
-import { decrypt } from '../scripts/utilis/crypto';
+import { authStore } from '../stores/authStore';
+import { userStore } from '../stores/userStore';
 import './GoogleAuth.css';
 
 function getGoogleAuthToast(error) {
@@ -82,7 +80,8 @@ function getGoogleAuthToast(error) {
 
 
 export const GoogleAuth = memo(function GoogleAuth({ dividerLabel, action }) {
-  const { setToken, setIsActivated, setIsAdmin, setUserInfo, setProfileFields, setHistoryData } = useContext(UserContext)
+  const googleAuth = authStore(state => state.googleAuth)
+  const { fetchUserInfo, fetchUserHistory } = userStore(state => state)
   const googleWrapRef = useRef(null);
   const [googleWidth, setGoogleWidth] = useState(360);
   const [isLoading, setIsLoading] = useState(false)
@@ -114,21 +113,11 @@ export const GoogleAuth = memo(function GoogleAuth({ dividerLabel, action }) {
           onSuccess={async (credentialResponse) => {
             try {
               setIsLoading(true)
-              const response = await fetch(`${url}/api/auth/google`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                credentials: "include",
-                body: JSON.stringify({ token: credentialResponse.credential })
-              });
-              const d = await response.json();
-              const data = decrypt(d.data)
-              setToken(data.accessToken)
-              setIsActivated(data.isActivated)
-              setIsAdmin(data.isAdmin)
+              await googleAuth(credentialResponse)
               navigate('/')
               await Promise.all([
-                fetchUserInfo(data.accessToken, setUserInfo, setProfileFields),
-                fetchHistory(data.accessToken, setHistoryData)
+                fetchUserInfo(),
+                fetchUserHistory()
               ]);
             } catch (error) {
               toast.push(getGoogleAuthToast(error))

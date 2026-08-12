@@ -1,27 +1,31 @@
-import { useState, useEffect, useContext, useRef, memo, useCallback } from 'react';
+import { useState, useEffect, useRef, memo, useCallback } from 'react';
 import { useNavigate } from 'react-router';
 import { MarkdownContent } from '../../components/MarkdownContent';
-import UserContext from '../../context/UserContext.jsx';
-import { fetchWithAuth } from '../../scripts/utilis/fetch.js';
+import { request } from '../../scripts/utilis/request';
 import { formatName } from '../../scripts/utilis/formatName.js';
-import { CountdownTimer } from '../../components/CountdownTimer.jsx'
-import { Calculator } from '../../components/Calculator.jsx'
-import { Loading } from '../../components/Loading.jsx'
+import { CountdownTimer } from '../../components/CountdownTimer'
+import { Calculator } from '../../components/Calculator'
+import { Loading } from '../../components/Loading'
 import { Image } from '../../components/Image'
 import { ModalStripe,  CSS } from '../../components/NotificationSystem';
 import { getRandomQuestions } from '../../hooks/services/examQuestions';
 import { saveQuestions } from '../../hooks/services/indexedDB/questions';
 import { saveAllImages } from '../../hooks/services/indexedDB/images';
 import { encrypt, decrypt } from '../../scripts/utilis/crypto';
-
+import { authStore } from '../../stores/authStore';
+import { simulatorStore } from '../../stores/simulatorStore';
 import './Mode.css';
 
-const ExpensiveChild = memo(({submitExam, hours, minutes, skipAutoSubmit}) => {
+const ExpensiveChild = memo(function ExpensiveChild({submitExam, hours, minutes, skipAutoSubmit}){
   return <CountdownTimer onFinish={submitExam} hours={hours} minutes={minutes} skipAutoSubmit={skipAutoSubmit} />;
 });
 
-export function Mode() {
-  const { token, setToken, isActivated, examConfig, answers, setAnswers, setExamQuestions} = useContext(UserContext);
+export default function Mode() {
+  const isActivated = authStore(state => state.isActivated)
+  const examConfig = simulatorStore((state) => state.examConfig);
+  const setExamQuestions = simulatorStore((state) => state.setExamQuestions);
+  const answers = simulatorStore((state) => state.answers);
+  const setAnswers = simulatorStore((state) => state.setAnswers);
   const navigate = useNavigate();
   const [toggleCalc, setToggleCalc] = useState(false);
   const [toggleNav, setToggleNav] = useState(false);
@@ -113,28 +117,24 @@ export function Mode() {
       properties[subName] = { subName, count: sub.qsNo, questions: [] };
     });
 
-    async function fetchQuestions(){
+    (async () => {
       try {
         let data;
         if (navigator.onLine){
           let response;
           if (!isActivated){
             const newReqData = { subjects: reqData.subjects.map(data => data.name) }
-            response = await fetchWithAuth(token, setToken, '/api/exam/fixedExam', {
+            response = await request.auth('/api/exam/fixedExam', {
               method: 'POST',
               body: JSON.stringify(newReqData)
             });
           } else {
-            response = await fetchWithAuth(token, setToken, '/api/exam', {
+            response = await request.auth('/api/exam', {
               method: 'POST',
               body: JSON.stringify(reqData)
             });
           }
-          const d = await response.json().catch(() => ({}));
-          if (!response.ok){
-            throw { status: response.status, error: d.message || 'Something went wrong. Try again' };
-          }
-          data = decrypt(d)
+          data = decrypt(response.body)
           
           // Saving question to indexDB
           await saveQuestions(
@@ -207,8 +207,7 @@ export function Mode() {
       } finally {
         setLoading(false)
       }
-    }
-    fetchQuestions();
+    })()
     
     /*===== Render Notification Style ======*/
     const el = document.createElement("style");
@@ -257,7 +256,7 @@ export function Mode() {
     const qsId = currentQues[0].id
     const findAns = answers.find(ans => ans.id === qsId)
     let isBmk = !findAns.isBookmarked ? true : false
-    setAnswers(answers.map(ans => ans.id === qsId ? { ... ans, isBookmarked: isBmk} : ans))
+    setAnswers(prev => prev.map(ans => ans.id === qsId ? { ... ans, isBookmarked: isBmk} : ans))
     setSavedBookmark(isBmk)
   }
   
@@ -309,12 +308,12 @@ export function Mode() {
     setSystemUpdate(systemUpdate + 1)
   }
   
-  function switchSubject(event){
+  const switchSubject = useCallback((event) => {
     const { name } = event.currentTarget.dataset
     setCurrentSubject(name)
     setCurrentIndex(0)
     setSystemUpdate(systemUpdate + 1)
-  }
+  },[setCurrentIndex, setSystemUpdate, setCurrentSubject])
   
   function selectedOpt(event){
     const { selectedId, id } = event.currentTarget.dataset
@@ -369,11 +368,11 @@ export function Mode() {
     setAnsweredIdx(answeredQsNo)
   }, [systemUpdate])
   
-  function navigateQues(event){
+  const navigateQues = useCallback((event) => {
     const { num } = event.target.dataset
     setCurrentIndex(Number(num) - 1)
     setToggleNav(false)
-  }
+  },[setCurrentIndex, setToggleNav])
   
   
   function toggleNavigator(){
@@ -435,7 +434,7 @@ export function Mode() {
       return
     }
     setIsActive(prev => !prev)
-  },[setIsActive])
+  },[setIsActive, setModal])
   
   const skipAutoSubmit = useRef(false)
   function goBack(){

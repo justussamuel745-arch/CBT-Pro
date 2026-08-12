@@ -1,9 +1,8 @@
-import { useContext } from 'react';
 import { Navigate, Outlet} from 'react-router'
-import UserContext from '../context/UserContext.jsx';
+import { simulatorStore } from '../stores/simulatorStore';
 
 export function ProtectedSimulatorRoutes(){
-  const { examConfig } = useContext(UserContext)
+  const examConfig  = simulatorStore(state => state.examConfig)
   
   return examConfig ? <Outlet /> :  <Navigate to="/simulator" replace />
 }

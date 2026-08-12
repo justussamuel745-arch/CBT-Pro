@@ -6,7 +6,6 @@ import {
   useCallback,
 } from "react";
 
-import UserContext from "./UserContext";
 import * as notificationService from "../services/notificationService";
 import socketService from "../services/socketService";
 
@@ -24,6 +23,11 @@ import {
 
 import { useNotificationHandlers } from '../services/useNotificationHandlers';
 
+import { authStore } from '../stores/authStore';
+import { userStore } from '../stores/userStore';
+
+import usePWAInstall from "../hooks/usePWAInstall.js";
+
 /**
  * Notification Context
  * Provides notifications state, unread count, and sync handlers to the app
@@ -34,7 +38,9 @@ export const NotificationProvider = ({ children }) => {
   // =======================
   // 1. CONTEXT & HOOKS
   // =======================
-  const { token, setToken, userInfo } = useContext(UserContext);
+  const token = authStore(state => state.token)
+  const setToken = authStore(state => state.setToken)
+  const userInfo = userStore(state => state.userInfo)
   const handlers = useNotificationHandlers();
 
   // =======================
@@ -44,6 +50,8 @@ export const NotificationProvider = ({ children }) => {
   const [unreadCount, setUnreadCount] = useState(0);
   const [settings, setSettings] = useState(null);
   const [loading, setLoading] = useState(true);
+  
+  const pwa = usePWAInstall()
 
   // =======================
   // 3. HELPER: UPDATE STATE FROM LIST
@@ -199,6 +207,7 @@ export const NotificationProvider = ({ children }) => {
     // Meta
     userId: userInfo?._id,
     handlers,
+    pwa
   };
 
   return (

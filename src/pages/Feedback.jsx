@@ -1,16 +1,15 @@
-import { useState, useEffect, useContext } from 'react'
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router';
-import UserContext from '../context/UserContext.jsx';
-import { fetchWithAuth } from '../scripts/utilis/fetch.js'
 import { ToastProvider, useToast, CSS } from '../components/NotificationSystem';
+import { request } from '../scripts/utilis/request';
 import './Feedback.css';
 
 function FeedbackInner(){
-  const { token, setToken, error, setError } = useContext(UserContext);
-  const [ feedbackType, setFeedbackType ] = useState('')
+  const [feedbackType, setFeedbackType] = useState('')
   const [feedbackComment, setFeedbackComment ] = useState('')
-  const [ isDisabled, setIsDisabled ] = useState(false)
-  const [ formContainer, setFormContainer ] = useState('show')
+  const [isDisabled, setIsDisabled] = useState(false)
+  const [formContainer, setFormContainer] = useState('show')
+  const [error, setError] = useState(null)
   
   const toast = useToast()
   
@@ -49,13 +48,10 @@ function FeedbackInner(){
     }
     
     try {
-      const response = await fetchWithAuth(token, setToken, '/api/feedback', {
+      await request.auth('/api/feedback', {
         method: 'POST',
         body: JSON.stringify(formData)
       })
-      if (!response.ok){
-        throw { status: response.status }
-      }
       setFormContainer('hide')
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (err) {
@@ -161,7 +157,7 @@ function FeedbackInner(){
   )
 }
 
-export function Feedback() {
+export default function Feedback() {
   return (
     <ToastProvider position="top-right">
       <FeedbackInner />

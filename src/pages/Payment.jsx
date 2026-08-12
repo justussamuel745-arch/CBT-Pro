@@ -1,9 +1,9 @@
-import { useState, useContext, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router';
-import UserContext from '../context/UserContext';
-import { fetchWithAuth } from '../scripts/utilis/fetch';
 import { Message } from '../components/Message';
 import { ToastProvider, useToast, CSS } from '../components/NotificationSystem';
+import { request } from '../scripts/utilis/request';
+import { authStore } from '../stores/authStore';
 import './Payment.css';
 
 // ─────────────────────────────────────────────────────────────
@@ -85,19 +85,139 @@ function FaqItem({ q, a }) {
           <i className="fa-solid fa-chevron-down"></i>
         </span>
       </button>
-      {open && <div className="payment-faq-a" dangerouslySetInnerHTML={{__html: a}} />}
+      {open && <div className="payment-faq-a" dangerouslySetInnerHTML={{ __html: a }} />}
     </div>
   );
 }
 
 // ─────────────────────────────────────────────────────────────
-// CREDIT PACKS
+// STATIC DATA
 // ─────────────────────────────────────────────────────────────
 const CREDIT_PACKS = [
   { credits: 15, price: 100, label: 'Starter', badge: null },
   { credits: 40, price: 200, label: 'Popular', badge: 'Best value' },
   { credits: 100, price: 500, label: 'Pro', badge: 'Save 20%' },
 ];
+
+const ACTIVATION_FEATURES = [
+  { icon: 'fa-bolt', title: '250 AI Credits', desc: 'A starting balance to fuel Astra AI explanations and custom quizzes from day one.' },
+  { icon: 'fa-layer-group', title: 'Complete JAMB archive', desc: 'Unrestricted access to past questions across all available years, every subject.' },
+  { icon: 'fa-wand-magic-sparkles', title: 'AI-enhanced study mode', desc: 'Step-by-step explanations powered by AI whenever a concept needs breaking down.' },
+  { icon: 'fa-list-check', title: 'Topic-by-topic revision', desc: 'Study specific subjects and individual topics at your own pace, in any order.' },
+  { icon: 'fa-desktop', title: 'Dynamic CBT simulator', desc: 'Practice in a realistic exam environment with a fresh, randomized question set every attempt.' },
+  { icon: 'fa-arrows-rotate', title: 'Continuous updates', desc: 'Ongoing platform improvements and new features, included for your full 12 months.' },
+];
+
+// ─────────────────────────────────────────────────────────────
+// HERO HEADER
+// ─────────────────────────────────────────────────────────────
+function PaymentHero({ isActivated }) {
+  return (
+    <div className="payment-hero">
+      <div className="payment-hero-inner">
+        <div className="payment-hero-topbar">
+          <Link to="/" className="payment-hero-back">
+            <i className="fa-solid fa-arrow-left"></i> Back to Dashboard
+          </Link>
+          <Link to="/" className="payment-hero-logo">CBT Pro</Link>
+        </div>
+
+        <div className="payment-hero-top">
+          <div className="payment-hero-icon">
+            <i className={'fa-solid ' + (isActivated ? 'fa-bolt' : 'fa-unlock-keyhole')}></i>
+          </div>
+          <div>
+            <h1 className="payment-hero-title">
+              {isActivated ? 'Buy AI Credits' : 'Activate Your App'}
+            </h1>
+            <p className="payment-hero-subtitle">
+              {isActivated
+                ? 'Top up your Astra AI balance any time. Credits never expire and land in your account instantly.'
+                : 'One payment, one year of full access. See exactly what you get and how checkout works below.'}
+            </p>
+          </div>
+        </div>
+
+        <div className="payment-hero-meta">
+          {isActivated ? (
+            <>
+              <span className="payment-hero-chip"><i className="fa-solid fa-infinity"></i> Never expire</span>
+              <span className="payment-hero-chip"><i className="fa-solid fa-bolt"></i> Instant delivery</span>
+              <span className="payment-hero-chip"><i className="fa-solid fa-shield-halved"></i> Secured by Paystack</span>
+            </>
+          ) : (
+            <>
+              <span className="payment-hero-chip"><i className="fa-solid fa-calendar-check"></i> 12 months access</span>
+              <span className="payment-hero-chip"><i className="fa-solid fa-tag"></i> ₦1,500 one-time</span>
+              <span className="payment-hero-chip"><i className="fa-solid fa-shield-halved"></i> Secured by Paystack</span>
+            </>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────
+// STATUS BANNER
+// ─────────────────────────────────────────────────────────────
+function StatusBanner({ isActivated }) {
+  if (isActivated) {
+    return (
+      <div className="payment-status-card is-active">
+        <div className="payment-status-card-pattern"></div>
+        <div className="payment-status-card-body">
+          <div className="payment-status-icon"><i className="fa-solid fa-shield-heart"></i></div>
+          <div style={{ flex: 1 }}>
+            <div className="payment-status-title">Your account is activated</div>
+            <div className="payment-status-desc">Full access is live until your subscription expires. Top up AI credits below whenever you need more.</div>
+          </div>
+          <span className="payment-status-badge"><i className="fa-solid fa-circle-check"></i> Active</span>
+        </div>
+      </div>
+    );
+  }
+  return (
+    <div className="payment-status-card is-inactive">
+      <div className="payment-status-card-body">
+        <div className="payment-status-icon"><i className="fa-solid fa-lock"></i></div>
+        <div style={{ flex: 1 }}>
+          <div className="payment-status-title">Your account isn&apos;t activated yet</div>
+          <div className="payment-status-desc">Activate for one year of full access. AI credit top-ups unlock right after.</div>
+        </div>
+        <span className="payment-status-badge"><i className="fa-solid fa-triangle-exclamation"></i> Inactive</span>
+      </div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────
+// FEATURES CARD (what activation unlocks)
+// ─────────────────────────────────────────────────────────────
+function FeaturesCard() {
+  return (
+    <div className="payment-features-card">
+      <div className="payment-features-header">
+        <div className="payment-features-title">
+          <span>What&apos;s included</span>
+          Everything you unlock with activation
+        </div>
+        <div className="payment-features-price-chip">₦1,500 · 12 months</div>
+      </div>
+      <div className="payment-features-grid">
+        {ACTIVATION_FEATURES.map(f => (
+          <div className="payment-feature-item" key={f.title}>
+            <div className="payment-feature-icon"><i className={'fa-solid ' + f.icon}></i></div>
+            <div>
+              <div className="payment-feature-title">{f.title}</div>
+              <div className="payment-feature-desc">{f.desc}</div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 // ─────────────────────────────────────────────────────────────
 // ACTIVATION GUIDE
@@ -121,6 +241,23 @@ function ActivationGuide() {
         ].map(s => (
           <div className="payment-step" key={s.n}>
             <div className="payment-step-number">{s.n}</div>
+            <div className="payment-step-content">
+              <div className="payment-step-title">{s.title}</div>
+              <div className="payment-step-desc">{s.desc}</div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="payment-guide-section">
+        <div className="payment-guide-section-title">How Paystack works</div>
+        {[
+          { icon: <i className="fa-solid fa-shield-halved"></i>, title: 'Licensed payment processor', desc: 'Paystack is a licensed payments company that handles the transaction — CBT Pro never sees or stores your card details.' },
+          { icon: <i className="fa-solid fa-lock"></i>, title: 'Encrypted checkout', desc: 'Every checkout session runs over 256-bit SSL, the same standard banks use for online transactions.' },
+          { icon: <i className="fa-solid fa-webhook"></i>, title: 'Automatic confirmation', desc: 'When Paystack confirms your payment, it notifies CBT Pro directly, which is what triggers instant activation — no manual approval needed.' },
+        ].map(s => (
+          <div className="payment-step" key={s.title}>
+            <div className="payment-step-icon">{s.icon}</div>
             <div className="payment-step-content">
               <div className="payment-step-title">{s.title}</div>
               <div className="payment-step-desc">{s.desc}</div>
@@ -237,7 +374,6 @@ function CreditsGuide() {
 // ACTIVATION FORM
 // ─────────────────────────────────────────────────────────────
 function ActivationForm({ toast, setBlockPayment }) {
-  const { token, setToken } = useContext(UserContext);
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -255,14 +391,11 @@ function ActivationForm({ toast, setBlockPayment }) {
     if (!validate()) return;
     setLoading(true);
     try {
-      const response = await fetchWithAuth(token, setToken, '/api/payment', {
+      const response = await request.auth('/api/payment', {
         method: 'POST',
         body: JSON.stringify({ email, type: 'app_activation' }),
       });
-      const data = await response.json().catch(() => ({}));
-      if (!response.ok) {
-        throw { status: response.status, error: data.message || data.error || 'Something went wrong. Try again.' };
-      }
+      const data = response.body
       toast.push({ type: 'info', title: 'Redirecting to Paystack…', message: 'You will be redirected to the secure payment page.' });
       setTimeout(() => { window.location.href = data.authorization_url; }, 1000);
     } catch (err) {
@@ -283,10 +416,16 @@ function ActivationForm({ toast, setBlockPayment }) {
   return (
     <div className="payment-panel">
       <div className="payment-summary">
-        <div className="payment-summary-icon"><i className="fa-solid fa-unlock-keyhole"></i></div>
+        <div className="payment-summary-stub">
+          <div className="payment-summary-stub-icon"><i className="fa-solid fa-unlock-keyhole"></i></div>
+        </div>
+        <div className="payment-summary-divider"></div>
         <div className="payment-summary-info">
           <div className="payment-summary-label">App Activation — Annual</div>
-          <div className="payment-summary-amount">₦1,500</div>
+          <div className="payment-summary-amount-row">
+            <span className="payment-summary-amount">₦1,500</span>
+            <span className="payment-summary-amount-note">12 months</span>
+          </div>
           <div className="payment-summary-desc">Full access to all subjects, mock tests, past questions, and the Astra AI tutor for 12 months.</div>
         </div>
       </div>
@@ -322,25 +461,12 @@ function ActivationForm({ toast, setBlockPayment }) {
 // ─────────────────────────────────────────────────────────────
 // AI CREDITS FORM
 // ─────────────────────────────────────────────────────────────
-function CreditsForm({ toast, setMainTab }) {
-  const { token, setToken, isActivated } = useContext(UserContext);
+function CreditsForm({ toast }) {
   const [selectedPack, setSelectedPack] = useState(1);
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const pack = CREDIT_PACKS[selectedPack];
-  
-  const toastsIdRef = useRef([])
-  const nsToast = useToast()
-
-  /*=========== Inject Notification Styles ==============*/
-  useEffect(() => {
-    const el = document.createElement("style");
-    el.id = "__ns_styles";
-    el.textContent = CSS[0];
-    document.head.appendChild(el);
-    return () => document.getElementById("__ns_styles")?.remove();
-  }, []);
 
   function validate() {
     if (!email.trim()) { setError('Email address is required.'); return false; }
@@ -352,34 +478,13 @@ function CreditsForm({ toast, setMainTab }) {
   async function handlePay(e) {
     e.preventDefault();
     if (!validate()) return;
-    if (!isActivated) {
-      const id = nsToast.push({
-        variant: 'card',
-        type: 'info',
-        title: 'Account Not Activated',
-        message: 'You must complete account activation to purchase AI credits.',
-        action: 'Activate Now',
-        onAction: () => { 
-          toastsIdRef.current.forEach((id) => {
-            nsToast.dismiss(id)
-          });
-          setMainTab('activation')
-        },
-        duration: 5000,
-      });
-      toastsIdRef.current.push(id)
-      return
-    }
     setLoading(true);
     try {
-      const response = await fetchWithAuth(token, setToken, '/api/payment', {
+      const response = await request.auth('/api/payment', {
         method: 'POST',
         body: JSON.stringify({ email, type: `ai_pack_${pack.price.toLocaleString()}` }),
       });
-      const data = await response.json().catch(() => ({}));
-      if (!response.ok) {
-        throw { status: response.status, error: data.message || data.error || 'Something went wrong. Try again.' };
-      }
+      const data = response.body
       toast.push({ type: 'info', title: 'Redirecting to Paystack…', message: `Purchasing ${pack.credits} credits for ₦${pack.price.toLocaleString()}.` });
       setTimeout(() => { window.location.href = data.authorization_url; }, 1000);
     } catch (err) {
@@ -410,11 +515,17 @@ function CreditsForm({ toast, setMainTab }) {
       </div>
 
       <div className="payment-summary">
-        <div className="payment-summary-icon"><i className="fa-solid fa-robot"></i></div>
+        <div className="payment-summary-stub">
+          <div className="payment-summary-stub-icon"><i className="fa-solid fa-robot"></i></div>
+        </div>
+        <div className="payment-summary-divider"></div>
         <div className="payment-summary-info">
           <div className="payment-summary-label">{pack.label} pack — {pack.credits} credits</div>
-          <div className="payment-summary-amount">₦{pack.price.toLocaleString()}</div>
-          <div className="payment-summary-desc">₦{(pack.price / pack.credits).toFixed(1)} per credit · Added instantly · Never expire</div>
+          <div className="payment-summary-amount-row">
+            <span className="payment-summary-amount">₦{pack.price.toLocaleString()}</span>
+            <span className="payment-summary-amount-note">₦{(pack.price / pack.credits).toFixed(1)} / credit</span>
+          </div>
+          <div className="payment-summary-desc">Added instantly to your balance · Credits never expire</div>
         </div>
       </div>
 
@@ -450,16 +561,19 @@ function CreditsForm({ toast, setMainTab }) {
 // MAIN PAGE
 // ─────────────────────────────────────────────────────────────
 function PaymentInner() {
-  const { isActivated } = useContext(UserContext)
-  const [mainTab, setMainTab] = useState(isActivated ? 'credits' : 'activation');
+  const isActivated = authStore(state => state.isActivated)
   const [innerTab, setInnerTab] = useState('pay');
   const [blockPayment, setBlockPayment] = useState(false)
   const toast = useToastState();
 
-  function switchMain(tab) {
-    setMainTab(tab);
-    setInnerTab('pay');
-  }
+  /*=========== Inject Notification Styles (used by the activation-blocked toast) ==============*/
+  useEffect(() => {
+    const el = document.createElement("style");
+    el.id = "__ns_styles";
+    el.textContent = CSS[0];
+    document.head.appendChild(el);
+    return () => document.getElementById("__ns_styles")?.remove();
+  }, []);
 
   if (blockPayment) {
     return <Message title="Account Already Activated" message="Your account is activated and ready to use. No further action needed." action={() => setBlockPayment(false)} btnLabel="Go Back" />
@@ -471,56 +585,39 @@ function PaymentInner() {
 
       <ToastPortal toasts={toast.toasts} onDismiss={toast.dismiss} />
 
-      {/* Nav Placeholder */}
-      <nav style={{ background: '#fff', borderBottom: '1px solid #e2e8f0' }}>
-        <div className="payment-nav-container">
-          <Link to="/" className="logo">CBT Pro</Link>
-        </div>
-      </nav>
-
-      {/* Header */}
-      <div className="payment-nav-container">
-        <div className="payment-breadcrumb">
-          <Link to="/">Dashboard</Link> / Payment
-        </div>
-        <h1 className="payment-page-title">
-          {mainTab === 'activation' ? 'Activate Your App' : 'Buy AI Credits'}
-        </h1>
-      </div>
+      <PaymentHero isActivated={isActivated} />
 
       <div className="payment-container">
-        {/* Main tabs */}
-        <div className="payment-main-tabs">
-          <button className={'payment-main-tab' + (mainTab === 'activation' ? ' active' : '')} onClick={() => switchMain('activation')}>
-            <i className="fa-solid fa-unlock-keyhole"></i> App Activation
-          </button>
-          <button className={'payment-main-tab' + (mainTab === 'credits' ? ' active' : '')} onClick={() => switchMain('credits')}>
-            <i className="fa-solid fa-robot"></i> AI Credits
-          </button>
-        </div>
+        <StatusBanner isActivated={isActivated} />
 
-        {/* Payment Card Wrapper */}
+        {!isActivated && <FeaturesCard />}
+
+        {/* Payment Card */}
         <div className="payment-card">
           <div className="payment-inner-tabs">
             <button className={'payment-inner-tab' + (innerTab === 'pay' ? ' active' : '')} onClick={() => setInnerTab('pay')}>
-              <i className="fa-regular fa-credit-card"></i> {mainTab === 'activation' ? 'Make Payment' : 'Buy Credits'}
+              <i className="fa-regular fa-credit-card"></i> {isActivated ? 'Buy Credits' : 'Make Payment'}
             </button>
             <button className={'payment-inner-tab' + (innerTab === 'guide' ? ' active' : '')} onClick={() => setInnerTab('guide')}>
               <i className="fa-solid fa-book-open"></i> How it works
             </button>
           </div>
 
-          {mainTab === 'activation'
-            ? (innerTab === 'pay' ? <ActivationForm toast={toast} setBlockPayment={setBlockPayment} /> : <ActivationGuide />)
-            : (innerTab === 'pay' ? <CreditsForm toast={toast} setMainTab={setMainTab} /> : <CreditsGuide />)
+          {isActivated
+            ? (innerTab === 'pay' ? <CreditsForm toast={toast} /> : <CreditsGuide />)
+            : (innerTab === 'pay' ? <ActivationForm toast={toast} setBlockPayment={setBlockPayment} /> : <ActivationGuide />)
           }
+        </div>
+
+        <div className="payment-powered-by">
+          <i className="fa-solid fa-lock"></i> All payments processed securely by Paystack
         </div>
       </div>
     </div>
   );
 }
 
-export function Payment() {
+export default function Payment() {
   return (
     <ToastProvider position="top-right">
       <PaymentInner />

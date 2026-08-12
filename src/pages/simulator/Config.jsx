@@ -1,15 +1,21 @@
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router';
-import UserContext from '../../context/UserContext.jsx';
 import { subjectsData } from '../../scripts/data/subjectsData.js';
 import { formatName } from '../../scripts/utilis/formatName.js';
-import { ModalStripe, ModalDialog, CSS } from '../../components/NotificationSystem'
+import { ModalStripe, ModalDialog, CSS } from '../../components/NotificationSystem';
+import { authStore } from '../../stores/authStore';
+import { simulatorStore } from '../../stores/simulatorStore';
 import './Config.css';
 
-export function Config() {
-  const { isActivated, examConfig, setExamConfig, setExamQuestions} = useContext(UserContext);
+export default function Config() {
+  const isActivated = authStore(state => state.isActivated)
+  const examConfig = simulatorStore((state) => state.examConfig);
+  const setExamQuestions = simulatorStore((state) => state.setExamQuestions);
+  const getQuesNo = simulatorStore((state) => state.getQuesNo);
+  const setHours = simulatorStore((state) => state.setHours);
+  const setMinutes = simulatorStore((state) => state.setMinutes);
   const navigate = useNavigate()
-
+  const [subjectsIcon, setSubjectsIcon] = useState({})
   const [modal, setModal] = useState(null);
   const closeModal = () => setModal(null);
 
@@ -22,44 +28,13 @@ export function Config() {
     return () => document.getElementById("__ns_styles")?.remove();
   }, []);
 
-  const subjectIcon = {};
-  examConfig.subjects.forEach((sub) => {
-    const data = subjectsData.find(d => d.name === sub.name);
-    if (data) subjectIcon[sub.name] = data.icon;
-  });
-
-  function getQuesNo(event) {
-    const subName = event.target.dataset.subname;
-    let qsNo = Number(event.target.value);
-    if (!isActivated) {
-      if (subName === 'English') {
-        qsNo = 60
-      } else {
-        qsNo = 40
-      }
-    }
-
-    setExamConfig(prev => ({
-      ...prev,
-      subjects: prev.subjects.map(sub =>
-        sub.name === subName ? { ...sub, qsNo } : sub
-      )
-    }));
-  }
-
-  function setHours(event) {
-    setExamConfig(prev => ({
-      ...prev,
-      hours: Number(event.target.value)
-    }));
-  }
-
-  function setMinutes(event) {
-    setExamConfig(prev => ({
-      ...prev,
-      minutes: Number(event.target.value)
-    }));
-  }
+  useMemo(() => {
+    examConfig.subjects.forEach((sub) => {
+      const data = subjectsData.find(d => d.name === sub.name);
+      if (data) subjectsIcon[sub.name] = data.icon;
+    });
+    setSubjectsIcon(subjectsIcon)
+  },[setSubjectsIcon])
 
   function startExam() {
     /* Clean up from previous exam */
@@ -91,7 +66,7 @@ export function Config() {
               body="Your account is not activated. Access is limited to questions from a single year. The selected number of questions isn&apos;t available on your current plan. Default settings will be used. Activate to unlock full access to all features."
               primaryLabel="Activate App"
               onPrimary={() => navigate('/payment')}
-              onClose={() => {closeModal(); navigate('/simulator/mode')}}
+              onClose={() => { closeModal(); navigate('/simulator/mode') }}
               closeLabel="Skip"
             />
           </div>
@@ -132,7 +107,7 @@ export function Config() {
               return (
                 <div className="simulator-two-subject-item" key={sub.name}>
                   <div className="simulator-two-subject-left">
-                    <div className="simulator-two-subject-icon" dangerouslySetInnerHTML={{ __html: subjectIcon[sub.name] }} />
+                    <div className="simulator-two-subject-icon" dangerouslySetInnerHTML={{ __html: subjectsIcon[sub.name] }} />
                     <div className="simulator-two-subject-name">{formatName(sub.name)}</div>
                   </div>
                   <select

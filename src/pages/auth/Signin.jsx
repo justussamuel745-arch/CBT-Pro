@@ -1,12 +1,9 @@
 import { useState, useEffect, createContext, useContext, useRef } from "react";
 import { Link, useNavigate } from 'react-router';
 import { Ic } from '../../scripts/utilis/Ic'
-import UserContext from '../../context/UserContext.jsx';
 import { GoogleAuth } from '../../components/GoogleAuth';
-import { fetchDataPost, fetchUserInfo, fetchHistory } from '../../scripts/utilis/fetch.js';
-import { decrypt } from '../../scripts/utilis/crypto';
-import { deleteAllQuestions } from '../../hooks/services/indexedDB/questions';
-import pushNotificationService from '../../services/pushNotificationService';
+import { authStore } from '../../stores/authStore';
+import { userStore } from '../../stores/userStore';
 import './Signin.css';
 
 // ─────────────────────────────────────────────────────────────
@@ -158,7 +155,8 @@ function validate(email, password) {
 // SIGN IN FORM
 // ─────────────────────────────────────────────────────────────
 function SigninInner() {
-  const { setToken, setIsActivated, setIsAdmin, setUserInfo, setProfileFields, setHistoryData} = useContext(UserContext)
+  const signin = authStore(state => state.signin)
+  const { fetchUserInfo, fetchUserHistory } = userStore(state => state)
   const navigate = useNavigate()
   const toast = useToast();
   const [email, setEmail] = useState("");
@@ -189,19 +187,10 @@ function SigninInner() {
     setFormAlert(null);
     setErrors({});
     try {
-      const response = await fetchDataPost({email, password}, '/api/auth');
-      const d = decrypt(response.data)
-      if (d?.activationExpired){
-        await deleteAllQuestions()
-      }
-      // uncomment during production
-      //await pushNotificationService.enable(d.accessToken);
-      setToken(d.accessToken)
-      setIsActivated(d.isActivated)
-      setIsAdmin(d.isAdmin)
+      await signin({ email, password })
       await Promise.all([
-        fetchUserInfo(d.accessToken, setUserInfo, setProfileFields),
-        fetchHistory(d.accessToken, setToken, setHistoryData)
+        fetchUserInfo(),
+        fetchUserHistory()
       ])
       
       setModal({
@@ -218,7 +207,7 @@ function SigninInner() {
       });
     } catch (err) {
       console.log(err);
-      if (err.errors === 'GOOGLE_SIGNIN_REQUIRED'){
+      if (err.error === 'GOOGLE_SIGNIN_REQUIRED'){
         setModal({
           type: "error",
           icon: <Ic.X />,
@@ -231,11 +220,11 @@ function SigninInner() {
             setModal(null);
           }
         });
-      } else if (err.errors === 'wrong_password'){
+      } else if (err.error === 'wrong_password'){
         setFormAlert({ kind: "error", title: "Incorrect password", message: "The password you entered doesn't match this account. Try again or reset your password." });
         setErrors({ password: "Incorrect password." });
         toast.push({ type: "error", title: "Sign in failed", message: "Incorrect password." });
-      } else if (err.errors === 'no_account'){
+      } else if (err.error === 'no_account'){
         setModal({
           type: "error", icon: <Ic.X />,
           title: "No account found",

@@ -1,85 +1,153 @@
  /* =====================================
   PAGE SPECIFIC STYLE
   ======================================*/
-  
+
   .margin-auto{
     margin: 0 auto 1rem;
   }
-  
+
   .page-title {
     font-size: 2rem;
     font-weight: 800;
     margin-bottom: 0.5rem;
   }
-  
+
   .page-subtitle {
     color: var(--text-muted);
   }
-  
+
   /* MAIN */
   #study-container {
     max-width: 1280px;
     margin: 0 auto;
     padding: 0 1.25rem;
   }
-  
+
   .study-main {
     padding-bottom: 4rem;
   }
-  
-  /* SIMULATOR HERO CARD - FIXED STRUCTURE */
+
+  /* ═══════════════════════════════════════════
+     SIMULATOR HERO CARD
+     ═══════════════════════════════════════════ */
   .simulator-hero {
+    position: relative;
     background: var(--gradient);
     color: white;
     border-radius: var(--radius);
-    padding: 2.5rem;
+    padding: 2.75rem;
     margin-bottom: 3rem;
     box-shadow: var(--shadow-lg);
     display: grid;
     grid-template-columns: 1fr auto;
-    gap: 2rem;
+    gap: 2.5rem;
     align-items: center;
+    overflow: hidden;
   }
-  
+
+  .simulator-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(circle, rgba(255,255,255,0.09) 1px, transparent 1px);
+    background-size: 20px 20px;
+    opacity: 0.6;
+    pointer-events: none;
+  }
+
+  .simulator-hero::after {
+    content: '';
+    position: absolute;
+    top: -80px;
+    right: 220px;
+    width: 260px;
+    height: 260px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.06);
+    pointer-events: none;
+  }
+
+  .simulator-content {
+    position: relative;
+    z-index: 1;
+  }
+
+  .simulator-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.25);
+    padding: 0.4rem 0.85rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 1rem;
+  }
+
   .simulator-content h2 {
-    font-size: 1.75rem;
+    font-size: 1.85rem;
     font-weight: 800;
     margin-bottom: 0.75rem;
+    letter-spacing: -0.01em;
   }
-  
+
   .simulator-content p {
-    opacity: 0.95;
-    margin-bottom: 1.5rem;
-    max-width: 500px;
+    opacity: 0.92;
+    margin-bottom: 1.75rem;
+    max-width: 480px;
     line-height: 1.7;
+    font-size: 0.95rem;
   }
-  
+
   .simulator-stats {
     display: flex;
-    gap: 2rem;
-    margin-bottom: 1.5rem;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
     flex-wrap: wrap;
   }
-  
+
   .stat {
     text-align: left;
     display: flex;
-    flex-direction: column;
     align-items: center;
+    gap: 0.65rem;
   }
-  
+
+  .stat-icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 9px;
+    background: rgba(255,255,255,0.14);
+    border: 1px solid rgba(255,255,255,0.22);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+  }
+
   .stat-value {
-    font-size: 1.25rem;
+    font-size: 1.05rem;
     font-weight: 800;
     display: block;
-    margin-bottom: 0.25rem;
+    line-height: 1.2;
   }
-  
+
   .stat-label {
-    font-size: 0.875rem;
-    opacity: 0.9;
+    font-size: 0.78rem;
+    opacity: 0.85;
   }
-  
+
+  .stat-divider {
+    width: 1px;
+    height: 30px;
+    background: rgba(255,255,255,0.2);
+  }
+
   .btn-white {
     padding: 0.9rem 2rem;
     font-size: 1rem;
@@ -92,20 +160,111 @@
     transition: all 0.2s;
     box-shadow: 0 4px 12px rgb(0 0 0 / 0.15);
     text-decoration: none;
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
   }
-  
+
   .btn-white:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 16px rgb(0 0 0 / 0.2);
   }
-  
-  .simulator-icon {
-    font-size: 12rem;
-    opacity: 0.5;
-    line-height: 1;
+
+  /* Mock CBT exam-screen visual (replaces the old emoji icon) */
+  .simulator-mock {
+    position: relative;
+    z-index: 1;
+    width: 260px;
+    background: rgba(15, 23, 42, 0.35);
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: 14px;
+    overflow: hidden;
+    backdrop-filter: blur(6px);
+    box-shadow: 0 20px 40px -12px rgb(0 0 0 / 0.35);
+    transform: rotate(2deg);
   }
-  
+
+  .simulator-mock-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.65rem 0.85rem;
+    background: rgba(255,255,255,0.08);
+    border-bottom: 1px solid rgba(255,255,255,0.12);
+  }
+
+  .simulator-mock-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.35);
+  }
+
+  .simulator-mock-timer {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.68rem;
+    font-weight: 700;
+    background: rgba(239, 68, 68, 0.25);
+    color: #fecaca;
+    padding: 0.15rem 0.5rem;
+    border-radius: 8px;
+  }
+
+  .simulator-mock-body {
+    padding: 1rem;
+  }
+
+  .simulator-mock-qline {
+    height: 8px;
+    border-radius: 4px;
+    background: rgba(255,255,255,0.28);
+    margin-bottom: 0.5rem;
+  }
+  .simulator-mock-qline.short { width: 65%; }
+
+  .simulator-mock-option {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 0.5rem 0.6rem;
+    border-radius: 8px;
+    margin-bottom: 0.4rem;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .simulator-mock-option.selected {
+    background: rgba(255,255,255,0.92);
+    border-color: transparent;
+  }
+
+  .simulator-mock-radio {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(255,255,255,0.45);
+    flex-shrink: 0;
+  }
+
+  .simulator-mock-option.selected .simulator-mock-radio {
+    border-color: var(--primary);
+    background: var(--primary);
+  }
+
+  .simulator-mock-optline {
+    height: 6px;
+    flex: 1;
+    border-radius: 3px;
+    background: rgba(255,255,255,0.3);
+  }
+
+  .simulator-mock-option.selected .simulator-mock-optline {
+    background: rgba(15, 23, 42, 0.35);
+  }
+
   /* SECTION HEADER */
   .study-section-header {
     display: flex;
@@ -115,18 +274,18 @@
     flex-wrap: wrap;
     gap: 1rem;
   }
-  
+
   .study-section-title {
     font-size: 1.5rem;
     font-weight: 800;
   }
-  
+
   .filter-tabs {
     display: flex;
     gap: 0.5rem;
     flex-wrap: wrap;
   }
-  
+
   .filter-btn {
     padding: 0.5rem 1rem;
     background: var(--card);
@@ -137,20 +296,25 @@
     cursor: pointer;
     transition: all 0.2s;
   }
-  
+
+  .filter-btn:hover:not(.active) {
+    border-color: var(--primary);
+    color: var(--primary);
+  }
+
   .filter-btn.active {
     background: var(--primary);
     color: white;
     border-color: var(--primary);
   }
-  
+
   /* SUBJECTS GRID */
   .study-subjects-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
     gap: 1.25rem;
   }
-  
+
   .study-subject-card {
     background: var(--card);
     border: 1.5px solid var(--border);
@@ -162,20 +326,29 @@
     text-decoration: none;
     color: var(--text);
     display: block;
+    position: relative;
   }
-  
+
   .study-subject-card:hover {
     transform: translateY(-6px) scale(1.02);
     box-shadow: var(--shadow-lg);
     border-color: var(--primary);
   }
-  
+
+  .subject-logo {
+    width: 56px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
   .subject-name {
     font-weight: 700;
     font-size: 1rem;
     margin-bottom: 0.5rem;
   }
-  
+
   .subject-meta {
     font-size: 0.8rem;
     color: var(--text-muted);
@@ -184,64 +357,71 @@
     justify-content: center;
     gap: 0.5rem;
   }
-  
+
   .subject-badge {
     background: var(--bg);
     padding: 0.25rem 0.5rem;
     border-radius: 6px;
     font-weight: 600;
   }
-  
+
   /* RESPONSIVE */
   @media (max-width: 768px) {
     .page-title {
       font-size: 1.5rem;
     }
-    
+
     .simulator-hero {
       grid-template-columns: 1fr;
       text-align: center;
       padding: 2rem 1.5rem;
     }
-    
+
     .simulator-content p {
       max-width: 100%;
     }
-    
+
+    .simulator-eyebrow {
+      margin-left: auto;
+      margin-right: auto;
+    }
+
     .simulator-stats {
       justify-content: center;
     }
-    
-    .simulator-icon {
-      display: none;
+
+    .simulator-mock {
+      margin: 0 auto;
+      width: 220px;
+      transform: none;
     }
-    
+
     .study-subjects-grid {
       grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
     }
-    
+
     .study-section-header {
       flex-direction: column;
       align-items: flex-start;
     }
-    
+
     .menu-dropdown {
       min-width: 280px;
       right: -10px;
     }
   }
-  
+
   /* =====================================
   FOOTER STYLES - shared across pages
   ======================================*/
-  
+
   footer {
     background: #0f172a;
     color: #94a3b8;
     padding: 3rem 0 1.5rem;
     margin-top: 4rem;
   }
-  
+
   .footer-container {
     max-width: 1280px;
     margin: 0 auto;

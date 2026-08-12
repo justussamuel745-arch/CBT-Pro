@@ -1,7 +1,6 @@
-import { useState, useEffect, useRef, useContext, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router';
 import { MarkdownContent } from '../../components/MarkdownContent';
-import UserContext from '../../context/UserContext';
 import { Loading } from '../../components/Loading';
 import { Calculator } from '../../components/Calculator';
 import { AstraAIModal } from '../../components/AstraAIModal';
@@ -10,9 +9,14 @@ import { Image } from '../../components/Image'
 import { ModalDialog, CSS } from '../../components/NotificationSystem';
 import { ReportQuestionModal } from "../../components/ReportQuestionModal";
 import { AnswerCard } from '../../components/AnswerCard';
+import { authStore } from '../../stores/authStore';
+import { simulatorStore } from '../../stores/simulatorStore';
 
-export function Review() {
-  const {  isActivated, examConfig, answers, examQuestions } = useContext(UserContext);
+export default function Review() {
+  const isActivated = authStore(state => state.isActivated)
+  const examConfig = simulatorStore(state => state.examConfig);
+  const answers = simulatorStore(state => state.answers);
+  const examQuestions = simulatorStore(state => state.examQuestions);
   const navigate = useNavigate()
   const [isLoading, setIsLoading] = useState(true)
   const [toggleCalc, setToggleCalc] = useState(false);
@@ -25,53 +29,45 @@ export function Review() {
   const [progressList, setProgressList] = useState([])
   const [progressBadge, setProgressDadge] = useState(null)
   const [chatWithAI, setChatWithAI] = useState(false)
-  const [aiExplanations, setAiExplantions] = useState([])
-  
+
   const [modal, setModal] = useState(null);
   const closeModal = () => setModal(null);
-  
+
   /*========== Report Question modal =======*/
   const [open, setOpen] = useState(false)
-  
-  /*============ AI Modal =============*/
-  const [chatMessages, setChatMessages] = useState([{
-    id: crypto.randomUUID(),
-    sender: 'AI',
-    message: "Hi there! I'm Astra 👋 I can explain CBT questions, break down topics, or quiz you. What should we study today?",
-  }]);
-  
+
   const navModalRef = useRef(null);
   const calcModalRef = useRef(null);
-  
+
   const updateProgressList = useCallback((data, currentSub) => {
     const subjectCountArr = []
     const subjectCount = Number(data[currentSub].count)
-    
-    for (let i = 1; i <= subjectCount; i++){
+
+    for (let i = 1; i <= subjectCount; i++) {
       subjectCountArr.push(i)
     }
     setProgressList(subjectCountArr);
-    
+
     const progressListBage = {
       correct: [],
       wrong: [],
       unanswered: []
     }
-    
+
     data[currentSub].questions.forEach((d, index) => {
       const correctOpt = d.correctAnswers.join('')
       const userOpt = d.userAnswers.join('')
-      if (!userOpt){
+      if (!userOpt) {
         progressListBage.unanswered.push(index + 1)
-      } else if (correctOpt.includes(userOpt)){
+      } else if (correctOpt.includes(userOpt)) {
         progressListBage.correct.push(index + 1)
       } else {
         progressListBage.wrong.push(index + 1)
       }
     });
-    
+
     setProgressDadge(progressListBage)
-  },[currentSubject, setProgressList])
+  }, [currentSubject, setProgressList])
 
   useEffect(() => {
     const { subjects } = examConfig;
@@ -82,7 +78,7 @@ export function Review() {
       subjectsObject[sub.name] = { name: sub.name, count: sub.qsNo, questions: [] }
     });
     getReviewQuestions(subjectsObject, currentSubjectVar)
-    
+
     /*===== Render Notification Style ======*/
     const el = document.createElement("style");
     el.id = "__ns_styles";
@@ -95,7 +91,7 @@ export function Review() {
     try {
       const data = []
       examQuestions.forEach((qs) => {
-        const userExamInfo = answers.find(ans => ans.id ===  qs.id)
+        const userExamInfo = answers.find(ans => ans.id === qs.id)
         data.push({
           ...qs,
           userAnswers: userExamInfo?.userAnswers,
@@ -106,7 +102,7 @@ export function Review() {
       data.forEach((d) => {
         subjectsObject[d.subject].questions.push(d)
       })
-      
+
       setReviewData(subjectsObject)
       let currentQuesVar;
       currentQuesVar = [subjectsObject[currentSubjectVar].questions[currentIndex]]
@@ -122,7 +118,7 @@ export function Review() {
 
 
   useEffect(() => {
-    
+
     if (reviewData && currentSubject) {
       updateProgressList(reviewData, currentSubject)
       const subjects = Object.keys(reviewData)
@@ -181,25 +177,25 @@ export function Review() {
     setCurrentIndex(increasedCurrentIdx)
   }
 
-  function switchSubject(event) {
+  const switchSubject = useCallback((event) => {
     const { subName } = event.currentTarget.dataset
     setCurrentIndex(0)
     setCurrentSubject(subName)
-  }
-  
-  function navigateQs(event){
+  },[setCurrentIndex, setCurrentSubject])
+
+  const navigateQs = useCallback((event) => {
     const { num } = event.target.dataset
     setCurrentIndex(Number(num) - 1)
     setToggleNav(false)
-  }
-  
-  function toggleNavigator(){
-    setToggleNav(prev =>!prev)
-  }
+  },[setCurrentIndex, setToggleNav])
+
+  const toggleNavigator = useCallback(() => {
+    setToggleNav(prev => !prev)
+  },[setToggleNav])
 
   useEffect(() => {
     function handleClickOutside(event) {
-      if (toggleNav && navModalRef.current &&!navModalRef.current.contains(event.target)) {
+      if (toggleNav && navModalRef.current && !navModalRef.current.contains(event.target)) {
         setToggleNav(false);
       }
       if (toggleCalc && calcModalRef.current && !calcModalRef.current.contains(event.target)) {
@@ -210,24 +206,24 @@ export function Review() {
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [toggleCalc, toggleNav]);
-  
-  function openAiModal(){
-    if (!isActivated){
+
+  const openAiModal = useCallback(() => {
+    if (!isActivated) {
       setModal('app_activation')
       return
     }
     setChatWithAI(true)
-  }
-  
-  
-  function goBack(){
+  },[setChatWithAI, setModal])
+
+
+  const goBack = useCallback(() => {
     navigate('/simulator')
-  }
-  
+  }, [navigate])
+
   /*=== report question modal ===*/
   const onClose = useCallback(() => {
-    setOpen(false) 
-  },[setOpen])
+    setOpen(false)
+  }, [setOpen])
 
   if (isLoading) {
     return <Loading />
@@ -236,9 +232,9 @@ export function Review() {
   return (
     <>
       <title>Review | CBT Pro</title>
-      
-      
-      {chatWithAI && <AstraAIModal setChatWithAI={setChatWithAI} chatMessages={chatMessages} setChatMessages={setChatMessages}/>}
+
+
+      {chatWithAI && <AstraAIModal setChatWithAI={setChatWithAI} />}
 
       <div className="mode-page">
 
@@ -258,8 +254,8 @@ export function Review() {
                   strokeWidth="2"
                   strokeLinecap="round"
                   strokeLinejoin="round">
-                  <path d="M4 2v20"/>
-                  <path d="M4 4c2-1 4-1 6 0s4 1 6 0 4-1 4-1v11s-2 1-4 1-4-1-6-1-4 1-6 1V4z"/>
+                  <path d="M4 2v20" />
+                  <path d="M4 4c2-1 4-1 6 0s4 1 6 0 4-1 4-1v11s-2 1-4 1-4-1-6-1-4 1-6 1V4z" />
                 </svg>
               </button>
               <button className="mode-icon-btn" title="Questions" onClick={openAiModal}>
@@ -329,21 +325,21 @@ export function Review() {
                   <div className="mode-question-text">
                     <Image id={ques.id} ext={ques.image?.url} />
                     {typeof ques.question === 'object' && ques.question?.instruction && <><strong><MarkdownContent>{ques.question.instruction}</MarkdownContent></strong><br /></>}
-                    {typeof ques.question === 'object' && ques.question?.comprehension && <><strong style={{fontWeight: '500'}} dangerouslySetInnerHTML={{ __html: ques.question.comprehension }} /><br /></>}
+                    {typeof ques.question === 'object' && ques.question?.comprehension && <><strong style={{ fontWeight: '500' }} dangerouslySetInnerHTML={{ __html: ques.question.comprehension }} /><br /></>}
                     {
-                      ques.question?.qs 
+                      ques.question?.qs
                         ? (
-                            <MarkdownContent>
-                              {ques.question.qs}
-                            </MarkdownContent>
-                          )
+                          <MarkdownContent>
+                            {ques.question.qs}
+                          </MarkdownContent>
+                        )
                         : (
-                            <MarkdownContent>
-                              {ques.question}
-                            </MarkdownContent>
-                          )
-                      }
-                    </div>
+                          <MarkdownContent>
+                            {ques.question}
+                          </MarkdownContent>
+                        )
+                    }
+                  </div>
                   {
                     ques.options.map(opt => {
                       const correctAns = ques.correctAnswers
@@ -362,7 +358,7 @@ export function Review() {
                             <div className="mode-option-content">
                               <div className="mode-option-text">
                                 <MarkdownContent>
-                                  { opt.option }
+                                  {opt.option}
                                 </MarkdownContent>
                               </div>
                             </div>
@@ -371,14 +367,11 @@ export function Review() {
                       )
                     })
                   }
-                  <AnswerCard 
+                  <AnswerCard
                     explanation={ques.explanation.text}
                     correctAnswers={ques.correctAnswers}
                     ques={ques}
                     setChatWithAI={setChatWithAI}
-                    setChatMessages={setChatMessages}
-                    aiExplanations={aiExplanations}
-                    setAiExplantions={setAiExplantions}
                   />
                 </div>
               )
@@ -392,10 +385,10 @@ export function Review() {
             </div>
             <div className="mode-progress-grid">
               {
-                progressList.map((list, index) => 
-                  (
-                    <button className={`mode-progress-btn ${progressBadge?.correct.includes(list) && 'viewed'} ${progressBadge?.wrong.includes(list) && 'wrong'}`} key={index} onClick={navigateQs} data-num={list}>{list}</button>
-                  )
+                progressList.map((list, index) =>
+                (
+                  <button className={`mode-progress-btn ${progressBadge?.correct.includes(list) && 'viewed'} ${progressBadge?.wrong.includes(list) && 'wrong'}`} key={index} onClick={navigateQs} data-num={list}>{list}</button>
+                )
                 )
               }
             </div>
@@ -404,7 +397,7 @@ export function Review() {
 
         <button className="mode-fab" onClick={toggleNavigator}>≡</button>
 
-        <div className={`exam-overlay ${toggleNav? 'show' : ''}`}>
+        <div className={`exam-overlay ${toggleNav ? 'show' : ''}`}>
           <div className="mode-modal" ref={navModalRef}>
             <div className="mode-modal-header">
               <div className="mode-modal-title">Question Navigator</div>
@@ -412,33 +405,33 @@ export function Review() {
             </div>
             <div className="mode-progress-grid">
               {
-                progressList.map((list, index) => 
-                  (
-                    <button className={`mode-progress-btn ${progressBadge?.correct.includes(list) && 'correct'} ${progressBadge?.wrong.includes(list) && 'wrong'}`} key={index} onClick={navigateQs} data-num={list}>{list}</button>
-                  )
+                progressList.map((list, index) =>
+                (
+                  <button className={`mode-progress-btn ${progressBadge?.correct.includes(list) && 'correct'} ${progressBadge?.wrong.includes(list) && 'wrong'}`} key={index} onClick={navigateQs} data-num={list}>{list}</button>
+                )
                 )
               }
             </div>
           </div>
         </div>
-          {modal === 'app_activation' && (
-            <div className="ns-overlay" onClick={closeModal}>
-              <div onClick={e => e.stopPropagation()} style={{ width: '100%', display: 'flex', justifyContent: 'center', padding: '0 1rem' }}>
-                <ModalDialog
-                  type="info"
-                  title="Activation Required"
-                  subtitle="Access Restricted • CBT Pro Policy"
-                  body="Activate app to access AI-powered explanations and practice"
-                  primaryLabel="Activate App"
-                  onPrimary={() => navigate('/payment')}
-                  onClose={closeModal}
-                  closeLabel="Continue"
-                />
-              </div>
+        {modal === 'app_activation' && (
+          <div className="ns-overlay" onClick={closeModal}>
+            <div onClick={e => e.stopPropagation()} style={{ width: '100%', display: 'flex', justifyContent: 'center', padding: '0 1rem' }}>
+              <ModalDialog
+                type="info"
+                title="Activation Required"
+                subtitle="Access Restricted • CBT Pro Policy"
+                body="Activate app to access AI-powered explanations and practice"
+                primaryLabel="Activate App"
+                onPrimary={() => navigate('/payment')}
+                onClose={closeModal}
+                closeLabel="Continue"
+              />
             </div>
-          )}
-          
-          {open && (
+          </div>
+        )}
+
+        {open && (
           <ReportQuestionModal
             questionId={currentQuestion[0].id}
             subject={currentSubject}
@@ -446,7 +439,7 @@ export function Review() {
             onClose={onClose}
           />
         )}
-         <Calculator toggleCalc={toggleCalc} setToggleCalc={setToggleCalc} calcModalRef={calcModalRef} />
+        <Calculator toggleCalc={toggleCalc} setToggleCalc={setToggleCalc} calcModalRef={calcModalRef} />
       </div>
     </>
   )

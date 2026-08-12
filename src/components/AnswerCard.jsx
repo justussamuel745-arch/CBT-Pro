@@ -1,9 +1,9 @@
 import { useState, memo, useEffect } from 'react';
 import { MarkdownContent } from './MarkdownContent';
-import { useAskAi } from '../scripts/utilis/useAskAi';
+import { AIStore } from '../stores/AIStore';
 
-export const AnswerCard = memo(function AnswerCard({ explanation, correctAnswers, ques, setChatWithAI, setChatMessages, aiExplanations, setAiExplantions }){
-  const onAskAi = useAskAi()
+export const AnswerCard = memo(function AnswerCard({ explanation, correctAnswers, ques, setChatWithAI }){
+  const { onAskAi, setChatMessages, aiExplanations, setAiExplanations } = AIStore(state => state)
   const question = ques.question?.qs || ques.question
   const qsId = ques.id
   const [aiOpen, setAiOpen] = useState(false);
@@ -30,7 +30,7 @@ export const AnswerCard = memo(function AnswerCard({ explanation, correctAnswers
   const handleAskAi = async () => {
     if (aiResponse) { 
       setAiOpen(o => !o);
-      setAiExplantions(
+      setAiExplanations(
         prev => (
           prev.map(e => e.id === qsId ? {...e, show: !e.show} : e)
         )
@@ -45,8 +45,8 @@ export const AnswerCard = memo(function AnswerCard({ explanation, correctAnswers
       //const result = 'This is a test reply. \nWave is a disturbance which result to the transfer of energy '
       setAiResponse(result);
       setShowContinuePrompt(true);
-      setChatMessages(chat => ([
-        ...chat,
+      setChatMessages(prev => ([
+        ...prev,
         {
           id: `${qsId}-user`,
           sender: 'user',
@@ -57,15 +57,17 @@ export const AnswerCard = memo(function AnswerCard({ explanation, correctAnswers
           message: result,
         }
       ]))
-      setAiExplantions(
-        prev => ([
-          ...prev,
-          {
-            id: qsId,
-            explanation: result,
-            show: true
-          }
-        ])
+      setAiExplanations(prev => 
+        (
+          [
+            ...prev,
+            {
+              id: qsId,
+              explanation: result,
+              show: true
+            }
+          ]
+        )
       )
     } catch(err) {
       let errorText;

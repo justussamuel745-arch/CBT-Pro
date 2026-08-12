@@ -1,19 +1,21 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from 'react-router';
 import { GoogleLogin } from "@react-oauth/google";
-import UserContext from '../context/UserContext.jsx';
-import { fetchWithAuth, fetchDataGet } from '../scripts/utilis/fetch.js';
 import { ToastProvider, useToast, ModalDestruct, CSS } from '../components/NotificationSystem';
 import { deleteUser } from '../hooks/services/indexedDB/users';
+import { request } from '../scripts/utilis/request';
+import { authStore } from '../stores/authStore';
 import './Delete.css';
 
 function DeleteInner() {
-  const { token, setToken, userInfo, error, setError } = useContext(UserContext);
+  const userInfo = authStore(state => state.userInfo)
+  const logout = authStore(state => state.logout)
   const toast = useToast()
   const navigate = useNavigate()
 
   const isGoogleOnly = userInfo?.authProvider === 'google';
-
+  
+  const [error, setError] = useState(null)
   const [password, setPassword] = useState("");
   const [googleToken, setGoogleToken] = useState(null);
   const [confirmed, setConfirmed] = useState(false);
@@ -56,21 +58,16 @@ function DeleteInner() {
         ? { googleToken }
         : { password };
 
-      const response = await fetchWithAuth(token, setToken, `/api/settings/delete`, {
+      await request.auth('/api/settings/delete', {
         method: 'POST',
         body: JSON.stringify(body)
       });
-      const data = await response.json().catch(() => ({}))
-      if (!response.ok) {
-        throw { status: response.status, error: data?.message || data?.error || 'Request failed. Try again later.' }
-      }
       await Promise.all([
         deleteUser(),
-        fetchDataGet('/api/logout')
+        logout()
       ])
 
       setBtnText("Deleting...");
-      setToken(null)
       navigate('/auth/signup')
 
     } catch (err) {

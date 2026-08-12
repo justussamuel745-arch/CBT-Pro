@@ -1,14 +1,14 @@
-import { useContext } from 'react';
 import { Link, useNavigate } from 'react-router'
 import { Footer } from '../components/Footer';
-import UserContext from '../context/UserContext.jsx';
 import { subjectsData } from '../scripts/data/subjectsData.js';
 import { formatName } from '../scripts/utilis/formatName';
 import { InstallAppBanner } from '../components/InstallAppBanner';
+import { authStore } from '../stores/authStore';
 import './HomePage.css'
 
-export function HomePage() {
-  const { token, isActivated } = useContext(UserContext)
+export default function HomePage() {
+  const token = authStore(state => state.token)
+  const isActivated = authStore(state => state.isActivated)
   const navigate = useNavigate()
   
   return (

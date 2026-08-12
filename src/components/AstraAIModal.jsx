@@ -1,13 +1,13 @@
-import { useState, useRef, useContext, useEffect, useCallback, memo } from 'react';
+import { useState, useRef, useEffect, useCallback, memo } from 'react';
 import { useNavigate } from 'react-router';
 import Markdown from 'react-markdown';
 import remarkMath from 'remark-math';
 import remarkGfm from 'remark-gfm';
 import rehypeKatex from 'rehype-katex';
 import 'katex/dist/katex.min.css';
-import UserContext from '../context/UserContext';
+import { userStore } from '../stores/userStore';
+import { AIStore } from '../stores/AIStore';
 import './AstraAIModal.css'
-import { useAskAi } from '../scripts/utilis/useAskAi';
 
 // ─────────────────────────────────────────────────────────────
 // INTERNET STATUS  (isolated memo — no re-render leak upward)
@@ -147,7 +147,6 @@ const MessageBubble = memo(function MessageBubble({ msg }) {
   const isTyping = msg.description === 'typing';
   const isError  = msg.description === 'error';
   const isUser   = msg.sender === 'user';
-
   return (
     <div className={`astra-msg ${isUser ? 'user' : 'ai'}`}>
       <div className="astra-msg-avatar">
@@ -178,10 +177,12 @@ const MessageBubble = memo(function MessageBubble({ msg }) {
 // ─────────────────────────────────────────────────────────────
 // MAIN MODAL
 // ─────────────────────────────────────────────────────────────
-export const AstraAIModal = memo(function AstraAIModal({ setChatWithAI, chatMessages, setChatMessages}) {
-  const { userInfo } = useContext(UserContext);
+export const AstraAIModal = memo(function AstraAIModal({ setChatWithAI}) {
+  const userInfo  = userStore(state => state.userInfo)
+  const chatMessages = AIStore(state => state.chatMessages)
+  const setChatMessages = AIStore(state => state.setChatMessages)
+  const onAskAI = AIStore(state => state.onAskAI)
   const navigate = useNavigate()
-  const onAskAi = useAskAi()
   const [userMsg,  setUserMsg]  = useState('');
   const [disabled, setDisabled] = useState(false);
 
@@ -208,11 +209,11 @@ export const AstraAIModal = memo(function AstraAIModal({ setChatWithAI, chatMess
 
     const typingId = crypto.randomUUID();
 
-    setChatMessages(prev => [
+    setChatMessages(prev => ([
       ...prev,
       { id: crypto.randomUUID(), sender: 'user', message },
       { id: typingId,            sender: 'AI',   message: '', description: 'typing' },
-    ]);
+    ]));
 
     setUserMsg('');
     setDisabled(true);
@@ -223,8 +224,8 @@ export const AstraAIModal = memo(function AstraAIModal({ setChatWithAI, chatMess
     }
 
     try {
-      const data = await onAskAi({ message })
-
+      const data = await onAskAI({ message })
+      
       // Replace typing indicator with the real response
       setChatMessages(prev => prev.map(msg =>
         msg.id === typingId
@@ -252,7 +253,7 @@ export const AstraAIModal = memo(function AstraAIModal({ setChatWithAI, chatMess
       setDisabled(false);
       textareaRef.current?.focus();
     }
-  }, [userMsg, disabled, setChatMessages]);
+  }, [userMsg, disabled, setChatMessages, onAskAI]);
 
   // ── Enter to send (Shift+Enter = newline) ──
   const handleKeyDown = useCallback((e) => {
@@ -263,7 +264,6 @@ export const AstraAIModal = memo(function AstraAIModal({ setChatWithAI, chatMess
   }, [sendMessage]);
 
   const canSend = userMsg.trim().length > 0 && !disabled;
-
   return (
     <div className="astra-overlay">
       <div className="astra-modal" role="dialog" aria-label="Astra AI chat">

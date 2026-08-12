@@ -1,10 +1,11 @@
-import { useState, useContext } from "react";
+import { useState } from "react";
 import { Link } from 'react-router';
-import UserContext from '../context/UserContext';
 import { Menu } from '../components/Menu';
 import { InstallAppBanner } from '../components/InstallAppBanner';
 import usePushNotifications from '../hooks/usePushNotifications';
 import { useNotifications } from '../context/NotificationContext';
+import { authStore } from '../stores/authStore.js';
+import { userStore } from '../stores/userStore.js';
 import "./Dashboard.css";
 
 const DASHBOARD_CARDS = [
@@ -59,8 +60,10 @@ function getGreeting() {
   return "Good evening";
 }
 
-export function Dashboard() {
-  const { isActivated, userInfo, isAdmin } = useContext(UserContext)
+export default function Dashboard() {
+  const isActivated = authStore(store => store.isActivated)
+  const isAdmin = authStore(store => store.isAdmin)
+  const userInfo = userStore(store => store.userInfo)
   const { unreadCount } = useNotifications();
   const userName = userInfo?.fullName || '';
   const [menuOpen, setMenuOpen] = useState(false);
@@ -108,7 +111,7 @@ export function Dashboard() {
           <button className="dash-avatar-btn" aria-label="Account">
             <span className="dash-avatar">
               <img
-                src={`${userInfo.blob && URL.createObjectURL(userInfo.blob)}`}
+                src={`${userInfo?.blob && URL.createObjectURL(userInfo.blob)}`}
                 style={{
                   width: '100%',
                   borderRadius: '12px',

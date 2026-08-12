@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef, createContext, useContext, useCallback } from 'react'
 import { Link, useNavigate } from 'react-router';
-import { GoogleAuth } from '../../components/GoogleAuth';
-import { fetchDataPost } from '../../scripts/utilis/fetch'
-import { Ic } from '../../scripts/utilis/Ic'
+import { GoogleAuth } from '../../components/GoogleAuth';;
+import { Ic } from '../../scripts/utilis/Ic';
+import { authStore } from '../../stores/authStore';
 import './Signup.css';
 
 const ToastCtx = createContext(null);
@@ -151,6 +151,7 @@ function validateSignUp({ fullName, email, phoneNumber, password, confirm }) {
 }
 
 function Register() {
+  const signup = authStore(state => state.signup)
   const toast = useToast();
   const [fields, setFields] = useState({ fullName: "", email: "", phoneNumber: "", password: "", confirm: "" });
   const [errors, setErrors] = useState({});
@@ -198,21 +199,22 @@ function Register() {
     setLoading(true);
     setFormAlert(null);
     try {
-      const response = await fetchDataPost(fields, '/api/register')
-      applySignUpScenario(response.message || 'success');
+      await signup(fields)
+      applySignUpScenario('success');
       setLoading(false)
     } catch (err) {
       console.error('Error:', err);
       if (!err.status){
         applySignUpScenario('network');
-      } else if (err?.errors && Array.isArray(err.errors)){
-        // handle this later
+      } else if (err?.error && Array.isArray(err.error)){
+        /* frontend already handle the validation that
+        could result to this error */
       } else if (err.status === 429){
         applySignUpScenario('too_many_attempt');
       } else if (err.status >= 500) {
         applySignUpScenario('server_error');
       } else {
-        applySignUpScenario(err.errors);
+        applySignUpScenario(err.error);
       }
       setLoading(false)
     }

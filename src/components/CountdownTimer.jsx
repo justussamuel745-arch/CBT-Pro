@@ -1,92 +1,55 @@
-import { useState, useEffect, useRef, useContext } from 'react';
+import { useState, useEffect, useRef, memo } from 'react';
 import { useNavigate } from 'react-router';
-import UserContext from '../context/UserContext';
-import { fetchWithAuth } from '../scripts/utilis/fetch';
-import { calculateScore } from '../scripts/utilis/calculateScore';
-import { saveHistory } from '../hooks/services/indexedDB/history';
-import { encrypt, decrypt } from '../scripts/utilis/crypto';
+import { simulatorStore } from '../stores/simulatorStore';
 import './CountdownTimer.css';
 
-function generateObjectId() {
-  return [...Array(24)]
-    .map(() => Math.floor(Math.random() * 16).toString(16))
-    .join('');
-}
+export const CountdownTimer = memo(function CountdownTimer({ onFinish, hours, minutes, skipAutoSubmit }) {
+  const examQuestions = simulatorStore((state) => state.examQuestions);
+  const calculateScore = simulatorStore((state) => state.calculateScore);
+  const navigate = useNavigate();
 
-export function CountdownTimer({ onFinish, hours, minutes, skipAutoSubmit }) {
-  const { token, setToken, answers, setExamResults, examQuestions, userInfo, setHistoryData } = useContext(UserContext)
-  const navigate = useNavigate()
-  const countdownTime = (60 * 60 * hours) + (60 * minutes)
-  const [timeLeft, setTimeLeft] = useState(countdownTime);
+  // Computed ONCE via lazy ref init — survives re-renders, never resets
+  const countdownTimeRef = useRef((60 * 60 * hours) + (60 * minutes));
+  const endTimeRef = useRef(Date.now() + countdownTimeRef.current * 1000);
+  const countdownTime = countdownTimeRef.current;
 
+  const getRemaining = () => Math.max(0, Math.round((endTimeRef.current - Date.now()) / 1000));
+
+  const [timeLeft, setTimeLeft] = useState(getRemaining);
+
+  const onFinishRef = useRef(onFinish);
+  useEffect(() => { onFinishRef.current = onFinish; }, [onFinish]);
+
+  const finishedRef = useRef(false);
+
+  // Interval created ONCE — ticks just re-derive remaining time from the clock
   useEffect(() => {
-    if (timeLeft <= 0) {
-      onFinish?.();
-      return;
-    }
-    const interval = setInterval(() => setTimeLeft(prev => prev - 1), 1000);
-    return () => clearInterval(interval);
-  }, [timeLeft, onFinish]);
-
-  async function submitHistory({ subjects, score, timeTaken, performance }, question) {
-    const newHistory = {
-      userId: userInfo._id,
-      testId: generateObjectId(),
-      subjects, 
-      score: score.obtained,
-      total: score.over,
-      timeSpent: timeTaken, 
-      question, 
-      performance,
-      createdAt: new Date().toISOString()
-    }
-    const savedHistory = await saveHistory(newHistory)
-    setHistoryData(prev => ([...prev, ...savedHistory]))
-    if (!navigator.onLine){
-      const unsavedHistoryRaw = JSON.parse(localStorage.getItem('unsavedHistory'))
-      const unsavedHistory = unsavedHistoryRaw ? decrypt(unsavedHistoryRaw) : []
-      unsavedHistory.push(newHistory)
-      localStorage.setItem('unsavedHistory', JSON.stringify(encrypt(unsavedHistory)));
-      return
-    }
-    try {
-      const response = await fetchWithAuth(token, setToken, '/api/history/submit', {
-        method: 'POST',
-        body: JSON.stringify(newHistory)
-      })
-      if (!response.ok) throw { status: response.status, error: newHistory }
-    } catch (err) {
-      if (typeof err?.error === 'object' || err.status !== 404){
-        const unsavedHistory = decrypt(JSON.parse(localStorage.getItem('unsavedHistory'))) || []
-        unsavedHistory.push(err.error)
-        localStorage.setItem('unsavedHistory', JSON.stringify(encrypt(unsavedHistory)));
+    const interval = setInterval(() => {
+      const remaining = getRemaining();
+      setTimeLeft(remaining);
+      if (remaining <= 0 && !finishedRef.current) {
+        finishedRef.current = true;
+        clearInterval(interval);
+        onFinishRef.current?.();
       }
-    }
-  }
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
 
-  const timeTakenRef = useRef(timeLeft)
-  useEffect(() => { timeTakenRef.current = timeLeft }, [timeLeft]);
-
-  const answersRef = useRef(answers);
-  useEffect(() => { answersRef.current = answers }, [answers]);
-
-  const examQuestionsRef = useRef(examQuestions)
-  useEffect(() => { examQuestionsRef.current = examQuestions }, [examQuestions])
+  const examQuestionsRef = useRef(examQuestions);
+  useEffect(() => { examQuestionsRef.current = examQuestions; }, [examQuestions]);
 
   useEffect(() => {
     return () => {
-      if (skipAutoSubmit.current) return
-      const timeTaken = countdownTime - timeTakenRef.current
-      const timeAllocated = countdownTime
-      const currentAnswers = answersRef.current
+      if (skipAutoSubmit.current) return;
+      const timeTaken = countdownTime - getRemaining();
+      const timeAllocated = countdownTime;
       if (examQuestionsRef.current.length !== 0) {
-        const result = calculateScore(userInfo._id, examQuestionsRef.current, currentAnswers, timeTaken, timeAllocated)
-        setExamResults(result)
-        submitHistory(result, currentAnswers.length)
-        navigate('/simulator/score')
+        calculateScore(examQuestionsRef.current, timeTaken, timeAllocated);
+        navigate('/simulator/score');
       }
-    }
-  }, [])
+    };
+  }, []);
 
   const formatTime = (secs) => {
     const hrs = Math.floor(secs / 3600);
@@ -115,4 +78,4 @@ export function CountdownTimer({ onFinish, hours, minutes, skipAutoSubmit }) {
       <span className="countdown-timer__digits">{formatTime(timeLeft)}</span>
     </div>
   );
-}
+});

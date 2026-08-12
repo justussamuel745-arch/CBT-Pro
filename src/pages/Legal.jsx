@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router';
 import './Legal.css';
 
-export function Legal(){
+export default function Legal(){
   // TABS NAVIGATION STATE
   const [ termsTab, setTermsTab ] = useState('active')
   const [ privacyTab, setPrivacyTab ] = useState('')

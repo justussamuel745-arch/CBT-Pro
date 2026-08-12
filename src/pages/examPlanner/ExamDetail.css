@@ -93,60 +93,10 @@
   color: var(--primary);
 }
 
-/* ---------- Countdown / ready banner ---------- */
+/* ---------- Countdown wrapper ---------- */
 
-.examdetail-countdown {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.35rem;
-  background: var(--gradient);
-  color: #fff;
-  padding: 1rem;
+.examdetail-countdown-wrap {
   margin: 1rem 1.25rem 0;
-  border-radius: var(--radius-sm);
-}
-
-.examdetail-countdown__label {
-  font-size: 0.72rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  opacity: 0.85;
-}
-
-.examdetail-countdown__value {
-  display: flex;
-  align-items: baseline;
-  gap: 0.25rem;
-  font-size: 1.4rem;
-  font-weight: 800;
-}
-
-.examdetail-countdown__value em {
-  font-size: 0.8rem;
-  font-weight: 600;
-  font-style: normal;
-  opacity: 0.8;
-  margin-right: 0.5rem;
-}
-
-.examdetail-banner {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  margin: 1rem 1.25rem 0;
-  padding: 0.8rem;
-  border-radius: var(--radius-sm);
-  font-size: 0.88rem;
-  font-weight: 700;
-}
-
-.examdetail-banner--ready {
-  background: #f0fdf4;
-  color: var(--success);
-  border: 1px solid #bbf7d0;
 }
 
 /* ---------- Body ---------- */

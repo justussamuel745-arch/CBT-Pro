@@ -1,12 +1,12 @@
 import { Routes, Route } from 'react-router';
-import { Subjects } from './Subjects';
-import { Config } from './Config';
-import { Mode } from './Mode';
-import { Score } from './Score';
-import { Review } from './Review';
+import Subjects from './Subjects';
+import Config from './Config';
+import Mode from './Mode';
+import Score from './Score';
+import Review from './Review';
 import { ProtectedSimulatorRoutes } from '../../routes/ProtectedSimulatorRoutes';
 
-export function Simulator() {
+export default function Simulator() {
   return (
     <Routes>
       <Route path="/" element={<Subjects />} />

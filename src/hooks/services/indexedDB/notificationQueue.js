@@ -217,7 +217,7 @@ export const processQueue = async (
       }
 
       await removeQueueAction(action.id);
-    } catch (error) {
+    } catch {
       await updateQueueStatus(
         action.id,
         "pending"

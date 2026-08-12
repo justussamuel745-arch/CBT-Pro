@@ -1,10 +1,9 @@
-import { useState, useEffect, useContext, useRef, memo, useCallback} from 'react'
+import { useState, useEffect, useRef, memo, useCallback} from 'react'
 import { useNavigate } from 'react-router';
 import { MarkdownContent } from '../../components/MarkdownContent';
-import UserContext from '../../context/UserContext.jsx';
 import { Calculator } from '../../components/Calculator.jsx'
 import { AstraAIModal } from '../../components/AstraAIModal'
-import { fetchWithAuth } from '../../scripts/utilis/fetch.js';
+import { request } from '../../scripts/utilis/request';
 import { subjectsData } from '../../scripts/data/subjectsData.js'
 import { Image } from '../../components/Image'
 import { formatName } from '../../scripts/utilis/formatName.js';
@@ -15,6 +14,7 @@ import { Loading } from '../../components/Loading';
 import { saveQuestions, getQuestions } from '../../hooks/services/indexedDB/questions';
 import { saveAllImages } from '../../hooks/services/indexedDB/images';
 import { decrypt, encrypt } from '../../scripts/utilis/crypto';
+import { studyStore } from '../../stores/studyStore';
 import './Mode.css'
 
 const Notification = memo(function Notification({type, title, body, primaryLabel, onPrimary, onClose, closeLabel }){
@@ -35,8 +35,9 @@ const Notification = memo(function Notification({type, title, body, primaryLabel
   )
 })
 
-export function Mode() {
-  const { token, setToken, studyConfig, userInfo, setUserInfo } = useContext(UserContext)
+export default function Mode() {
+  const studyConfig = studyStore(state => state.studyConfig)
+  const userInfo = (state => state.userInfo)
   const navigate = useNavigate()
   const [toggleCalc, setToggleCalc] = useState(false);
   const [toggleNav, setToggleNav] = useState(false);
@@ -52,15 +53,7 @@ export function Mode() {
   const [refresh, setRefresh] = useState(false)
   const [toggleBmk, setToggleBmk] = useState(false)
   const [currentBmkCheck, setCurrentBmkCheck] = useState(null)
-  const [aiExplanations, setAiExplantions] = useState([])
   const [loading, setLoading] = useState(true)
-  
-  /*============= AI Modal ===========*/
-  const [chatMessages, setChatMessages] = useState([{
-    id: crypto.randomUUID(),
-    sender: 'AI',
-    message: "Hi there! I'm Astra 👋 I can explain CBT questions, break down topics, or quiz you. What should we study today?",
-  }]);
   
   const [modal, setModal] = useState(null);
   const closeModal = () => setModal(null);
@@ -114,18 +107,14 @@ export function Mode() {
   }, []);
   
   useEffect(() => {
-    let cancelled = false
-    async function fetchStudyQuestions(){
+    let cancelled;
+    (async () => {
       let data;
       try {
         if (cancelled) return
         if (navigator.onLine){
-          const response = await fetchWithAuth(token, setToken, '/api/study', { method: 'POST', body: JSON.stringify(studyConfig)})
-          const d = await response.json().catch(() => ({}))
-          if (!response.ok){
-            throw { status: response.status, error: d.message || d.error || 'failed_to_load' }
-          }
-          data = decrypt(d)
+          const res = await request.auth('/api/study', { method: 'POST', body: JSON.stringify(studyConfig)})
+          data = decrypt(res.body)
           await saveQuestions(
             data.map(d => ({
               ...d, 
@@ -172,8 +161,7 @@ export function Mode() {
       } finally {
         setLoading(false)
       }
-    }
-    fetchStudyQuestions()
+    })()
     return () => { cancelled = true }
      // eslint-disable-next-line react-hooks/exhaustive-deps
   },[refresh])
@@ -290,7 +278,7 @@ export function Mode() {
     <>
       <title>Review | CBT Pro</title>
       
-      {chatWithAI && <AstraAIModal setChatWithAI={setChatWithAI} chatMessages={chatMessages} setChatMessages={setChatMessages} />}
+      {chatWithAI && <AstraAIModal setChatWithAI={setChatWithAI} />}
       
       <div className="mode-page no-select" aria-live="polite">
 
@@ -451,9 +439,6 @@ export function Mode() {
                           correctAnswers={ques.correctAnswers.join(' ').toUpperCase()} 
                           ques={ques} 
                           setChatWithAI={setChatWithAI}
-                          setChatMessages={setChatMessages}
-                          aiExplanations={aiExplanations}
-                          setAiExplantions={setAiExplantions}
                         />
                       )
                     }

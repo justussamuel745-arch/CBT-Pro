@@ -1,4 +1,5 @@
-import { useMemo } from "react";
+import { useState } from "react";
+import Countdown, { useLiveCountdown } from "./Countdown";
 import "./ExamDetail.css";
 
 /* ============================================================
@@ -27,17 +28,6 @@ const REMINDER_LABELS = {
   "3d": "3 days before",
   "1w": "1 week before",
 };
-
-function useCountdown(targetDate) {
-  return useMemo(() => {
-    const diff = new Date(targetDate).getTime() - Date.now();
-    if (diff <= 0) return { ready: true };
-    const days = Math.floor(diff / 86400000);
-    const hours = Math.floor((diff % 86400000) / 3600000);
-    const minutes = Math.floor((diff % 3600000) / 60000);
-    return { days, hours, minutes, ready: false };
-  }, [targetDate]);
-}
 
 function formatExamDate(iso) {
   const d = new Date(iso);
@@ -77,7 +67,7 @@ export default function ExamDetail({
   onStart = () => {},
 }) {
   const { date, time } = formatExamDate(exam.date);
-  const countdown = useCountdown(exam.date);
+  const [ready, setReady] = useState(false);
 
   return (
     <div className="examdetail-overlay" role="dialog" aria-modal="true">
@@ -94,24 +84,14 @@ export default function ExamDetail({
         </div>
 
         {/* Countdown / ready banner */}
-        {countdown.ready ? (
-          <div className="examdetail-banner examdetail-banner--ready">
-            <i className="fa-solid fa-bolt" aria-hidden="true"></i>
-            Your scheduled exam is ready.
-          </div>
-        ) : (
-          <div className="examdetail-countdown">
-            <span className="examdetail-countdown__label">Starts In</span>
-            <div className="examdetail-countdown__value">
-              <span>{countdown.days}</span>
-              <em>d</em>
-              <span>{countdown.hours}</span>
-              <em>h</em>
-              <span>{countdown.minutes}</span>
-              <em>m</em>
-            </div>
-          </div>
-        )}
+        <div className="examdetail-countdown-wrap">
+          <Countdown
+            targetDate={exam.date}
+            variant="full"
+            readyLabel="Your scheduled exam is ready."
+            onReady={() => setReady(true)}
+          />
+        </div>
 
         {/* Body */}
         <div className="examdetail-body">
@@ -167,7 +147,7 @@ export default function ExamDetail({
 
         {/* Actions */}
         <div className="examdetail-actions">
-          {countdown.ready ? (
+          {ready ? (
             <button className="examdetail-btn examdetail-btn--primary" onClick={() => onStart(exam)}>
               <i className="fa-solid fa-play" aria-hidden="true"></i>
               Start Exam

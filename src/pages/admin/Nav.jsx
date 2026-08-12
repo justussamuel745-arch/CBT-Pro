@@ -1,10 +1,11 @@
 import { useNavigate } from 'react-router';
-import { useAdminContext } from '../../context/AdminContext';
 import { Ic } from '../../scripts/utilis/Ic';
+import { adminStore } from '../../stores/AdminStore';
 import './Nav.css';
 
 export function Nav({ sidebarOpen, setSidebarOpen }) {
-  const { stats, page } = useAdminContext()
+  const stats = adminStore(state => state.stats)
+  const page = adminStore(state => state.page)
   const navigate = useNavigate()
   
   const NAV = [

@@ -1,12 +1,12 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect } from "react";
 import { useSearchParams, useNavigate} from 'react-router';
-import UserContext from '../../context/UserContext';
 import { MarkdownContent } from '../../components/MarkdownContent';
-import { fetchWithAuth } from '../../scripts/utilis/fetch';
+import { request } from '../../scripts/utilis/request';
 import { ToastProvider, useToast, CSS } from '../../components/NotificationSystem';
 import { Image } from '../../components/Image';
 import { formatName } from '../../scripts/utilis/formatName.js';
 import { decrypt } from '../../scripts/utilis/crypto';
+import { authStore } from '../../stores/authStore';
 import './Search.css';
 
 const EXAM_TYPES = ["JAMB"];
@@ -95,7 +95,7 @@ function DetailModal({ item, onClose }) {
    ============================================================ */
 
 function SearchInner() {
-  const { token, setToken, isActivated } = useContext(UserContext)
+  const isActivated = authStore(state => state.isActivated)
   const [query, setQuery] = useState("");
   const [examType, setExamType] = useState("All");
   const [year, setYear] = useState("All");
@@ -130,14 +130,10 @@ function SearchInner() {
     }
     setIsSearching(true);
     try {
-      const response = await fetchWithAuth(token, setToken, `/api/search?subject=${subject.toLowerCase()}${year !== 'All' ? `&year=${year}` : ''}${query ? `&keyword=${query}` : ''}`, {
+      const res = await request.auth(`/api/search?subject=${subject.toLowerCase()}${year !== 'All' ? `&year=${year}` : ''}${query ? `&keyword=${query}` : ''}`, {
         method: 'GET'
       })
-      const d = await response.json().catch(() => ({}))
-      if (!response.ok){
-        throw { status: response.status, error: d?.message || d?.error || 'Failed to complete search.'}
-      }
-      const data = decrypt(d.data)
+      const data = decrypt(res.body.data)
       setResults(data);
       setHasSearched(true);
       
@@ -263,7 +259,7 @@ function SearchInner() {
   );
 }
 
-export function Search() {
+export default function Search() {
   return (
     <ToastProvider position="top-right">
       <SearchInner />

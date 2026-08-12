@@ -13,7 +13,32 @@
 /* ---------- Header ---------- */
 
 .examhistory-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.9rem;
   margin-bottom: 1.5rem;
+}
+
+.examhistory-back {
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--text);
+  font-size: 0.9rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s ease, color 0.15s ease, transform 0.15s ease;
+}
+
+.examhistory-back:hover {
+  background: var(--primary-light);
+  color: var(--primary);
+  transform: translateX(-2px);
 }
 
 .examhistory-header__title {
@@ -257,6 +282,40 @@
 .examhistory-row__badge--fail {
   background: var(--danger);
   color: #fff;
+}
+
+.examhistory-row__badge--missed {
+  background: var(--border);
+  color: var(--text-muted);
+}
+
+.examhistory-row--missed {
+  background: var(--bg);
+  border-style: dashed;
+}
+
+.examhistory-row--missed .examhistory-row__date {
+  color: var(--danger);
+  font-weight: 600;
+}
+
+.examhistory-row__reschedule {
+  border: 1px solid var(--primary);
+  background: var(--primary-light);
+  color: var(--primary);
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 0.45rem 0.9rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.examhistory-row__reschedule:hover {
+  background: var(--primary);
+  color: #fff;
+  transform: translateY(-1px);
 }
 
 /* ---------- Empty state ---------- */

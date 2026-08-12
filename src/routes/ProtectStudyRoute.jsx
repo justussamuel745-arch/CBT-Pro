@@ -1,8 +1,7 @@
-import { useContext } from 'react';
 import { Navigate } from 'react-router';
-import UserContext from '../context/UserContext';
+import { studyStore } from '../stores/studyStore';
 
 export function ProtectStudyRoute({ children }){
-  const { studyConfig } = useContext(UserContext)
+  const studyConfig = studyStore(state => state.studyConfig)
   return !(Object.keys(studyConfig).length <= 0) ? children : <Navigate to="/study" />
 }

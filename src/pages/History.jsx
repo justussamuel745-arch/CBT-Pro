@@ -1,12 +1,12 @@
-import { useState, useEffect, useContext, useCallback, useMemo, memo } from 'react';
+import { useState, useEffect, useCallback, useMemo, memo } from 'react';
 import { Link } from 'react-router';
-import UserContext from '../context/UserContext'
-import { fetchWithAuth } from '../scripts/utilis/fetch'
 import { formatTime } from '../scripts/utilis/formatTime';
 import { formatDate } from '../scripts/utilis/formatDate';
+import { Loading } from '../components/Loading';
 import { ToastProvider, useToast, CSS } from '../components/NotificationSystem';
 import { removeHistory } from '../hooks/services/indexedDB/history';
-import { decrypt } from '../scripts/utilis/crypto';
+import { request } from '../scripts/utilis/request';
+import { userStore } from '../stores/userStore';
 import './History.css';
 
 /* ---------- Small presentational helpers ---------- */
@@ -169,39 +169,29 @@ const ExpensiveHistoryModal = memo(({ modalInfo, onClose, getScoreClass, formatD
 });
 
 function HistoryInner() {
-  const { token, setToken, historyData, setHistoryData } = useContext(UserContext)
+  const historyData = userStore(state => state.historyData)
+  const fetchUserHistory = userStore(state => state.fetchUserHistory)
   const [modalInfo, setModalInfo] = useState(null)
   const [disable, setDisable] = useState(null)
   const [loading, setLoading] = useState(true)
   const toast = useToast()
 
   useEffect(() => {
-    async function fetchHistory(){
-      try {
-        const response = await fetchWithAuth(token, setToken, '/api/history', { method: 'GET'})
-        const data = await response.json().catch(() => ({}))
-        if (!response.ok){
-          throw { status: response.status, error: data.message || data.error || 'Unexpected Error' }
+    if (!historyData) {
+      (async () => {
+        try {
+          await fetchUserHistory()
+        } catch (err) {
+          console.error('Error:', err);
+          toast.push({
+            variant: 'pill',
+            type: 'error',
+            message: 'Unable to fetch your history.',
+          });
+        } finally {
+          setLoading(false)
         }
-        if (response.status === 204){
-          setHistoryData([])
-          return
-        }
-
-        setHistoryData(data)
-      } catch (err) {
-        console.error('Error:', err);
-        toast.push({
-          variant: 'pill',
-          type: 'error',
-          message: 'Unable to fetch your history.',
-        });
-      } finally {
-        setLoading(false)
-      }
-    }
-    if (!historyData){
-      fetchHistory()
+      })()
     } else {
       setLoading(false)
     }
@@ -212,7 +202,7 @@ function HistoryInner() {
     el.textContent = CSS[0];
     document.head.appendChild(el);
     return () => document.getElementById("__ns_styles")?.remove();
-  },[])
+  }, [])
 
   const getScoreClass = useCallback((percent) => {
     if (percent >= 70) return 'high';
@@ -224,8 +214,8 @@ function HistoryInner() {
     setModalInfo([historyData.find(h => h.testId === id)])
   }
 
-  async function deleteHistory(id){
-    if (!navigator.onLine){
+  async function deleteHistory(id) {
+    if (!navigator.onLine) {
       toast.push({
         variant: 'pill',
         type: 'error',
@@ -235,12 +225,10 @@ function HistoryInner() {
     }
     setDisable(id)
     try {
-      const response = await fetchWithAuth(token, setToken, `/api/history/${id}`, { method: 'DELETE' })
-      const data = await response.json().catch(() => ({}))
-      if (!response.ok){
-        throw { status: response.status }
-      }
-      setHistoryData(prev => prev.filter(h => h.testId !== id))
+      await request.auth(`/api/history/${id}`, { method: 'DELETE' })
+      userStore.setState((state) => ({
+        historyData: state.historyData.filter(h => h.testId !== id)
+      }))
       await removeHistory(id)
     } catch (err) {
       console.error('Error:', err);
@@ -267,6 +255,8 @@ function HistoryInner() {
       .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt))
       .map(item => (item.score / item.total) * 100)
   }, [historyData])
+  
+  if (loading) return <Loading />
 
   return (
     <div className="history-page">
@@ -403,7 +393,7 @@ function HistoryInner() {
   );
 }
 
-export function History() {
+export default function History() {
   return (
     <ToastProvider position="top-right">
       <HistoryInner />

@@ -1,10 +1,11 @@
 import { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router';
-import { fetchDataPost } from '../../scripts/utilis/fetch'
-import { ToastProvider, useToast, CSS } from '../../components/NotificationSystem'
+import { ToastProvider, useToast, CSS } from '../../components/NotificationSystem';
+import { authStore } from '../../stores/authStore';
 import './ForgotPassword.css'
 
 function ForgotPasswordInner() {
+  const forgotPassword = authStore(state => state.forgotPassword)
   const toast = useToast()
   const [email, setEmail] = useState('')
   const [error, setError] = useState(null)
@@ -35,7 +36,7 @@ function ForgotPasswordInner() {
     buttonElement.disabled = true
     buttonElement.innerHTML = '<span className="forget-spinner"></span>Sending...'
     try {
-      await fetchDataPost({ email }, '/api/password/forgot-password')
+      await forgotPassword({ email })
       const formElement = formElementRef.current
       formElement.style.display = 'none'
       toast.push({ variant: 'pill', type: 'success', message: 'Reset link sent.' });

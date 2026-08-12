@@ -1,17 +1,19 @@
-import { useState, useEffect, useRef, useContext } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useSearchParams, useNavigate, Link, Navigate } from "react-router";
-import UserContext from '../../context/UserContext.jsx';
 import { ModalDialog, ModalCentered, CSS } from '../../components/NotificationSystem'
 import './Config.css';
 import { subjectsData } from '../../scripts/data/subjectsData.js';
-import { formatName } from '../../scripts/utilis/formatName.js'
+import { formatName } from '../../scripts/utilis/formatName.js';
+import { authStore } from '../../stores/authStore';
+import { studyStore } from '../../stores/studyStore';
 
 
 const yearsList = ["2025","2024","2023","2022","2021","2020","2019","2018", "2017", "2016", "2015", "2014", "2013", "2012", "2011", "2010", "2009", "2008", "2007", "2006", "2005", "2004", "2003", "2002", "2001", "2000", "1999", "1998", "1997", "1996", "1995", "1994", "1993", "1992", "1991", "1990", "1989", "1988", "1987", "1986", "1985", "1984", "1983"];
 
 
-export function Config() {
-  const { isActivated, setStudyConfig } = useContext(UserContext)
+export default function Config() {
+  const isActivated = authStore(state => state.isActivated)
+  const setStudyConfig = studyStore(state => state.setStudyConfig)
   const [searchParams] = useSearchParams();
   const navigate = useNavigate()
   const subjectId = searchParams.get("id");

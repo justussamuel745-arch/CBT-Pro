@@ -25,11 +25,12 @@ const MOCK_PROGRESS = [
 ];
 
 const MOCK_HISTORY = [
-  { id: "1", name: "JAMB Mock 5", date: "2026-08-02", target: 280, score: 296, passed: true },
-  { id: "2", name: "JAMB Mock 4", date: "2026-07-26", target: 260, score: 268, passed: true },
-  { id: "3", name: "JAMB Mock 3", date: "2026-07-19", target: 260, score: 252, passed: false },
-  { id: "4", name: "JAMB Mock 2", date: "2026-07-12", target: 250, score: 244, passed: false },
-  { id: "5", name: "JAMB Mock 1", date: "2026-07-05", target: 220, score: 220, passed: true },
+  { id: "1", name: "JAMB Mock 5", date: "2026-08-02", target: 280, score: 296, status: "passed" },
+  { id: "2", name: "JAMB Mock 4", date: "2026-07-26", target: 260, score: 268, status: "passed" },
+  { id: "3", name: "JAMB Mock 3", date: "2026-07-19", target: 260, score: 252, status: "failed" },
+  { id: "4", name: "JAMB Mock 2b", date: "2026-07-15", target: 250, score: null, status: "missed" },
+  { id: "5", name: "JAMB Mock 2", date: "2026-07-12", target: 250, score: 244, status: "failed" },
+  { id: "6", name: "JAMB Mock 1", date: "2026-07-05", target: 220, score: 220, status: "passed" },
 ];
 
 const MOCK_ACHIEVEMENTS = [
@@ -126,12 +127,34 @@ function ProgressChart({ data }) {
   );
 }
 
-function HistoryRow({ exam }) {
+function HistoryRow({ exam, onReschedule }) {
   const date = new Date(exam.date).toLocaleDateString("en-GB", {
     day: "2-digit",
     month: "short",
     year: "numeric",
   });
+
+  const isMissed = exam.status === "missed";
+  const passed = exam.status === "passed";
+
+  if (isMissed) {
+    return (
+      <div className="examhistory-row examhistory-row--missed">
+        <div className="examhistory-row__badge examhistory-row__badge--missed">
+          <i className="fa-solid fa-calendar-xmark" aria-hidden="true"></i>
+        </div>
+
+        <div className="examhistory-row__main">
+          <div className="examhistory-row__name">{exam.name}</div>
+          <div className="examhistory-row__date">Missed · {date}</div>
+        </div>
+
+        <button className="examhistory-row__reschedule" onClick={() => onReschedule(exam)}>
+          Reschedule
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="examhistory-row">
@@ -155,10 +178,10 @@ function HistoryRow({ exam }) {
 
       <div
         className={`examhistory-row__badge ${
-          exam.passed ? "examhistory-row__badge--pass" : "examhistory-row__badge--fail"
+          passed ? "examhistory-row__badge--pass" : "examhistory-row__badge--fail"
         }`}
       >
-        <i className={`fa-solid ${exam.passed ? "fa-check" : "fa-xmark"}`} aria-hidden="true"></i>
+        <i className={`fa-solid ${passed ? "fa-check" : "fa-xmark"}`} aria-hidden="true"></i>
       </div>
     </div>
   );
@@ -198,16 +221,23 @@ export default function ExamHistory({
   progress = MOCK_PROGRESS,
   history = MOCK_HISTORY,
   achievements = MOCK_ACHIEVEMENTS,
+  onBack = () => {},
+  onReschedule = () => {},
 }) {
   const hasHistory = history.length > 0;
 
   return (
     <div className="examhistory-page no-select">
       <header className="examhistory-header">
-        <h1 className="examhistory-header__title">Exam History</h1>
-        <p className="examhistory-header__subtitle">
-          Track how your mock scores have improved over time.
-        </p>
+        <button className="examhistory-back" onClick={onBack} aria-label="Back to dashboard">
+          <i className="fa-solid fa-arrow-left" aria-hidden="true"></i>
+        </button>
+        <div>
+          <h1 className="examhistory-header__title">Exam History</h1>
+          <p className="examhistory-header__subtitle">
+            Track how your mock scores have improved over time.
+          </p>
+        </div>
       </header>
 
       {!hasHistory ? (
@@ -250,12 +280,12 @@ export default function ExamHistory({
             </div>
           </section>
 
-          {/* Completed exams list */}
+          {/* Exam history list */}
           <section className="examhistory-section">
-            <h2 className="examhistory-section__title">Completed Exams</h2>
+            <h2 className="examhistory-section__title">Exam History</h2>
             <div className="examhistory-list">
               {history.map((exam) => (
-                <HistoryRow key={exam.id} exam={exam} />
+                <HistoryRow key={exam.id} exam={exam} onReschedule={onReschedule} />
               ))}
             </div>
           </section>

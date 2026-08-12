@@ -1,8 +1,7 @@
-import { useContext } from 'react';
 import { Navigate, Outlet} from 'react-router'
-import UserContext from '../context/UserContext.jsx';
+import { authStore } from '../stores/authStore';
 
 export function ProtectedRoutes(){
-  const { token } = useContext(UserContext)
+  const token = authStore(state => state.token)
   return token ? <Outlet /> : <Navigate to="/auth" replace />
 }

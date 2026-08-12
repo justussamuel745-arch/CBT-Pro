@@ -26,7 +26,7 @@ const AVAILABLE_SYLLABUS = [
 ];
 
 
-export function Syllabus() {
+export default function Syllabus() {
   const [searchParams] = useSearchParams();
   const [modalTitle, setModalTitle] = useState(null)
   const [modalActive, setModalActive] = useState(false)

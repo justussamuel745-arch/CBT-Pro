@@ -1,9 +1,9 @@
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router';
-import UserContext from '../../context/UserContext.jsx';
 import { subjectsData } from '../../scripts/data/subjectsData.js';
 import { formatName } from '../../scripts/utilis/formatName.js';
 import { formatTime } from '../../scripts/utilis/formatTime.js';
+import { simulatorStore } from '../../stores/simulatorStore';
 import './Score.css';
 
 // ─────────────────────────────────────────────────────────────
@@ -109,8 +109,8 @@ function timeInsight(efficiency) {
 // ─────────────────────────────────────────────────────────────
 // MAIN COMPONENT
 // ─────────────────────────────────────────────────────────────
-export function Score() {
-  const { examResults } = useContext(UserContext);
+export default function Score() {
+  const examResults = simulatorStore(state => state.examResults);
 
   // Build subject array ranked by score
   const subjects = Object.entries(examResults.performance)

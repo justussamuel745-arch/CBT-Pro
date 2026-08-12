@@ -1,11 +1,11 @@
-import { useState, useEffect, useContext, useCallback, useRef,  memo } from 'react';
+import { useState, useEffect, useCallback, useRef,  memo } from 'react';
 import { Link } from 'react-router';
-import UserContext from '../context/UserContext.jsx';
 import { MarkdownContent } from '../components/MarkdownContent';
 import { subjectsData } from '../scripts/data/subjectsData.js';
 import { formatName } from '../scripts/utilis/formatName.js';
 import { Image } from '../components/Image';
 import { decrypt, encrypt } from '../scripts/utilis/crypto';
+import { userStore } from '../stores/userStore';
 import './Bookmark.css'
 
 const ExpensiveBmkModal = memo(({ modalQsInfo, setModalQsInfo }) => {
@@ -63,8 +63,8 @@ const ExpensiveBmkModal = memo(({ modalQsInfo, setModalQsInfo }) => {
 })
 
 
-export function Bookmark() {
-  const { userInfo } = useContext(UserContext)
+export default function Bookmark() {
+  const userInfo = userStore(state => state.userInfo)
   const [bookmarkData, setBookmarkData] = useState([])
   const [noBmkFound, setNoBmkFound] = useState(false)
   const [modalQsInfo, setModalQsInfo] = useState(null)

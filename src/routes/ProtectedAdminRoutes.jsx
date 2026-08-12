@@ -1,8 +1,7 @@
-import { useContext } from 'react';
 import { Navigate, Outlet } from 'react-router';
-import UserContext from '../context/UserContext'
+import { authStore } from '../stores/authStore';
 
 export function ProctectedAdminRoutes(){
-  const { isAdmin } = useContext(UserContext);
+  const isAdmin = authStore(state => state.isAdmin)
   return isAdmin ? <Outlet /> : <Navigate to="/unauthorized" />
 }

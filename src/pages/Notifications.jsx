@@ -101,7 +101,7 @@ export default function Notifications() {
 
   useEffect(
     () => setUnreadCount(notifications.filter((n) => !n.isRead).length),
-    [notifications]
+    [notifications, setUnreadCount]
   );
 
   const counts = useMemo(() => {
@@ -149,7 +149,7 @@ export default function Notifications() {
     if (navigator.onLine) {
       try {
         handlers.markRead(id);
-      } catch (err) {
+      } catch {
         addQueueAction({ userId, notificationId: id, action: "MARK_READ" });
       }
     } else {
@@ -164,7 +164,7 @@ export default function Notifications() {
     if (navigator.onLine) {
       try {
         handlers.deleteNotification(id);
-      } catch (err) {
+      } catch {
         addQueueAction({ userId, notificationId: id, action: "DELETE" });
       }
     } else {
@@ -187,7 +187,7 @@ export default function Notifications() {
       if (navigator.onLine) {
         try {
           handlers.markRead(n._id);
-        } catch (err) {
+        } catch {
           addQueueAction({ userId, notificationId: n._id, action: "MARK_READ" });
         }
       } else {
@@ -258,7 +258,7 @@ export default function Notifications() {
           <div className="ntf-empty">
             <i className="fa-regular fa-bell-slash" />
             <h3>Nothing here</h3>
-            <p>You're all caught up{activeFilter !== "all" ? " in this category" : ""}.</p>
+            <p>You&apos;re all caught up{activeFilter !== "all" ? " in this category" : ""}.</p>
           </div>
         ) : (
           groupedNotifications.map((group) => (

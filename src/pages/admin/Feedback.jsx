@@ -1,8 +1,7 @@
-import { useState, useMemo, useEffect, useContext } from 'react';
-import UserContext from '../../context/UserContext';
-import { useAdminContext } from '../../context/AdminContext';
-import { fetchWithAuth } from '../../scripts/utilis/fetch';
+import { useState, useMemo, useEffect } from 'react';
+import { request } from '../../scripts/utilis/request';
 import { Nav } from './Nav';
+import { adminStore } from '../../stores/AdminStore';
 import './Feedback.css';
 
 const TYPE_META = {
@@ -56,9 +55,8 @@ const fmtDate = (d) => {
 const fmtFull = (d) => d ? new Date(d).toLocaleString('en-NG', { dateStyle: 'medium', timeStyle: 'short' }) : '—';
 
 // ==================== COMPONENT ====================
-export function Feedback() {
-  const { token, setToken } = useContext(UserContext)
-  const { items, setItems, stats, setPage } = useAdminContext()
+export default function Feedback() {
+  const { feedbacks, setFeedbacks, stats, setPage } = adminStore()
   const [filter, setFilter] = useState('All');
   const [search, setSearch] = useState('');
   const [drawer, setDrawer] = useState(null);
@@ -82,7 +80,7 @@ export function Feedback() {
 
   // Filtered list
   const filtered = useMemo(() => {
-    let list = items;
+    let list = feedbacks;
     if (filter === 'Unread') list = list.filter(i => !i.read);
     else if (filter !== 'All') list = list.filter(i => i.type === filter);
     if (search.trim()) {
@@ -94,7 +92,7 @@ export function Feedback() {
       );
     }
     return list;
-  }, [items, filter, search]);
+  }, [feedbacks, filter, search]);
 
   // Actions
   const openDrawer = (item) => {
@@ -105,19 +103,14 @@ export function Feedback() {
   
   async function changeStatus(id, status){
     try {
-      const response = await fetchWithAuth(token, setToken, '/api/feedback/status', {
+      await request.auth('/api/feedback/status', {
         method: 'PUT',
         body: JSON.stringify({
           id,
           status
         })
       })
-      const data = await response.json().catch(() => ({}))
-      if (!response.ok){
-        throw { status: response.status, error: data?.message || 'Failed'}
-      }
-      
-      setItems(prev => prev.map(i => i._id === id ? {...i, read: status } : i))
+      setFeedbacks(feedbacks.map(i => i._id === id ? {...i, read: status } : i))
       if (drawer?._id === id) setDrawer(d => d ? { ...d, read: status } : d);
       if (!status){
         showToast('Marked as unread');
@@ -141,16 +134,11 @@ export function Feedback() {
     if (drawer?._id === deleteModal._id) closeDrawer();
     setDeleteModal(null);
     try {
-      const response = await fetchWithAuth(token, setToken, `/api/feedback/${deleteModal._id}`, {
+      await request.auth(`/api/feedback/${deleteModal._id}`, {
         method: 'DELETE'
       })
-      const data = await response.json().catch(() => ({}))
-      if (!response.ok){
-        throw { status: response.status, error: data?.message || 'Failed'}
-      }
-      
       showToast('Feedback deleted')
-      setItems(prev => prev.filter(i => i._id !== deleteModal._id));
+      setFeedbacks(feedbacks.filter(i => i._id !== deleteModal._id));
     } catch (err) {
       console.error('Error:', err);
       if (!err.status){
@@ -162,7 +150,7 @@ export function Feedback() {
   };
 
   const markAllRead = () => {
-    //setItems(prev => prev.map(i => ({ ...i, read: true })));
+    //setFeedbacks(feedbacks.map(i => ({ ...i, read: true })));
     showToast('under production');
   };
   

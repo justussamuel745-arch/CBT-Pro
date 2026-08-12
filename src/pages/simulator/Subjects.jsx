@@ -1,14 +1,16 @@
-import { useState, useContext } from 'react'
+import { useState } from 'react'
 import { Link, useNavigate } from 'react-router';
-import UserContext from '../../context/UserContext.jsx'
-import { subjectsData } from '../../scripts/data/subjectsData.js';
-import { formatName } from '../../scripts/utilis/formatName.js';
+import { subjectsData } from '../../scripts/data/subjectsData';
+import { formatName } from '../../scripts/utilis/formatName';
+import { authStore } from '../../stores/authStore';
+import { simulatorStore } from '../../stores/simulatorStore';
 import './Subjects.css'
 
 const JAMB_SUBJECTS = subjectsData.map(subject => subject.name)
 
-export function Subjects() {
-  const { isActivated, setExamConfig } = useContext(UserContext)
+export default function Subjects() {
+  const isActivated = authStore(state => state.isActivated)
+  const setExamConfig = simulatorStore(state => state.setExamConfig)
   const navigate = useNavigate()
   const [selectedSubjects, setSelectedSubjects] = useState(['English'])
   
@@ -20,7 +22,6 @@ export function Subjects() {
   }
   
   function startExam(){
-    setExamConfig([])
     const setup = []
     selectedSubjects.forEach(subject => {
       const qsNo = subject === 'English' ? 60 : 40

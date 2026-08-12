@@ -1,6 +1,5 @@
-import { useState, useEffect, useCallback, useContext } from 'react';
-import UserContext from '../context/UserContext';
-import { fetchWithAuth } from '../scripts/utilis/fetch';
+import { useState, useEffect, useCallback } from 'react';
+import { request } from '../scripts/utilis/request';
 import './ReportQuestionModal.css';
 
 // ─────────────────────────────────────────────────────────────
@@ -31,7 +30,6 @@ const CATEGORIES = [
 const MAX_CHARS = 400;
 
 export function ReportQuestionModal({ questionId, subject, questionNo, onClose }) {
-  const { token, setToken } = useContext(UserContext)
   const [selectedCats, setSelectedCats] = useState([]);
   const [message, setMessage]           = useState('');
   const [error, setError]               = useState('');
@@ -61,15 +59,11 @@ export function ReportQuestionModal({ questionId, subject, questionNo, onClose }
   }
   
   const onSubmit = useCallback(async (payload) => {
-    const response = await fetchWithAuth(token, setToken, '/api/reports', {
+    await request.auth('/api/reports', {
       method: 'POST',
       body: JSON.stringify(payload)
     })
-    const data = await response.json().catch(() => ({}))
-    if (!response.ok){
-      throw { status: response.status, error: data?.error || data?.message || 'Report Failed'}
-    }
-  },[token, setToken])
+  },[])
 
   async function handleSubmit() {
     // Validation

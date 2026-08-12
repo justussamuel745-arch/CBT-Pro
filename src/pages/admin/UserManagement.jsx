@@ -1,9 +1,8 @@
-import { useState, useEffect, useMemo, useContext } from 'react';
-import UserContext from '../../context/UserContext';
-import { useAdminContext } from '../../context/AdminContext';
-import { fetchWithAuth } from '../../scripts/utilis/fetch';
+import { useState, useEffect, useMemo } from 'react';
+import { request } from '../../scripts/utilis/request';
 import { ModalStripe, ToastProvider, useToast, CSS } from '../../components/NotificationSystem';
 import { Nav } from './Nav';
+import { adminStore } from '../../stores/AdminStore';
 import './UserManagement.css';
 
 // ==================== CONSTANTS ====================
@@ -51,8 +50,7 @@ const IconChevronRight = () => <svg width="14" height="14" viewBox="0 0 24 24" f
 
 // ==================== COMPONENT ====================
 function UserManagementInner() {
-  const { token, setToken } = useContext(UserContext)
-  const { users, setUsers, payments, setPage } = useAdminContext()
+  const { users, setUsers, payments, setPage } = adminStore(state => state)
   const [search, setSearch] = useState('');
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -140,17 +138,14 @@ function UserManagementInner() {
     if (drawer?._id === roleModal._id) setDrawer(u => ({ ...u, roles: tempRoles }));
     setRoleModal(null);
     try {
-      const response = await fetchWithAuth(token, setToken, `/api/users/${roleModal._id}`, {
+      const response = await request.auth(`/api/users/${roleModal._id}`, {
         method: 'PUT',
         body: JSON.stringify({
           roles: newRoles
         })
       })
-      const data = await response.json().catch(() => ({}))
-      if (!response.ok) {
-        throw { status: response.status, error: data.message || data.error || 'Failed to update User role' }
-      }
-      setUsers(prev => prev.map(u => u._id === roleModal._id ? data : u));
+      const data = response.body
+      setUsers(users.map(u => u._id === roleModal._id ? data : u));
       toast.push({
         variant: 'pill',
         type: 'success',
@@ -170,26 +165,20 @@ function UserManagementInner() {
   const toggleActive = async (user) => {
     const flipStatus = !user.isActivated
     try {
-      const response = await fetchWithAuth(token, setToken, `/api/users/subscription/${user._id}`, {
+      const response = await request.auth(`/api/users/subscription/${user._id}`, {
         method: 'PUT',
         body: JSON.stringify({
           subscription: flipStatus
         })
       })
-      const data = await response.json().catch(() => ({}))
-      if (!response.ok) {
-        throw {
-          status: response.status,
-          error: data.message || data.error || 'Failed to update user subscription'
-        }
-      }
+      const data = response.body
       toast.push({
         variant: 'pill',
         type: 'success',
         message: 'Account status has been changed.',
       });
       
-      setUsers(prev => prev.map(u => u._id === user._id ? data.result : u))
+      setUsers(users.map(u => u._id === user._id ? data.result : u))
     } catch (err) {
       if (!err.status){
         toast.push({
@@ -229,14 +218,10 @@ function UserManagementInner() {
     }
     setDeleteBtn('disabled')
     try {
-      const response = await fetchWithAuth(token, setToken, `/api/users/${deleteModal._id}`, {
+      await request.auth(`/api/users/${deleteModal._id}`, {
         method: 'DELETE'
       })
-      const data = await response.json().catch(() => ({}))
-      if (!response.ok) {
-        throw { status: response.status, error: data?.message || data?.error || 'Failed to delete user' }
-      }
-      setUsers(prev => prev.filter(u => u._id !== deleteModal._id))
+      setUsers(users.filter(u => u._id !== deleteModal._id))
       if (drawer?._id === deleteModal._id) closeDrawer();
       setDeleteModal(null);
       setDeleteBtn(null)
@@ -277,22 +262,18 @@ function UserManagementInner() {
     setCreditModal(null);
     if (drawer?._id === creditModal._id) setDrawer(u => ({ ...u, aiCredits: val }));
     try {
-      const response = await fetchWithAuth(token, setToken, `/api/users/credits/${creditModal._id}`, {
+      await request.auth(`/api/users/credits/${creditModal._id}`, {
         method: 'PUT',
         body: JSON.stringify({
           value: val
         })
       })
-      const data = await response.json().catch(() => ({}))
-      if (!response.ok) {
-        throw { status: response.status, error: data?.message || data?.error || 'Failed to Update' }
-      }
       toast.push({
         variant: 'pill',
         type: 'success',
         message: 'Update successful.',
       });
-      setUsers(prev => prev.map(u => u._id === creditModal._id ? { ...u, aiCredits: val } : u));
+      setUsers(users.map(u => u._id === creditModal._id ? { ...u, aiCredits: val } : u));
     } catch (err) {
       if (!err.status){
         toast.push({
@@ -668,7 +649,7 @@ function UserManagementInner() {
   );
 }
 
-export function UserManagement() {
+export default function UserManagement() {
   return (
     <ToastProvider position="top-right">
       <UserManagementInner />

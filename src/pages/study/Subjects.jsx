@@ -1,14 +1,14 @@
-import  { useState, useContext} from "react";
+import  { useState } from "react";
 import { Link } from 'react-router';
-import UserContext from '../../context/UserContext.jsx'
-import { subjectsData } from '../../scripts/data/subjectsData.js';
-import { formatName } from '../../scripts/utilis/formatName.js'
+import { subjectsData } from '../../scripts/data/subjectsData';
+import { formatName } from '../../scripts/utilis/formatName';
+import { authStore } from '../../stores/authStore';
 import './Subjects.css';
 
-export function Subjects(){
-  const { isActivated } = useContext(UserContext)
+export default function Subjects(){
+  const isActivated = authStore(state => state.isActivated)
   const [activeFilter, setActiveFilter] = useState("all");
-  
+
 
   const filters = [
     { label: "All", value: "all" },
@@ -31,12 +31,12 @@ export function Subjects(){
               CBT Pro
             </Link>
             <div className="nav-right">
-              {!isActivated && 
+              {!isActivated &&
                 (
                   <Link to="/payment" className="btn btn-outline">
                     Activate now
                   </Link>
-                ) 
+                )
               }
             </div>
           </div>
@@ -61,29 +61,73 @@ export function Subjects(){
         {/* SIMULATOR HERO CARD */}
         <div className="simulator-hero">
           <div className="simulator-content">
+            <div className="simulator-eyebrow">
+              <i className="fa-solid fa-desktop"></i> Official JAMB Format
+            </div>
             <h2>JAMB CBT Simulator</h2>
             <p>
-              JAMB’s official format: 180 questions across 4 subjects in 120 minutes. Practice with the exact same rules.
+              180 questions across 4 subjects in 120 minutes, exactly like exam day. Practice under the exact same rules and get comfortable with the real interface.
             </p>
             <div className="simulator-stats">
               <div className="stat">
-                <span className="stat-value">15,000+</span>
-                <span className="stat-label">Questions</span>
+                <div className="stat-icon"><i className="fa-solid fa-layer-group"></i></div>
+                <div>
+                  <span className="stat-value">15,000+</span>
+                  <span className="stat-label">Questions</span>
+                </div>
               </div>
+              <div className="stat-divider"></div>
               <div className="stat">
-                <span className="stat-value">4 Subjects</span>
-                <span className="stat-label">Per Exam</span>
+                <div className="stat-icon"><i className="fa-solid fa-book"></i></div>
+                <div>
+                  <span className="stat-value">4 Subjects</span>
+                  <span className="stat-label">Per Exam</span>
+                </div>
               </div>
+              <div className="stat-divider"></div>
               <div className="stat">
-                <span className="stat-value">120 Min</span>
-                <span className="stat-label">Timer</span>
+                <div className="stat-icon"><i className="fa-solid fa-clock"></i></div>
+                <div>
+                  <span className="stat-value">120 Min</span>
+                  <span className="stat-label">Timer</span>
+                </div>
               </div>
             </div>
             <Link to="/simulator" className="btn-white">
-              Launch Full Simulator
+              <i className="fa-solid fa-play"></i> Launch Full Simulator
             </Link>
           </div>
-          <div className="simulator-icon">💻</div>
+
+          {/* Mock CBT exam-screen visual */}
+          <div className="simulator-mock">
+            <div className="simulator-mock-bar">
+              <span className="simulator-mock-dot"></span>
+              <span className="simulator-mock-dot"></span>
+              <span className="simulator-mock-dot"></span>
+              <span className="simulator-mock-timer"><i className="fa-solid fa-stopwatch"></i> 01:58:12</span>
+            </div>
+            <div className="simulator-mock-body">
+              <div className="simulator-mock-qline"></div>
+              <div className="simulator-mock-qline short"></div>
+              <div style={{ height: '0.85rem' }}></div>
+              <div className="simulator-mock-option selected">
+                <span className="simulator-mock-radio"></span>
+                <span className="simulator-mock-optline"></span>
+              </div>
+              <div className="simulator-mock-option">
+                <span className="simulator-mock-radio"></span>
+                <span className="simulator-mock-optline"></span>
+              </div>
+              <div className="simulator-mock-option">
+                <span className="simulator-mock-radio"></span>
+                <span className="simulator-mock-optline"></span>
+              </div>
+              <div className="simulator-mock-option">
+                <span className="simulator-mock-radio"></span>
+                <span className="simulator-mock-optline"></span>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* SUBJECTS SECTION */}
