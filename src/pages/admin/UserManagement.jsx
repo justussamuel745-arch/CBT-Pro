@@ -299,8 +299,8 @@ function UserManagementInner() {
   };
 
   const Avatar = ({ user, size = 34, className = 'a-avatar' }) => (
-    user.profilePic
-      ? <img className={className} src={`${user.profilePic}`} alt={user.fullName} style={{ width: size, height: size }} />
+    user?.profilePic?.url
+      ? <img className={className} src={`${user.profilePic.url}`} alt={user.fullName} style={{ width: size, height: size }} />
       : <span className={className} style={{ width: size, height: size, background: avatarColor(user.fullName), fontSize: size * .35 }}>{initials(user.fullName)}</span>
   );
 

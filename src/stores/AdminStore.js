@@ -30,7 +30,7 @@ export const adminStore = create((set, get) => ({
     page
   }),
   
-  fetchUser: async () => {
+  fetchUsers: async () => {
     const response = await request.auth('/api/users', {
       method: 'GET'
     })

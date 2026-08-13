@@ -53,7 +53,7 @@ export const authStore = create(set => ({
     set({
       token: data.accessToken,
       isActivated: data.isActivated,
-      isAdmin: data.isAdmim
+      isAdmin: data.isAdmin
     })
   },
 

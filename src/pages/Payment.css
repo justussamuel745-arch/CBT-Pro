@@ -29,7 +29,7 @@
   }
 
   .payment-container {
-    max-width: 860px;
+    width: 100%;
     margin: -2rem auto 0;
     padding: 0 1.5rem 4rem;
     position: relative;
@@ -63,7 +63,7 @@
   }
 
   .payment-hero-inner {
-    max-width: 860px;
+    width: 100%;
     margin: 0 auto;
     position: relative;
     z-index: 1;

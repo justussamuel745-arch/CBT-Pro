@@ -50,11 +50,12 @@ export const userStore = create(set => ({
       await saveQuestions(qs)
       delete data.pendingClientUpdates
     }
+    console.log(data);
 
     let blob;
     try {
-      if (data.profilePic) {
-        const res = await fetch(data.profilePic)
+      if (data?.profileUrl) {
+        const res = await fetch(data.profileUrl)
         if (!res.ok) {
           throw new Error(`Failed to load profile pic: ${res.status}`)
         }

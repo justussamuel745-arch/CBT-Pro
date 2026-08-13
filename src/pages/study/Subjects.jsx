@@ -8,7 +8,7 @@ import './Subjects.css';
 export default function Subjects(){
   const isActivated = authStore(state => state.isActivated)
   const [activeFilter, setActiveFilter] = useState("all");
-
+  const [searchQuery, setSearchQuery] = useState("");
 
   const filters = [
     { label: "All", value: "all" },
@@ -17,9 +17,13 @@ export default function Subjects(){
     { label: "Commercial", value: "commercial" },
   ];
 
-  const filteredSubjects = subjectsData.filter(
-    (sub) => activeFilter === "all" || sub.category.includes(activeFilter)
-  );
+  const filteredSubjects = subjectsData.filter((sub) => {
+    const matchesFilter = activeFilter === "all" || sub.category.includes(activeFilter);
+    const matchesSearch = formatName(sub.name)
+      .toLowerCase()
+      .includes(searchQuery.trim().toLowerCase());
+    return matchesFilter && matchesSearch;
+  });
 
   return (
     <>
@@ -147,23 +151,66 @@ export default function Subjects(){
             </div>
           </div>
 
-          <div className="study-subjects-grid">
-            {filteredSubjects.map((subject) => {
-              return (
-              <Link
-                key={subject.id}
-                to={`/study/config?id=${subject.id}`}
-                className="study-subject-card"
-                data-category={subject.category}
+          {/* SEARCH */}
+          <div className="subject-search">
+            <i className="fa-solid fa-magnifying-glass subject-search-icon"></i>
+            <input
+              type="text"
+              className="subject-search-input"
+              placeholder="Search subjects e.g. Physics, Economics..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+            {searchQuery && (
+              <button
+                type="button"
+                className="subject-search-clear"
+                onClick={() => setSearchQuery("")}
+                aria-label="Clear search"
               >
-                <div className="subject-logo margin-auto" dangerouslySetInnerHTML={{ __html: subject.icon }} />
-                <div className="subject-name">{formatName(subject.name)}</div>
-                <div className="subject-meta">
-                  <span className="subject-badge">{subject.totalQuestions} Qs</span>
-                </div>
-              </Link>
-            )})}
+                <i className="fa-solid fa-xmark"></i>
+              </button>
+            )}
           </div>
+
+          {filteredSubjects.length > 0 ? (
+            <div className="study-subjects-grid">
+              {filteredSubjects.map((subject) => (
+                <Link
+                  key={subject.id}
+                  to={`/study/config?id=${subject.id}`}
+                  className="subject-card"
+                  data-category={subject.category}
+                >
+                  <div className="subject-card-icon" aria-hidden="true">
+                    <div
+                      className="subject-card-icon-inner"
+                      dangerouslySetInnerHTML={{ __html: subject.icon }}
+                    />
+                  </div>
+
+                  <div className="subject-card-info">
+                    <h3 className="subject-card-name">{formatName(subject.name)}</h3>
+                    <div className="subject-card-meta">
+                      <span className="subject-card-badge">
+                        <i className="fa-solid fa-layer-group"></i> {subject.totalQuestions} Qs
+                      </span>
+                    </div>
+                  </div>
+
+                  <i className="fa-solid fa-chevron-right subject-card-arrow"></i>
+                </Link>
+              ))}
+            </div>
+          ) : (
+            <div className="subjects-empty">
+              <i className="fa-solid fa-magnifying-glass-minus"></i>
+              <p>No subjects match "{searchQuery}"</p>
+              <button className="filter-btn" onClick={() => { setSearchQuery(""); setActiveFilter("all"); }}>
+                Reset search
+              </button>
+            </div>
+          )}
         </section>
       </main>
 

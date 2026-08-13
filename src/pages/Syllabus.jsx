@@ -88,7 +88,7 @@ export default function Syllabus() {
                 <div className="syllabus-card" key={subject.id}>
                   <div className="syllabus-card-icon subject-logo" dangerouslySetInnerHTML={{__html: subject.icon}}/>
                   <h3 className="syllabus-card-title">{formatName(subject.name)}</h3>
-                  <p className="syllabus-card-desc">{[...subject.topics].splice(0, 4).join(', ')}</p>
+                  <p className="syllabus-card-desc">{[...subject.topics].splice(0, 2).join(', ').slice(0, 30)}...</p>
                   <button className="syllabus-btn" onClick={() => viewSyllabus(subject.name)}>
                     View Syllabus →
                   </button>

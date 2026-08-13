@@ -18,7 +18,7 @@ Everything else below reuses --primary, --accent, --success, --danger,
   background: var(--bg);
   color: var(--text);
   line-height: 1.6;
-  max-width: 720px;
+  width: 100%;
   margin: 0 auto;
   min-height: 100vh;
   padding: 0 0 40px;

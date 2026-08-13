@@ -421,9 +421,9 @@ function SettingsInner() {
       const data = decrypt(res.body.data)
       
       let blob;
-      if (data.profilePic !== userInfo.profilePic) {
+      if (data.profileUrl !== userInfo.profileUrl) {
         try {
-          const res = await fetch(data.profilePic)
+          const res = await fetch(data.profileUrl)
           if (res.ok) {
             blob = await res.blob();
           }

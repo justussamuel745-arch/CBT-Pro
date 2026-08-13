@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { Link } from 'react-router';
 import { Menu } from '../components/Menu';
 import { InstallAppBanner } from '../components/InstallAppBanner';
@@ -60,15 +60,38 @@ function getGreeting() {
   return "Good evening";
 }
 
+const Avatar = memo(function Avatar({ userInfo }){
+  const [imgExist, setImgExist] = useState(true)
+  const initials = userInfo?.fullName
+    .split(" ")
+    .map((w) => w[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
+  
+  return (
+    <span className="dash-avatar">
+      <img
+        src={`${userInfo?.blob && URL.createObjectURL(userInfo.blob)}`}
+        style={{
+          width: '100%',
+          borderRadius: '12px',
+          display: `${!imgExist && !userInfo?.blob ? 'none' : 'inline'}`
+        }}
+        onError={() => setImgExist(false)}
+      />
+      {(!imgExist && !userInfo?.blob) && initials}
+    </span>
+  )
+})
+
 export default function Dashboard() {
   const isActivated = authStore(store => store.isActivated)
-  const isAdmin = authStore(store => store.isAdmin)
   const userInfo = userStore(store => store.userInfo)
   const { unreadCount } = useNotifications();
   const userName = userInfo?.fullName || '';
   const [menuOpen, setMenuOpen] = useState(false);
   const [bannerDismissed, setBannerDismissed] = useState(false);
-  const [imgExist, setImgExist] = useState(true)
 
   const showBanner = !isActivated && !bannerDismissed;
 
@@ -76,13 +99,6 @@ export default function Dashboard() {
 
   usePushNotifications()
   
-
-  const initials = userName
-    .split(" ")
-    .map((w) => w[0])
-    .join("")
-    .slice(0, 2)
-    .toUpperCase();
 
   return (
     <div className="dash-page">
@@ -109,22 +125,11 @@ export default function Dashboard() {
           </Link>
 
           <button className="dash-avatar-btn" aria-label="Account">
-            <span className="dash-avatar">
-              <img
-                src={`${userInfo?.blob && URL.createObjectURL(userInfo.blob)}`}
-                style={{
-                  width: '100%',
-                  borderRadius: '12px',
-                  display: `${!imgExist ? 'none' : 'inline'}`
-                }}
-                onError={() => setImgExist(false)}
-              />
-              {!imgExist && initials}
-            </span>
+            <Avatar userInfo={userInfo} />
           </button>
         </div>
 
-        <Menu menuOpen={menuOpen} setMenuOpen={setMenuOpen} isAdmin={isAdmin} />
+        <Menu menuOpen={menuOpen} setMenuOpen={setMenuOpen}/>
       </header>
 
       {/* MAIN */}
