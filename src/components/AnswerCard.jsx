@@ -3,7 +3,7 @@ import { MarkdownContent } from './MarkdownContent';
 import { AIStore } from '../stores/AIStore';
 
 export const AnswerCard = memo(function AnswerCard({ explanation, correctAnswers, ques, setChatWithAI }){
-  const { onAskAi, setChatMessages, aiExplanations, setAiExplanations } = AIStore(state => state)
+  const { onAskAI, setChatMessages, aiExplanations, setAiExplanations } = AIStore(state => state)
   const question = ques.question?.qs || ques.question
   const qsId = ques.id
   const [aiOpen, setAiOpen] = useState(false);
@@ -41,7 +41,7 @@ export const AnswerCard = memo(function AnswerCard({ explanation, correctAnswers
     setAiLoading(true);
     setAiError(null);
     try {
-      const result = await onAskAi({ questionId: qsId, message: question });
+      const result = await onAskAI({ questionId: qsId, message: question });
       //const result = 'This is a test reply. \nWave is a disturbance which result to the transfer of energy '
       setAiResponse(result);
       setShowContinuePrompt(true);
@@ -70,6 +70,7 @@ export const AnswerCard = memo(function AnswerCard({ explanation, correctAnswers
         )
       )
     } catch(err) {
+      console.log(err);
       let errorText;
       if (!err.status){
         errorText = "Can't reach the server. Check your connection and try again."

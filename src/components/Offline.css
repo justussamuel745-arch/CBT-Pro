@@ -1,0 +1,211 @@
+/* =====================================
+   OFFLINE PAGE
+   Uses global tokens from :root (--primary, --accent, --gradient, etc.)
+   All classes prefixed with `offline-`.
+   ====================================== */
+
+.offline-page {
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem 1rem;
+  background: var(--bg);
+}
+
+.offline-card {
+  width: 100%;
+  max-width: 400px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
+  padding: 2.25rem 1.75rem 1.75rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+/* ---------- Icon ---------- */
+
+.offline-icon {
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  background: var(--gradient);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  margin-bottom: 1.25rem;
+  box-shadow: 0 8px 20px rgb(79 70 229 / 0.3);
+}
+
+.offline-icon--spinning i {
+  animation: offline-pulse 0.6s ease-in-out;
+}
+
+@keyframes offline-pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(0.85); opacity: 0.6; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .offline-icon--spinning i {
+    animation: none;
+  }
+}
+
+/* ---------- Status pill ---------- */
+
+.offline-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--danger);
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  margin-bottom: 1rem;
+}
+
+.offline-status__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--danger);
+}
+
+.offline-status--back {
+  color: var(--success);
+  background: #f0fdf4;
+  border-color: #bbf7d0;
+}
+
+.offline-status--back .offline-status__dot {
+  background: var(--success);
+}
+
+/* ---------- Text ---------- */
+
+.offline-title {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.02em;
+  margin-bottom: 0.6rem;
+}
+
+.offline-text {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  line-height: 1.55;
+  margin-bottom: 1.5rem;
+}
+
+/* ---------- Retry button ---------- */
+
+.offline-retry {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.85rem;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: var(--gradient);
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgb(79 70 229 / 0.3);
+  transition: transform 0.15s ease, opacity 0.15s ease;
+  margin-bottom: 1.75rem;
+}
+
+.offline-retry:hover:not(:disabled) {
+  transform: translateY(-2px);
+}
+
+.offline-retry:disabled {
+  opacity: 0.75;
+  cursor: default;
+}
+
+.offline-retry__spin {
+  animation: offline-spin 0.7s linear infinite;
+}
+
+@keyframes offline-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .offline-retry__spin {
+    animation: none;
+  }
+}
+
+/* ---------- Still available offline ---------- */
+
+.offline-available {
+  width: 100%;
+  border-top: 1px solid var(--border);
+  padding-top: 1.25rem;
+}
+
+.offline-available__label {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.75rem;
+}
+
+.offline-available__list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.offline-available__item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text);
+  background: var(--bg);
+  border-radius: var(--radius-sm);
+  padding: 0.6rem 0.75rem;
+}
+
+.offline-available__item i {
+  width: 18px;
+  color: var(--primary);
+  font-size: 0.85rem;
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 400px) {
+  .offline-card {
+    padding: 1.75rem 1.25rem 1.5rem;
+  }
+  .offline-icon {
+    width: 72px;
+    height: 72px;
+    font-size: 1.7rem;
+  }
+}

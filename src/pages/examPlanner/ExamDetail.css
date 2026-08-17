@@ -37,6 +37,7 @@
 @media (min-width: 640px) {
   .examdetail-overlay {
     align-items: center;
+    padding: 1.5rem;
   }
   .examdetail-sheet {
     border-radius: var(--radius);
@@ -51,25 +52,47 @@
   align-items: flex-start;
   justify-content: space-between;
   gap: 1rem;
-  padding: 1.25rem 1.25rem 1rem;
+  padding: 1.25rem 1.25rem 1.1rem;
   border-bottom: 1px solid var(--border);
 }
 
-.examdetail-header__eyebrow {
+.examdetail-header__text {
+  min-width: 0;
+}
+
+.examdetail-eyebrow {
   display: block;
-  font-size: 0.7rem;
+  font-size: 0.68rem;
   font-weight: 700;
   color: var(--primary);
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.05em;
   margin-bottom: 0.3rem;
 }
 
-.examdetail-header__title {
+.examdetail-title {
   font-size: 1.15rem;
   font-weight: 800;
   color: var(--text);
   letter-spacing: -0.01em;
+  margin-bottom: 0.45rem;
+}
+
+.examdetail-datetime {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.examdetail-dot {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--text-muted);
+  opacity: 0.6;
 }
 
 .examdetail-close {
@@ -93,73 +116,83 @@
   color: var(--primary);
 }
 
-/* ---------- Countdown wrapper ---------- */
+/* ---------- Scrollable body ---------- */
 
-.examdetail-countdown-wrap {
-  margin: 1rem 1.25rem 0;
-}
-
-/* ---------- Body ---------- */
-
-.examdetail-body {
-  padding: 1rem 1.25rem;
+.examdetail-scroll {
+  flex: 1;
   overflow-y: auto;
+  padding: 1.25rem;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.5rem;
 }
 
-.examdetail-row {
+/* ---------- Countdown hero ---------- */
+
+.examdetail-hero {
+  margin: -0.25rem 0 0;
+}
+
+/* ---------- Sections ---------- */
+
+.examdetail-section {
   display: flex;
+  flex-direction: column;
   gap: 0.75rem;
 }
 
-.examdetail-row__icon {
-  width: 34px;
-  height: 34px;
-  min-width: 34px;
-  border-radius: 10px;
-  background: var(--primary-light);
-  color: var(--primary);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.85rem;
-}
-
-.examdetail-row__body {
-  flex: 1;
-  min-width: 0;
-  padding-top: 0.15rem;
-}
-
-.examdetail-row__label {
-  display: block;
+.examdetail-section__title {
   font-size: 0.72rem;
   font-weight: 700;
   color: var(--text-muted);
   text-transform: uppercase;
-  letter-spacing: 0.03em;
-  margin-bottom: 0.25rem;
+  letter-spacing: 0.05em;
 }
 
-.examdetail-row__value {
-  font-size: 0.9rem;
+/* ---------- Key stats grid ---------- */
+
+.examdetail-stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.6rem;
+}
+
+.examdetail-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 0.75rem 0.85rem;
+}
+
+.examdetail-stat__label {
+  font-size: 0.7rem;
   font-weight: 600;
-  color: var(--text);
-}
-
-.examdetail-muted {
   color: var(--text-muted);
-  font-weight: 500;
 }
 
-/* Subject chips */
+.examdetail-stat__value {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.01em;
+}
+
+.examdetail-stat__suffix {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-left: 0.25rem;
+}
+
+/* ---------- Subject chips ---------- */
 
 .examdetail-chips {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.4rem;
+  gap: 0.45rem;
 }
 
 .examdetail-chip {
@@ -167,39 +200,76 @@
   font-weight: 700;
   color: var(--primary);
   background: var(--primary-light);
-  padding: 0.25rem 0.6rem;
+  padding: 0.35rem 0.7rem;
   border-radius: 999px;
 }
 
-/* Settings tags */
+/* ---------- Settings list ---------- */
 
-.examdetail-settings {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
+.examdetail-settings-list {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
 }
 
-.examdetail-tag {
+.examdetail-setting-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.7rem 0.9rem;
+}
+
+.examdetail-setting-row + .examdetail-setting-row {
+  border-top: 1px solid var(--border);
+}
+
+.examdetail-setting-row__label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.examdetail-setting-row__value {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.examdetail-pill {
   display: inline-flex;
   align-items: center;
-  gap: 0.35rem;
-  font-size: 0.78rem;
-  font-weight: 600;
-  color: var(--text-muted);
-  background: var(--bg);
-  border: 1px solid var(--border);
-  padding: 0.3rem 0.65rem;
+  gap: 0.3rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.2rem 0.55rem;
   border-radius: 999px;
 }
 
-.examdetail-tag i {
-  font-size: 0.65rem;
+.examdetail-pill i {
+  font-size: 0.6rem;
 }
 
-.examdetail-tag--on {
+.examdetail-pill--on {
   color: var(--success);
   background: #f0fdf4;
-  border-color: #bbf7d0;
+}
+
+.examdetail-pill--off {
+  color: var(--text-muted);
+  background: var(--bg);
+}
+
+/* ---------- Notes ---------- */
+
+.examdetail-notes {
+  font-size: 0.85rem;
+  color: var(--text);
+  line-height: 1.55;
+  background: var(--bg);
+  border-left: 3px solid var(--primary);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  padding: 0.75rem 0.9rem;
+  font-style: italic;
 }
 
 /* ---------- Actions ---------- */

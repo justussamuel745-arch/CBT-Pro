@@ -13,7 +13,7 @@ import Payment from './pages/Payment';
 import Settings from './pages/Settings';
 import Bookmark  from './pages/Bookmark';
 import History from './pages/History';
-import  Syllabus from './pages/Syllabus';
+import Syllabus from './pages/Syllabus';
 import Dashboard from './pages/Dashboard';
 import PWAUpdateToast from './components/PWAUpdateToast';
 import Auth  from './pages/auth/Auth';
@@ -74,7 +74,7 @@ function App() {
       <Routes>
         <Route index element={token ? <Dashboard /> : <HomePage />} />
         <Route path="/auth/*" element={<Auth />} />
-        <Route path="/examplanner/*" element={<ExamPlanners />} />
+        <Route path="/exam-planner/*" element={<ExamPlanners />} />
         <Route path="/about" element={<About />} />
         <Route path="/legal" element={<Legal />} />
 
@@ -113,7 +113,6 @@ function App() {
             }
           />
         </Route>
-
         <Route path="*" element={<Invalid />} />
       </Routes>
       <PWAUpdateToast />

@@ -1,0 +1,141 @@
+/* =====================================
+   GENERIC LOAD ERROR STATE
+   Uses global tokens from :root (--primary, --accent, --gradient, etc.)
+   Reusable anywhere in the app. All classes prefixed with `loaderror-`.
+   ====================================== */
+
+.loaderror-page {
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem 1rem;
+  background: var(--bg);
+}
+
+.loaderror-card {
+  width: 100%;
+  max-width: 400px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
+  padding: 2.25rem 1.75rem 1.75rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+/* ---------- Icon ---------- */
+
+.loaderror-icon {
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  background: #fef2f2;
+  color: var(--danger);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  margin-bottom: 1.25rem;
+}
+
+/* ---------- Text ---------- */
+
+.loaderror-title {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.02em;
+  margin-bottom: 0.5rem;
+}
+
+.loaderror-text {
+  font-size: 0.86rem;
+  color: var(--text-muted);
+  line-height: 1.55;
+  margin-bottom: 1.5rem;
+}
+
+/* ---------- Actions ---------- */
+
+.loaderror-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  width: 100%;
+  margin-bottom: 1.5rem;
+}
+
+.loaderror-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.8rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.88rem;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  transition: transform 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+}
+
+.loaderror-btn--primary {
+  background: var(--gradient);
+  color: #fff;
+  box-shadow: 0 4px 12px rgb(79 70 229 / 0.3);
+}
+
+.loaderror-btn--primary:hover {
+  transform: translateY(-2px);
+}
+
+.loaderror-btn--ghost {
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+.loaderror-btn--ghost:hover {
+  background: var(--primary-light);
+  color: var(--primary);
+  border-color: var(--primary);
+}
+
+/* ---------- Hint ---------- */
+
+.loaderror-hint {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  width: 100%;
+  border-top: 1px solid var(--border);
+  padding-top: 1.1rem;
+  font-size: 0.76rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+  text-align: left;
+}
+
+.loaderror-hint i {
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  margin-top: 0.15rem;
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 400px) {
+  .loaderror-card {
+    padding: 1.75rem 1.25rem 1.5rem;
+  }
+  .loaderror-icon {
+    width: 64px;
+    height: 64px;
+    font-size: 1.5rem;
+  }
+}

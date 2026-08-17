@@ -5,7 +5,7 @@
    All classes prefixed with `countdown`.
    ====================================== */
 
-/* ---------- Ready state ---------- */
+/* ---------- Ready state (legacy, no grace tracking) ---------- */
 
 .countdown--ready {
   display: flex;
@@ -26,6 +26,29 @@
 
 .countdown--ready.countdown--compact {
   font-size: 0.8rem;
+}
+
+/* ---------- Expired state (grace window ran out) ---------- */
+
+.countdown--expired {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-weight: 700;
+  color: var(--danger);
+}
+
+.countdown--expired.countdown--full {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: var(--radius-sm);
+  padding: 0.8rem;
+  font-size: 0.9rem;
+}
+
+.countdown--expired.countdown--compact {
+  font-size: 0.78rem;
 }
 
 /* ---------- Compact variant (cards) ---------- */
@@ -55,6 +78,61 @@
   color: var(--warning);
 }
 
+/* ---------- Grace window — compact (cards) ---------- */
+
+.countdown--grace-compact {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0.2rem;
+  padding: 0.4rem 0.5rem;
+  background: #fffbeb;
+  border-radius: var(--radius-sm);
+  color: var(--warning);
+  font-weight: 700;
+}
+
+.countdown--grace-compact .countdown__num {
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--warning);
+}
+
+.countdown--grace-compact .countdown__unit {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--warning);
+  margin-right: 0.3rem;
+}
+
+.countdown--grace-compact.countdown--urgent {
+  background: #fef2f2;
+}
+
+.countdown--grace-compact.countdown--urgent .countdown__num,
+.countdown--grace-compact.countdown--urgent .countdown__unit {
+  color: var(--danger);
+}
+
+.countdown__grace-dot {
+  width: 6px;
+  height: 6px;
+  min-width: 6px;
+  border-radius: 50%;
+  background: var(--warning);
+  margin-right: 0.15rem;
+  animation: countdown-pulse 1.4s ease-in-out infinite;
+}
+
+.countdown--grace-compact.countdown--urgent .countdown__grace-dot {
+  background: var(--danger);
+}
+
+@keyframes countdown-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.35; transform: scale(1.5); }
+}
+
 /* ---------- Full variant (detail / exam-ready screen) ---------- */
 
 .countdown--full {
@@ -69,6 +147,9 @@
 }
 
 .countdown__title {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
   font-size: 0.72rem;
   font-weight: 700;
   text-transform: uppercase;
@@ -114,4 +195,25 @@
 
 .countdown--full.countdown--urgent {
   background: linear-gradient(135deg, var(--warning) 0%, #f97316 100%);
+}
+
+/* ---------- Grace window — full (detail / ready screen) ---------- */
+
+.countdown--grace {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  background: linear-gradient(135deg, var(--warning) 0%, #f59e0b 100%);
+  color: #fff;
+  padding: 1.1rem;
+  border-radius: var(--radius-sm);
+}
+
+.countdown--grace.countdown--urgent {
+  background: linear-gradient(135deg, var(--danger) 0%, var(--danger-dark) 100%);
+}
+
+.countdown--grace .countdown__value {
+  font-variant-numeric: tabular-nums;
 }

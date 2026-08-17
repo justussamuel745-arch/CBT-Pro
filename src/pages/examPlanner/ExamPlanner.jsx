@@ -1,5 +1,11 @@
-import { useState } from "react";
+import { useState, useCallback, useEffect, useRef, memo } from "react";
+import { Link, useNavigate } from 'react-router'
 import Countdown, { useLiveCountdown } from "./Countdown";
+import { ExamDetail } from './ExamDetail';
+import { Loading } from '../../components/Loading';
+import { Offline } from '../../components/Offline';
+import { LoadError } from '../../components/LoadError';
+import { examStore } from '../../stores/examStore';
 import "./ExamPlanner.css";
 
 /* ============================================================
@@ -16,18 +22,36 @@ const MOCK_STATS = {
 
 const MOCK_UPCOMING = [
   {
-    id: "1",
+    _id: "1",
     name: "JAMB Mock 1",
-    date: "2026-08-20T10:00:00",
+    examDate: "2026-08-18T07:24:00",
     targetScore: 280,
+    subjects: ["English", "Mathematics", "Physics", "Chemistry"],
+    numQuestions: 40,
+    duration: 120,
+    difficulty: "Medium",
+    shuffle: true,
+    autoSubmit: true,
+    reminder: "1d",
+    notes: "Focus on speed.",
   },
   {
-    id: "2",
+    _id: "2",
     name: "JAMB Mock 2",
-    date: "2026-08-25T09:00:00",
+    examDate: "2026-08-28T13:40:00",
     targetScore: 300,
+    subjects: ["English", "Mathematics", "Physics", "Chemistry"],
+    numQuestions: 40,
+    duration: 120,
+    difficulty: "Medium",
+    shuffle: true,
+    autoSubmit: true,
+    reminder: "1d",
+    notes: "Focus on speed.",
   },
 ];
+
+const EDIT_LOCK_MINUTES = 40
 
 function formatExamDate(iso) {
   const d = new Date(iso);
@@ -44,6 +68,135 @@ function formatExamDate(iso) {
   return { date, time };
 }
 
+/* ============================================================
+   Calendar export helpers — Google Calendar link + downloadable
+   .ics file (Apple Calendar, Outlook, everything else).
+   ============================================================ */
+function toUtcStamp(date) {
+  return date.toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
+}
+
+function getExamWindow(exam) {
+  const start = new Date(exam.examDate);
+  const end = new Date(start.getTime() + (exam.duration || 120) * 60000);
+  return { start, end };
+}
+
+function getGoogleCalendarUrl(exam) {
+  const { start, end } = getExamWindow(exam);
+  const params = new URLSearchParams({
+    action: "TEMPLATE",
+    text: exam.name,
+    dates: `${toUtcStamp(start)}/${toUtcStamp(end)}`,
+    details: `Personal mock exam scheduled via CBT Pro. Target score: ${exam.targetScore}.`,
+  });
+  return `https://calendar.google.com/calendar/render?${params.toString()}`;
+}
+
+function downloadIcsFile(exam) {
+  const { start, end } = getExamWindow(exam);
+  const ics = [
+    "BEGIN:VCALENDAR",
+    "VERSION:2.0",
+    "PRODID:-//CBT Pro//Exam Planner//EN",
+    "BEGIN:VEVENT",
+    `UID:${exam._id}@cbtpro.ng`,
+    `DTSTAMP:${toUtcStamp(new Date())}`,
+    `DTSTART:${toUtcStamp(start)}`,
+    `DTEND:${toUtcStamp(end)}`,
+    `SUMMARY:${exam.name}`,
+    `DESCRIPTION:Personal mock exam scheduled via CBT Pro. Target score: ${exam.targetScore}.`,
+    "END:VEVENT",
+    "END:VCALENDAR",
+  ].join("\r\n");
+
+  const blob = new Blob([ics], { type: "text/calendar;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `${exam.name.replace(/\s+/g, "-")}.ics`;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+}
+
+const formatDateTimeForInputs = (mongoDate) => {
+  const date = new Date(mongoDate);
+
+  if (Number.isNaN(date.getTime())) {
+    return {
+      date: '',
+      time: '',
+    };
+  }
+
+  const pad = (value) => String(value).padStart(2, '0');
+
+  return {
+    date: `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`,
+    time: `${pad(date.getHours())}:${pad(date.getMinutes())}`,
+  };
+};
+
+function AddToCalendarButton({ exam }) {
+  const [open, setOpen] = useState(false);
+  const menuRef = useRef(null);
+
+  useEffect(() => {
+    if (!open) return;
+    function handleClickOutside(e) {
+      if (menuRef.current && !menuRef.current.contains(e.target)) {
+        setOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [open]);
+
+  return (
+    <div className="planner-exam-card__calendar" ref={menuRef}>
+      <button
+        type="button"
+        className="planner-exam-card__calendar-btn"
+        onClick={() => setOpen((prev) => !prev)}
+        aria-label="Add to calendar"
+        aria-expanded={open}
+      >
+        <i className="fa-regular fa-calendar-plus" aria-hidden="true"></i>
+      </button>
+
+      {open && (
+        <div className="planner-exam-card__calendar-menu" role="menu">
+          <a
+            className="planner-exam-card__calendar-menu-item"
+            href={getGoogleCalendarUrl(exam)}
+            target="_blank"
+            rel="noopener noreferrer"
+            role="menuitem"
+            onClick={() => setOpen(false)}
+          >
+            <i className="fa-brands fa-google" aria-hidden="true"></i>
+            Google Calendar
+          </a>
+          <button
+            type="button"
+            className="planner-exam-card__calendar-menu-item"
+            role="menuitem"
+            onClick={() => {
+              downloadIcsFile(exam);
+              setOpen(false);
+            }}
+          >
+            <i className="fa-solid fa-download" aria-hidden="true"></i>
+            Apple / Outlook (.ics)
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
 function PlannerStat({ icon, value, label }) {
   return (
     <div className="planner-stat">
@@ -54,12 +207,32 @@ function PlannerStat({ icon, value, label }) {
   );
 }
 
-function UpcomingExamCard({ exam, onView, onEdit, onCancel }) {
-  const { date, time } = formatExamDate(exam.date);
-  const countdown = useLiveCountdown(exam.date);
-
+const UpcomingExamCard = memo(function UpcomingExamCard({ exam, onView, onEdit, onStart, onCancel }) {
+  const { date, time } = formatExamDate(exam.examDate);
+  const countdown = useLiveCountdown(exam.examDate);
+  
+  function editExpires(){
+    const { days, hours, minutes } = countdown
+    if (!days && !hours){
+      if (minutes <= EDIT_LOCK_MINUTES) return true
+    }
+    return false
+  }
+  
+  function graceEndsAt(examDate) {
+    const dt = new Date(examDate);
+  
+    dt.setMinutes(dt.getMinutes() + 30);
+  
+    const pad = (n) => String(n).padStart(2, '0');
+  
+    return `${dt.getFullYear()}-${pad(dt.getMonth() + 1)}-${pad(dt.getDate())}T${pad(dt.getHours())}:${pad(dt.getMinutes())}`;
+  }
+  
   return (
     <article className="planner-exam-card">
+      <AddToCalendarButton exam={exam} />
+
       <h3 className="planner-exam-card__name">{exam.name}</h3>
 
       {countdown.urgent && !countdown.ready && (
@@ -83,16 +256,24 @@ function UpcomingExamCard({ exam, onView, onEdit, onCancel }) {
       </div>
 
       <div className="planner-exam-card__countdown">
-        <Countdown targetDate={exam.date} variant="compact" readyLabel="Ready to start" />
+        <Countdown targetDate={exam.examDate} graceEndsAt={graceEndsAt(exam.examDate)} variant={countdown.urgent ? "full" : "compact"} readyLabel="Ready to start" />
       </div>
 
       <div className="planner-exam-card__actions">
         <button className="planner-btn planner-btn--ghost" onClick={() => onView(exam)}>
           View
         </button>
-        <button className="planner-btn planner-btn--ghost" onClick={() => onEdit(exam)}>
-          Edit
-        </button>
+        {
+          (!editExpires() || countdown.ready) && 
+            (
+              <button className="planner-btn planner-btn--ghost" onClick={() => {
+                countdown.ready ? onStart(exam) : onEdit(exam)}
+              }>
+                { countdown.ready ? 'Start Exam' : 'Edit' }
+              </button>
+            )
+        }
+        
         <button
           className="planner-btn planner-btn--ghost planner-btn--danger"
           onClick={() => onCancel(exam)}
@@ -102,7 +283,7 @@ function UpcomingExamCard({ exam, onView, onEdit, onCancel }) {
       </div>
     </article>
   );
-}
+})
 
 function EmptyState({ onCreate }) {
   return (
@@ -114,23 +295,84 @@ function EmptyState({ onCreate }) {
       <p className="planner-empty__text">
         Create your first personal mock exam and start working toward your target score.
       </p>
-      <button className="planner-btn planner-btn--primary" onClick={onCreate}>
+      <Link className="planner-btn planner-btn--primary" to="/exam-planners/schedule">
         <i className="fa-solid fa-plus" aria-hidden="true"></i>
         Create Exam
-      </button>
+      </Link>
     </div>
   );
 }
 
-export default function ExamPlanner({
-  stats = MOCK_STATS,
-  upcomingExams = MOCK_UPCOMING,
-  onCreateExam = () => {},
-  onViewExam = () => {},
-  onEditExam = () => {},
-  onCancelExam = () => {},
-}) {
-  const [exams] = useState(upcomingExams);
+export default function ExamPlanner() {
+  const stats = examStore(state => state.stats)
+  const exams = examStore(state => state.upcomingExams)
+  const setInitialValues = examStore(state => state.setInitialValues)
+  const getDashboardInfo = examStore(state => state.getDashboardInfo)
+  const cancelScheduledExam = examStore(state => state.cancelScheduledExam)
+  const [viewExam, setViewExam] = useState(false)
+  const [viewDetails, setViewDetails] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [offline, setOffline] = useState(false)
+  const [loadError, setLoadError] = useState(false)
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    if (!stats && !exams) {
+      (async () => {
+        try {
+          await getDashboardInfo()
+        } catch (err) {
+          console.log(err);
+          if (!err.status && !navigator.onLine) {
+            setOffline(true)
+          } else {
+            setLoadError(true)
+          }
+        } finally {
+          setLoading(false)
+        }
+      })()
+      return
+    }
+    setLoading(false)
+  }, [setLoading, setLoadError, setOffline])
+  
+  async function onCancelExam(exam){
+    try {
+      await cancelScheduledExam(exam._id)
+    } catch (err) {
+      console.error('Error:', err);
+      if (!err.status && !navigator.onLine){
+        setOffline(true)
+      } else {
+        setLoadError(true)
+      }
+    }
+  }
+
+  function onEditExam(exam) {
+    const { examDate } = exam;
+    const formValues = {
+      ...exam,
+      ...formatDateTimeForInputs(examDate)
+    }
+    delete formValues.examDate
+    setInitialValues(formValues)
+    navigate('/exam-planner/schedule')
+  }
+
+  const onViewExam = useCallback((exam) => {
+    setViewDetails(exam)
+    setViewExam(true)
+  }, [setViewExam])
+  const onClose = useCallback(() => {
+    setViewExam(false)
+    setViewDetails(null)
+  }, [setViewExam])
+  
+  if (offline) return <Offline />
+  if (loadError) return <LoadError onRetry={() => navigate('/exam-planner')} />
+  if (loading) return <Loading />
 
   return (
     <div className="planner-page no-select">
@@ -154,10 +396,10 @@ export default function ExamPlanner({
         <div className="planner-section__header">
           <h2 className="planner-section__title">Upcoming Exams</h2>
           {exams.length > 0 && (
-            <button className="planner-btn planner-btn--primary planner-btn--sm" onClick={onCreateExam}>
+            <Link className="planner-btn planner-btn--primary planner-btn--sm" to="/exam-planner/schedule">
               <i className="fa-solid fa-plus" aria-hidden="true"></i>
               Schedule New Exam
-            </button>
+            </Link>
           )}
         </div>
 
@@ -167,7 +409,7 @@ export default function ExamPlanner({
           <div className="planner-exam-grid">
             {exams.map((exam) => (
               <UpcomingExamCard
-                key={exam.id}
+                key={exam._id}
                 exam={exam}
                 onView={onViewExam}
                 onEdit={onEditExam}
@@ -179,9 +421,11 @@ export default function ExamPlanner({
       </section>
 
       {/* Floating action button (mobile) */}
-      <button className="planner-fab" onClick={onCreateExam} aria-label="Schedule new exam">
+      <Link className="planner-fab" to="/exam-planner/schedule" aria-label="Schedule new exam">
         <i className="fa-solid fa-plus" aria-hidden="true"></i>
-      </button>
+      </Link>
+
+      {viewExam && <ExamDetail exam={viewDetails} onEdit={onEditExam} onClose={onClose} onCancel={onCancelExam}/>}
     </div>
   );
 }

@@ -1,0 +1,352 @@
+/* =====================================
+   EXAM INSTRUCTIONS PAGE
+   Uses global tokens from :root (--primary, --accent, --gradient, etc.)
+   All classes prefixed with `examinstructions-`.
+   ====================================== */
+
+.examinstructions-page {
+  width: 100%;
+  margin: 0 auto;
+  padding: 1.25rem 1rem 7rem;
+}
+
+/* ---------- Header ---------- */
+
+.examinstructions-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.9rem;
+  margin-bottom: 1.5rem;
+}
+
+.examinstructions-back {
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--text);
+  font-size: 0.9rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s ease, color 0.15s ease, transform 0.15s ease;
+}
+
+.examinstructions-back:hover {
+  background: var(--primary-light);
+  color: var(--primary);
+  transform: translateX(-2px);
+}
+
+.examinstructions-header__eyebrow {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--primary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.25rem;
+}
+
+.examinstructions-header__title {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.02em;
+}
+
+/* ---------- Stat bar ---------- */
+
+.examinstructions-statbar {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.6rem;
+  background: var(--gradient);
+  border-radius: var(--radius);
+  padding: 1.1rem 0.9rem;
+  box-shadow: var(--shadow-lg);
+  margin-bottom: 1.75rem;
+}
+
+.examinstructions-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.35rem;
+  color: #fff;
+}
+
+.examinstructions-stat i {
+  font-size: 0.9rem;
+  opacity: 0.85;
+}
+
+.examinstructions-stat__value {
+  display: block;
+  font-size: 1.05rem;
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+.examinstructions-stat__label {
+  display: block;
+  font-size: 0.66rem;
+  font-weight: 600;
+  opacity: 0.85;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  margin-top: 0.15rem;
+}
+
+/* ---------- Sections ---------- */
+
+.examinstructions-section {
+  margin-bottom: 1.75rem;
+}
+
+.examinstructions-section__title {
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--text);
+  margin-bottom: 0.9rem;
+  letter-spacing: -0.01em;
+}
+
+/* Subject chips */
+
+.examinstructions-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.examinstructions-chip {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--primary);
+  background: var(--primary-light);
+  padding: 0.4rem 0.85rem;
+  border-radius: 999px;
+}
+
+/* ---------- Prep checklist ---------- */
+
+.examinstructions-prep {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+}
+
+.examinstructions-prep__item {
+  display: flex;
+  gap: 0.75rem;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 0.9rem;
+  box-shadow: var(--shadow);
+}
+
+.examinstructions-prep__icon {
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  border-radius: 10px;
+  background: var(--primary-light);
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+}
+
+.examinstructions-prep__title {
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 0.15rem;
+}
+
+.examinstructions-prep__text {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  line-height: 1.45;
+}
+
+/* ---------- Rules ---------- */
+
+.examinstructions-rules {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.examinstructions-rule {
+  display: flex;
+  gap: 0.85rem;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 0.9rem 1rem;
+  box-shadow: var(--shadow);
+}
+
+.examinstructions-rule__icon {
+  width: 38px;
+  height: 38px;
+  min-width: 38px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  opacity: 0.92;
+}
+
+.examinstructions-rule__title {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 0.2rem;
+}
+
+.examinstructions-rule__text {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+/* ---------- Integrity note ---------- */
+
+.examinstructions-integrity {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+  background: var(--primary-light);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem 1.1rem;
+  margin-bottom: 1.5rem;
+}
+
+.examinstructions-integrity i {
+  color: var(--primary);
+  font-size: 1.1rem;
+  margin-top: 0.1rem;
+}
+
+.examinstructions-integrity p {
+  font-size: 0.84rem;
+  color: var(--text);
+  line-height: 1.55;
+}
+
+/* ---------- Footer: acknowledgment + start ---------- */
+
+.examinstructions-footer {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--card);
+  border-top: 1px solid var(--border);
+  box-shadow: 0 -8px 20px rgb(0 0 0 / 0.08);
+  padding: 0.9rem 1rem calc(0.9rem + env(safe-area-inset-bottom, 0px));
+  z-index: 40;
+}
+
+.examinstructions-footer__inner {
+  max-width: 720px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.examinstructions-ack {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.examinstructions-ack input {
+  display: none;
+}
+
+.examinstructions-ack__box {
+  width: 20px;
+  height: 20px;
+  min-width: 20px;
+  border-radius: 6px;
+  border: 1.5px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.65rem;
+  color: transparent;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.examinstructions-ack input:checked + .examinstructions-ack__box {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #fff;
+}
+
+.examinstructions-start {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.8rem 1.4rem;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: var(--gradient);
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  box-shadow: var(--shadow-lg);
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.examinstructions-start:hover:not(:disabled) {
+  transform: translateY(-2px);
+}
+
+.examinstructions-start:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 640px) {
+  .examinstructions-statbar {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.9rem;
+  }
+  .examinstructions-prep {
+    grid-template-columns: 1fr;
+  }
+  .examinstructions-footer__inner {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+  }
+  .examinstructions-start {
+    justify-content: center;
+  }
+}

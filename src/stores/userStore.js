@@ -50,7 +50,6 @@ export const userStore = create(set => ({
       await saveQuestions(qs)
       delete data.pendingClientUpdates
     }
-    console.log(data);
 
     let blob;
     try {

@@ -156,10 +156,12 @@
 }
 
 .planner-exam-card {
+  position: relative;
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 1.1rem;
+  padding-right: 3rem;
   box-shadow: var(--shadow);
   display: flex;
   flex-direction: column;
@@ -200,6 +202,7 @@
   font-weight: 800;
   color: var(--text);
   letter-spacing: -0.01em;
+  padding-right: 0.5rem;
 }
 
 .planner-exam-card__datetime {
@@ -274,6 +277,78 @@
 
 .planner-exam-card__actions .planner-btn {
   justify-content: center;
+}
+
+/* ---------- Add to Calendar button + menu ---------- */
+
+.planner-exam-card__calendar {
+  position: absolute;
+  top: 0.85rem;
+  right: 0.85rem;
+}
+
+.planner-exam-card__calendar-btn {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.planner-exam-card__calendar-btn:hover,
+.planner-exam-card__calendar-btn[aria-expanded="true"] {
+  background: var(--primary-light);
+  color: var(--primary);
+  border-color: var(--primary);
+}
+
+.planner-exam-card__calendar-menu {
+  position: absolute;
+  top: calc(100% + 0.4rem);
+  right: 0;
+  min-width: 190px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-lg);
+  padding: 0.35rem;
+  z-index: 20;
+}
+
+.planner-exam-card__calendar-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  width: 100%;
+  padding: 0.55rem 0.65rem;
+  border: none;
+  background: none;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text);
+  text-decoration: none;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.planner-exam-card__calendar-menu-item:hover {
+  background: var(--primary-light);
+  color: var(--primary);
+}
+
+.planner-exam-card__calendar-menu-item i {
+  width: 16px;
+  font-size: 0.85rem;
+  text-align: center;
 }
 
 /* ---------- Empty state ---------- */

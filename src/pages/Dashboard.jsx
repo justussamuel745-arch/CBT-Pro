@@ -31,11 +31,11 @@ const DASHBOARD_CARDS = [
     color: "amber",
   },
   {
-    icon: "fa-gamepad",
-    title: "Educational Game",
-    description: "Sharpen recall with quick, playful quiz challenges.",
-    to: "#",
-    color: "pink",
+    icon: "fa-calendar-days",
+    title: "Exam Planner",
+    description: "Schedule personal mock exams, set target scores, and track your progress.",
+    to: "/exam-planner",
+    color: "violet",
   },
   {
     icon: "fa-bookmark",

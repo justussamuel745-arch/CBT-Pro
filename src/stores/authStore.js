@@ -32,7 +32,6 @@ export const authStore = create(set => ({
   },
 
   signin: async (credentials) => {
-    console.log(credentials);
     const res = await request.send('/api/auth', {
       method: 'POST',
       credentials: 'include',

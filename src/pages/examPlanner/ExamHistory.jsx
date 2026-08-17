@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import "./ExamHistory.css";
 
 /* ============================================================
@@ -31,6 +31,7 @@ const MOCK_HISTORY = [
   { id: "4", name: "JAMB Mock 2b", date: "2026-07-15", target: 250, score: null, status: "missed" },
   { id: "5", name: "JAMB Mock 2", date: "2026-07-12", target: 250, score: 244, status: "failed" },
   { id: "6", name: "JAMB Mock 1", date: "2026-07-05", target: 220, score: 220, status: "passed" },
+  { id: "7", name: "JAMB Mock 6", date: "2026-08-09", target: 270, score: null, status: "cancelled" },
 ];
 
 const MOCK_ACHIEVEMENTS = [
@@ -40,6 +41,22 @@ const MOCK_ACHIEVEMENTS = [
   { id: "personal-best", icon: "fa-trophy", label: "Personal Best", unlocked: true },
   { id: "300-score", icon: "fa-star", label: "300+ Score", unlocked: false },
 ];
+
+/* Default view intentionally excludes cancelled exams — they were a
+   deliberate choice, not performance signal, and clutter a page whose
+   purpose is tracking improvement. Still reachable via its own tab. */
+const FILTERS = [
+  { key: "default", label: "All" },
+  { key: "passed", label: "Passed" },
+  { key: "failed", label: "Failed" },
+  { key: "missed", label: "Missed" },
+  { key: "cancelled", label: "Cancelled" },
+];
+
+function matchesFilter(exam, filterKey) {
+  if (filterKey === "default") return exam.status !== "cancelled";
+  return exam.status === filterKey;
+}
 
 function StatCard({ icon, value, label }) {
   return (
@@ -61,7 +78,7 @@ function ProgressChart({ data }) {
   const height = 220;
   const padding = { top: 20, right: 16, bottom: 32, left: 16 };
 
-  const { points, max, min } = useMemo(() => {
+  const { points } = useMemo(() => {
     const scores = data.map((d) => d.score);
     const max = Math.max(...scores);
     const min = Math.min(...scores);
@@ -134,10 +151,7 @@ function HistoryRow({ exam, onReschedule }) {
     year: "numeric",
   });
 
-  const isMissed = exam.status === "missed";
-  const passed = exam.status === "passed";
-
-  if (isMissed) {
+  if (exam.status === "missed") {
     return (
       <div className="examhistory-row examhistory-row--missed">
         <div className="examhistory-row__badge examhistory-row__badge--missed">
@@ -155,6 +169,23 @@ function HistoryRow({ exam, onReschedule }) {
       </div>
     );
   }
+
+  if (exam.status === "cancelled") {
+    return (
+      <div className="examhistory-row examhistory-row--cancelled">
+        <div className="examhistory-row__badge examhistory-row__badge--cancelled">
+          <i className="fa-solid fa-ban" aria-hidden="true"></i>
+        </div>
+
+        <div className="examhistory-row__main">
+          <div className="examhistory-row__name">{exam.name}</div>
+          <div className="examhistory-row__date">Cancelled · {date}</div>
+        </div>
+      </div>
+    );
+  }
+
+  const passed = exam.status === "passed";
 
   return (
     <div className="examhistory-row">
@@ -202,13 +233,15 @@ function AchievementBadge({ achievement }) {
   );
 }
 
-function EmptyState() {
+function EmptyState({ filterLabel }) {
   return (
     <div className="examhistory-empty">
       <div className="examhistory-empty__icon">
         <i className="fa-regular fa-chart-bar" aria-hidden="true"></i>
       </div>
-      <h3 className="examhistory-empty__title">No completed exams yet</h3>
+      <h3 className="examhistory-empty__title">
+        {filterLabel ? `No ${filterLabel.toLowerCase()} exams` : "No completed exams yet"}
+      </h3>
       <p className="examhistory-empty__text">
         Complete a scheduled mock exam to start tracking your progress here.
       </p>
@@ -224,7 +257,10 @@ export default function ExamHistory({
   onBack = () => {},
   onReschedule = () => {},
 }) {
+  const [filter, setFilter] = useState("default");
   const hasHistory = history.length > 0;
+  const filteredHistory = history.filter((exam) => matchesFilter(exam, filter));
+  const activeFilterLabel = FILTERS.find((f) => f.key === filter)?.label;
 
   return (
     <div className="examhistory-page no-select">
@@ -282,12 +318,35 @@ export default function ExamHistory({
 
           {/* Exam history list */}
           <section className="examhistory-section">
-            <h2 className="examhistory-section__title">Exam History</h2>
-            <div className="examhistory-list">
-              {history.map((exam) => (
-                <HistoryRow key={exam.id} exam={exam} onReschedule={onReschedule} />
+            <div className="examhistory-section__header">
+              <h2 className="examhistory-section__title">Exam History</h2>
+            </div>
+
+            <div className="examhistory-filters" role="tablist">
+              {FILTERS.map((f) => (
+                <button
+                  key={f.key}
+                  role="tab"
+                  aria-selected={filter === f.key}
+                  className={`examhistory-filter${
+                    filter === f.key ? " examhistory-filter--active" : ""
+                  }`}
+                  onClick={() => setFilter(f.key)}
+                >
+                  {f.label}
+                </button>
               ))}
             </div>
+
+            {filteredHistory.length === 0 ? (
+              <EmptyState filterLabel={activeFilterLabel} />
+            ) : (
+              <div className="examhistory-list">
+                {filteredHistory.map((exam) => (
+                  <HistoryRow key={exam.id} exam={exam} onReschedule={onReschedule} />
+                ))}
+              </div>
+            )}
           </section>
         </>
       )}

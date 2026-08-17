@@ -10,6 +10,8 @@ import { encrypt, decrypt } from '../scripts/utilis/crypto';
 import { request } from '../scripts/utilis/request';
 import { authStore } from '../stores/authStore';
 import { userStore } from '../stores/userStore';
+import { Offline } from '../components/Offline';
+import { LoadError } from '../components/LoadError';
 import './Settings.css';
 
 
@@ -297,7 +299,7 @@ function SettingsInner() {
         console.error('Error:', err);
         setLoadError(true);
         if (!err.status) {
-          toast.push({ type: 'error', title: 'No connection', message: 'Check your internet and try again.' });
+          // do nothing since the offline or eror page will show up
         } else if (err.status >= 500) {
           toast.push({ type: 'error', title: 'Server error', message: 'Something went wrong. Please try again later.' });
         } else {
@@ -382,15 +384,15 @@ function SettingsInner() {
     if (!isMounted.current) {
       isMounted.current = true
     } else {
-      const saveEncrypted = { ...userInfo };
+      const saveEncrypted = { ...userInfo,  accessToken: token};
       delete saveEncrypted.blob;
       indexDbSave({
-        info: encrypt({ ...saveEncrypted, accessToken: token }),
+        info: encrypt(saveEncrypted),
         blob: userInfo.blob,
         id: 'current-user',
       });
     }
-  }, [userInfo])
+  }, [userInfo, token])
 
   // ── Update profile ──
   async function updateProfile(e) {
@@ -586,17 +588,15 @@ function SettingsInner() {
 
   // ── Load error state ──
   if (!userInfo && loadError) {
-    return (
-      <div className="settings-skeleton-page">
-        <div className="settings-skeleton-block" style={{ textAlign: 'center' }}>
-          <Ic.Warn />
-          <h2 style={{ marginTop: '1rem', marginBottom: '0.5rem' }}>Couldn&apos;t load your settings</h2>
-          <p style={{ color: 'var(--text-muted)', marginBottom: '1.5rem' }}>Check your connection and try refreshing the page.</p>
-          <button className="btn btn-primary" onClick={() => window.location.reload()}>Try again</button>
-        </div>
-      </div>
-    );
+    if (!navigator.onLine) {
+      return <Offline />
+    } else {
+      return <LoadError onRetry={() => {
+        navigate('/settings')
+      }}/>
+    }
   }
+  
 
   return (
     <>

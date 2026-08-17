@@ -42,8 +42,10 @@ export default function Config() {
 
   // Reset when subject changes
   useEffect(() => {
-    setSelectedTopics([]);
-    setSelectedYears([]);
+    setSelectedTopics(
+      subjectsData.find(sub => sub.id === subjectId)?.topics || []
+    );
+    setSelectedYears(yearsList);
     setTopicsOpen(false);
     setYearsOpen(false);
   }, [subjectId]);

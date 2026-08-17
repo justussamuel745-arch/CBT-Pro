@@ -60,6 +60,13 @@
   margin-bottom: 2rem;
 }
 
+.examhistory-section__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
 .examhistory-section__title {
   font-size: 1rem;
   font-weight: 800;
@@ -197,6 +204,45 @@
   color: var(--text-muted);
 }
 
+/* ---------- Status filter tabs ---------- */
+
+.examhistory-filters {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding-bottom: 0.25rem;
+  margin-bottom: 1rem;
+}
+
+.examhistory-filters::-webkit-scrollbar {
+  display: none;
+}
+
+.examhistory-filter {
+  flex: none;
+  padding: 0.45rem 0.9rem;
+  border-radius: 999px;
+  border: 1.5px solid var(--border);
+  background: var(--card);
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.examhistory-filter:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.examhistory-filter--active {
+  background: var(--gradient);
+  border-color: transparent;
+  color: #fff;
+}
+
 /* ---------- Completed exams list ---------- */
 
 .examhistory-list {
@@ -316,6 +362,22 @@
   background: var(--primary);
   color: #fff;
   transform: translateY(-1px);
+}
+
+/* Cancelled row — muted, no action, clearly de-emphasized */
+
+.examhistory-row--cancelled {
+  background: var(--bg);
+  opacity: 0.75;
+}
+
+.examhistory-row--cancelled .examhistory-row__date {
+  color: var(--text-muted);
+}
+
+.examhistory-row__badge--cancelled {
+  background: var(--border);
+  color: var(--text-muted);
 }
 
 /* ---------- Empty state ---------- */

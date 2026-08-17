@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { Routes, Route, useNavigate } from 'react-router';
 import { ProctectedAdminRoutes } from '../../routes/ProtectedAdminRoutes';
 import { Loading } from '../../components/Loading';
+import { Offline } from '../../components/Offline';
 import UserManagement from './UserManagement';
 import Feedback from './Feedback';
 import Report from './Report';
@@ -11,8 +12,13 @@ import { adminStore } from '../../stores/AdminStore';
 
 export default function Admin() {
   const { fetchUsers, fetchPayments, fetchFeedbacks, loading, setLoading } = adminStore()
+  const [isOffline, setIsOffline] = useState(false)
   const navigate = useNavigate()
   useEffect(() => {
+    if (!navigator.onLine){
+      setIsOffline(true)
+      return
+    }
     (async () => {
       try {
         await Promise.all([
@@ -22,13 +28,18 @@ export default function Admin() {
         ])
       } catch (err) {
         console.error('Error:', err);
-        navigate('/')
+        if (!err.status){
+          setIsOffline(true)
+        } else {
+          navigate('/')
+        }
       } finally {
         setLoading(false)
       }
     })()
   },[fetchFeedbacks, fetchUsers, fetchPayments, setLoading, navigate])
   
+  if (isOffline) return <Offline />
   if (loading) return <Loading />
   
   return (

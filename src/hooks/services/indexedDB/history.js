@@ -10,15 +10,10 @@ export async function saveHistory(history) {
 
     const items = Array.isArray(history) ? history : [history];
 
-    // add createdAt to each item before saving
-    const modifiedItems = items.map(item => ({
-      ...item,
-    }));
-
-    modifiedItems.forEach(item => store.put(item));
+    items.forEach(item => store.put(item));
 
     transaction.oncomplete = () => {
-      resolve(modifiedItems);
+      resolve(items);
     };
 
     transaction.onerror = () => reject(transaction.error);

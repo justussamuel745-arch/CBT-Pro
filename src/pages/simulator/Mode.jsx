@@ -102,6 +102,34 @@ export default function Mode() {
     setProgressGridList(totalQsArr)
   },[setProgressGridList])
   // for system view implement the features of using letters to navigate
+  
+  const configurationProcess = useCallback(function configurationProcess(currentSubVar, currentIdxVar,  properties, data){
+    Object.keys(properties).forEach((property) => {
+      data.forEach((d) => {
+        if (property === d.subject) {
+          properties[d.subject].questions.push(d);
+        }
+      });
+    });
+    
+    setExamData(properties);
+    setCurrentQues([properties[currentSubVar].questions[currentIdxVar]])
+    
+    updateProgresslist(properties, currentSubVar)
+    
+    const answersVariable = []
+    data.forEach((d) => {
+      answersVariable.push({
+        id: d.id,
+        subject: d.subject,
+        userAnswers: [],
+        isBookmarked: false
+      })
+    });
+    
+    setAnswers(answersVariable)
+    navigator.onLine && saveAllImages(data)
+  }, [])
 
   useEffect(() => {
     const { subjects } = examConfig;
@@ -175,31 +203,7 @@ export default function Mode() {
         }
         setExamQuestions(data)
 
-        Object.keys(properties).forEach((property) => {
-          data.forEach((d) => {
-            if (property === d.subject) {
-              properties[d.subject].questions.push(d);
-            }
-          });
-        });
-        
-        setExamData(properties);
-        setCurrentQues([properties[currentSubVar].questions[currentIdxVar]])
-        
-        updateProgresslist(properties, currentSubVar)
-        
-        const answersVariable = []
-        data.forEach((d) => {
-          answersVariable.push({
-            id: d.id,
-            subject: d.subject,
-            userAnswers: [],
-            isBookmarked: false
-          })
-        });
-        
-        setAnswers(answersVariable)
-        navigator.onLine && saveAllImages(data)
+        configurationProcess(currentSubVar, currentIdxVar, properties, data)
       } catch (err) {
         alert(err.message)
         console.error('Error:', err.message);

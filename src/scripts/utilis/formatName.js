@@ -1,23 +1,14 @@
+const displayName = {
+  'English': 'Use of English',
+  'Lekki': 'The Lekki Headmaster',
+  'Computer': 'Computer Studies',
+  'FineArt': 'Fine Art',
+  'HomeEconomics': 'Home Economics',
+  'PhysicalHealth': 'Physical Health',
+  'CurrentAffairs': 'Current Affairs',
+  'Civic': 'Civic Education'
+}
+
 export function formatName(subject){
-  let formattedName = subject
-  
-  if (subject === 'English'){
-    formattedName = 'Use of English'
-  } else if (subject === 'Lekki'){
-    formattedName = 'The Lekki Headmaster'
-  } else if (subject === 'Computer'){
-    formattedName = 'Computer Studies'
-  } else if (subject === 'FineArt'){
-    formattedName = 'Fine Art'
-  } else if (subject === 'HomeEconomics'){
-    formattedName = 'Home Economics'
-  } else if (subject === 'PhysicalHealth'){
-    formattedName = 'physical Health'
-  } else if (subject === 'CurrentAffairs'){
-    formattedName = 'Current Affairs'
-  } else if (subject === 'Civic'){
-    formattedName = 'Civic Education'
-  }
-  
-  return formattedName
+  return displayName[subject] || subject
 }

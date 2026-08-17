@@ -29,7 +29,7 @@ export const AIStore = create(set => ({
     })
   ),
 
-  setAiExplantions: (updater) => set((state) => (
+  setAiExplanations: (updater) => set((state) => (
     {
       aiExplanations: 
         typeof updater === 'function'
