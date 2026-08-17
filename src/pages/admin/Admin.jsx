@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { Routes, Route, useNavigate } from 'react-router';
-import { ProctectedAdminRoutes } from '../../routes/ProtectedAdminRoutes';
+import { ProctectAdminRoutes } from '../../routes/ProtectedAdminRoutes';
 import { Loading } from '../../components/Loading';
 import { Offline } from '../../components/Offline';
 import UserManagement from './UserManagement';
@@ -44,7 +44,7 @@ export default function Admin() {
   
   return (
     <Routes>
-      <Route element={<ProctectedAdminRoutes />}>
+      <Route element={<ProctectAdminRoutes />}>
         <Route path="/" element={<UserManagement />} />
         <Route path="/feedback" element={<Feedback />} />
         <Route path="/reports" element={<Report />} />

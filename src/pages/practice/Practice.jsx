@@ -4,13 +4,13 @@ import Config from './Config';
 import Mode from './Mode';
 import Score from './Score';
 import Review from './Review';
-import { ProtectedSimulatorRoutes } from '../../routes/ProtectedSimulatorRoutes';
+import { ProtectPracticeRoutes } from '../../routes/ProtectPracticeRoutes';
 
-export default function Simulator() {
+export default function Practice() {
   return (
     <Routes>
       <Route path="/" element={<Subjects />} />
-      <Route element={<ProtectedSimulatorRoutes />}>
+      <Route element={<ProtectPracticeRoutes />}>
         <Route path="/config" element={<Config />} />
         <Route path="/mode" element={<Mode />} />
       </Route>

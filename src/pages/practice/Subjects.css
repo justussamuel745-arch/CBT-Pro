@@ -26,13 +26,13 @@
   font-size: 15px;
 }
 
-.simulator-container {
+.practice-container {
   max-width: 1200px;
   margin: 32px auto;
   padding: 0 24px;
 }
 
-.simulator-card {
+.practice-card {
   background: var(--card);
   border-radius: var(--radius);
   padding: 28px;
@@ -40,7 +40,7 @@
   border: 1px solid var(--border);
 }
 
-.simulator-card-header {
+.practice-card-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -49,7 +49,7 @@
   gap: 12px;
 }
 
-.simulator-card h2 {
+.practice-card h2 {
   margin: 0;
   font-size: 1.25rem;
   font-weight: 700;
@@ -58,7 +58,7 @@
   gap: 8px;
 }
 
-.simulator-counter {
+.practice-counter {
   background: var(--primary-light);
   color: var(--primary-dark);
   padding: 6px 12px;
@@ -69,14 +69,14 @@
 }
 
 /* SUBJECT GRID */
-.simulator-subject-grid {
+.practice-subject-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 12px;
   margin-bottom: 24px;
 }
 
-.simulator-subject-card {
+.practice-subject-card {
   padding: 16px;
   border: 1.5px solid var(--border);
   border-radius: var(--radius-sm);
@@ -90,25 +90,25 @@
   gap: 10px;
 }
 
-.simulator-subject-card:hover {
+.practice-subject-card:hover {
   border-color: var(--primary);
   background: var(--primary-light);
   transform: translateY(-2px);
 }
 
-.simulator-subject-card.selected {
+.practice-subject-card.selected {
   background: var(--primary);
   color: white;
   border-color: var(--primary);
   box-shadow: 0 0 0 3px var(--primary-light);
 }
 
-.simulator-subject-card.selected .check {
+.practice-subject-card.selected .check {
   opacity: 1;
   transform: scale(1);
 }
 
-.simulator-subject-card .check {
+.practice-subject-card .check {
   width: 20px;
   height: 20px;
   border-radius: 6px;
@@ -123,24 +123,24 @@
   transform: scale(0.9);
 }
 
-.simulator-subject-card.selected .check {
+.practice-subject-card.selected .check {
   background: white;
   border-color: white;
 }
 
-.simulator-subject-card.selected .check::after {
+.practice-subject-card.selected .check::after {
   content: "✓";
   color: var(--primary);
   font-weight: 900;
   font-size: 12px;
 }
 
-.simulator-subject-name {
+.practice-subject-name {
   font-weight: 600;
   font-size: 14px;
 }
 
-.simulator-actions {
+.practice-actions {
   display: flex;
   gap: 12px;
   align-items: center;
@@ -194,7 +194,7 @@
 
 /* RESPONSIVE */
 @media(max-width: 600px) {
-  .simulator-subject-grid {
+  .practice-subject-grid {
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   }
   .page-header h1 {
@@ -204,10 +204,10 @@
     padding-left: 16px;
     padding-right: 16px;
   }
-  .simulator-card {
+  .practice-card {
     padding: 20px;
   }
-  .simulator-actions {
+  .practice-actions {
     flex-direction: column;
   }
   .btn-start, .btn-secondary {

@@ -19,7 +19,7 @@ export const Menu = memo(function Menu({ menuOpen, setMenuOpen }) {
     {
       title: "Practice",
       links: [
-        { icon: "fa-file-pen", label: "CBT Simulator", to: "/simulator" },
+        { icon: "fa-file-pen", label: "CBT Simulator", to: "/practice" },
         { icon: "fa-book-open", label: "Study Past Questions", to: "/study" },
       ],
     },

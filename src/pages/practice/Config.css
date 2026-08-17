@@ -23,19 +23,19 @@
   border-bottom: 1px solid var(--border);
 }
 
-.simulator-two-header-inner {
+.practice-two-header-inner {
   max-width: 1200px;
   margin: auto;
   padding: 32px 24px 24px;
 }
 
-.simulator-two-breadcrumb {
+.practice-two-breadcrumb {
   font-size: 13px;
   color: var(--text-muted);
   margin-bottom: 10px;
 }
 
-.simulator-two-container {
+.practice-two-container {
   max-width: 1200px;
   margin: 28px auto;
   padding: 0 24px;
@@ -46,14 +46,14 @@
 }
 
 /* SUBJECTS PANEL */
-.simulator-two-panel {
+.practice-two-panel {
   background: var(--card);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
   border: 1px solid var(--border);
 }
 
-.simulator-two-panel-header {
+.practice-two-panel-header {
   padding: 20px 24px;
   border-bottom: 1px solid var(--border);
   display: flex;
@@ -61,13 +61,13 @@
   justify-content: space-between;
 }
 
-.simulator-two-panel-header h2 {
+.practice-two-panel-header h2 {
   margin: 0;
   font-size: 1.1rem;
   font-weight: 700;
 }
 
-.simulator-two-subject-count {
+.practice-two-subject-count {
   background: var(--primary-light);
   color: var(--primary-dark);
   padding: 4px 10px;
@@ -76,11 +76,11 @@
   font-weight: 700;
 }
 
-.simulator-two-subject-list {
+.practice-two-subject-list {
   padding: 8px;
 }
 
-.simulator-two-subject-item {
+.practice-two-subject-item {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -90,17 +90,17 @@
   transition: background 0.15s;
 }
 
-.simulator-two-subject-item:hover {
+.practice-two-subject-item:hover {
   background: var(--bg);
 }
 
-.simulator-two-subject-left {
+.practice-two-subject-left {
   display: flex;
   align-items: center;
   gap: 12px;
 }
 
-.simulator-two-subject-icon {
+.practice-two-subject-icon {
   width: 36px;
   height: 36px;
   background: var(--primary-light);
@@ -112,12 +112,12 @@
   color: var(--primary);
 }
 
-.simulator-two-subject-icon img{
+.practice-two-subject-icon img{
   width: 100%;
   border-radius: 18px;
 }
 
-.simulator-two-subject-name {
+.practice-two-subject-name {
   font-weight: 600;
   font-size: 14px;
 }
@@ -146,21 +146,21 @@
 }
 
 /* CONFIG PANEL */
-.simulator-two-config-panel {
+.practice-two-config-panel {
   position: sticky;
   top: 92px;
 }
 
-.simulator-two-config-section {
+.practice-two-config-section {
   padding: 20px 24px;
   border-bottom: 1px solid var(--border);
 }
 
-.simulator-two-config-section:last-child {
+.practice-two-config-section:last-child {
   border-bottom: none;
 }
 
-.simulator-two-section-label {
+.practice-two-section-label {
   font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -189,7 +189,7 @@ select:focus {
   box-shadow: 0 0 0 3px var(--primary-light);
 }
 
-.simulator-two-time-grid {
+.practice-two-time-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 10px;
@@ -230,29 +230,29 @@ select:focus {
 
 /* RESPONSIVE */
 @media(max-width: 1024px) {
-  .simulator-two-container {
+  .practice-two-container {
     grid-template-columns: 1fr;
   }
-  .simulator-two-config-panel {
+  .practice-two-config-panel {
     position: static;
   }
 }
 
 @media(max-width: 600px) {
-  .simulator-two-header-inner, .nav-inner, .simulator-two-container {
+  .practice-two-header-inner, .nav-inner, .practice-two-container {
     padding-left: 16px;
     padding-right: 16px;
   }
   .page-header h1 {
     font-size: 1.5rem;
   }
-  .panel-header, .simulator-two-config-section, .proceed-wrap {
+  .panel-header, .practice-two-config-section, .proceed-wrap {
     padding: 16px;
   }
-  .simulator-two-subject-item {
+  .practice-two-subject-item {
     padding: 12px;
   }
-  .simulator-two-subject-icon {
+  .practice-two-subject-icon {
     width: 32px;
     height: 32px;
   }

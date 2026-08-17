@@ -4,16 +4,16 @@ import { subjectsData } from '../../scripts/data/subjectsData.js';
 import { formatName } from '../../scripts/utilis/formatName.js';
 import { ModalStripe, ModalDialog, CSS } from '../../components/NotificationSystem';
 import { authStore } from '../../stores/authStore';
-import { simulatorStore } from '../../stores/simulatorStore';
+import { practiceStore } from '../../stores/practiceStore';
 import './Config.css';
 
 export default function Config() {
   const isActivated = authStore(state => state.isActivated)
-  const examConfig = simulatorStore((state) => state.examConfig);
-  const setExamQuestions = simulatorStore((state) => state.setExamQuestions);
-  const getQuesNo = simulatorStore((state) => state.getQuesNo);
-  const setHours = simulatorStore((state) => state.setHours);
-  const setMinutes = simulatorStore((state) => state.setMinutes);
+  const examConfig = practiceStore((state) => state.examConfig);
+  const setExamQuestions = practiceStore((state) => state.setExamQuestions);
+  const getQuesNo = practiceStore((state) => state.getQuesNo);
+  const setHours = practiceStore((state) => state.setHours);
+  const setMinutes = practiceStore((state) => state.setMinutes);
   const navigate = useNavigate()
   const [subjectsIcon, setSubjectsIcon] = useState({})
   const [modal, setModal] = useState(null);
@@ -47,7 +47,7 @@ export default function Config() {
     if (!isActivated) {
       setModal('activate_app')
     } else {
-      navigate('/simulator/mode')
+      navigate('/practice/mode')
     }
   }
 
@@ -66,7 +66,7 @@ export default function Config() {
               body="Your account is not activated. Access is limited to questions from a single year. The selected number of questions isn&apos;t available on your current plan. Default settings will be used. Activate to unlock full access to all features."
               primaryLabel="Activate App"
               onPrimary={() => navigate('/payment')}
-              onClose={() => { closeModal(); navigate('/simulator/mode') }}
+              onClose={() => { closeModal(); navigate('/practice/mode') }}
               closeLabel="Skip"
             />
           </div>
@@ -81,34 +81,34 @@ export default function Config() {
       </nav>
 
       <section className="page-header padding-reset margin-reset">
-        <div className="simulator-two-header-inner">
-          <div className="simulator-two-breadcrumb">
+        <div className="practice-two-header-inner">
+          <div className="practice-two-breadcrumb">
             <Link to="/" className="f-w-500 link-color">Dashboard</Link> /
-            <Link to="/simulator" className="f-w-500 link-color">Subjects</Link> /
+            <Link to="/practice" className="f-w-500 link-color">Subjects</Link> /
             <span>Configure</span>
           </div>
           <h1>Configure Your Exam</h1>
         </div>
       </section>
 
-      <div className="simulator-two-container">
+      <div className="practice-two-container">
         {/* SUBJECTS */}
-        <div className="simulator-two-panel">
-          <div className="simulator-two-panel-header">
+        <div className="practice-two-panel">
+          <div className="practice-two-panel-header">
             <h2>Selected Subjects</h2>
-            <div className="simulator-two-subject-count">
+            <div className="practice-two-subject-count">
               {examConfig.subjects.length} {examConfig.subjects.length === 1 ? 'Subject' : 'Subjects'}
             </div>
           </div>
 
-          <div className="simulator-two-subject-list">
+          <div className="practice-two-subject-list">
             {examConfig.subjects.map((sub) => {
               const defaultQsNo = sub.name === 'English' ? 60 : 40;
               return (
-                <div className="simulator-two-subject-item" key={sub.name}>
-                  <div className="simulator-two-subject-left">
-                    <div className="simulator-two-subject-icon" dangerouslySetInnerHTML={{ __html: subjectsIcon[sub.name] }} />
-                    <div className="simulator-two-subject-name">{formatName(sub.name)}</div>
+                <div className="practice-two-subject-item" key={sub.name}>
+                  <div className="practice-two-subject-left">
+                    <div className="practice-two-subject-icon" dangerouslySetInnerHTML={{ __html: subjectsIcon[sub.name] }} />
+                    <div className="practice-two-subject-name">{formatName(sub.name)}</div>
                   </div>
                   <select
                     className="q-chip"
@@ -128,10 +128,10 @@ export default function Config() {
         </div>
 
         {/* CONFIG */}
-        <div className="simulator-two-panel simulator-two-config-panel">
-          <div className="simulator-two-config-section">
-            <div className="simulator-two-section-labelbel">Test Duration</div>
-            <div className="simulator-two-time-grid">
+        <div className="practice-two-panel practice-two-config-panel">
+          <div className="practice-two-config-section">
+            <div className="practice-two-section-labelbel">Test Duration</div>
+            <div className="practice-two-time-grid">
               <div className="time-field">
                 <label>Hours</label>
                 <select value={examConfig.hours} onChange={setHours}>

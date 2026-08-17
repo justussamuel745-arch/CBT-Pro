@@ -1,11 +1,11 @@
 import { useEffect, lazy, Suspense } from 'react';
 import { Routes, Route } from 'react-router';
-import { ProtectedRoutes } from './routes/ProtectedRoutes';
+import { ProtectRoutes } from './routes/ProtectedRoutes';
 import { Loading } from './components/Loading';
 import { Invalid } from './components/Invalid';
 import HomePage from './pages/HomePage';
 import  Study from './pages/study/Study';
-import Simulator from './pages/simulator/Simulator';
+import Practice from './pages/practice/Practice';
 import About  from './pages/About';
 import Feedback from './pages/Feedback';
 import Legal from './pages/Legal';
@@ -78,10 +78,10 @@ function App() {
         <Route path="/about" element={<About />} />
         <Route path="/legal" element={<Legal />} />
 
-        <Route element={<ProtectedRoutes />}>
+        <Route element={<ProtectRoutes />}>
           <Route path="/notifications" element={<Notifications />} />
           <Route path="/study/*" element={<Study />} />
-          <Route path="/simulator/*" element={<Simulator />} />
+          <Route path="/practice/*" element={<Practice />} />
           <Route path="/feedback" element={<Feedback />} />
           <Route path="/payment" element={<Payment />} />
           <Route path="/settings" element={<Settings />} />

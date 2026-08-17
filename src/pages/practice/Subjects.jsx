@@ -3,14 +3,14 @@ import { Link, useNavigate } from 'react-router';
 import { subjectsData } from '../../scripts/data/subjectsData';
 import { formatName } from '../../scripts/utilis/formatName';
 import { authStore } from '../../stores/authStore';
-import { simulatorStore } from '../../stores/simulatorStore';
+import { practiceStore } from '../../stores/practiceStore';
 import './Subjects.css'
 
 const JAMB_SUBJECTS = subjectsData.map(subject => subject.name)
 
 export default function Subjects() {
   const isActivated = authStore(state => state.isActivated)
-  const setExamConfig = simulatorStore(state => state.setExamConfig)
+  const setExamConfig = practiceStore(state => state.setExamConfig)
   const navigate = useNavigate()
   const [selectedSubjects, setSelectedSubjects] = useState(['English'])
   
@@ -33,7 +33,7 @@ export default function Subjects() {
       hours: 2,
       minutes: 0
     })
-    navigate('/simulator/config')
+    navigate('/practice/config')
   }
   
   
@@ -66,24 +66,24 @@ export default function Subjects() {
         </div>
       </section>
 
-      <div className="simulator-container">
-        <div className="simulator-card">
-          <div className="simulator-card-header">
+      <div className="practice-container">
+        <div className="practice-card">
+          <div className="practice-card-header">
             <h2>All JAMB Subjects</h2>
-            <div className="simulator-counter"><span>{selectedSubjects.length}</span> Selected</div>
+            <div className="practice-counter"><span>{selectedSubjects.length}</span> Selected</div>
           </div>
 
-          <div className="simulator-subject-grid">
+          <div className="practice-subject-grid">
             {JAMB_SUBJECTS.map((subject, index) => 
             (
-              <div className={`simulator-subject-card ${selectedSubjects.includes(subject) ? 'selected' : ''}`} key={index} onClick={toggleSubject} data-subject={`${subject}`}>
+              <div className={`practice-subject-card ${selectedSubjects.includes(subject) ? 'selected' : ''}`} key={index} onClick={toggleSubject} data-subject={`${subject}`}>
                 <div className="check"></div>
-                <div className="simulator-subject-name">{formatName(subject)}</div>
+                <div className="practice-subject-name">{formatName(subject)}</div>
               </div>
             ))}
           </div>
 
-          <div className="simulator-actions">
+          <div className="practice-actions">
             <button className="btn-start btn-secondary" onClick={() => setSelectedSubjects([])}>Clear All</button>
             <button className="btn-start" disabled={selectedSubjects.length === 0 ? true : false} onClick={startExam}>Start Exam →</button>
           </div>

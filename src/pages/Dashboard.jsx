@@ -20,7 +20,7 @@ const DASHBOARD_CARDS = [
     icon: "fa-file-pen",
     title: "Exam Mode",
     description: "Full timed CBT simulation that mirrors the real JAMB layout.",
-    to: "/simulator",
+    to: "/practice",
     color: "cyan",
   },
   {

@@ -4,7 +4,7 @@ import { userStore } from './userStore.js';
 import { encrypt, decrypt } from '../scripts/utilis/crypto.js';
 import { submitHistory } from '../scripts/utilis/submitHistory';
 
-export const simulatorStore = create((set, get) => ({
+export const practiceStore = create((set, get) => ({
   /*========
     STORE
   ==========*/

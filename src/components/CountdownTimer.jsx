@@ -1,11 +1,11 @@
 import { useState, useEffect, useRef, memo } from 'react';
 import { useNavigate } from 'react-router';
-import { simulatorStore } from '../stores/simulatorStore';
+import { practiceStore } from '../stores/practiceStore';
 import './CountdownTimer.css';
 
 export const CountdownTimer = memo(function CountdownTimer({ onFinish, hours, minutes, skipAutoSubmit }) {
-  const examQuestions = simulatorStore((state) => state.examQuestions);
-  const calculateScore = simulatorStore((state) => state.calculateScore);
+  const examQuestions = practiceStore((state) => state.examQuestions);
+  const calculateScore = practiceStore((state) => state.calculateScore);
   const navigate = useNavigate();
 
   // Computed ONCE via lazy ref init — survives re-renders, never resets
@@ -46,7 +46,7 @@ export const CountdownTimer = memo(function CountdownTimer({ onFinish, hours, mi
       const timeAllocated = countdownTime;
       if (examQuestionsRef.current.length !== 0) {
         calculateScore(examQuestionsRef.current, timeTaken, timeAllocated);
-        navigate('/simulator/score');
+        navigate('/practice/score');
       }
     };
   }, []);

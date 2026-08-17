@@ -3,7 +3,7 @@ import { Link } from 'react-router';
 import { subjectsData } from '../../scripts/data/subjectsData.js';
 import { formatName } from '../../scripts/utilis/formatName.js';
 import { formatTime } from '../../scripts/utilis/formatTime.js';
-import { simulatorStore } from '../../stores/simulatorStore';
+import { practiceStore } from '../../stores/practiceStore';
 import './Score.css';
 
 // ─────────────────────────────────────────────────────────────
@@ -110,7 +110,7 @@ function timeInsight(efficiency) {
 // MAIN COMPONENT
 // ─────────────────────────────────────────────────────────────
 export default function Score() {
-  const examResults = simulatorStore(state => state.examResults);
+  const examResults = practiceStore(state => state.examResults);
 
   // Build subject array ranked by score
   const subjects = Object.entries(examResults.performance)
@@ -148,7 +148,7 @@ export default function Score() {
       <div className="page-header">
         <div className="nav-container">
           <div className="breadcrumb">
-            <Link to="/">Home</Link> / <Link to="/simulator">Subjects</Link> / Results
+            <Link to="/">Home</Link> / <Link to="/practice">Subjects</Link> / Results
           </div>
           <h1>{examResults.examType} Examination Results</h1>
           <p style={{ color: 'var(--text-muted)', marginTop: '0.375rem', fontSize: '0.95rem' }}>
@@ -370,8 +370,8 @@ export default function Score() {
 
         {/* ── ACTIONS ── */}
         <div className="score-actions">
-          <Link to="/simulator/review" className="btn btn-primary">Review answers</Link>
-          <Link to="/simulator" className="btn btn-outline">Try again</Link>
+          <Link to="/practice/review" className="btn btn-primary">Review answers</Link>
+          <Link to="/practice" className="btn btn-outline">Try again</Link>
           <Link to="/" className="btn btn-outline">Back to home</Link>
         </div>
 

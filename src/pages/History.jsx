@@ -376,7 +376,7 @@ function HistoryInner() {
           </div>
           <h3>No tests yet</h3>
           <p>Complete your first JAMB mock test to see your results and progress here.</p>
-          <Link to="/simulator" className="btn btn-primary history-hero-cta">Start a test</Link>
+          <Link to="/practice" className="btn btn-primary history-hero-cta">Start a test</Link>
         </div>
       )}
 

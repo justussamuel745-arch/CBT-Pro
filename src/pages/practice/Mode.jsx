@@ -13,7 +13,7 @@ import { saveQuestions } from '../../hooks/services/indexedDB/questions';
 import { saveAllImages } from '../../hooks/services/indexedDB/images';
 import { encrypt, decrypt } from '../../scripts/utilis/crypto';
 import { authStore } from '../../stores/authStore';
-import { simulatorStore } from '../../stores/simulatorStore';
+import { practiceStore } from '../../stores/practiceStore';
 import './Mode.css';
 
 const ExpensiveChild = memo(function ExpensiveChild({submitExam, hours, minutes, skipAutoSubmit}){
@@ -22,10 +22,10 @@ const ExpensiveChild = memo(function ExpensiveChild({submitExam, hours, minutes,
 
 export default function Mode() {
   const isActivated = authStore(state => state.isActivated)
-  const examConfig = simulatorStore((state) => state.examConfig);
-  const setExamQuestions = simulatorStore((state) => state.setExamQuestions);
-  const answers = simulatorStore((state) => state.answers);
-  const setAnswers = simulatorStore((state) => state.setAnswers);
+  const examConfig = practiceStore((state) => state.examConfig);
+  const setExamQuestions = practiceStore((state) => state.setExamQuestions);
+  const answers = practiceStore((state) => state.answers);
+  const setAnswers = practiceStore((state) => state.setAnswers);
   const navigate = useNavigate();
   const [toggleCalc, setToggleCalc] = useState(false);
   const [toggleNav, setToggleNav] = useState(false);
@@ -207,7 +207,7 @@ export default function Mode() {
       } catch (err) {
         alert(err.message)
         console.error('Error:', err.message);
-        navigate('/simulator');
+        navigate('/practice');
       } finally {
         setLoading(false)
       }
@@ -443,7 +443,7 @@ export default function Mode() {
   const skipAutoSubmit = useRef(false)
   function goBack(){
     skipAutoSubmit.current = true
-    navigate('/simulator')
+    navigate('/practice')
   }
   
   if (!isActive) return <Loading />
@@ -659,7 +659,7 @@ export default function Mode() {
                 onPrimary={() => {
                   skipAutoSubmit.current = true;
                   closeModal();
-                  navigate('/simulator');
+                  navigate('/practice');
                 }}
                 onClose={closeModal}
               />
