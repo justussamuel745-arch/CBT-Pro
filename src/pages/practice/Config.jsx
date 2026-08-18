@@ -5,12 +5,13 @@ import { formatName } from '../../scripts/utilis/formatName.js';
 import { ModalStripe, ModalDialog, CSS } from '../../components/NotificationSystem';
 import { authStore } from '../../stores/authStore';
 import { practiceStore } from '../../stores/practiceStore';
+import { examStore } from '../../stores/examStore';
 import './Config.css';
 
 export default function Config() {
   const isActivated = authStore(state => state.isActivated)
-  const examConfig = practiceStore((state) => state.examConfig);
-  const setExamQuestions = practiceStore((state) => state.setExamQuestions);
+  const examConfig = examStore((state) => state.examConfig);
+  const setExamQuestions = examStore((state) => state.setExamQuestions);
   const getQuesNo = practiceStore((state) => state.getQuesNo);
   const setHours = practiceStore((state) => state.setHours);
   const setMinutes = practiceStore((state) => state.setMinutes);
@@ -47,7 +48,11 @@ export default function Config() {
     if (!isActivated) {
       setModal('activate_app')
     } else {
-      navigate('/practice/mode')
+      navigate('/simulator', {
+        state: {
+          examType: 'practice'
+        }
+      })
     }
   }
 
@@ -66,7 +71,11 @@ export default function Config() {
               body="Your account is not activated. Access is limited to questions from a single year. The selected number of questions isn&apos;t available on your current plan. Default settings will be used. Activate to unlock full access to all features."
               primaryLabel="Activate App"
               onPrimary={() => navigate('/payment')}
-              onClose={() => { closeModal(); navigate('/practice/mode') }}
+              onClose={() => { closeModal(); navigate('/simulator', {
+                state: {
+                  examType: 'practice'
+                }
+              }) }}
               closeLabel="Skip"
             />
           </div>

@@ -2,7 +2,7 @@ import { request } from './request.js';
 import { encrypt, decrypt } from './crypto.js';
 import { saveHistory } from '../../hooks/services/indexedDB/history.js';
 import { userStore } from '../../stores/userStore.js';
-import { practiceStore } from '../../stores/practiceStore.js';
+import { examStore } from '../../stores/examStore.js';
 
 function generateObjectId() {
   return [...Array(24)]
@@ -58,7 +58,7 @@ export async function submitLocalHistory() {
 
 export async function submitHistory({ subjects, score, timeTaken, performance }) {
   const userId = userStore.getState().userInfo?._id
-  const question = practiceStore.getState().answers.length
+  const question = examStore.getState().answers.length
   const { historyData } = userStore.getState()
   const newHistory = {
     userId,

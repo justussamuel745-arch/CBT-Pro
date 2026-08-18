@@ -97,7 +97,7 @@ export default function Subjects(){
                 </div>
               </div>
             </div>
-            <Link to="/simulator" className="btn-white">
+            <Link to="/practice" className="btn-white">
               <i className="fa-solid fa-play"></i> Launch Full Simulator
             </Link>
           </div>

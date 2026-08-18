@@ -1,6 +1,7 @@
 import { useEffect, lazy, Suspense } from 'react';
 import { Routes, Route } from 'react-router';
-import { ProtectRoutes } from './routes/ProtectedRoutes';
+import { ProtectRoutes } from './routes/ProtectRoutes';
+import { ProtectExamRoutes } from './routes/ProtectExamRoutes';
 import { Loading } from './components/Loading';
 import { Invalid } from './components/Invalid';
 import HomePage from './pages/HomePage';
@@ -19,6 +20,7 @@ import PWAUpdateToast from './components/PWAUpdateToast';
 import Auth  from './pages/auth/Auth';
 import Notifications  from './pages/Notifications';
 import ExamPlanners from './pages/examPlanner/ExamPlanners';
+import ExamSimulator from './pages/ExamSimulator';
 import { submitLocalHistory } from './scripts/utilis/submitHistory';
 import { deleteUser } from './hooks/services/indexedDB/users';
 import { authStore } from './stores/authStore';
@@ -87,6 +89,9 @@ function App() {
           <Route path="/settings" element={<Settings />} />
           <Route path="/bookmark" element={<Bookmark />} />
           <Route path="/history" element={<History />} />
+          <Route element={<ProtectExamRoutes />}>
+            <Route path="/simulator" element={<ExamSimulator />} />
+          </Route>
           <Route path="/syllabus" element={<Syllabus />} />
           <Route
             path="/game/*"

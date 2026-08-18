@@ -1,32 +1,33 @@
 import { useState, useEffect, useRef, memo, useCallback } from 'react';
-import { useNavigate } from 'react-router';
-import { MarkdownContent } from '../../components/MarkdownContent';
-import { request } from '../../scripts/utilis/request';
-import { formatName } from '../../scripts/utilis/formatName.js';
-import { CountdownTimer } from '../../components/CountdownTimer'
-import { Calculator } from '../../components/Calculator'
-import { Loading } from '../../components/Loading'
-import { Image } from '../../components/Image'
-import { ModalStripe,  CSS } from '../../components/NotificationSystem';
-import { getRandomQuestions } from '../../hooks/services/examQuestions';
-import { saveQuestions } from '../../hooks/services/indexedDB/questions';
-import { saveAllImages } from '../../hooks/services/indexedDB/images';
-import { encrypt, decrypt } from '../../scripts/utilis/crypto';
-import { authStore } from '../../stores/authStore';
-import { practiceStore } from '../../stores/practiceStore';
-import './Mode.css';
+import { useNavigate, useLocation } from 'react-router';
+import { MarkdownContent } from '../components/MarkdownContent';
+import { request } from '../scripts/utilis/request';
+import { formatName } from '../scripts/utilis/formatName.js';
+import { CountdownTimer } from '../components/CountdownTimer'
+import { Calculator } from '../components/Calculator'
+import { Loading } from '../components/Loading'
+import { Image } from '../components/Image'
+import { ModalStripe,  CSS } from '../components/NotificationSystem';
+import { saveAllImages } from '../hooks/services/indexedDB/images';
+import { encrypt, decrypt } from '../scripts/utilis/crypto';
+import { authStore } from '../stores/authStore';
+import { practiceStore } from '../stores/practiceStore';
+import { examStore } from '../stores/examStore';
+import './ExamSimulator.css';
 
 const ExpensiveChild = memo(function ExpensiveChild({submitExam, hours, minutes, skipAutoSubmit}){
   return <CountdownTimer onFinish={submitExam} hours={hours} minutes={minutes} skipAutoSubmit={skipAutoSubmit} />;
 });
 
-export default function Mode() {
+export default function ExamSimulator() {
   const isActivated = authStore(state => state.isActivated)
-  const examConfig = practiceStore((state) => state.examConfig);
-  const setExamQuestions = practiceStore((state) => state.setExamQuestions);
-  const answers = practiceStore((state) => state.answers);
-  const setAnswers = practiceStore((state) => state.setAnswers);
+  const examConfig = examStore((state) => state.examConfig);
+  const setExamQuestions = examStore((state) => state.setExamQuestions);
+  const answers = examStore((state) => state.answers);
+  const setAnswers = examStore((state) => state.setAnswers);
+  const getPracticeQuestions = practiceStore(state => state.getPracticeQuestions)
   const navigate = useNavigate();
+  const { state: { examType } } = useLocation()
   const [toggleCalc, setToggleCalc] = useState(false);
   const [toggleNav, setToggleNav] = useState(false);
   const [examData, setExamData] = useState(null);
@@ -103,7 +104,7 @@ export default function Mode() {
   },[setProgressGridList])
   // for system view implement the features of using letters to navigate
   
-  const configurationProcess = useCallback(function configurationProcess(currentSubVar, currentIdxVar,  properties, data){
+  const init = useCallback(function init(currentSubVar, currentIdxVar,  properties, data){
     Object.keys(properties).forEach((property) => {
       data.forEach((d) => {
         if (property === d.subject) {
@@ -147,63 +148,10 @@ export default function Mode() {
 
     (async () => {
       try {
-        let data;
-        if (navigator.onLine){
-          let response;
-          if (!isActivated){
-            const newReqData = { subjects: reqData.subjects.map(data => data.name) }
-            response = await request.auth('/api/exam/fixedExam', {
-              method: 'POST',
-              body: JSON.stringify(newReqData)
-            });
-          } else {
-            response = await request.auth('/api/exam', {
-              method: 'POST',
-              body: JSON.stringify(reqData)
-            });
-          }
-          data = decrypt(response.body)
-          
-          // Saving question to indexDB
-          await saveQuestions(
-            data.map(d => ({
-              ...d, 
-              correctAnswers: encrypt(d.correctAnswers),
-              explanation: encrypt(d.explanation)
-            }))
-          )
-          
-        } else {
-          const offlineInfo = reqData.subjects.map(sub => {
-            return ({
-              subject: sub.name,
-              amount: sub.qsNo
-            })
-          })
-          const indexDbData = await getRandomQuestions(offlineInfo)
-          if (indexDbData.insufficientSubjects.length) {
-            const details = indexDbData.insufficientSubjects
-              .map(({ subject, available, requested }) => {
-                return available === 0
-                  ? `• ${subject}: Not available`
-                  : `• ${subject}: ${available} of ${requested} questions available`;
-              })
-              .join("\n");
-              
-            throw new Error(
-              `Some selected subjects are not fully available in offline mode.\n\n${details}\n\nConnect to the internet to stay updated with the latest questions, or start the exam online.`
-            );
-          } else {
-            data = indexDbData.questions.map(q => ({
-              ...q, 
-              correctAnswers: decrypt(q.correctAnswers),
-              explanation: decrypt(q.explanation)
-            }))
-          }
-        }
-        setExamQuestions(data)
-
-        configurationProcess(currentSubVar, currentIdxVar, properties, data)
+        const data =  examType === 'practice' 
+          ? await getPracticeQuestions(reqData) 
+          : null
+        init(currentSubVar, currentIdxVar, properties, data)
       } catch (err) {
         alert(err.message)
         console.error('Error:', err.message);

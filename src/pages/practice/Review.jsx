@@ -10,13 +10,13 @@ import { ModalDialog, CSS } from '../../components/NotificationSystem';
 import { ReportQuestionModal } from "../../components/ReportQuestionModal";
 import { AnswerCard } from '../../components/AnswerCard';
 import { authStore } from '../../stores/authStore';
-import { practiceStore } from '../../stores/practiceStore';
+import { examStore } from '../../stores/examStore';
 
 export default function Review() {
   const isActivated = authStore(state => state.isActivated)
-  const examConfig = practiceStore(state => state.examConfig);
-  const answers = practiceStore(state => state.answers);
-  const examQuestions = practiceStore(state => state.examQuestions);
+  const examConfig = examStore(state => state.examConfig);
+  const answers = examStore(state => state.answers);
+  const examQuestions = examStore(state => state.examQuestions);
   const navigate = useNavigate()
   const [isLoading, setIsLoading] = useState(true)
   const [toggleCalc, setToggleCalc] = useState(false);

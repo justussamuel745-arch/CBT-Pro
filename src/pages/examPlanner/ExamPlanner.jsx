@@ -5,7 +5,7 @@ import { ExamDetail } from './ExamDetail';
 import { Loading } from '../../components/Loading';
 import { Offline } from '../../components/Offline';
 import { LoadError } from '../../components/LoadError';
-import { examStore } from '../../stores/examStore';
+import { scheduledExamStore } from '../../stores/scheduledExamStore';
 import "./ExamPlanner.css";
 
 /* ============================================================
@@ -304,11 +304,11 @@ function EmptyState({ onCreate }) {
 }
 
 export default function ExamPlanner() {
-  const stats = examStore(state => state.stats)
-  const exams = examStore(state => state.upcomingExams)
-  const setInitialValues = examStore(state => state.setInitialValues)
-  const getDashboardInfo = examStore(state => state.getDashboardInfo)
-  const cancelScheduledExam = examStore(state => state.cancelScheduledExam)
+  const stats = scheduledExamStore(state => state.stats)
+  const exams = scheduledExamStore(state => state.upcomingExams)
+  const setInitialValues = scheduledExamStore(state => state.setInitialValues)
+  const getDashboardInfo = scheduledExamStore(state => state.getDashboardInfo)
+  const cancelScheduledExam = scheduledExamStore(state => state.cancelScheduledExam)
   const [viewExam, setViewExam] = useState(false)
   const [viewDetails, setViewDetails] = useState(null)
   const [loading, setLoading] = useState(true)

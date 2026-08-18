@@ -1,35 +1,22 @@
 import { create } from 'zustand';
 import { authStore } from './authStore.js';
 import { userStore } from './userStore.js';
+import { examStore } from './examStore.js';
 import { encrypt, decrypt } from '../scripts/utilis/crypto.js';
 import { submitHistory } from '../scripts/utilis/submitHistory';
+import { request } from '../scripts/utilis/request';
+import { saveQuestions } from '../hooks/services/indexedDB/questions';
+import { getRandomQuestions } from '../hooks/services/examQuestions';
 
-export const practiceStore = create((set, get) => ({
+export const practiceStore = create(set => ({
   /*========
     STORE
   ==========*/
-  examConfig: null,
-  examQuestions: [],
-  answers: [],
   examResults: null,
 
   /*========
     ACTION
   ==========*/
-  setExamConfig: (examConfig) => {
-    set({
-      examConfig
-    })
-  },
-  setExamQuestions: (examQuestions) => set({
-    examQuestions
-  }),
-
-  setAnswers: (updater) => set(state => ({
-    answers: typeof updater === 'function'
-      ? updater(state.answers)
-      : updater
-  })),
 
   setExamResults: (examResults) => set({
     examResults
@@ -46,9 +33,9 @@ export const practiceStore = create((set, get) => ({
         qsNo = 40
       }
     }
-
-    set(state => ({
-      examConfig: {
+    
+    examStore.setState(state => ({
+      examConfig : {
         ...state.examConfig,
         subjects: state.examConfig.subjects.map(sub =>
           sub.name === subName ? { ...sub, qsNo } : sub
@@ -58,7 +45,7 @@ export const practiceStore = create((set, get) => ({
   },
 
   setHours: (event) => {
-    set(state => ({
+    examStore.setState(state => ({
       examConfig: {
         ...state.examConfig,
         hours: Number(event.target.value)
@@ -67,7 +54,7 @@ export const practiceStore = create((set, get) => ({
   },
 
   setMinutes: (event) => {
-    set(state => ({
+    examStore.setState(state => ({
       examConfig: {
         ...state.examConfig,
         minutes: Number(event.target.value)
@@ -77,7 +64,7 @@ export const practiceStore = create((set, get) => ({
 
   calculateScore: (examQuestions, timeTaken, timeAllocated) => {
     const userId = userStore.getState().userInfo?._id
-    const { answers } = get()
+    const answers = examStore.getState().answers
     const bookmarksRaw = JSON.parse(localStorage.getItem('bookmarks'))
     let bookmarks = bookmarksRaw ? decrypt(bookmarksRaw) : []
     const subjectStats = {};
@@ -155,6 +142,69 @@ export const practiceStore = create((set, get) => ({
     })
 
     submitHistory(result)
+  },
+  
+  getPracticeQuestions: async (reqData) => {
+    const isActivated = authStore.getState().isActivated
+    let data;
+    if (navigator.onLine){
+      let response;
+      if (!isActivated){
+        const newReqData = { subjects: reqData.subjects.map(data => data.name) }
+        response = await request.auth('/api/exam/fixedExam', {
+          method: 'POST',
+          body: JSON.stringify(newReqData)
+        });
+      } else {
+        response = await request.auth('/api/exam', {
+          method: 'POST',
+          body: JSON.stringify(reqData)
+        });
+      }
+      data = decrypt(response.body)
+      
+      // Saving question to indexDB
+      await saveQuestions(
+        data.map(d => ({
+          ...d, 
+          correctAnswers: encrypt(d.correctAnswers),
+          explanation: encrypt(d.explanation)
+        }))
+      )
+      
+    } else {
+      const offlineInfo = reqData.subjects.map(sub => {
+        return ({
+          subject: sub.name,
+          amount: sub.qsNo
+        })
+      })
+      const indexDbData = await getRandomQuestions(offlineInfo)
+      if (indexDbData.insufficientSubjects.length) {
+        const details = indexDbData.insufficientSubjects
+          .map(({ subject, available, requested }) => {
+            return available === 0
+              ? `• ${subject}: Not available`
+              : `• ${subject}: ${available} of ${requested} questions available`;
+          })
+          .join("\n");
+          
+        throw new Error(
+          `Some selected subjects are not fully available in offline mode.\n\n${details}\n\nConnect to the internet to stay updated with the latest questions, or start the exam online.`
+        );
+      } else {
+        data = indexDbData.questions.map(q => ({
+          ...q, 
+          correctAnswers: decrypt(q.correctAnswers),
+          explanation: decrypt(q.explanation)
+        }))
+      }
+    }
+    examStore.setState({
+      examQuestions: data
+    })
+    
+    return data
   }
 
 }))

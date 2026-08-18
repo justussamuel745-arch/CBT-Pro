@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { Link } from "react-router";
 import ScheduleSuccess from './ScheduleSuccess';
 import { Offline } from '../../components/Offline';
-import { examStore } from '../../stores/examStore';
+import { scheduledExamStore } from '../../stores/scheduledExamStore';
 import { ModalCentered, CSS } from '../../components/NotificationSystem';
 import { subjectsData } from '../../scripts/data/subjectsData';
 import { formatName } from '../../scripts/utilis/formatName';
@@ -153,10 +153,10 @@ function validate(form) {
 }
 
 export default function ScheduleExam() {
-  const initialValues = examStore(state => state.initialValues);
-  const setInitialValues = examStore(state => state.setInitialValues)
-  const saveScheduledExam = examStore(state => state.saveScheduledExam);
-  const saveEditedSchedule = examStore(state => state.saveEditedSchedule)
+  const initialValues = scheduledExamStore(state => state.initialValues);
+  const setInitialValues = scheduledExamStore(state => state.setInitialValues)
+  const saveScheduledExam = scheduledExamStore(state => state.saveScheduledExam);
+  const saveEditedSchedule = scheduledExamStore(state => state.saveEditedSchedule)
   const [form, setForm] = useState(initialValues || DEFAULT_FORM);
   const [errors, setErrors] = useState({});
   const [serverError, setServerError] = useState(null)

@@ -3,14 +3,14 @@ import { Link, useNavigate } from 'react-router';
 import { subjectsData } from '../../scripts/data/subjectsData';
 import { formatName } from '../../scripts/utilis/formatName';
 import { authStore } from '../../stores/authStore';
-import { practiceStore } from '../../stores/practiceStore';
+import { examStore } from '../../stores/examStore';
 import './Subjects.css'
 
 const JAMB_SUBJECTS = subjectsData.map(subject => subject.name)
 
 export default function Subjects() {
   const isActivated = authStore(state => state.isActivated)
-  const setExamConfig = practiceStore(state => state.setExamConfig)
+  const setExamConfig = examStore(state => state.setExamConfig)
   const navigate = useNavigate()
   const [selectedSubjects, setSelectedSubjects] = useState(['English'])
   
