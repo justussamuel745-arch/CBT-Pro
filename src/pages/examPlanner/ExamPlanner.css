@@ -11,6 +11,52 @@
   position: relative;
 }
 
+/* ---------- Page header ---------- */
+
+.planner-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.planner-header__back,
+.planner-header__history {
+  width: 38px;
+  height: 38px;
+  min-width: 38px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--text);
+  font-size: 0.9rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  transition: background 0.15s ease, color 0.15s ease, transform 0.15s ease;
+}
+
+.planner-header__back:hover {
+  background: var(--primary-light);
+  color: var(--primary);
+  transform: translateX(-2px);
+}
+
+.planner-header__history:hover {
+  background: var(--primary-light);
+  color: var(--primary);
+}
+
+.planner-header__title {
+  flex: 1;
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.02em;
+}
+
 /* ---------- Summary card ---------- */
 
 .planner-summary {
@@ -205,18 +251,6 @@
   padding-right: 0.5rem;
 }
 
-.planner-exam-card__datetime {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  font-size: 0.82rem;
-  color: var(--text-muted);
-}
-
-.planner-exam-card__sep {
-  opacity: 0.5;
-}
-
 .planner-exam-card__target {
   display: flex;
   align-items: center;
@@ -279,15 +313,12 @@
   justify-content: center;
 }
 
-/* ---------- Add to Calendar button + menu ---------- */
+/* ---------- Add to Calendar button (Google only) ---------- */
 
-.planner-exam-card__calendar {
+.planner-exam-card__calendar-btn {
   position: absolute;
   top: 0.85rem;
   right: 0.85rem;
-}
-
-.planner-exam-card__calendar-btn {
   width: 30px;
   height: 30px;
   border-radius: 50%;
@@ -299,56 +330,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  text-decoration: none;
   transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
 }
 
-.planner-exam-card__calendar-btn:hover,
-.planner-exam-card__calendar-btn[aria-expanded="true"] {
+.planner-exam-card__calendar-btn:hover {
   background: var(--primary-light);
   color: var(--primary);
   border-color: var(--primary);
-}
-
-.planner-exam-card__calendar-menu {
-  position: absolute;
-  top: calc(100% + 0.4rem);
-  right: 0;
-  min-width: 190px;
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  box-shadow: var(--shadow-lg);
-  padding: 0.35rem;
-  z-index: 20;
-}
-
-.planner-exam-card__calendar-menu-item {
-  display: flex;
-  align-items: center;
-  gap: 0.55rem;
-  width: 100%;
-  padding: 0.55rem 0.65rem;
-  border: none;
-  background: none;
-  border-radius: 8px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  color: var(--text);
-  text-decoration: none;
-  cursor: pointer;
-  text-align: left;
-  transition: background 0.15s ease, color 0.15s ease;
-}
-
-.planner-exam-card__calendar-menu-item:hover {
-  background: var(--primary-light);
-  color: var(--primary);
-}
-
-.planner-exam-card__calendar-menu-item i {
-  width: 16px;
-  font-size: 0.85rem;
-  text-align: center;
 }
 
 /* ---------- Empty state ---------- */

@@ -72,18 +72,18 @@ export async function clearImages() {
   });
 }
 
-export async function saveAllImages(data) {
-  for (let i = 0; i < data.length; i++) {
-    try {
-      if (!data[i].image || !data[i].image?.url) {
-        continue
-      }
-      const path = data[i].id
-      const extention = data[i].image?.url.slice(-3)
-      await saveImage(`${url}/images/questions/${path}.${extention}`)
+export async function saveAllImages(questions) {
+  const imagePromises = questions
+    .map(item => item?.image?.url)
+    .filter(Boolean)
+    .map(imageUrl =>
+      saveImage(imageUrl).catch(err => {
+        console.error(
+          `Failed to save image: ${imageUrl}`,
+          err
+        );
+      })
+    );
 
-    } catch (err) {
-      console.log(err);
-    }
-  }
+  await Promise.all(imagePromises);
 }

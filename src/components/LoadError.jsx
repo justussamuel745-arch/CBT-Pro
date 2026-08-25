@@ -1,4 +1,4 @@
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import "./LoadError.css";
 
 /**
@@ -22,6 +22,7 @@ export function LoadError({
   homeTo = "/",
   homeLabel = "Back to Home",
 }) {
+  const navigate = useNavigate()
   return (
     <div className="loaderror-page no-select">
       <div className="loaderror-card">
@@ -34,7 +35,7 @@ export function LoadError({
 
         <div className="loaderror-actions">
           {onRetry && (
-            <button className="loaderror-btn loaderror-btn--primary" onClick={onRetry}>
+            <button className="loaderror-btn loaderror-btn--primary" onClick={() => onRetry ?? onRetry(navigate)}>
               <i className="fa-solid fa-arrow-rotate-right" aria-hidden="true"></i>
               Try Again
             </button>

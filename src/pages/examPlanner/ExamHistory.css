@@ -1,7 +1,6 @@
 /* =====================================
    EXAM HISTORY PAGE
-   Uses global tokens from :root (--primary, --accent, --gradient, etc.)
-   All classes prefixed with `examhistory-`.
+   Uses global tokens from :root
    ====================================== */
 
 .examhistory-page {
@@ -29,10 +28,15 @@
   color: var(--text);
   font-size: 0.9rem;
   cursor: pointer;
+
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.15s ease, color 0.15s ease, transform 0.15s ease;
+
+  transition:
+    background 0.15s ease,
+    color 0.15s ease,
+    transform 0.15s ease;
 }
 
 .examhistory-back:hover {
@@ -79,7 +83,10 @@
 
 .examhistory-stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(150px, 1fr)
+  );
   gap: 0.75rem;
 }
 
@@ -87,10 +94,13 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
+
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
+
   padding: 0.9rem;
+
   box-shadow: var(--shadow);
 }
 
@@ -98,12 +108,16 @@
   width: 38px;
   height: 38px;
   min-width: 38px;
+
   border-radius: 10px;
+
   background: var(--primary-light);
   color: var(--primary);
+
   display: flex;
   align-items: center;
   justify-content: center;
+
   font-size: 0.95rem;
 }
 
@@ -121,14 +135,155 @@
   margin-top: 0.1rem;
 }
 
-/* ---------- Progress chart ---------- */
+/* ============================================================
+   PROGRESS ANALYTICS CARD
+   ============================================================ */
 
 .examhistory-chart-card {
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 1.25rem 1rem 1rem;
   box-shadow: var(--shadow);
+
+  overflow: hidden;
+}
+
+/* ---------- Main progress container ---------- */
+
+.examhistory-progress {
+  width: 100%;
+}
+
+/* ---------- Analytics summary ---------- */
+
+.examhistory-progress__summary {
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+
+  gap: 1.5rem;
+
+  padding: 1.2rem 1.2rem 1rem;
+
+  border-bottom: 1px solid var(--border);
+}
+
+/* Main score */
+
+.examhistory-progress__summary-main {
+  min-width: 150px;
+}
+
+.examhistory-progress__eyebrow {
+  display: block;
+
+  font-size: 0.64rem;
+  font-weight: 800;
+
+  letter-spacing: 0.08em;
+
+  color: var(--text-muted);
+
+  margin-bottom: 0.25rem;
+}
+
+.examhistory-progress__current {
+  display: flex;
+  align-items: baseline;
+  gap: 0.18rem;
+
+  color: var(--text);
+
+  font-size: 2rem;
+  line-height: 1;
+
+  font-weight: 850;
+  letter-spacing: -0.04em;
+}
+
+.examhistory-progress__current span {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  letter-spacing: 0;
+}
+
+/* ---------- Trend ---------- */
+
+.examhistory-progress__trend {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 0.3rem;
+
+  margin-top: 0.5rem;
+
+  font-size: 0.7rem;
+  font-weight: 750;
+}
+
+.examhistory-progress__trend--up {
+  color: var(--success);
+}
+
+.examhistory-progress__trend--down {
+  color: var(--danger);
+}
+
+.examhistory-progress__trend--neutral {
+  color: var(--text-muted);
+}
+
+/* ---------- Metrics ---------- */
+
+.examhistory-progress__metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(65px, 1fr));
+
+  align-items: center;
+
+  flex: 1;
+  max-width: 500px;
+
+  border-left: 1px solid var(--border);
+}
+
+.examhistory-progress__metric {
+  min-width: 0;
+
+  padding: 0 0.9rem;
+
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+
+  border-right: 1px solid var(--border);
+}
+
+.examhistory-progress__metric:last-child {
+  border-right: 0;
+}
+
+.examhistory-progress__metric span {
+  font-size: 0.64rem;
+  font-weight: 650;
+
+  color: var(--text-muted);
+}
+
+.examhistory-progress__metric strong {
+  font-size: 1rem;
+  font-weight: 800;
+
+  color: var(--text);
+
+  white-space: nowrap;
+}
+
+/* ---------- Chart ---------- */
+
+.examhistory-progress__chart {
+  padding: 1rem 1rem 0.8rem;
 }
 
 .examhistory-chart {
@@ -137,29 +292,146 @@
 
 .examhistory-chart__svg {
   width: 100%;
-  height: 200px;
+  height: 245px;
+
   display: block;
+
   overflow: visible;
 }
 
+/* ---------- Grid ---------- */
+
+.examhistory-chart__grid {
+  stroke: var(--border);
+  stroke-width: 1;
+
+  stroke-dasharray: 4 5;
+
+  opacity: 0.8;
+}
+
+.examhistory-chart__y-label {
+  fill: var(--text-muted);
+
+  font-size: 10px;
+  font-weight: 650;
+}
+
+/* ---------- Main line ---------- */
+
+.examhistory-chart__line {
+  fill: none;
+
+  stroke: var(--primary);
+  stroke-width: 3;
+
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* ---------- Points ---------- */
+
+.examhistory-chart__point-ring {
+  fill: var(--card);
+
+  stroke: var(--primary);
+  stroke-width: 2;
+
+  opacity: 0.95;
+}
+
+.examhistory-chart__point {
+  fill: var(--primary);
+}
+
+/* ---------- X labels ---------- */
+
 .examhistory-chart__labels {
   display: flex;
+
   justify-content: space-between;
-  padding: 0 0.5rem;
-  margin-top: 0.25rem;
+
+  gap: 0.5rem;
+
+  padding: 0 1.9rem 0 2.8rem;
+
+  margin-top: -0.15rem;
 }
 
 .examhistory-chart__label {
-  font-size: 0.72rem;
+  min-width: 0;
+
+  max-width: 90px;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  font-size: 0.65rem;
+
   color: var(--text-muted);
-  font-weight: 600;
+
+  font-weight: 650;
+
+  text-align: center;
+}
+
+/* ---------- Empty progress ---------- */
+
+.examhistory-progress-empty {
+  min-height: 245px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 0.9rem;
+
+  padding: 2rem;
+}
+
+.examhistory-progress-empty__icon {
+  width: 46px;
+  height: 46px;
+  min-width: 46px;
+
+  border-radius: 12px;
+
+  background: var(--primary-light);
+  color: var(--primary);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 1rem;
+}
+
+.examhistory-progress-empty__title {
+  color: var(--text);
+
+  font-size: 0.9rem;
+  font-weight: 800;
+
+  margin-bottom: 0.2rem;
+}
+
+.examhistory-progress-empty__text {
+  color: var(--text-muted);
+
+  font-size: 0.76rem;
+
+  max-width: 270px;
 }
 
 /* ---------- Achievements ---------- */
 
 .examhistory-badges {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(130px, 1fr)
+  );
   gap: 0.75rem;
 }
 
@@ -167,24 +439,33 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+
   text-align: center;
+
   gap: 0.5rem;
+
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
+
   padding: 1rem 0.6rem;
+
   box-shadow: var(--shadow);
 }
 
 .examhistory-badge__icon {
   width: 44px;
   height: 44px;
+
   border-radius: 50%;
+
   background: var(--gradient);
   color: #fff;
+
   display: flex;
   align-items: center;
   justify-content: center;
+
   font-size: 1.1rem;
 }
 
@@ -199,7 +480,8 @@
   opacity: 0.5;
 }
 
-.examhistory-badge--locked .examhistory-badge__icon {
+.examhistory-badge--locked
+  .examhistory-badge__icon {
   background: var(--border);
   color: var(--text-muted);
 }
@@ -209,7 +491,9 @@
 .examhistory-filters {
   display: flex;
   gap: 0.5rem;
+
   overflow-x: auto;
+
   padding-bottom: 0.25rem;
   margin-bottom: 1rem;
 }
@@ -220,16 +504,25 @@
 
 .examhistory-filter {
   flex: none;
+
   padding: 0.45rem 0.9rem;
+
   border-radius: 999px;
   border: 1.5px solid var(--border);
+
   background: var(--card);
   color: var(--text-muted);
+
   font-size: 0.8rem;
   font-weight: 700;
+
   cursor: pointer;
   white-space: nowrap;
-  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+
+  transition:
+    background 0.15s ease,
+    color 0.15s ease,
+    border-color 0.15s ease;
 }
 
 .examhistory-filter:hover {
@@ -243,7 +536,7 @@
   color: #fff;
 }
 
-/* ---------- Completed exams list ---------- */
+/* ---------- Exam list ---------- */
 
 .examhistory-list {
   display: flex;
@@ -255,10 +548,13 @@
   display: flex;
   align-items: center;
   gap: 1rem;
+
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
+
   padding: 0.85rem 1rem;
+
   box-shadow: var(--shadow);
 }
 
@@ -294,6 +590,7 @@
   font-size: 0.68rem;
   color: var(--text-muted);
   font-weight: 600;
+
   text-transform: uppercase;
   letter-spacing: 0.03em;
 }
@@ -309,14 +606,19 @@
   font-size: 1.05rem;
 }
 
+/* ---------- Status badges ---------- */
+
 .examhistory-row__badge {
   width: 30px;
   height: 30px;
   min-width: 30px;
+
   border-radius: 50%;
+
   display: flex;
   align-items: center;
   justify-content: center;
+
   font-size: 0.75rem;
 }
 
@@ -335,27 +637,49 @@
   color: var(--text-muted);
 }
 
+/* ---------- Missed ---------- */
+
 .examhistory-row--missed {
   background: var(--bg);
   border-style: dashed;
 }
 
-.examhistory-row--missed .examhistory-row__date {
+.examhistory-row--missed
+  .examhistory-row__date {
   color: var(--danger);
   font-weight: 600;
 }
+
+/* ---------- Reschedule button ---------- */
 
 .examhistory-row__reschedule {
   border: 1px solid var(--primary);
   background: var(--primary-light);
   color: var(--primary);
+
   font-size: 0.8rem;
   font-weight: 700;
+
   padding: 0.45rem 0.9rem;
+
   border-radius: var(--radius-sm);
+
   cursor: pointer;
   white-space: nowrap;
-  transition: background 0.15s ease, transform 0.15s ease;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 0.4rem;
+
+  min-width: 100px;
+
+  transition:
+    background 0.15s ease,
+    color 0.15s ease,
+    transform 0.15s ease,
+    opacity 0.15s ease;
 }
 
 .examhistory-row__reschedule:hover {
@@ -364,14 +688,31 @@
   transform: translateY(-1px);
 }
 
-/* Cancelled row — muted, no action, clearly de-emphasized */
+.examhistory-row__reschedule:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.examhistory-row__reschedule:disabled:hover {
+  background: var(--primary-light);
+  color: var(--primary);
+  transform: none;
+}
+
+.examhistory-row__reschedule .fa-spinner {
+  font-size: 0.75rem;
+}
+
+/* ---------- Cancelled ---------- */
 
 .examhistory-row--cancelled {
   background: var(--bg);
   opacity: 0.75;
 }
 
-.examhistory-row--cancelled .examhistory-row__date {
+.examhistory-row--cancelled
+  .examhistory-row__date {
   color: var(--text-muted);
 }
 
@@ -384,35 +725,46 @@
 
 .examhistory-empty {
   background: var(--card);
+
   border: 1.5px dashed var(--border);
   border-radius: var(--radius);
+
   padding: 2.5rem 1.5rem;
+
   text-align: center;
 }
 
 .examhistory-empty__icon {
   width: 56px;
   height: 56px;
+
   margin: 0 auto 1rem;
+
   border-radius: 50%;
+
   background: var(--primary-light);
   color: var(--primary);
+
   display: flex;
   align-items: center;
   justify-content: center;
+
   font-size: 1.4rem;
 }
 
 .examhistory-empty__title {
   font-size: 1.05rem;
   font-weight: 800;
+
   color: var(--text);
+
   margin-bottom: 0.4rem;
 }
 
 .examhistory-empty__text {
   font-size: 0.88rem;
   color: var(--text-muted);
+
   max-width: 320px;
   margin: 0 auto;
 }
@@ -420,9 +772,51 @@
 /* ---------- Responsive ---------- */
 
 @media (max-width: 640px) {
+  .examhistory-progress__summary {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .examhistory-progress__metrics {
+    width: 100%;
+    max-width: none;
+
+    border-left: 0;
+    border-top: 1px solid var(--border);
+
+    padding-top: 0.9rem;
+  }
+
+  .examhistory-progress__metric {
+    padding: 0 0.55rem;
+  }
+
+  .examhistory-progress__metric:first-child {
+    padding-left: 0;
+  }
+
+  .examhistory-progress__metric:last-child {
+    padding-right: 0;
+  }
+
+  .examhistory-chart__svg {
+    height: 210px;
+  }
+
+  .examhistory-chart__labels {
+    padding-left: 2.5rem;
+    padding-right: 1rem;
+  }
+
+  .examhistory-chart__label {
+    max-width: 65px;
+    font-size: 0.6rem;
+  }
+
   .examhistory-row {
     flex-wrap: wrap;
   }
+
   .examhistory-row__scores {
     gap: 1rem;
   }

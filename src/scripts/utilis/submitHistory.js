@@ -3,12 +3,7 @@ import { encrypt, decrypt } from './crypto.js';
 import { saveHistory } from '../../hooks/services/indexedDB/history.js';
 import { userStore } from '../../stores/userStore.js';
 import { examStore } from '../../stores/examStore.js';
-
-function generateObjectId() {
-  return [...Array(24)]
-    .map(() => Math.floor(Math.random() * 16).toString(16))
-    .join('');
-}
+import { generateObjectId } from './generateObjectId.js';
 
 export async function submitLocalHistory() {
   const unsavedHistoryRaw = JSON.parse(localStorage.getItem('unsavedHistory'));

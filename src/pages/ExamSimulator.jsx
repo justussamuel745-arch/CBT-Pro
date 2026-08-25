@@ -1,17 +1,20 @@
-import { useState, useEffect, useRef, memo, useCallback } from 'react';
-import { useNavigate, useLocation } from 'react-router';
+import { useState, useEffect, useRef, memo, useMemo, useCallback } from 'react';
+import { useNavigate } from 'react-router';
 import { MarkdownContent } from '../components/MarkdownContent';
 import { request } from '../scripts/utilis/request';
 import { formatName } from '../scripts/utilis/formatName.js';
 import { CountdownTimer } from '../components/CountdownTimer'
 import { Calculator } from '../components/Calculator'
-import { Loading } from '../components/Loading'
+import { Loading } from '../components/Loading';
+import { Offline } from '../components/Offline';
+import { LoadError } from '../components/LoadError';
 import { Image } from '../components/Image'
 import { ModalStripe,  CSS } from '../components/NotificationSystem';
 import { saveAllImages } from '../hooks/services/indexedDB/images';
 import { encrypt, decrypt } from '../scripts/utilis/crypto';
 import { authStore } from '../stores/authStore';
 import { practiceStore } from '../stores/practiceStore';
+import { scheduledExamStore } from '../stores/scheduledExamStore';
 import { examStore } from '../stores/examStore';
 import './ExamSimulator.css';
 
@@ -25,9 +28,11 @@ export default function ExamSimulator() {
   const setExamQuestions = examStore((state) => state.setExamQuestions);
   const answers = examStore((state) => state.answers);
   const setAnswers = examStore((state) => state.setAnswers);
-  const getPracticeQuestions = practiceStore(state => state.getPracticeQuestions)
+  const offline = examStore(state => state.offline)
+  const setOffline = examStore(state => state.setOffline)
+  const loadError = examStore(state => state.loadError)
+  const setLoadError = examStore(state => state.setLoadError)
   const navigate = useNavigate();
-  const { state: { examType } } = useLocation()
   const [toggleCalc, setToggleCalc] = useState(false);
   const [toggleNav, setToggleNav] = useState(false);
   const [examData, setExamData] = useState(null);
@@ -44,7 +49,7 @@ export default function ExamSimulator() {
   const [isActive, setIsActive] = useState(true)
   const [allUnansweredQsLength, setAllUnansweredQsLength] = useState(0)
   const [loading, setLoading] = useState(true)
-  
+  const [refresh, setRefresh] = useState(false)
   // Modals
   const [modal, setModal] = useState(null);
   const closeModal = () => setModal(null);
@@ -52,6 +57,38 @@ export default function ExamSimulator() {
   // refs for click-outside detection
   const navModalRef = useRef(null);
   const calcModalRef = useRef(null);
+  
+  const getQuestions = {
+    'practice': {
+      questions: practiceStore(state => state.getPracticeQuestions),
+      errorLogic(err){
+        setModal({
+          type: 'insufficient_question',
+          body: err.message
+        })
+      }
+    },
+    'scheduled': {
+      questions: scheduledExamStore(state => state.getExamQuestions),
+      errorLogic(err){
+        console.error('Error:', err.message);
+        function onRetry() {
+          setOffline(null)
+          setLoadError(null)
+          setRefresh(prev => !prev)
+        }
+        if (!navigator.onLine || !err.status){
+          setOffline({
+            onRetry,
+          })
+        } else {
+          setLoadError({
+            onRetry
+          })
+        }
+      }
+    }
+  }
   
   // preventing user from copying anything on the page
   useEffect(() => {
@@ -72,12 +109,19 @@ export default function ExamSimulator() {
     document.addEventListener('copy', prevent);
     document.addEventListener('cut', prevent);
     document.addEventListener('keydown', preventKeys);
-
+    
+    /*===== Render Notification Style ======*/
+    const el = document.createElement("style");
+    el.id = "__ns_styles";
+    el.textContent = CSS[0];
+    document.head.appendChild(el);
+    
     return () => {
       document.removeEventListener('contextmenu', prevent);
       document.removeEventListener('copy', prevent);
       document.removeEventListener('cut', prevent);
       document.removeEventListener('keydown', preventKeys);
+      document.getElementById("__ns_styles")?.remove();
     };
   }, []);
   
@@ -129,46 +173,44 @@ export default function ExamSimulator() {
     });
     
     setAnswers(answersVariable)
-    navigator.onLine && saveAllImages(data)
   }, [])
 
   useEffect(() => {
-    const { subjects } = examConfig;
+    const { subjects, examType } = examConfig;
     const currentSubVar = subjects[0].name
     const currentIdxVar = 0
     setCurrentSubject(currentSubVar);
     const properties = {};
-    const reqData = { subjects: [] };
-
+    console.log(subjects);
+    const reqData = { subjects };
+    if (examType === 'scheduled'){
+      reqData.shuffle = examConfig.shuffle
+      reqData.examId = examConfig.examId
+    }
     subjects.forEach((sub) => {
-      const subName = sub.name
-      reqData.subjects.push({ name: subName, qsNo: sub.qsNo });
-      properties[subName] = { subName, count: sub.qsNo, questions: [] };
+      const { name: subName, qsNo } = sub
+      properties[subName] = { subName, count: qsNo, questions: [] };
     });
 
     (async () => {
+      const { questions, errorLogic } = getQuestions[examType]
       try {
-        const data =  examType === 'practice' 
-          ? await getPracticeQuestions(reqData) 
-          : null
+        const data = await questions(reqData)
+        await saveAllImages(data)
         init(currentSubVar, currentIdxVar, properties, data)
       } catch (err) {
-        alert(err.message)
-        console.error('Error:', err.message);
-        navigate('/practice');
+        errorLogic(err)
       } finally {
         setLoading(false)
       }
     })()
     
-    /*===== Render Notification Style ======*/
-    const el = document.createElement("style");
-    el.id = "__ns_styles";
-    el.textContent = CSS[0];
-    document.head.appendChild(el);
+    return () => {
+      setOffline(null)
+      setLoadError(null)
+    }
     
-    return () => document.getElementById("__ns_styles")?.remove();
-  }, []);
+  }, [refresh]);
   
   
   
@@ -207,7 +249,7 @@ export default function ExamSimulator() {
   function addToBookmark(){
     const qsId = currentQues[0].id
     const findAns = answers.find(ans => ans.id === qsId)
-    let isBmk = !findAns.isBookmarked ? true : false
+    let isBmk = !findAns.isBookmarked
     setAnswers(prev => prev.map(ans => ans.id === qsId ? { ... ans, isBookmarked: isBmk} : ans))
     setSavedBookmark(isBmk)
   }
@@ -385,15 +427,18 @@ export default function ExamSimulator() {
       setModal('submit_exam')
       return
     }
-    setIsActive(prev => !prev)
+    setIsActive(false)
   },[setIsActive, setModal])
   
   const skipAutoSubmit = useRef(false)
+  
   function goBack(){
     skipAutoSubmit.current = true
-    navigate('/practice')
+    navigate(`/${examType === 'scheduled' ? 'exam-planner' : examType}`)
   }
   
+  if (loadError) return <LoadError onRetry={loadError?.onRetry ?? undefined} message={loadError?.message ?? undefined} homeTo={loadError?.homeTo ?? undefined} homeLabel={loadError?.homeLabel ?? undefined}/>
+  if (offline) return <Offline onRetry={offline?.onRetry ?? undefined} text={loadError?.text ?? undefined} />
   if (!isActive) return <Loading />
   if (loading && import.meta.env.VITE_ENV === 'production') return <Loading />
 
@@ -465,7 +510,7 @@ export default function ExamSimulator() {
                   <div key={ques.id}>
                     <div className="exam-question-text">
                       
-                      <Image id={ques.id} ext={ques.image?.url} />
+                      { ques.image?.url && <Image imageUrl={ques.image.url} /> }
                       
                       {ques.question.instruction && <><strong><MarkdownContent>{ques.question.instruction}</MarkdownContent></strong><br /></>}
                       {ques.question.comprehension && <><strong dangerouslySetInnerHTML={{__html: ques.question.comprehension}}></strong><br/></>}
@@ -589,7 +634,7 @@ export default function ExamSimulator() {
                   : "Submit your exam now. This cannot be undone."
                 }
                 primaryLabel="Submit Exam"
-                onPrimary={() => setIsActive(prev => !prev)}
+                onPrimary={() => setIsActive(false)}
                 onClose={closeModal}
               />
             </div>
@@ -610,6 +655,25 @@ export default function ExamSimulator() {
                   navigate('/practice');
                 }}
                 onClose={closeModal}
+              />
+            </div>
+          </div>
+        )}
+        { typeof modal === 'object' && modal?.type === 'insufficient_question' && (
+          <div className="ns-overlay" onClick={closeModal}>
+            <div onClick={e => e.stopPropagation()} style={{ width: '100%', display: 'flex', justifyContent: 'center', padding: '0 1rem' }}>
+              <ModalStripe
+                type="warning"
+                title="Insufficient Questions"
+                body={modal.body}
+                primaryLabel="Retry"
+                onPrimary={() => {
+                  setRefresh(true)
+                }}
+                onClose={() => {
+                  skipAutoSubmit.current = true
+                  navigate('/practice')
+                }}
               />
             </div>
           </div>

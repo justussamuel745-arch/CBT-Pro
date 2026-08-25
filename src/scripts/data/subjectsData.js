@@ -490,6 +490,7 @@ export const subjectsData = [
     totalQuestions: 1890,
     topics: [
       "Number bases",
+      "Algebra",
       "Fractions, Decimals, Approximations and Percentages",
       "Indices, Logarithms and Surds",
       "Polynomials",

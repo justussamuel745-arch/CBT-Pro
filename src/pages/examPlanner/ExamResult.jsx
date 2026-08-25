@@ -1,24 +1,32 @@
 import { useMemo } from "react";
+import { useLocation, Link } from 'react-router';
+import { formatTime } from '../../scripts/utilis/formatTime.js';
+import { DateTime } from '../../components/common/DateTime';
 import "./ExamResult.css";
 
 /* ============================================================
    Mock data — swap for the real completed exam result payload.
    ============================================================ */
 const MOCK_RESULT = {
-  examName: "JAMB Mock 5",
+  name: "JAMB Mock 5",
+  examDate: "2026-08-02T10:00:00",
+  timeSpentSeconds: 6920,
+  numQuestions: 180,
   score: 296,
-  target: 280,
+  targetScore: 280,
   isPersonalBest: true,
-  subjects: [
-    { name: "English", status: "excellent", note: "Great improvement!" },
-    { name: "Mathematics", status: "good", note: "Solid, steady pace." },
+  subjectBreakdown: [
+    { subject: "English", score: 84, maxScore: 100, status: "excellent", note: "Great improvement!" },
+    { subject: "Mathematics", score: 76, maxScore: 100, status: "good", focusTopics: ["Mechanics", "Electricity"] },
     {
-      name: "Physics",
+      subject: "Physics",
+      score: 58,
+      maxScore: 100,
       status: "needs-work",
       note: "Needs more work",
-      focus: ["Mechanics", "Electricity"],
+      focusTopics: ["Mechanics", "Electricity", "Motion", "Simple Harmonic Motion", "Pressure", "Gas laws", "Friction", "Gravitational Force", "Atmospheric Pressure"],
     },
-    { name: "Chemistry", status: "good", note: "Consistent scoring." },
+    { subject: "Chemistry", score: 78, maxScore: 100, status: "good", note: "Consistent scoring." },
   ],
 };
 
@@ -27,6 +35,21 @@ const STATUS_META = {
   good: { label: "Good", icon: "fa-thumbs-up", tone: "good" },
   "needs-work": { label: "Needs more work", icon: "fa-triangle-exclamation", tone: "warn" },
 };
+
+/* Speed = average time spent per question. Framed as time-per-question
+   rather than questions-per-minute since that's the number that
+   actually maps to "was I fast enough" for a timed exam. */
+function formatSpeed(seconds, numQuestions) {
+  if (!Number.isFinite(seconds) || !Number.isFinite(numQuestions) || numQuestions <= 0) {
+    return "—";
+  }
+  const avgSecondsPerQuestion = seconds / numQuestions;
+
+  if (avgSecondsPerQuestion < 60) {
+    return `${Math.round(avgSecondsPerQuestion)}s / question`;
+  }
+  return `${(avgSecondsPerQuestion / 60).toFixed(1)}m / question`;
+}
 
 function ScoreRing({ score, max = 400 }) {
   const radius = 70;
@@ -81,14 +104,18 @@ function SubjectFeedback({ subject }) {
       </div>
       <div className="examresult-subject__body">
         <div className="examresult-subject__top">
-          <span className="examresult-subject__name">{subject.name}</span>
-          <span className="examresult-subject__status">{meta.label}</span>
+          <span className="examresult-subject__name">{subject.subject}</span>
+          <span className="examresult-subject__score">
+            {subject.score}
+            <span className="examresult-subject__score-max"> / {subject.maxScore}</span>
+          </span>
         </div>
-        <p className="examresult-subject__note">{subject.note}</p>
-        {subject.focus && (
+        <span className="examresult-subject__status">{meta.label}</span>
+        {subject.note && <p className="examresult-subject__note">{subject.note}</p>}
+        {subject.focusTopics && (
           <div className="examresult-subject__focus">
             <span>Recommended focus:</span>
-            {subject.focus.map((topic) => (
+            {subject.focusTopics.map((topic) => (
               <span key={topic} className="examresult-subject__chip">
                 {topic}
               </span>
@@ -100,19 +127,22 @@ function SubjectFeedback({ subject }) {
   );
 }
 
-export default function ExamResult({
-  result = MOCK_RESULT,
-  onScheduleNext = () => {},
-  onViewHistory = () => {},
-}) {
-  const diff = result.score - result.target;
+export default function ExamResult() {
+  const { state: { result }  } = useLocation()
+
+  const diff = result.score - result.targetScore;
   const targetMet = diff >= 0;
 
   return (
     <div className="examresult-page no-select">
       <header className="examresult-header">
         <span className="examresult-header__eyebrow">Exam Completed</span>
-        <h1 className="examresult-header__title">{result.examName}</h1>
+        <h1 className="examresult-header__title">{result.name}</h1>
+        {result.examDate && (
+          <p className="examresult-header__date">
+            <DateTime iso={result.examDate} />
+          </p>
+        )}
       </header>
 
       {/* Score */}
@@ -122,7 +152,7 @@ export default function ExamResult({
         <div className="examresult-summary">
           <div className="examresult-summary__row">
             <span className="examresult-summary__label">Target</span>
-            <span className="examresult-summary__value">{result.target}</span>
+            <span className="examresult-summary__value">{result.targetScore}</span>
           </div>
           <div className="examresult-summary__row">
             <span className="examresult-summary__label">Difference</span>
@@ -133,6 +163,18 @@ export default function ExamResult({
             >
               {targetMet ? "+" : ""}
               {diff}
+            </span>
+          </div>
+          <div className="examresult-summary__row">
+            <span className="examresult-summary__label">Time Spent</span>
+            <span className="examresult-summary__value">
+              {formatTime(result.timeSpentSeconds)}
+            </span>
+          </div>
+          <div className="examresult-summary__row">
+            <span className="examresult-summary__label">Average Speed</span>
+            <span className="examresult-summary__value">
+              {formatSpeed(result.timeSpentSeconds, result.numQuestions)}
             </span>
           </div>
         </div>
@@ -159,21 +201,21 @@ export default function ExamResult({
           AI Feedback
         </h2>
         <div className="examresult-subjects">
-          {result.subjects.map((s) => (
-            <SubjectFeedback key={s.name} subject={s} />
+          {result.subjectBreakdown.map((s) => (
+            <SubjectFeedback key={s.subject} subject={s} />
           ))}
         </div>
       </section>
 
       {/* Actions */}
       <div className="examresult-actions">
-        <button className="examresult-btn examresult-btn--primary" onClick={onScheduleNext}>
+        <Link to="/exam-planner/schedule" className="examresult-btn examresult-btn--primary">
           <i className="fa-solid fa-flag-checkered" aria-hidden="true"></i>
           Schedule Next Challenge
-        </button>
-        <button className="examresult-btn examresult-btn--ghost" onClick={onViewHistory}>
+        </Link>
+        <Link to="/exam-planner/history" className="examresult-btn examresult-btn--ghost">
           View History
-        </button>
+        </Link>
       </div>
     </div>
   );

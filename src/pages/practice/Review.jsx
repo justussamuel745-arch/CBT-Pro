@@ -217,7 +217,7 @@ export default function Review() {
 
 
   const goBack = useCallback(() => {
-    navigate('/simulator')
+    navigate('/practice')
   }, [navigate])
 
   /*=== report question modal ===*/
@@ -323,7 +323,7 @@ export default function Review() {
                     <span className="mode-tag">{ques.topic}</span>
                   </div>
                   <div className="mode-question-text">
-                    <Image id={ques.id} ext={ques.image?.url} />
+                    { ques.image?.url && <Image imageUrl={ques.image.url} /> }
                     {typeof ques.question === 'object' && ques.question?.instruction && <><strong><MarkdownContent>{ques.question.instruction}</MarkdownContent></strong><br /></>}
                     {typeof ques.question === 'object' && ques.question?.comprehension && <><strong style={{ fontWeight: '500' }} dangerouslySetInnerHTML={{ __html: ques.question.comprehension }} /><br /></>}
                     {

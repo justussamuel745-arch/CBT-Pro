@@ -439,10 +439,6 @@
   line-height: 1.3;
 }
 
-.history-modal-date {
-  color: var(--text-muted);
-  font-size: 0.88rem;
-}
 
 .history-modal-stats {
   display: grid;

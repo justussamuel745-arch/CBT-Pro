@@ -31,7 +31,8 @@ export default function Subjects() {
     setExamConfig({
       subjects: setup,
       hours: 2,
-      minutes: 0
+      minutes: 0,
+      examType: 'practice'
     })
     navigate('/practice/config')
   }

@@ -17,6 +17,10 @@ import {
 } from "../hooks/services/indexedDB/notifications";
 
 import {
+  getOfflineNotifications
+} from "../hooks/services/indexedDB/offlineNotifications"
+
+import {
   getPendingQueueActions,
   processQueue
 } from "../hooks/services/indexedDB/notificationQueue";
@@ -26,7 +30,7 @@ import { useNotificationHandlers } from '../services/useNotificationHandlers';
 import { authStore } from '../stores/authStore';
 import { userStore } from '../stores/userStore';
 
-import usePWAInstall from "../hooks/usePWAInstall.js";
+import usePWAInstall from "../hooks/usePWAInstall";
 
 /**
  * Notification Context
@@ -73,7 +77,8 @@ export const NotificationProvider = ({ children }) => {
    */
   const loadLocalNotifications = useCallback(async (userId) => {
     const local = await getLocalNotifications(userId);
-    updateFromList(local);
+    const offline = await getOfflineNotifications(userId)
+    updateFromList(local.concat(offline));
   }, [updateFromList]);
 
   /**
@@ -85,14 +90,15 @@ export const NotificationProvider = ({ children }) => {
     try {
       const data = await notificationService.getNotifications(token, setToken);
       const serverNotifications = data.notifications || [];
+      const offline = await getOfflineNotifications(userInfo?._id)
 
       // Cache server data locally
       await saveNotifications(serverNotifications);
-      updateFromList(serverNotifications);
+      updateFromList(serverNotifications.concat(offline));
     } catch (error) {
       console.error("Notification sync failed:", error);
     }
-  }, [setToken, updateFromList]);
+  }, [setToken, updateFromList, userInfo]);
 
   /**
    * Handle real-time notification from Socket.IO

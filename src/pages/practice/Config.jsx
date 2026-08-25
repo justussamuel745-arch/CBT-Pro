@@ -48,11 +48,7 @@ export default function Config() {
     if (!isActivated) {
       setModal('activate_app')
     } else {
-      navigate('/simulator', {
-        state: {
-          examType: 'practice'
-        }
-      })
+      navigate('/simulator')
     }
   }
 

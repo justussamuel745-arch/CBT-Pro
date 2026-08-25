@@ -1,12 +1,13 @@
 import { useState, useEffect, useCallback, useMemo, memo } from 'react';
 import { Link } from 'react-router';
 import { formatTime } from '../scripts/utilis/formatTime';
-import { formatDate } from '../scripts/utilis/formatDate';
+import { sortByClosestDate } from '../scripts/utilis/dateTimeOp';
 import { Loading } from '../components/Loading';
 import { ToastProvider, useToast, CSS } from '../components/NotificationSystem';
 import { removeHistory } from '../hooks/services/indexedDB/history';
 import { request } from '../scripts/utilis/request';
 import { userStore } from '../stores/userStore';
+import { DateTime } from '../components/common/DateTime';
 import './History.css';
 
 /* ---------- Small presentational helpers ---------- */
@@ -92,7 +93,7 @@ const Sparkline = ({ values }) => {
   );
 };
 
-const ExpensiveHistoryModal = memo(({ modalInfo, onClose, getScoreClass, formatDate, formatTime }) => {
+const ExpensiveHistoryModal = memo(({ modalInfo, onClose, getScoreClass }) => {
   useEffect(() => {
     function onKeyDown(e) {
       if (e.key === 'Escape') onClose();
@@ -133,7 +134,7 @@ const ExpensiveHistoryModal = memo(({ modalInfo, onClose, getScoreClass, formatD
                   <ScoreRing percent={percent} cls={scoreClass} size={64} stroke={6} />
                   <div className="history-modal-header-text">
                     <h2>{item.title}</h2>
-                    <div className="history-modal-date">{formatDate(item.createdAt)}</div>
+                    <DateTime iso={item.createdAt} />
                   </div>
                 </div>
 
@@ -169,7 +170,8 @@ const ExpensiveHistoryModal = memo(({ modalInfo, onClose, getScoreClass, formatD
 });
 
 function HistoryInner() {
-  const historyData = userStore(state => state.historyData)
+  const historyData = sortByClosestDate(userStore(state => state.historyData), 'createdAt')
+  const setHistoryData = userStore(state => state.setHistoryData)
   const fetchUserHistory = userStore(state => state.fetchUserHistory)
   const [modalInfo, setModalInfo] = useState(null)
   const [disable, setDisable] = useState(null)
@@ -226,9 +228,7 @@ function HistoryInner() {
     setDisable(id)
     try {
       await request.auth(`/api/history/${id}`, { method: 'DELETE' })
-      userStore.setState((state) => ({
-        historyData: state.historyData.filter(h => h.testId !== id)
-      }))
+      setHistoryData(prev => prev.filter(h => h.testId !== id))
       await removeHistory(id)
     } catch (err) {
       console.error('Error:', err);
@@ -329,7 +329,7 @@ function HistoryInner() {
                 <div className="history-card-top">
                   <div>
                     <div className="history-card-title">{item.title}</div>
-                    <div className="history-card-date">{formatDate(item.createdAt)}</div>
+                    <div className="history-card-date"><DateTime iso={item.createdAt} /></div>
                   </div>
                 </div>
 
@@ -385,8 +385,6 @@ function HistoryInner() {
           modalInfo={modalInfo}
           onClose={() => setModalInfo(null)}
           getScoreClass={getScoreClass}
-          formatDate={formatDate}
-          formatTime={formatTime}
         />
       )}
     </div>

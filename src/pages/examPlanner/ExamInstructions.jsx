@@ -1,27 +1,14 @@
 import { useState } from "react";
-import { Link } from "react-router";
+import { Link, Navigate, useNavigate, useSearchParams } from "react-router";
+import { scheduledExamStore } from '../../stores/scheduledExamStore';
+import { examStore } from '../../stores/examStore';
 import "./ExamInstructions.css";
-
-/* ============================================================
-   Mock data — swap for the real scheduled exam object.
-   ============================================================ */
-const MOCK_EXAM = {
-  id: "1",
-  name: "JAMB Mock 1",
-  subjects: ["English", "Mathematics", "Physics", "Chemistry"],
-  numQuestions: 180,
-  duration: 120,
-  targetScore: 280,
-  totalScore: 400,
-  difficulty: "Mixed",
-  shuffle: true,
-};
 
 const PREP_STEPS = [
   {
     icon: "fa-wifi",
     title: "Check your connection",
-    text: "A stable internet connection prevents lost progress. Switch to Wi-Fi if you're on mobile data.",
+    text: "Internet connection is required when starting and submitting your exam, you can turn off your internet connection after exam has been loaded completely.",
   },
   {
     icon: "fa-battery-full",
@@ -85,24 +72,57 @@ function StatChip({ icon, value, label }) {
   );
 }
 
-export default function ExamInstructions({
-  exam = MOCK_EXAM,
-  onBack = () => {},
-  onStart = () => {},
-}) {
+export default function ExamInstructions() {
+  const [searchParams] = useSearchParams()
+  const examId = searchParams.get('examId')
+  if (!examId) return <Navigate to="/exam-planner" replace />
+  const upcomingExams = scheduledExamStore(state => state.upcomingExams)
+  const exam = upcomingExams.find(e => e._id === examId)
+  if (!exam) <Navigate to="/exam-planner" replace />
+  const totalScore = exam.subjects.length * 100
+  const setExamConfig = examStore(state => state.setExamConfig)
+  
+  const navigate = useNavigate()
+  
   const [acknowledged, setAcknowledged] = useState(false);
-
+  
+  function onStart(){
+    const examQuestions = examStore.getState().examQuestions
+    if (examQuestions?.length > 0){
+      examStore.setState({
+        examQuestions: []
+      })
+    }
+    const { subjects, shuffle } = exam
+    const hours = Math.floor(Number(exam.duration) / 60)
+    const minutes = exam.duration % 60
+    setExamConfig({
+      subjects: subjects.map(sub => {
+        const qsNo = sub === 'English' ? 60 : 40
+        return ({
+          name: sub,
+          qsNo
+        })
+      }),
+      hours,
+      minutes,
+      examType: 'scheduled',
+      shuffle,
+      examId
+    })
+    navigate('/simulator')
+  }
+  
   return (
     <div className="examinstructions-page no-select">
       {/* Header */}
       <header className="examinstructions-header">
-        <button
+        <Link to="/exam-planner"
           className="examinstructions-back"
-          onClick={onBack}
           aria-label="Go back"
         >
           <i className="fa-solid fa-arrow-left" aria-hidden="true"></i>
-        </button>
+        </Link>
         <div>
           <span className="examinstructions-header__eyebrow">Before you begin</span>
           <h1 className="examinstructions-header__title">{exam.name}</h1>
@@ -114,7 +134,7 @@ export default function ExamInstructions({
         <StatChip icon="fa-book-open" value={exam.subjects.length} label="Subjects" />
         <StatChip icon="fa-list-ol" value={exam.numQuestions} label="Questions" />
         <StatChip icon="fa-clock" value={`${exam.duration} min`} label="Duration" />
-        <StatChip icon="fa-bullseye" value={`${exam.targetScore}/${exam.totalScore}`} label="Target" />
+        <StatChip icon="fa-bullseye" value={`${exam.targetScore}/${totalScore}`} label="Target" />
       </section>
 
       {/* Subjects */}
@@ -193,7 +213,7 @@ export default function ExamInstructions({
           <button
             className="examinstructions-start"
             disabled={!acknowledged}
-            onClick={() => onStart(exam)}
+            onClick={onStart}
           >
             <i className="fa-solid fa-play" aria-hidden="true"></i>
             Start Exam

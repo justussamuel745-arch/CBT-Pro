@@ -734,7 +734,7 @@ export function ModalStripe({ type, title, body, primaryLabel, onPrimary, onClos
           </div>
           <h2>{title}</h2>
         </div>
-        <p>{body}</p>
+        <p dangerouslySetInnerHTML={{ __html: body }} />
         <div className="ns-stripe-actions">
           <button className="ns-btn btn-ghost btn-sm" onClick={onClose}>Dismiss</button>
           <button className={`btn ${colors.btnCls} btn-sm`} onClick={onPrimary ?? onClose}>{primaryLabel}</button>

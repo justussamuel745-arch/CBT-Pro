@@ -62,9 +62,11 @@ export const practiceStore = create(set => ({
     }))
   },
 
-  calculateScore: (examQuestions, timeTaken, timeAllocated) => {
+  calculateScore: (timeTaken, timeAllocated) => {
     const userId = userStore.getState().userInfo?._id
     const answers = examStore.getState().answers
+    const examQuestions = examStore.getState().examQuestions
+    console.log(examQuestions);
     const bookmarksRaw = JSON.parse(localStorage.getItem('bookmarks'))
     let bookmarks = bookmarksRaw ? decrypt(bookmarksRaw) : []
     const subjectStats = {};
@@ -184,13 +186,15 @@ export const practiceStore = create(set => ({
         const details = indexDbData.insufficientSubjects
           .map(({ subject, available, requested }) => {
             return available === 0
-              ? `• ${subject}: Not available`
-              : `• ${subject}: ${available} of ${requested} questions available`;
+              ? `<li><strong>${subject}</strong>: Not available</li>`
+              : `<li><strong>${subject}</strong>: ${available} of ${requested} questions available</li>`;
           })
-          .join("\n");
-          
+          .join('');
+        
         throw new Error(
-          `Some selected subjects are not fully available in offline mode.\n\n${details}\n\nConnect to the internet to stay updated with the latest questions, or start the exam online.`
+          `<p>Some selected subjects are not fully available in offline mode.</p>
+           <ul>${details}</ul>
+           <p>Connect to the internet to stay updated with the latest questions, or start the exam online.</p>`
         );
       } else {
         data = indexDbData.questions.map(q => ({

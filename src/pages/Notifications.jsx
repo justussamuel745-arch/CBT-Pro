@@ -2,6 +2,7 @@ import { useState, useMemo, useEffect } from "react";
 import { Link, useNavigate } from 'react-router';
 import { useNotifications } from '../context/NotificationContext';
 import { updateLocalNotificationRead, deleteLocalNotification } from '../hooks/services/indexedDB/notifications';
+import { deleteOfflineNotification, updateOfflineNotification } from '../hooks/services/indexedDB/offlineNotifications';
 import { addQueueAction } from '../hooks/services/indexedDB/notificationQueue';
 import './Notifications.css';
 
@@ -64,7 +65,7 @@ export default function Notifications() {
   const [activeFilter, setActiveFilter] = useState("all");
   const [toastMsg, setToastMsg] = useState(null);
   const [expandedIds, setExpandedIds] = useState(() => new Set());
-
+  
   const [now, setNow] = useState(() => Date.now());
   useEffect(() => {
     const interval = setInterval(() => setNow(Date.now()), 60 * 1000);
@@ -145,27 +146,48 @@ export default function Notifications() {
         n._id === id && !n.isRead ? { ...n, isRead: true, readAt: new Date().toISOString() } : n
       )
     );
+    
+    const isOfflineNot = notifications.find(n => n._id === id)?.offline
+    if (isOfflineNot){
+      await updateOfflineNotification(id, {
+        isRead: true
+      })
+      return
+    }
+    
     await updateLocalNotificationRead(id, userId);
+    
     if (navigator.onLine) {
       try {
-        handlers.markRead(id);
+        await handlers.markRead(id);
       } catch {
-        addQueueAction({ userId, notificationId: id, action: "MARK_READ" });
+        await addQueueAction({ userId, notificationId: id, action: "MARK_READ" });
       }
     } else {
-      addQueueAction({ userId, notificationId: id, action: "MARK_READ" });
+      await addQueueAction({ userId, notificationId: id, action: "MARK_READ" });
     }
   };
 
   const deleteNotif = async (id, e) => {
     e.stopPropagation();
-    setNotifications((prev) => prev.filter((n) => n._id !== id));
+    let isOfflineNot;
+    setNotifications((prev) => prev.filter((n) => {
+      if (n._id === id){
+        isOfflineNot = n.offline
+        return false
+      }
+      return n._id !== id 
+    }));
+    if (isOfflineNot){
+      await deleteOfflineNotification(id)
+      return
+    }
     await deleteLocalNotification(id, userId);
     if (navigator.onLine) {
       try {
-        handlers.deleteNotification(id);
+        await handlers.deleteNotification(id);
       } catch {
-        addQueueAction({ userId, notificationId: id, action: "DELETE" });
+        await addQueueAction({ userId, notificationId: id, action: "DELETE" });
       }
     } else {
       addQueueAction({ userId, notificationId: id, action: "DELETE" });
@@ -173,11 +195,13 @@ export default function Notifications() {
     showToast("Notification deleted");
   };
 
-  const markAllRead = () => {
+  const markAllRead = async () => {
     let hadUnread = false;
+    const offlineNotIds = [];
     setNotifications((prev) =>
       prev.map((n) => {
         if (!n.isRead) hadUnread = true;
+        if (n?.offline) offlineNotIds.push(n._id)
         return n.isRead ? n : { ...n, isRead: true, readAt: new Date().toISOString() };
       })
     );
@@ -186,18 +210,26 @@ export default function Notifications() {
       await updateLocalNotificationRead(n._id, userId);
       if (navigator.onLine) {
         try {
-          handlers.markRead(n._id);
+          await handlers.markRead(n._id);
         } catch {
-          addQueueAction({ userId, notificationId: n._id, action: "MARK_READ" });
+          await addQueueAction({ userId, notificationId: n._id, action: "MARK_READ" });
         }
       } else {
         await addQueueAction({ userId, notificationId: n._id, action: "MARK_READ" });
       }
     };
+    const onlineNots = notifications.filter(n => !offlineNotIds.includes(n._id))
+    
+    for (const id of offlineNotIds){
+     const { isRead } =  notifications.find(n => n._id === id)
+     if (isRead) continue
+      await updateOfflineNotification(id, {
+        isRead: true
+      })
+    }
 
-    for (const n of notifications) {
-      if (n.isRead) continue;
-      unreadOps(n);
+    for (const n of onlineNots) {
+      await unreadOps(n);
     }
     if (hadUnread) showToast("All notifications marked as read");
   };

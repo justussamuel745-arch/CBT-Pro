@@ -14,8 +14,6 @@ export default function ExamPlanners(){
       <Route path="/schedule" element={<ScheduleExam />} />
       <Route path="/history" element={<ExamHistory />} />
       <Route path="/result" element={<ExamResult />} />
-      <Route path="/result" element={<ExamResult />} />
-      <Route path="/countdown" element={<Countdown />} />
       <Route path="/missed" element={<MissedExam />} />
       <Route path="/instructions" element={<ExamInstructions />} />
     </Routes>

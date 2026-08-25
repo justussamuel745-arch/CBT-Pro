@@ -1,38 +1,8 @@
 import { Link } from "react-router";
+import { formatDateTime, addMinutes } from '../../scripts/utilis/dateTimeOp';
+import { EDIT_LOCK_MINUTES, GRACE_WINDOW_MINUTES } from './constant/time';
 import "./ScheduleSuccess.css";
 
-/* ============================================================
-   Mock data — swap for the exam object returned right after
-   POST /api/exam-planner/exams succeeds.
-   ============================================================ */
-const MOCK_EXAM = {
-  id: "1",
-  name: "JAMB Mock 1",
-  examDate: "2026-08-20T10:00:00",
-  subjects: ["English", "Mathematics", "Physics", "Chemistry"],
-  targetScore: 280,
-};
-
-// Keep these in sync with the backend constants of the same name.
-const EDIT_LOCK_MINUTES = 40;
-const GRACE_WINDOW_MINUTES = 30;
-
-function addMinutes(date, minutes) {
-  return new Date(date.getTime() + minutes * 60000);
-}
-
-function formatDateTime(date) {
-  const day = date.toLocaleDateString("en-GB", {
-    day: "2-digit",
-    month: "short",
-  });
-  const time = date.toLocaleTimeString("en-US", {
-    hour: "numeric",
-    minute: "2-digit",
-    hour12: true,
-  });
-  return `${day}, ${time}`;
-}
 
 function buildTimeline(examDate) {
   const start = new Date(examDate);
@@ -44,7 +14,7 @@ function buildTimeline(examDate) {
       key: "open",
       icon: "fa-pen",
       title: "Freely editable",
-      when: `Now until ${formatDateTime(editLocksAt)}`,
+      when: `Now until ${formatDateTime(editLocksAt).join(', ')}`,
       text: "Change any detail — subjects, duration, target score — or reschedule the date entirely.",
       tone: "neutral",
     },
@@ -52,7 +22,7 @@ function buildTimeline(examDate) {
       key: "locked",
       icon: "fa-lock",
       title: "Locked for editing",
-      when: `From ${formatDateTime(editLocksAt)}`,
+      when: `From ${formatDateTime(editLocksAt).join(', ')}`,
       text: `Starting ${EDIT_LOCK_MINUTES} minutes before your exam, details can no longer be changed. You can still cancel it if needed.`,
       tone: "warn",
     },
@@ -97,7 +67,7 @@ function TimelineStep({ step, isLast }) {
   );
 }
 
-export default function ScheduleSuccess({ exam = MOCK_EXAM }) {
+export default function ScheduleSuccess({ exam }) {
   const timeline = buildTimeline(exam.examDate);
 
   return (

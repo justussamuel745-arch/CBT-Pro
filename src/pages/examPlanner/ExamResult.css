@@ -37,6 +37,17 @@
   letter-spacing: -0.02em;
 }
 
+.examresult-header__date {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  font-weight: 600;
+  margin-top: 0.35rem;
+}
+
 /* ---------- Score card ---------- */
 
 .examresult-scorecard {
@@ -224,7 +235,7 @@
 
 .examresult-subject__top {
   display: flex;
-  align-items: center;
+  align-items: baseline;
   justify-content: space-between;
   gap: 0.5rem;
 }
@@ -235,16 +246,31 @@
   color: var(--text);
 }
 
+.examresult-subject__score {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--text);
+  white-space: nowrap;
+}
+
+.examresult-subject__score-max {
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
 .examresult-subject__status {
+  display: block;
   font-size: 0.72rem;
   font-weight: 700;
   color: var(--text-muted);
+  margin-top: 0.15rem;
 }
 
 .examresult-subject__note {
   font-size: 0.8rem;
   color: var(--text-muted);
-  margin-top: 0.2rem;
+  margin-top: 0.3rem;
 }
 
 .examresult-subject__focus {

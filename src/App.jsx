@@ -4,6 +4,7 @@ import { ProtectRoutes } from './routes/ProtectRoutes';
 import { ProtectExamRoutes } from './routes/ProtectExamRoutes';
 import { Loading } from './components/Loading';
 import { Invalid } from './components/Invalid';
+import { OfflineNotifier } from './components/OfflineNotifier';
 import HomePage from './pages/HomePage';
 import  Study from './pages/study/Study';
 import Practice from './pages/practice/Practice';
@@ -25,6 +26,8 @@ import { submitLocalHistory } from './scripts/utilis/submitHistory';
 import { deleteUser } from './hooks/services/indexedDB/users';
 import { authStore } from './stores/authStore';
 import { userStore } from './stores/userStore';
+import { scheduledExamStore } from './stores/scheduledExamStore';
+import { useExamDataSync } from './hooks/useExamDataSync';
 import './App.css';
 
 const Games = lazy(() => import('./pages/games/Games.jsx'));
@@ -32,6 +35,9 @@ const Delete = lazy(() => import('./pages/Delete.jsx'));
 const Admin = lazy(() => import('./pages/admin/Admin.jsx'));
 
 function App() {
+  // listen for when upcomings exams changes and update the changes in indexedDB
+  useExamDataSync()
+  
   const token = authStore((state) => state.token);
   const isLoading = authStore((state) => state.isLoading);
   const setIsLoading = authStore((state) => state.setIsLoading);
@@ -40,6 +46,7 @@ function App() {
   const loadCachedUser = userStore((state) => state.loadCachedUser);
   const fetchUserInfo = userStore((state) => state.fetchUserInfo);
   const fetchUserHistory = userStore((state) => state.fetchUserHistory);
+  const getDashboardInfo = scheduledExamStore(state => state.getDashboardInfo)
     
   
   useEffect(() => {
@@ -52,8 +59,9 @@ function App() {
         await refresh();
         await Promise.all([
           fetchUserInfo(),
-          fetchUserHistory()
+          fetchUserHistory(),
         ])
+        await getDashboardInfo().catch(() => {})
       } catch (err) {
         console.error('Error refreshing session:', err.error);
         if (err.status === 401){
@@ -76,7 +84,6 @@ function App() {
       <Routes>
         <Route index element={token ? <Dashboard /> : <HomePage />} />
         <Route path="/auth/*" element={<Auth />} />
-        <Route path="/exam-planner/*" element={<ExamPlanners />} />
         <Route path="/about" element={<About />} />
         <Route path="/legal" element={<Legal />} />
 
@@ -89,6 +96,7 @@ function App() {
           <Route path="/settings" element={<Settings />} />
           <Route path="/bookmark" element={<Bookmark />} />
           <Route path="/history" element={<History />} />
+          <Route path="/exam-planner/*" element={<ExamPlanners />} />
           <Route element={<ProtectExamRoutes />}>
             <Route path="/simulator" element={<ExamSimulator />} />
           </Route>
@@ -121,6 +129,7 @@ function App() {
         <Route path="*" element={<Invalid />} />
       </Routes>
       <PWAUpdateToast />
+      <OfflineNotifier />
     </>
   );
 }

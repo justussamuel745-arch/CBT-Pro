@@ -26,7 +26,7 @@ const ExpensiveBmkModal = memo(({ modalQsInfo, setModalQsInfo }) => {
               <div className="bookmark-modal-body">
                 <div className="bookmark-modal-meta">UTME {formatName(qs.subject)} • {qs.topic}</div>
                 <div className="bookmark-modal-question">
-                  <Image id={qs.id} ext={qs.image?.url} />
+                  { qs.image?.url && <Image imageUrl={qs.image.url} /> }
                   {qs.question?.instruction && <><strong><MarkdownContent>{ qs.question.instruction }</MarkdownContent></strong><br/></>}
                   {qs.question?.comprehension && <><strong dangerouslySetInnerHTML={{__html: qs.question.comprehension}} /><br/></>}
                   <MarkdownContent>{!(typeof qs.question === 'object') ? qs.question : qs.question.qs}</MarkdownContent>
@@ -74,7 +74,9 @@ export default function Bookmark() {
   
   useEffect(() => {
     const bookmarks = decrypt(JSON.parse(localStorage.getItem('bookmarks'))) || []
-    const data = bookmarks.filter(bmk => bmk.userId === userInfo._id)
+    console.log(bookmarks);
+    console.log(userInfo?._id);
+    const data = bookmarks.filter(bmk => bmk.userId === userInfo?._id)
     setBookmarkData(data)
     setNoBmkFound(data.length === 0 ? true : false)
     allBookmarkRef.current = data

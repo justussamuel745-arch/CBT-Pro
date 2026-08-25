@@ -7,14 +7,18 @@ export const examStore = create(set => ({
   examConfig: null,
   examQuestions: [],
   answers: [],
+  offline: null,
+  loadError: null,
 
   /*========
     ACTION
   ==========*/
-  setExamConfig: (examConfig) => {
-    set({
-      examConfig
-    })
+  setExamConfig: (updater) => {
+    set(state => ({
+      examConfig: typeof updater === 'function'
+       ? updater(state.examConfig)
+       : updater
+    }))
   },
   
   setExamQuestions: (examQuestions) => set({
@@ -25,5 +29,13 @@ export const examStore = create(set => ({
     answers: typeof updater === 'function'
       ? updater(state.answers)
       : updater
-  }))
+  })),
+  
+  setOffline: (offline) => set({
+    offline
+  }),
+  
+  setLoadError: (loadError) => set({
+    loadError
+  })
 }))

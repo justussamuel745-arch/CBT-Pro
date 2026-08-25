@@ -5,72 +5,18 @@ import { ExamDetail } from './ExamDetail';
 import { Loading } from '../../components/Loading';
 import { Offline } from '../../components/Offline';
 import { LoadError } from '../../components/LoadError';
+import { DateTime } from '../../components/common/DateTime';
+import { sortByClosestDate } from '../../scripts/utilis/dateTimeOp';
 import { scheduledExamStore } from '../../stores/scheduledExamStore';
+import { deleteUpcomingExam } from '../../hooks/services/indexedDB/upcomingExams';
+import { showNotification } from '../../services/offlineNotificationService';
+import { hasEditExpires } from './utils/hasEditExpires';
+import { graceEndsAt } from './utils/graceEndsAt.js';
+import MissedExam from './MissedExam';
 import "./ExamPlanner.css";
 
 /* ============================================================
-   Mock data — swap for real API data (GET /api/exam-planner) 
-   once the ScheduledExam schema/controller exists.
-   ============================================================ */
-const MOCK_STATS = {
-  upcoming: 2,
-  completed: 14,
-  average: 264,
-  highest: 291,
-  streak: 4,
-};
-
-const MOCK_UPCOMING = [
-  {
-    _id: "1",
-    name: "JAMB Mock 1",
-    examDate: "2026-08-18T07:24:00",
-    targetScore: 280,
-    subjects: ["English", "Mathematics", "Physics", "Chemistry"],
-    numQuestions: 40,
-    duration: 120,
-    difficulty: "Medium",
-    shuffle: true,
-    autoSubmit: true,
-    reminder: "1d",
-    notes: "Focus on speed.",
-  },
-  {
-    _id: "2",
-    name: "JAMB Mock 2",
-    examDate: "2026-08-28T13:40:00",
-    targetScore: 300,
-    subjects: ["English", "Mathematics", "Physics", "Chemistry"],
-    numQuestions: 40,
-    duration: 120,
-    difficulty: "Medium",
-    shuffle: true,
-    autoSubmit: true,
-    reminder: "1d",
-    notes: "Focus on speed.",
-  },
-];
-
-const EDIT_LOCK_MINUTES = 40
-
-function formatExamDate(iso) {
-  const d = new Date(iso);
-  const date = d.toLocaleDateString("en-GB", {
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-  });
-  const time = d.toLocaleTimeString("en-US", {
-    hour: "numeric",
-    minute: "2-digit",
-    hour12: true,
-  });
-  return { date, time };
-}
-
-/* ============================================================
-   Calendar export helpers — Google Calendar link + downloadable
-   .ics file (Apple Calendar, Outlook, everything else).
+   Calendar export — Google Calendar only.
    ============================================================ */
 function toUtcStamp(date) {
   return date.toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
@@ -93,107 +39,17 @@ function getGoogleCalendarUrl(exam) {
   return `https://calendar.google.com/calendar/render?${params.toString()}`;
 }
 
-function downloadIcsFile(exam) {
-  const { start, end } = getExamWindow(exam);
-  const ics = [
-    "BEGIN:VCALENDAR",
-    "VERSION:2.0",
-    "PRODID:-//CBT Pro//Exam Planner//EN",
-    "BEGIN:VEVENT",
-    `UID:${exam._id}@cbtpro.ng`,
-    `DTSTAMP:${toUtcStamp(new Date())}`,
-    `DTSTART:${toUtcStamp(start)}`,
-    `DTEND:${toUtcStamp(end)}`,
-    `SUMMARY:${exam.name}`,
-    `DESCRIPTION:Personal mock exam scheduled via CBT Pro. Target score: ${exam.targetScore}.`,
-    "END:VEVENT",
-    "END:VCALENDAR",
-  ].join("\r\n");
-
-  const blob = new Blob([ics], { type: "text/calendar;charset=utf-8" });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = `${exam.name.replace(/\s+/g, "-")}.ics`;
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-  URL.revokeObjectURL(url);
-}
-
-const formatDateTimeForInputs = (mongoDate) => {
-  const date = new Date(mongoDate);
-
-  if (Number.isNaN(date.getTime())) {
-    return {
-      date: '',
-      time: '',
-    };
-  }
-
-  const pad = (value) => String(value).padStart(2, '0');
-
-  return {
-    date: `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`,
-    time: `${pad(date.getHours())}:${pad(date.getMinutes())}`,
-  };
-};
-
 function AddToCalendarButton({ exam }) {
-  const [open, setOpen] = useState(false);
-  const menuRef = useRef(null);
-
-  useEffect(() => {
-    if (!open) return;
-    function handleClickOutside(e) {
-      if (menuRef.current && !menuRef.current.contains(e.target)) {
-        setOpen(false);
-      }
-    }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [open]);
-
   return (
-    <div className="planner-exam-card__calendar" ref={menuRef}>
-      <button
-        type="button"
-        className="planner-exam-card__calendar-btn"
-        onClick={() => setOpen((prev) => !prev)}
-        aria-label="Add to calendar"
-        aria-expanded={open}
-      >
-        <i className="fa-regular fa-calendar-plus" aria-hidden="true"></i>
-      </button>
-
-      {open && (
-        <div className="planner-exam-card__calendar-menu" role="menu">
-          <a
-            className="planner-exam-card__calendar-menu-item"
-            href={getGoogleCalendarUrl(exam)}
-            target="_blank"
-            rel="noopener noreferrer"
-            role="menuitem"
-            onClick={() => setOpen(false)}
-          >
-            <i className="fa-brands fa-google" aria-hidden="true"></i>
-            Google Calendar
-          </a>
-          <button
-            type="button"
-            className="planner-exam-card__calendar-menu-item"
-            role="menuitem"
-            onClick={() => {
-              downloadIcsFile(exam);
-              setOpen(false);
-            }}
-          >
-            <i className="fa-solid fa-download" aria-hidden="true"></i>
-            Apple / Outlook (.ics)
-          </button>
-        </div>
-      )}
-    </div>
+    <a
+      className="planner-exam-card__calendar-btn"
+      href={getGoogleCalendarUrl(exam)}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Add to Google Calendar"
+    >
+      <i className="fa-regular fa-calendar-plus" aria-hidden="true"></i>
+    </a>
   );
 }
 
@@ -208,26 +64,25 @@ function PlannerStat({ icon, value, label }) {
 }
 
 const UpcomingExamCard = memo(function UpcomingExamCard({ exam, onView, onEdit, onStart, onCancel }) {
-  const { date, time } = formatExamDate(exam.examDate);
+  const setUpcomingExams = scheduledExamStore(state => state.setUpcomingExams)
   const countdown = useLiveCountdown(exam.examDate);
   
-  function editExpires(){
-    const { days, hours, minutes } = countdown
-    if (!days && !hours){
-      if (minutes <= EDIT_LOCK_MINUTES) return true
-    }
-    return false
-  }
   
-  function graceEndsAt(examDate) {
-    const dt = new Date(examDate);
+  const onGraceExpired = useCallback(async () => {
+    await deleteUpcomingExam(exam._id)
+    setUpcomingExams(prev => prev.filter(e => e._id !== exam._id))
+    await showNotification({
+      title: 'Scheduled Exam Missed',
+      body: `Your scheduled exam "${exam.name}" has been marked as missed because it was not completed within 40 minutes of its scheduled time. No performance score was recorded for this attempt. Staying consistent with your scheduled exams helps you measure your progress, identify weak areas, and see how close you are to your target score. Keep your next exam on schedule and use each completed attempt as an opportunity to improve your performance.`,
+    })
+  },[setUpcomingExams])
   
-    dt.setMinutes(dt.getMinutes() + 30);
-  
-    const pad = (n) => String(n).padStart(2, '0');
-  
-    return `${dt.getFullYear()}-${pad(dt.getMonth() + 1)}-${pad(dt.getDate())}T${pad(dt.getHours())}:${pad(dt.getMinutes())}`;
-  }
+  const onReady = useCallback(async () => {
+    await showNotification({
+      title: 'Your Exam Is Ready to Start',
+      body: `"${exam.name}" is now ready. You have 20 minutes to start the exam before it is marked as missed.`,
+    });
+  },[])
   
   return (
     <article className="planner-exam-card">
@@ -242,13 +97,7 @@ const UpcomingExamCard = memo(function UpcomingExamCard({ exam, onView, onEdit, 
         </span>
       )}
 
-      <div className="planner-exam-card__datetime">
-        <i className="fa-regular fa-calendar" aria-hidden="true"></i>
-        <span>{date}</span>
-        <span className="planner-exam-card__sep">•</span>
-        <i className="fa-regular fa-clock" aria-hidden="true"></i>
-        <span>{time}</span>
-      </div>
+      <DateTime iso={exam.examDate} />
 
       <div className="planner-exam-card__target">
         <span className="planner-exam-card__target-label">Target Score</span>
@@ -256,7 +105,13 @@ const UpcomingExamCard = memo(function UpcomingExamCard({ exam, onView, onEdit, 
       </div>
 
       <div className="planner-exam-card__countdown">
-        <Countdown targetDate={exam.examDate} graceEndsAt={graceEndsAt(exam.examDate)} variant={countdown.urgent ? "full" : "compact"} readyLabel="Ready to start" />
+        <Countdown 
+          targetDate={exam.examDate} 
+          graceEndsAt={graceEndsAt(exam.examDate)} 
+          variant={countdown.urgent ? "full" : "compact"} 
+          readyLabel="Ready to start"
+          onGraceExpired={onGraceExpired}
+        />
       </div>
 
       <div className="planner-exam-card__actions">
@@ -264,10 +119,10 @@ const UpcomingExamCard = memo(function UpcomingExamCard({ exam, onView, onEdit, 
           View
         </button>
         {
-          (!editExpires() || countdown.ready) && 
+          (!hasEditExpires(countdown) || countdown.ready) && 
             (
               <button className="planner-btn planner-btn--ghost" onClick={() => {
-                countdown.ready ? onStart(exam) : onEdit(exam)}
+                countdown.ready ? onStart(exam?._id) : onEdit(exam._id)}
               }>
                 { countdown.ready ? 'Start Exam' : 'Edit' }
               </button>
@@ -285,7 +140,7 @@ const UpcomingExamCard = memo(function UpcomingExamCard({ exam, onView, onEdit, 
   );
 })
 
-function EmptyState({ onCreate }) {
+function EmptyState() {
   return (
     <div className="planner-empty">
       <div className="planner-empty__icon">
@@ -305,10 +160,10 @@ function EmptyState({ onCreate }) {
 
 export default function ExamPlanner() {
   const stats = scheduledExamStore(state => state.stats)
-  const exams = scheduledExamStore(state => state.upcomingExams)
+  const exams = sortByClosestDate(scheduledExamStore(state => state.upcomingExams), 'examDate')
   const setInitialValues = scheduledExamStore(state => state.setInitialValues)
   const getDashboardInfo = scheduledExamStore(state => state.getDashboardInfo)
-  const cancelScheduledExam = scheduledExamStore(state => state.cancelScheduledExam)
+  const onChangeStatus = scheduledExamStore(state => state.onChangeStatus)
   const [viewExam, setViewExam] = useState(false)
   const [viewDetails, setViewDetails] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -317,7 +172,7 @@ export default function ExamPlanner() {
   const navigate = useNavigate()
 
   useEffect(() => {
-    if (!stats && !exams) {
+    if (!stats || !exams) {
       (async () => {
         try {
           await getDashboardInfo()
@@ -339,7 +194,7 @@ export default function ExamPlanner() {
   
   async function onCancelExam(exam){
     try {
-      await cancelScheduledExam(exam._id)
+      await onChangeStatus(exam._id, 'cancelled')
     } catch (err) {
       console.error('Error:', err);
       if (!err.status && !navigator.onLine){
@@ -350,17 +205,14 @@ export default function ExamPlanner() {
     }
   }
 
-  function onEditExam(exam) {
-    const { examDate } = exam;
-    const formValues = {
-      ...exam,
-      ...formatDateTimeForInputs(examDate)
-    }
-    delete formValues.examDate
-    setInitialValues(formValues)
-    navigate('/exam-planner/schedule')
+  function onEditExam(examId) {
+    navigate(`/exam-planner/schedule?examId=${examId}`)
   }
-
+  
+  const onStartExam = useCallback((examId) => {
+    navigate(`/exam-planner/instructions?examId=${examId}`)
+  },[navigate])
+  
   const onViewExam = useCallback((exam) => {
     setViewDetails(exam)
     setViewExam(true)
@@ -376,7 +228,27 @@ export default function ExamPlanner() {
 
   return (
     <div className="planner-page no-select">
+      {/* Page header */}
+      <header className="planner-header">
+        <button
+          className="planner-header__back"
+          onClick={() => navigate('/')}
+          aria-label="Go back"
+        >
+          <i className="fa-solid fa-arrow-left" aria-hidden="true"></i>
+        </button>
+        <h1 className="planner-header__title">Exam Planner</h1>
+        <Link
+          className="planner-header__history"
+          to="/exam-planner/history"
+          aria-label="View exam history"
+        >
+          <i className="fa-solid fa-clock-rotate-left" aria-hidden="true"></i>
+        </Link>
+      </header>
+
       {/* Summary */}
+      <MissedExam />
       <section className="planner-summary">
         <div className="planner-summary__heading">
           <i className="fa-solid fa-bullseye" aria-hidden="true"></i>
@@ -396,7 +268,7 @@ export default function ExamPlanner() {
         <div className="planner-section__header">
           <h2 className="planner-section__title">Upcoming Exams</h2>
           {exams.length > 0 && (
-            <Link className="planner-btn planner-btn--primary planner-btn--sm" to="/exam-planner/schedule">
+            <Link className="planner-btn planner-btn--primary planner-btn--sm" to="/exam-planner/schedule?">
               <i className="fa-solid fa-plus" aria-hidden="true"></i>
               Schedule New Exam
             </Link>
@@ -404,7 +276,7 @@ export default function ExamPlanner() {
         </div>
 
         {exams.length === 0 ? (
-          <EmptyState onCreate={onCreateExam} />
+          <EmptyState/>
         ) : (
           <div className="planner-exam-grid">
             {exams.map((exam) => (
@@ -413,6 +285,7 @@ export default function ExamPlanner() {
                 exam={exam}
                 onView={onViewExam}
                 onEdit={onEditExam}
+                onStart={onStartExam}
                 onCancel={onCancelExam}
               />
             ))}
@@ -425,7 +298,7 @@ export default function ExamPlanner() {
         <i className="fa-solid fa-plus" aria-hidden="true"></i>
       </Link>
 
-      {viewExam && <ExamDetail exam={viewDetails} onEdit={onEditExam} onClose={onClose} onCancel={onCancelExam}/>}
+      {viewExam && <ExamDetail exam={viewDetails} onEdit={onEditExam} onStart={onStartExam} onClose={onClose} onCancel={onCancelExam}/>}
     </div>
   );
 }

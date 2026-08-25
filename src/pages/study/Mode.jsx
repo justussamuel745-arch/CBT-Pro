@@ -15,6 +15,7 @@ import { saveQuestions, getQuestions } from '../../hooks/services/indexedDB/ques
 import { saveAllImages } from '../../hooks/services/indexedDB/images';
 import { decrypt, encrypt } from '../../scripts/utilis/crypto';
 import { studyStore } from '../../stores/studyStore';
+import { userStore } from '../../stores/userStore';
 import './Mode.css'
 
 const Notification = memo(function Notification({type, title, body, primaryLabel, onPrimary, onClose, closeLabel }){
@@ -37,7 +38,7 @@ const Notification = memo(function Notification({type, title, body, primaryLabel
 
 export default function Mode() {
   const studyConfig = studyStore(state => state.studyConfig)
-  const userInfo = (state => state.userInfo)
+  const userId = userStore(state => state.userInfo)?._id
   const navigate = useNavigate()
   const [toggleCalc, setToggleCalc] = useState(false);
   const [toggleNav, setToggleNav] = useState(false);
@@ -122,7 +123,7 @@ export default function Mode() {
               explanation: encrypt(d.explanation)
             }))
           )
-          saveAllImages(data)
+          await saveAllImages(data)
         } else {
           const subject = studyConfig.subject
           const years = studyConfig.years
@@ -323,7 +324,7 @@ export default function Mode() {
                 const currentQ = currentQuestion[0]
 
                 const updatedStorage = toggle
-                ? [...questionsStorage.filter(qs => qs.id !== currentQ.id), { userId: userInfo._id, ...currentQ}]
+                ? [...questionsStorage.filter(qs => qs.id !== currentQ.id), { userId, ...currentQ}]
                 : questionsStorage.filter(qs => qs.id !== currentQ.id)
 
                 localStorage.setItem('bookmarks', JSON.stringify(encrypt(updatedStorage)))
@@ -379,7 +380,7 @@ export default function Mode() {
                     </div>
                     <div className="mode-question-text">
                     
-                      <Image id={ques.id} ext={ques.image?.url} />
+                      {ques.image?.url && <Image imageUrl={ques.image.url} />}
                       
                       {typeof ques.question === 'object' && ques.question?.instruction && <><strong><MarkdownContent>{ques.question.instruction}</MarkdownContent></strong><br /></>}
                       {typeof ques.question === 'object' && ques.question?.comprehension && <><strong dangerouslySetInnerHTML={{ __html: ques.question.comprehension }} /><br /></>}

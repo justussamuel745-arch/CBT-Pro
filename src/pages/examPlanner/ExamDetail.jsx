@@ -1,5 +1,8 @@
 import { useState, memo } from "react";
 import Countdown, { useLiveCountdown } from "./Countdown";
+import { DateTime } from '../../components/common/DateTime';
+import { hasEditExpires } from './utils/hasEditExpires';
+import { graceEndsAt } from './utils/graceEndsAt.js';
 import "./ExamDetail.css";
 
 const REMINDER_LABELS = {
@@ -10,22 +13,6 @@ const REMINDER_LABELS = {
   "3d": "3 days before",
   "1w": "1 week before",
 };
-
-function formatExamDate(iso) {
-  const d = new Date(iso);
-  const date = d.toLocaleDateString("en-GB", {
-    weekday: "short",
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-  });
-  const time = d.toLocaleTimeString("en-US", {
-    hour: "numeric",
-    minute: "2-digit",
-    hour12: true,
-  });
-  return { date, time };
-}
 
 function StatTile({ label, value, suffix }) {
   return (
@@ -55,25 +42,18 @@ function SettingRow({ label, on }) {
 
 const ExamActions = memo(function ExamActions({ exam, ready, onCancel, onEdit, onStart }) {
   const countdown = useLiveCountdown(exam.examDate)
-  function editExpires(){
-    const { days, hours, minutes } = countdown
-    if (!days && !hours){
-      if (minutes <= EDIT_LOCK_MINUTES) return true
-    }
-    return false
-  }
   
   return (
     <div className="examdetail-actions">
       {ready ? (
-        <button className="examdetail-btn examdetail-btn--primary" onClick={() => onStart(exam)}>
+        <button className="examdetail-btn examdetail-btn--primary" onClick={() => onStart(exam?._id)}>
           <i className="fa-solid fa-play" aria-hidden="true"></i>
           Start Exam
         </button>
       ) : (
         <>
           {
-            !editExpires() && 
+            !hasEditExpires(countdown) && 
               (
                 <button className="examdetail-btn examdetail-btn--ghost" onClick={() => onEdit(exam)}>
                   <i className="fa-solid fa-pen" aria-hidden="true"></i>
@@ -95,25 +75,14 @@ const ExamActions = memo(function ExamActions({ exam, ready, onCancel, onEdit, o
 })
 
 export function ExamDetail({
-  exam = MOCK_EXAM,
+  exam = {},
   onClose = () => { },
   onEdit = () => { },
   onCancel = () => { },
   onStart = () => { },
 }) {
-  const { date, time } = formatExamDate(exam.examDate);
   const [ready, setReady] = useState(false);
   const totalScore = exam.totalScore || exam.subjects.length * 100;
-
-  function graceEndsAt(examDate) {
-    const dt = new Date(examDate);
-
-    dt.setMinutes(dt.getMinutes() + 30);
-
-    const pad = (n) => String(n).padStart(2, '0');
-
-    return `${dt.getFullYear()}-${pad(dt.getMonth() + 1)}-${pad(dt.getDate())}T${pad(dt.getHours())}:${pad(dt.getMinutes())}`;
-  }
 
   return (
     <div className="examdetail-overlay" role="dialog" aria-modal="true">
@@ -123,13 +92,7 @@ export function ExamDetail({
           <div className="examdetail-header__text">
             <span className="examdetail-eyebrow">Scheduled Exam</span>
             <h2 className="examdetail-title">{exam.name}</h2>
-            <div className="examdetail-datetime">
-              <i className="fa-regular fa-calendar" aria-hidden="true"></i>
-              <span>{date}</span>
-              <span className="examdetail-dot" aria-hidden="true"></span>
-              <i className="fa-regular fa-clock" aria-hidden="true"></i>
-              <span>{time}</span>
-            </div>
+            <DateTime iso={exam.examDate} />
           </div>
           <button className="examdetail-close" onClick={onClose} aria-label="Close">
             <i className="fa-solid fa-xmark" aria-hidden="true"></i>

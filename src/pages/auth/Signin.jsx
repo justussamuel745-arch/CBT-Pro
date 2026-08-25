@@ -4,6 +4,7 @@ import { Ic } from '../../scripts/utilis/Ic'
 import { GoogleAuth } from '../../components/GoogleAuth';
 import { authStore } from '../../stores/authStore';
 import { userStore } from '../../stores/userStore';
+import { scheduledExamStore } from '../../stores/scheduledExamStore';
 import './Signin.css';
 
 // ─────────────────────────────────────────────────────────────
@@ -156,7 +157,9 @@ function validate(email, password) {
 // ─────────────────────────────────────────────────────────────
 function SigninInner() {
   const signin = authStore(state => state.signin)
-  const { fetchUserInfo, fetchUserHistory } = userStore(state => state)
+  const fetchUserInfo = userStore(state => state.fetchUserInfo)
+  const fetchUserHistory = userStore(state => state.fetchUserHistory)
+  const getDashboardInfo = scheduledExamStore(state => state.getDashboardInfo)
   const navigate = useNavigate()
   const toast = useToast();
   const [email, setEmail] = useState("");
@@ -192,6 +195,7 @@ function SigninInner() {
         fetchUserInfo(),
         fetchUserHistory()
       ])
+      await getDashboardInfo().catch(() => {})
       
       setModal({
         type: "success",

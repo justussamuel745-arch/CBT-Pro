@@ -1,54 +1,33 @@
 import { useState, memo, useEffect } from 'react';
 import { getImage } from '../hooks/services/indexedDB/images';
-import { url } from '../scripts/utilis/url';
 import './Image.css';
 
 
-export const Image = memo(function Image({ id, ext }) {
-  const [imgUrl, setImgUrl] = useState('')
-  const imgExt = ext 
-  ? ext.slice(-3)
-  : '.jpg'
+export const Image = memo(function Image({ imageUrl }) {
+  const [offlineImgUrl, setOfflineImageUrl] = useState('')
   
   useEffect(() => {
-    img()
-  },[id])
+    if (navigator.onLine) return
+    getImage(imageUrl).then((image) => {
+      setOfflineImageUrl(URL.createObjectURL(image.blob))
+    })
+  },[imageUrl, setOfflineImageUrl])
   
-  async function img() {
-    const path = `images/questions/${id}.${imgExt}`
-    const image = await getImage(`${url}/${path}`)
-    if (!image) {
-      setImgUrl('')
-      return
-    }
-    
-    const imageUrl = URL.createObjectURL(image.blob);
-    setImgUrl(imageUrl)
-  }
 
   if (!navigator.onLine) {
     return (
-      <>
-        {
-          imgUrl && (
-            <img
-              src={imgUrl}
-              className="question-image"
-              alt="Question image"
-            /> 
-          )
-        }
-      </>
+      <img
+        src={offlineImgUrl}
+        className="question-image"
+        alt="Question image"
+      /> 
     )
   }
 
   return (
     <img
-      src={`${url}/images/questions/${id}.${imgExt}`}
+      src={imageUrl}
       className="question-image"
-      onError={(e) => {
-        e.target.style.display = 'none';
-      }}
       alt="Question image"
     />
   )

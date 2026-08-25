@@ -1,13 +1,20 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from 'react-router';
 import "./Offline.css";
 
 export function Offline({
-  onRetry = () => {}
+  onRetry = () => {},
+  text = {
+    online: "Your connection is back. Tap below to continue where you left off.",
+    offline: "Check your Wi-Fi or mobile data and try again. Anything you'd already loaded is still available below."
+  },
+  action = "Try Again"
 }) {
   const [retrying, setRetrying] = useState(false);
   const [isOnline, setIsOnline] = useState(
     typeof navigator !== "undefined" ? navigator.onLine : true
   );
+  const navigate = useNavigate()
 
   useEffect(() => {
     function goOnline() {
@@ -29,7 +36,7 @@ export function Offline({
     // Give the icon a moment to animate before actually retrying,
     // so a near-instant failure doesn't feel like nothing happened.
     setTimeout(() => {
-      onRetry()
+      onRetry(navigate)
       setRetrying(false);
     }, 600);
   }
@@ -54,8 +61,9 @@ export function Offline({
         </h1>
         <p className="offline-text">
           {isOnline
-            ? "Your connection is back. Tap below to continue where you left off."
-            : "Check your Wi-Fi or mobile data and try again. Anything you'd already loaded is still available below."}
+            ? text.online
+            : text.offline
+          }
         </p>
 
         <button className="offline-retry" onClick={handleRetry} disabled={retrying}>
@@ -63,7 +71,7 @@ export function Offline({
             className={`fa-solid fa-arrow-rotate-right${retrying ? " offline-retry__spin" : ""}`}
             aria-hidden="true"
           ></i>
-          {retrying ? "Checking..." : "Try Again"}
+          {retrying ? "Checking..." : action}
         </button>
 
         <div className="offline-available">

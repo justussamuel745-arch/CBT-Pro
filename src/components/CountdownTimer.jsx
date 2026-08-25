@@ -1,12 +1,13 @@
 import { useState, useEffect, useRef, memo } from 'react';
 import { useNavigate } from 'react-router';
 import { practiceStore } from '../stores/practiceStore';
+import { scheduledExamStore } from '../stores/scheduledExamStore';
 import { examStore } from '../stores/examStore';
 import './CountdownTimer.css';
 
 export const CountdownTimer = memo(function CountdownTimer({ onFinish, hours, minutes, skipAutoSubmit }) {
-  const examQuestions = examStore(state => state.examQuestions);
   const calculateScore = practiceStore(state => state.calculateScore);
+  const submitScheduledExam = scheduledExamStore(state => state.submitScheduledExam)
   const navigate = useNavigate();
 
   // Computed ONCE via lazy ref init — survives re-renders, never resets
@@ -36,18 +37,20 @@ export const CountdownTimer = memo(function CountdownTimer({ onFinish, hours, mi
     }, 1000);
     return () => clearInterval(interval);
   }, []);
-
-  const examQuestionsRef = useRef(examQuestions);
-  useEffect(() => { examQuestionsRef.current = examQuestions; }, [examQuestions]);
-
+  
+  
   useEffect(() => {
     return () => {
       if (skipAutoSubmit.current) return;
       const timeTaken = countdownTime - getRemaining();
       const timeAllocated = countdownTime;
-      if (examQuestionsRef.current.length !== 0) {
-        calculateScore(examQuestionsRef.current, timeTaken, timeAllocated);
-        navigate('/practice/score');
+      if (examStore.getState().examQuestions.length !== 0) {
+        if (examStore.getState().examConfig?.examType === 'practice'){
+          calculateScore(timeTaken, timeAllocated);
+          navigate('/practice/score');
+        } else if (examStore.getState().examConfig?.examType === 'scheduled'){
+          submitScheduledExam(timeTaken, navigate)
+        }
       }
     };
   }, []);
