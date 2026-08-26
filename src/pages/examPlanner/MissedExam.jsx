@@ -126,8 +126,9 @@ function MissedExamGroup({ exams, onReschedule, onDismiss }) {
 export default function MissedExam() {
   const exams = scheduledExamStore(state => state.missedExams)
   const setUpcomingExams = scheduledExamStore(state => state.setUpcomingExams)
-
   const setMissedExams = scheduledExamStore(state => state.setMissedExams)
+
+  console.log(exams)
 
   const navigate = useNavigate()
 
@@ -143,7 +144,7 @@ export default function MissedExam() {
       }
     })
 
-  }, [setUpcomingExams, setMissedExams, navigate, exams])
+  }, [setUpcomingExams, navigate, exams])
   
   if (!exams || exams.length === 0) return null;
 

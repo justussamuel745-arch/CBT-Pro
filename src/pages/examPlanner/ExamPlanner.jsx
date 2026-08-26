@@ -161,7 +161,6 @@ function EmptyState() {
 export default function ExamPlanner() {
   const stats = scheduledExamStore(state => state.stats)
   const exams = sortByClosestDate(scheduledExamStore(state => state.upcomingExams), 'examDate')
-  const setInitialValues = scheduledExamStore(state => state.setInitialValues)
   const getDashboardInfo = scheduledExamStore(state => state.getDashboardInfo)
   const onChangeStatus = scheduledExamStore(state => state.onChangeStatus)
   const [viewExam, setViewExam] = useState(false)

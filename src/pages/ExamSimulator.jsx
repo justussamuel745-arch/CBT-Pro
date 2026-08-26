@@ -181,7 +181,6 @@ export default function ExamSimulator() {
     const currentIdxVar = 0
     setCurrentSubject(currentSubVar);
     const properties = {};
-    console.log(subjects);
     const reqData = { subjects };
     if (examType === 'scheduled'){
       reqData.shuffle = examConfig.shuffle

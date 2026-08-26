@@ -60,7 +60,16 @@ function StatCard({ icon, value, label }) {
   return (
     <div className="examhistory-statcard">
       <div className="examhistory-statcard__icon">
-        <i className={`fa-solid ${icon}`} aria-hidden="true" />
+        <i
+          className={`fa-solid ${icon}`}
+          aria-hidden="true"
+        ></i>
+      </div>
+
+      <div>
+        <div className="examhistory-statcard__value">
+          {value ?? "—"}
+        </div>
 
         <div className="examhistory-statcard__label">
           {label}
@@ -70,178 +79,6 @@ function StatCard({ icon, value, label }) {
   );
 }
 
-/* ============================================================
-   Progress Chart
-   ============================================================
-   Progress data is not currently returned by the backend.
-   The component is kept, but it safely handles an empty array.
-   ============================================================ */
-function ProgressChart({ data = [] }) {
-  const width = 600;
-  const height = 220;
-
-  const padding = {
-    top: 20,
-    right: 16,
-    bottom: 32,
-    left: 16,
-  };
-
-  const { points } = useMemo(() => {
-    if (!data.length) {
-      return { points: [] };
-    }
-
-    const scores = data.map((d) => d.score);
-
-    const max = Math.max(...scores);
-    const min = Math.min(...scores);
-
-    const range = max - min || 1;
-
-    const innerW =
-      width - padding.left - padding.right;
-
-    const innerH =
-      height - padding.top - padding.bottom;
-
-    const points = data.map((d, i) => {
-      const x =
-        padding.left +
-        (i / (data.length - 1 || 1)) * innerW;
-
-      const y =
-        padding.top +
-        innerH -
-        ((d.score - min) / range) * innerH;
-
-      return {
-        x,
-        y,
-        ...d,
-      };
-    });
-
-    return {
-      points,
-      max,
-      min,
-    };
-  }, [data]);
-
-  if (!points.length) {
-    return (
-      <div className="examhistory-empty">
-        <div className="examhistory-empty__icon">
-          <i
-            className="fa-regular fa-chart-bar"
-            aria-hidden="true"
-          ></i>
-        </div>
-
-        <h3 className="examhistory-empty__title">
-          No progress data yet
-        </h3>
-
-        <p className="examhistory-empty__text">
-          Complete exams to start tracking your score
-          progress.
-        </p>
-      </div>
-    );
-  }
-
-  const linePath = points
-    .map(
-      (p, i) =>
-        `${i === 0 ? "M" : "L"} ${p.x.toFixed(
-          1
-        )} ${p.y.toFixed(1)}`
-    )
-    .join(" ");
-
-  const areaPath = `${linePath} L ${
-    points[points.length - 1].x.toFixed(1)
-  } ${height - padding.bottom} L ${
-    points[0].x.toFixed(1)
-  } ${height - padding.bottom} Z`;
-
-  return (
-    <div className="examhistory-chart">
-      <svg
-        viewBox={`0 0 ${width} ${height}`}
-        className="examhistory-chart__svg"
-        preserveAspectRatio="none"
-      >
-        <defs>
-          <linearGradient
-            id="examhistory-area"
-            x1="0"
-            y1="0"
-            x2="0"
-            y2="1"
-          >
-            <stop
-              offset="0%"
-              stopColor="var(--primary)"
-              stopOpacity="0.22"
-            />
-
-            <stop
-              offset="100%"
-              stopColor="var(--primary)"
-              stopOpacity="0"
-            />
-          </linearGradient>
-        </defs>
-
-        <path
-          d={areaPath}
-          fill="url(#examhistory-area)"
-          stroke="none"
-        />
-
-        <path
-          d={linePath}
-          fill="none"
-          stroke="var(--primary)"
-          strokeWidth="2.5"
-        />
-
-        {points.map((p, i) => (
-          <circle
-            key={i}
-            cx={p.x}
-            cy={p.y}
-            r={
-              i === points.length - 1
-                ? 5.5
-                : 4
-            }
-            fill={
-              i === points.length - 1
-                ? "var(--primary)"
-                : "#fff"
-            }
-            stroke="var(--primary)"
-            strokeWidth="2"
-          />
-        ))}
-      </svg>
-
-      <div className="examhistory-chart__labels">
-        {points.map((p) => (
-          <span
-            key={p.label}
-            className="examhistory-chart__label"
-          >
-            {p.label}
-          </span>
-        ))}
-      </div>
-    </div>
-  );
-}
 
 /* ============================================================
    History Row
@@ -769,22 +606,6 @@ export default function ExamHistory() {
             </div>
           </section>
 
-          {/* ==================================================
-              Progress
-             ================================================== */}
-          <section className="examhistory-section">
-            <h2 className="examhistory-section__title">
-              Progress
-            </h2>
-
-            <div className="examhistory-chart-card">
-              {/*
-                No progress field is currently returned
-                by the backend, so an empty array is passed.
-              */}
-              <ProgressChart data={progress} />
-            </div>
-          </section>
 
           {/* ==================================================
               Achievements

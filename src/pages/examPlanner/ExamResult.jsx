@@ -4,32 +4,6 @@ import { formatTime } from '../../scripts/utilis/formatTime.js';
 import { DateTime } from '../../components/common/DateTime';
 import "./ExamResult.css";
 
-/* ============================================================
-   Mock data — swap for the real completed exam result payload.
-   ============================================================ */
-const MOCK_RESULT = {
-  name: "JAMB Mock 5",
-  examDate: "2026-08-02T10:00:00",
-  timeSpentSeconds: 6920,
-  numQuestions: 180,
-  score: 296,
-  targetScore: 280,
-  isPersonalBest: true,
-  subjectBreakdown: [
-    { subject: "English", score: 84, maxScore: 100, status: "excellent", note: "Great improvement!" },
-    { subject: "Mathematics", score: 76, maxScore: 100, status: "good", focusTopics: ["Mechanics", "Electricity"] },
-    {
-      subject: "Physics",
-      score: 58,
-      maxScore: 100,
-      status: "needs-work",
-      note: "Needs more work",
-      focusTopics: ["Mechanics", "Electricity", "Motion", "Simple Harmonic Motion", "Pressure", "Gas laws", "Friction", "Gravitational Force", "Atmospheric Pressure"],
-    },
-    { subject: "Chemistry", score: 78, maxScore: 100, status: "good", note: "Consistent scoring." },
-  ],
-};
-
 const STATUS_META = {
   excellent: { label: "Excellent", icon: "fa-star", tone: "great" },
   good: { label: "Good", icon: "fa-thumbs-up", tone: "good" },

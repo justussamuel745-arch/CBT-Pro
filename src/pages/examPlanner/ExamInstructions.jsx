@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Link, Navigate, useNavigate, useSearchParams } from "react-router";
 import { scheduledExamStore } from '../../stores/scheduledExamStore';
 import { examStore } from '../../stores/examStore';
@@ -77,7 +77,11 @@ export default function ExamInstructions() {
   const examId = searchParams.get('examId')
   if (!examId) return <Navigate to="/exam-planner" replace />
   const upcomingExams = scheduledExamStore(state => state.upcomingExams)
-  const exam = upcomingExams.find(e => e._id === examId)
+  
+  const exam = useMemo(() => {
+    return upcomingExams.find(e => e._id === examId)
+  },[upcomingExams])
+  
   if (!exam) <Navigate to="/exam-planner" replace />
   const totalScore = exam.subjects.length * 100
   const setExamConfig = examStore(state => state.setExamConfig)

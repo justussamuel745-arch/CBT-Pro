@@ -219,8 +219,6 @@ export default function ScheduleExam() {
   const [ scheduleSuccess, setScheduleSuccess ] = useState(null)
   const [ modal, setModal ] = useState(null)
 
-  console.log('page Loaded');
-
 
   const total = getTotalScore(form.subjects);
   const scheduleButtonRef = useRef(null)
