@@ -54,8 +54,8 @@ function DetailModal({ item, onClose }) {
           <span className="pq-modal-tag"><i className="fa-solid fa-calendar" /> {item.year}</span>
           <span className="pq-modal-tag"><i className="fa-solid fa-tag" /> {item.topic}</span>
         </div>
-        
-        <Image id={item.id} ext={item.image?.url} />
+
+        {item.image?.url && <Image imageUrl={item.image.url} />}
         { typeof item.question === 'object' && item.question?.comprehension && <h4 className="pq-modal-question" dangerouslySetInnerHTML={{__html: item.question.comprehension}}></h4> }
         <p className="pq-modal-question">
           <MarkdownContent>
