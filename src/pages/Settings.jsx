@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, memo } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { toast } from 'react-hot-toast';
+import { useNotifications } from '../context/NotificationContext';
 import { ModalCentered, ModalDestruct, CSS } from '../components/NotificationSystem';
 import { Ic } from '../scripts/utilis/Ic'
 import defaultAvatar from '../assets/images/avatar.jpg';
@@ -37,7 +38,7 @@ function passwordStrength(pw) {
     { label: 'Strong', color: '#10b981', pct: 90 },
     { label: 'Very strong', color: '#10b981', pct: 100 },
   ];
-  return levels[Math.min(score, 5)];
+  return levels[ Math.min(score, 5) ];
 }
 
 // ─────────────────────────────────────────────────────────────
@@ -74,11 +75,11 @@ function SettingsSkeleton() {
 
 const AddPasswordModal = memo(function AddPasswordModal({ userInfo, setUserInfo, modal, setModal }) {
   // Add-password modal state
-  const [newPwdOnly, setNewPwdOnly] = useState({ newPwd: '', confirmPwd: '' });
-  const [newPwdOnlyErrors, setNewPwdOnlyErrors] = useState({});
-  const [newPwdOnlyLoading, setNewPwdOnlyLoading] = useState(false);
-  const [showNewOnly, setShowNewOnly] = useState(false);
-  const [showConfirmOnly, setShowConfirmOnly] = useState(false);
+  const [ newPwdOnly, setNewPwdOnly ] = useState({ newPwd: '', confirmPwd: '' });
+  const [ newPwdOnlyErrors, setNewPwdOnlyErrors ] = useState({});
+  const [ newPwdOnlyLoading, setNewPwdOnlyLoading ] = useState(false);
+  const [ showNewOnly, setShowNewOnly ] = useState(false);
+  const [ showConfirmOnly, setShowConfirmOnly ] = useState(false);
 
   const toast = useToast()
 
@@ -257,47 +258,49 @@ export default function Settings() {
   const setProfileFields = userStore((state) => state.setProfileFields);
   const fetchUserInfo = userStore((state) => state.fetchUserInfo);
 
-  const [loadError, setLoadError] = useState(false);
-  const [avatarPreview, setAvatarPreview] = useState(null);
-  const [activeTab, setActiveTab] = useState('profile'); // profile | account | notifications | danger
+  const { handlers } = useNotifications()
 
-  const [profileErrors, setProfileErrors] = useState({});
-  const [profileLoading, setProfileLoading] = useState(false);
-  const [profileDirty, setProfileDirty] = useState(false);
+  const [ loadError, setLoadError ] = useState(false);
+  const [ avatarPreview, setAvatarPreview ] = useState(null);
+  const [ activeTab, setActiveTab ] = useState('profile'); // profile | account | notifications | danger
+
+  const [ profileErrors, setProfileErrors ] = useState({});
+  const [ profileLoading, setProfileLoading ] = useState(false);
+  const [ profileDirty, setProfileDirty ] = useState(false);
 
   // Password field state + errors
-  const [pwd, setPwd] = useState({ current: '', newPwd: '', confirmPwd: '' });
-  const [pwdErrors, setPwdErrors] = useState({});
-  const [pwdLoading, setPwdLoading] = useState(false);
-  const [showCurrent, setShowCurrent] = useState(false);
-  const [showNew, setShowNew] = useState(false);
-  const [showConfirm, setShowConfirm] = useState(false);
+  const [ pwd, setPwd ] = useState({ current: '', newPwd: '', confirmPwd: '' });
+  const [ pwdErrors, setPwdErrors ] = useState({});
+  const [ pwdLoading, setPwdLoading ] = useState(false);
+  const [ showCurrent, setShowCurrent ] = useState(false);
+  const [ showNew, setShowNew ] = useState(false);
+  const [ showConfirm, setShowConfirm ] = useState(false);
 
   // Notification preferences (local-only until backend wired)
-  const [prefs, setPrefs] = useState({
-    announcements: true,
-    reminders: true,
+  const [ prefs, setPrefs ] = useState({
+    announcement: true,
+    reminder: true,
     marketing: false,
     subscription: true,
   });
 
   // Modals
-  const [modal, setModal] = useState(null);
+  const [ modal, setModal ] = useState(null);
 
-  const [retry, setRetry] = useState(false)
+  const [ retry, setRetry ] = useState(false)
 
   const fileInputRef = useRef(null);
   const profileFormRef = useRef(null);
   const isMounted = useRef(false)
 
-  
+
   /*===== Render Modal Style ======*/
   useEffect(() => {
     const el = document.createElement("style");
     el.id = "__ns_styles";
-    el.textContent = CSS[0];
+    el.textContent = CSS[ 0 ];
     document.head.appendChild(el);
-    return () =>  {
+    return () => {
       toast.dismiss()
       document.getElementById("__ns_styles")?.remove();
     }
@@ -320,18 +323,18 @@ export default function Settings() {
         }
       })
     }
-    setPrefs(prev => userInfo ? ( userInfo?.notificationSettings ?? prev ) : prev)
+    setPrefs(prev => userInfo ? (userInfo?.notificationSettings ?? prev) : prev)
     return () => { cancelled = true; toast.dismiss() };
-  }, [setPrefs, userInfo, setLoadError, retry]);
+  }, [ setPrefs, userInfo, setLoadError, retry ]);
 
   // ── Cleanup object URLs ──
   useEffect(() => {
     return () => { if (avatarPreview) URL.revokeObjectURL(avatarPreview); };
-  }, [avatarPreview]);
+  }, [ avatarPreview ]);
 
   // ── Avatar change with validation ──
   function handleAvatarChange(e) {
-    const file = e.target.files[0];
+    const file = e.target.files[ 0 ];
     if (!file) return;
 
     if (!file.type.startsWith('image/')) {
@@ -352,10 +355,10 @@ export default function Settings() {
 
   // ── Profile field setter ──
   function setProfileField(key, value) {
-    setProfileFields(prev => ({ ...prev, [key]: value }));
+    setProfileFields(prev => ({ ...prev, [ key ]: value }));
     setProfileDirty(true);
-    if (profileErrors[key]) {
-      setProfileErrors(prev => {const n = { ...prev }; delete n[key]; return n});
+    if (profileErrors[ key ]) {
+      setProfileErrors(prev => { const n = { ...prev }; delete n[ key ]; return n });
     }
   }
 
@@ -397,8 +400,7 @@ export default function Settings() {
     if (!isMounted.current) {
       isMounted.current = true
     } else {
-      console.log('first mount')
-      const saveEncrypted = { ...userInfo,  accessToken: token};
+      const saveEncrypted = { ...userInfo, accessToken: token };
       delete saveEncrypted.blob;
       indexDbSave({
         info: encrypt(saveEncrypted),
@@ -406,7 +408,7 @@ export default function Settings() {
         id: 'current-user',
       });
     }
-  }, [userInfo, token])
+  }, [ userInfo, token ])
 
   // ── Update profile ──
   async function updateProfile(e) {
@@ -431,7 +433,7 @@ export default function Settings() {
         body: formData,
       });
       const data = decrypt(res.body.data)
-      
+
       let blob;
       if (data.profileUrl !== userInfo.profileUrl) {
         try {
@@ -443,10 +445,10 @@ export default function Settings() {
           console.error('Error:', err);
           toast.error('Failed to load profile pic');
         }
-        
+
       }
-      
-      if (data?.pendingClientUpdates && data?.pendingClientUpdates.length >= 1){
+
+      if (data?.pendingClientUpdates && data?.pendingClientUpdates.length >= 1) {
         await saveQuestions(data.pendingClientUpdates.map(q => (
           {
             ...q,
@@ -469,7 +471,7 @@ export default function Settings() {
       } else if (err.status >= 500) {
         toast.error('Something went wrong. Try again later.');
       } else {
-        toast.error(err.error || 'Update Failed' );
+        toast.error(err.error || 'Update Failed');
       }
     } finally {
       setProfileLoading(false);
@@ -492,9 +494,9 @@ export default function Settings() {
 
   // ── Password field setter ──
   function setPwdField(key, value) {
-    setPwd(p => ({ ...p, [key]: value }));
-    if (pwdErrors[key]) {
-      setPwdErrors(p => { const n = { ...p }; delete n[key]; return n; });
+    setPwd(p => ({ ...p, [ key ]: value }));
+    if (pwdErrors[ key ]) {
+      setPwdErrors(p => { const n = { ...p }; delete n[ key ]; return n; });
     }
   }
 
@@ -556,26 +558,36 @@ export default function Settings() {
   }
 
   // ── Notification preference toggle ──
-  function togglePref(key) {
-    const next = { ...prefs, [key]: !prefs[key] }
-    toast.promise(
-      request.auth('/api/notifications/settings/', { method: 'PATCH', body: JSON.stringify(next) }),
-      {
-        loading: 'Updating...',
-        success: 'Preference saved',
-        error: (err) => {
-          if (!err.status){
-            return 'Check your internet connection and try again.'
-          } else if (err.status >= 500) {
-            return 'Something went wrong. Try again later.'
-          } else {
-            return 'Failed'
-          }
-        }
-      }
-    ).then(() => {
-      setPrefs(next)
-    })
+  async function togglePref(key) {
+    const next = { ...prefs, [ key ]: !prefs[ key ] }
+    const toastId = toast.loading('Updating...');
+
+    try {
+      await handlers.updateNotificationSettings(next);
+
+      toast.success('Preference saved', {
+        id: toastId,
+        duration: 2000
+      });
+      setPrefs(next);
+      // Give the toast time to render before updating user Info
+      await new Promise((resolve) => setTimeout(resolve, 1000))
+
+      setUserInfo(prev => ({
+        ...prev,
+        notificationSettings: next
+      }));
+
+    } catch (err) {
+      toast.error(
+        !err.status
+          ? 'Check your internet connection and try again.'
+          : err.status >= 500
+            ? 'Something went wrong. Try again later.'
+            : err.error || 'Failed to update preferences.',
+        { id: toastId }
+      );
+    }
   }
 
   // ── Logout ──
@@ -608,10 +620,10 @@ export default function Settings() {
     } else {
       return <LoadError onRetry={() => {
         setRetry(prev => !prev)
-      }}/>
+      }} />
     }
   }
-  
+
 
   return (
     <>
@@ -1017,8 +1029,8 @@ export default function Settings() {
                     <label className="settings-switch">
                       <input
                         type="checkbox"
-                        checked={prefs.announcements}
-                        onChange={() => togglePref("announcements")}
+                        checked={prefs.announcement}
+                        onChange={() => togglePref("announcement")}
                       />
                       <span className="settings-switch-track" />
                     </label>
@@ -1037,8 +1049,8 @@ export default function Settings() {
                     <label className="settings-switch">
                       <input
                         type="checkbox"
-                        checked={prefs.reminders}
-                        onChange={() => togglePref("reminders")}
+                        checked={prefs.reminder}
+                        onChange={() => togglePref("reminder")}
                       />
                       <span className="settings-switch-track" />
                     </label>

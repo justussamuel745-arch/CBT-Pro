@@ -159,7 +159,7 @@ export default function Notifications() {
     
     if (navigator.onLine) {
       try {
-        await handlers.markRead(id);
+        await handlers.markAsRead(id);
       } catch {
         await addQueueAction({ userId, notificationId: id, action: "MARK_READ" });
       }

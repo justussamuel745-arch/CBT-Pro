@@ -4,15 +4,17 @@ import {
   useEffect,
   useState,
   useCallback,
+  useMemo
 } from "react";
 
-import * as notificationService from "../services/notificationService";
+import * as notificationServiceHandlers from "../services/notificationService";
 import socketService from "../services/socketService";
 
 import {
   saveNotification,
   saveNotifications,
   getLocalNotifications,
+  clearLocalNotifications,
   getLocalUnreadCount,
 } from "../hooks/services/indexedDB/notifications";
 
@@ -25,7 +27,6 @@ import {
   processQueue
 } from "../hooks/services/indexedDB/notificationQueue";
 
-import { useNotificationHandlers } from '../services/useNotificationHandlers';
 
 import { authStore } from '../stores/authStore';
 import { userStore } from '../stores/userStore';
@@ -45,7 +46,6 @@ export const NotificationProvider = ({ children }) => {
   const token = authStore(state => state.token)
   const setToken = authStore(state => state.setToken)
   const userInfo = userStore(state => state.userInfo)
-  const handlers = useNotificationHandlers();
 
   // =======================
   // 2. LOCAL STATE
@@ -56,6 +56,10 @@ export const NotificationProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   
   const pwa = usePWAInstall()
+
+  const handlers = useMemo(() => {
+    return notificationServiceHandlers
+  },[])
 
   // =======================
   // 3. HELPER: UPDATE STATE FROM LIST
@@ -88,7 +92,7 @@ export const NotificationProvider = ({ children }) => {
    */
   const syncNotifications = useCallback(async (token) => {
     try {
-      const data = await notificationService.getNotifications(token, setToken);
+      const data = await handlers.getNotifications();
       const serverNotifications = data.notifications || [];
       const offline = await getOfflineNotifications(userInfo?._id)
 
@@ -131,10 +135,28 @@ export const NotificationProvider = ({ children }) => {
       await processQueue(userInfo._id, handlers);
     };
 
-    // Run immediately if already online
-    if (navigator.onLine) {
-      syncNotificationQueue();
-    }
+    
+   /**
+   * Initialize notifications on login
+   * 1. Load from IndexedDB first for speed/offline
+   * 2. Then sync with server if online
+   **/
+
+    const initialize = async () => {
+      setLoading(true);
+      // Step 1: Load cached data
+      await loadLocalNotifications(userInfo._id);
+      // Step 2: Sync with server if online
+      if (navigator.onLine) {
+        // sync offline queue before getting the notifications
+        await syncNotificationQueue().catch(() => {})
+        await syncNotifications(token);
+      }
+      setLoading(false);
+    };
+
+    initialize()
+
 
     // Also run when browser goes back online
     window.addEventListener("online", syncNotificationQueue);
@@ -143,30 +165,9 @@ export const NotificationProvider = ({ children }) => {
     };
   }, [token, userInfo, handlers]);
 
+  
   /**
-   * Effect 2: Initialize notifications on login
-   * 1. Load from IndexedDB first for speed/offline
-   * 2. Then sync with server if online
-   */
-  useEffect(() => {
-    if (!token ||!userInfo?._id) return;
-
-    const initialize = async () => {
-      setLoading(true);
-      // Step 1: Load cached data
-      await loadLocalNotifications(userInfo._id);
-      // Step 2: Sync with server if online
-      if (navigator.onLine) {
-        await syncNotifications(token);
-      }
-      setLoading(false);
-    };
-
-    initialize();
-  }, [token, userInfo, loadLocalNotifications, syncNotifications]);
-
-  /**
-   * Effect 3: Connect to Socket.IO for real-time notifications
+   * Effect 2: Connect to Socket.IO for real-time notifications
    * Listens for "notification" events and cleans up on unmount/logout
    */
   useEffect(() => {
@@ -182,7 +183,7 @@ export const NotificationProvider = ({ children }) => {
   }, [token, userInfo, handleNewNotification]);
 
   /**
-   * Effect 4: Clear state on logout
+   * Effect 3: Clear state on logout
    * Resets everything when token is removed
    */
   useEffect(() => {

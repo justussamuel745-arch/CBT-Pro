@@ -204,7 +204,7 @@ export const processQueue = async (
 
       switch (action.action) {
         case "MARK_READ":
-          await handlers.markRead(
+          await handlers.markAsRead(
             action.notificationId
           );
           break;

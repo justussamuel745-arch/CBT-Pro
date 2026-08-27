@@ -1,8 +1,9 @@
 import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import { Link, useSearchParams, useLocation } from "react-router";
 import { toast } from 'react-hot-toast';
-import scheduleSuccess from './ScheduleSuccess';
+import ScheduleSuccess from './ScheduleSuccess';
 import { scheduledExamStore } from '../../stores/scheduledExamStore';
+import { userStore } from '../../stores/userStore';
 import { subjectsData } from '../../scripts/data/subjectsData';
 import { formatName } from '../../scripts/utilis/formatName';
 import { requestNotificationPermission } from '../../services/offlineNotificationService';
@@ -152,6 +153,11 @@ function validate(form, isEdit) {
     const lead = REMINDER_LEAD_MS[ form.reminder ] ?? 0;
     if (examDateTime.getTime() - Date.now() < lead) {
       errors.reminder = "Exam is too soon for this reminder — pick a shorter lead time.";
+    }
+
+    const { notificationSettings } = userStore.getState().userInfo
+    if (!notificationSettings.reminder) {
+      errors.reminder = "Enable reminders in your notification settings."
     }
   }
 
@@ -338,7 +344,7 @@ export default function ScheduleExam() {
     })
   }
 
-  function onReschedule() {
+  async function onReschedule() {
     const examDate = `${form.date}T${form.time}`
     const updatedForm = {
       ...form,
@@ -346,30 +352,36 @@ export default function ScheduleExam() {
     }
     delete updatedForm.date
     delete updatedForm.time
-    toast.promise((async () => {
-      await onChangeStatus(form._id, 'scheduled')
-      await saveEditedSchedule(updatedForm, '?action=reschedule')
-    })(), {
-      loading: 'Rescheduling...',
-      success: 'Rescheduled',
-      error: false
-    }).then(() => {
-      setMissedExams(prev => prev.filter(e => e._id !== form._id))
-    }).catch((err) => {
-      if (!err.status) {
-        setServerError('Couldn\'t reach the server. Check your internet connection and try again')
-      } else if (err.status >= 500) {
-        setServerError('Something went wrong.')
-      } else {
-        setServerError(err.error)
+    const toastId = toast.loading('Rescheduling...');
+
+    try {
+      await onChangeStatus(form._id, 'scheduled');
+      await saveEditedSchedule(updatedForm, '?action=reschedule');
+
+      toast.success('Rescheduled', { id: toastId });
+
+      setMissedExams(prev =>
+        prev.filter(e => e._id !== form._id)
+      );
+
+    } catch (err) {
+      toast.error(
+        !err.status
+          ? "Couldn't reach the server. Check your internet connection and try again"
+          : err.status >= 500
+            ? 'Something went wrong.'
+            : err.error || 'Rescheduling failed',
+        { id: toastId }
+      );
+
+    } finally {
+      const btnElement = scheduleButtonRef.current;
+
+      if (btnElement) {
+        btnElement.style.opacity = '1';
+        btnElement.innerHTML = `${isEdit ? 'Save Changes' : 'Schedule Exam'}`;
       }
-    }).finally(() => {
-      const btnElement = scheduleButtonRef.current
-      btnElement.style.opacity = '1'
-      btnElement.innerHTML = `
-        ${isEdit ? 'Save Changes' : 'Schedule Exam'}
-      `
-    })
+    }
 
   }
 

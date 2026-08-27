@@ -1,6 +1,7 @@
 import { useEffect, memo } from 'react';
 import { scheduledExamStore } from '../stores/scheduledExamStore';
 import { authStore } from '../stores/authStore';
+import { userStore } from '../stores/userStore';
 import { getOfflineNotification, addOfflineNotification } from '../hooks/services/indexedDB/offlineNotifications';
 import { showNotification } from '../services/offlineNotificationService';
 import { useNotifications } from '../context/NotificationContext';
@@ -39,7 +40,6 @@ const updateReminderStatus = (examId) => {
 }
 
 const notificationListener = async (setNotifications, setUnreadCount) => {
-  console.log('listening')
   const now = new Date().toISOString();
   let upcomingExams = scheduledExamStore.getState().upcomingExams ?? []
   upcomingExams = upcomingExams.filter(exam =>
@@ -102,9 +102,12 @@ const productionTest = () => {
 export const OfflineNotifier = memo(function OfflineNotifier() {
   const { setNotifications, setUnreadCount } = useNotifications();
   const token = authStore(state => state.token)
+  const userInfo = userStore(state => state.userInfo)
   const upcomingExams = scheduledExamStore(state => state.upcomingExams)
+
+
   useEffect(() => {
-    if (!token) return
+    if (!token || !userInfo || !userInfo?.notificationSettings?.reminder) return
     productionTest()
     
     // start after 1 minute
@@ -114,23 +117,7 @@ export const OfflineNotifier = memo(function OfflineNotifier() {
     notificationListener(setNotifications, setUnreadCount)
     
     return () => clearInterval(intervalId);
-  }, [token, upcomingExams])
+  }, [token, userInfo, setNotifications, setUnreadCount])
   
   return null
 })
-
-/* action: ""
-createdAt: "2026-08-20T15:03:26.102Z"
-deletedAt: null
-icon: null
-isRead: true
-link: "/"
-message: "Your exam "JAMB Mock 3" has been successfully scheduled for Friday, 21 August 2026 at 16:29. You will be tested on English, Mathematics, Physics, Economics, with a duration of 120 minutes and a target score of 200/400. The difficulty is set to Mixed. ↵↵To prepare, review your notes and focus on the topics you find most difficult. Make sure you have a stable internet connection before the exam begins, and try to start on time so you have the full exam duration available. After completing the exam, review your result and use the performance breakdown to identify areas that need more practice. Good luck with your preparation!"
-readAt: "2026-08-20T15:04:26.361Z"
-title: "Exam Scheduled Successfully"
-type: "exam"
-updatedAt: "2026-08-20T15:04:26.369Z"
-userId: "6a1ac6d191c8f782938d37f9"
-__v: 0
-_id: "6a87173e055a5abc9a5b68d7" 
-*/
