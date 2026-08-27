@@ -4,7 +4,8 @@ import {
   useEffect,
   useState,
   useCallback,
-  useMemo
+  useMemo,
+  useRef
 } from "react";
 
 import * as notificationServiceHandlers from "../services/notificationService";
@@ -44,7 +45,6 @@ export const NotificationProvider = ({ children }) => {
   // 1. CONTEXT & HOOKS
   // =======================
   const token = authStore(state => state.token)
-  const setToken = authStore(state => state.setToken)
   const userInfo = userStore(state => state.userInfo)
 
   // =======================
@@ -60,6 +60,8 @@ export const NotificationProvider = ({ children }) => {
   const handlers = useMemo(() => {
     return notificationServiceHandlers
   },[])
+
+  const hasLoadNotifications = useRef(false)
 
   // =======================
   // 3. HELPER: UPDATE STATE FROM LIST
@@ -90,7 +92,7 @@ export const NotificationProvider = ({ children }) => {
    * Should run when online and after login.
    * @param {string} token
    */
-  const syncNotifications = useCallback(async (token) => {
+  const syncNotifications = useCallback(async () => {
     try {
       const data = await handlers.getNotifications();
       const serverNotifications = data.notifications || [];
@@ -103,7 +105,7 @@ export const NotificationProvider = ({ children }) => {
     } catch (error) {
       console.error("Notification sync failed:", error);
     }
-  }, [setToken, updateFromList, userInfo]);
+  }, [updateFromList, userInfo]);
 
   /**
    * Handle real-time notification from Socket.IO
@@ -150,12 +152,15 @@ export const NotificationProvider = ({ children }) => {
       if (navigator.onLine) {
         // sync offline queue before getting the notifications
         await syncNotificationQueue().catch(() => {})
-        await syncNotifications(token);
+        await syncNotifications();
+        hasLoadNotifications.current = true
       }
       setLoading(false);
     };
 
-    initialize()
+    if (!hasLoadNotifications.current){
+      initialize()
+    }
 
 
     // Also run when browser goes back online
