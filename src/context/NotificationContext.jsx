@@ -92,6 +92,7 @@ export const NotificationProvider = ({ children }) => {
       const serverNotifications = data.notifications || [];
       const offline = await getOfflineNotifications(userInfo?._id)
 
+      await clearLocalNotifications(userInfo?._id).catch(() => {})
       // Cache server data locally
       await saveNotifications(serverNotifications);
       updateFromList(serverNotifications.concat(offline));

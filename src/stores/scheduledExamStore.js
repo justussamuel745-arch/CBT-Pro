@@ -48,7 +48,7 @@ export const scheduledExamStore = create((set, get) => ({
 
   achievements: null,
 
-  submissionRequirements: null,
+  submissionRequirement: null,
 
   setUpcomingExams: (updater) => set(state => ({
     upcomingExams: typeof updater === 'function'
@@ -97,7 +97,7 @@ export const scheduledExamStore = create((set, get) => ({
           })
         })
 
-        const { invalidIds, validIds } = req.body
+        const { invalidIds, validIds } = res.body
         if (invalidIds.length > 0) {
           for (const invalidId of invalidIds) {
             await deleteOfflineNotification(invalidId)
@@ -154,8 +154,6 @@ export const scheduledExamStore = create((set, get) => ({
       upcomingExams
     })
 
-    // handle success message with toast
-
   },
 
   saveEditedSchedule: async (form, query = "") => {
@@ -167,8 +165,6 @@ export const scheduledExamStore = create((set, get) => ({
     set({
       upcomingExams
     })
-
-    // handle success message with toast
   },
 
   getExamQuestions: async (reqData) => {
@@ -176,7 +172,7 @@ export const scheduledExamStore = create((set, get) => ({
       method: 'POST',
       body: JSON.stringify({
         ...reqData,
-        subjects: reqData.subject.map(s => s.name ?? null).filter(Boolean)
+        subjects: reqData.subjects.map(s => s.name ?? null).filter(Boolean)
       })
     })
 
@@ -184,10 +180,14 @@ export const scheduledExamStore = create((set, get) => ({
     const questions = decrypt(res.body.questions)
 
     set({
-      submissionRequirements: {
+      submissionRequirement: {
         examId,
         startedAt: new Date().toISOString(),
       }
+    })
+
+    examStore.setState({
+      examQuestions: questions
     })
 
     return questions
@@ -198,6 +198,8 @@ export const scheduledExamStore = create((set, get) => ({
     const completedAt = new Date().toISOString()
     const answers = examStore.getState().answers
     const questions = examStore.getState().examQuestions
+
+    const retrySubmission = get().retrySubmission
 
     const submissionRequirement = {
       examId,
@@ -212,12 +214,14 @@ export const scheduledExamStore = create((set, get) => ({
         body: JSON.stringify(submissionRequirement)
       })
       const { attempt: result } = res.body
-      navigate('', {
+      navigate('/exam-planner/result', {
         state: {
           result
         }
       })
       set({
+        stats: result.stats,
+        upcomingExams: result.upcomingExams,
         submissionRequirement: null
       })
     } catch (error) {
@@ -251,14 +255,14 @@ export const scheduledExamStore = create((set, get) => ({
     }
   },
 
-  retrySubmission: async () => {
+  retrySubmission: async (navigate) => {
     try {
       const res = await request.auth('/api/exam-planner/exam/submit', {
         method: 'POST',
         body: JSON.stringify(submissionRequirement)
       })
       const { attempt: result } = res.body
-      navigate('', {
+      navigate('/exam-planner/result', {
         state: {
           result
         }

@@ -128,8 +128,6 @@ export default function MissedExam() {
   const setUpcomingExams = scheduledExamStore(state => state.setUpcomingExams)
   const setMissedExams = scheduledExamStore(state => state.setMissedExams)
 
-  console.log(exams)
-
   const navigate = useNavigate()
 
   const onDismiss = useCallback((examId) => {

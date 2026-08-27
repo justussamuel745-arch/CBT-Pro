@@ -1,10 +1,8 @@
 import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import { Link, useSearchParams, useLocation } from "react-router";
-import ScheduleSuccess from './ScheduleSuccess';
-import { Offline } from '../../components/Offline';
-import { Loading } from '../../components/Loading';
+import { toast } from 'react-hot-toast';
+import scheduleSuccess from './ScheduleSuccess';
 import { scheduledExamStore } from '../../stores/scheduledExamStore';
-import { ModalCentered, CSS } from '../../components/NotificationSystem';
 import { subjectsData } from '../../scripts/data/subjectsData';
 import { formatName } from '../../scripts/utilis/formatName';
 import { requestNotificationPermission } from '../../services/offlineNotificationService';
@@ -223,19 +221,6 @@ export default function ScheduleExam() {
   const total = getTotalScore(form.subjects);
   const scheduleButtonRef = useRef(null)
 
-  useEffect(() => {
-    const existing = document.getElementById('__ns_styles');
-    if (existing) return;
-    const el = document.createElement('style');
-    el.id = '__ns_styles';
-    el.textContent = CSS[ 0 ];
-    document.head.appendChild(el);
-
-    return () => {
-      document.getElementById('__ns_styles')?.remove();
-    }
-  }, []);
-
   const isFormComplete =
     form.name.trim() !== "" &&
     form.date !== "" &&
@@ -277,43 +262,54 @@ export default function ScheduleExam() {
   }
 
   async function onSave() {
-    const examDate = `${form.date}T${form.time}`
+    const examDate = `${form.date}T${form.time}`;
+
     const updatedForm = {
       ...form,
-      examDate
-    }
-    delete updatedForm.date
-    delete updatedForm.time
+      examDate,
+    };
+
+    delete updatedForm.date;
+    delete updatedForm.time;
+
     try {
       if (import.meta.env.VITE_ENV !== 'development') {
-        const allowed = await requestNotificationPermission().catch(() => { });
+        const allowed = await requestNotificationPermission().catch(() => false);
 
         console.log('Allowed:', allowed);
-        console.log(
-          'Permission:',
-          Notification.permission
-        );
+        console.log('Permission:', Notification.permission);
       }
-      await saveScheduledExam(updatedForm);
-      setScheduleSuccess(updatedForm)
+
+      await toast.promise(saveScheduledExam(updatedForm), {
+        loading: 'Scheduling Exam...',
+        success: 'Exam Scheduled.',
+        error: false,
+      });
+
+      setScheduleSuccess(updatedForm);
     } catch (err) {
-      if (!err.status && !navigator.onLine) {
-        setIsOffline(true)
+      if (!err?.status) {
+        setServerError(
+          'Couldn\'t reach the server. Check your internet connection and try again'
+        );
       } else if (err.status >= 500) {
-        setServerError('Something went wrong.')
+        setServerError('Something went wrong.');
       } else {
-        setServerError(err.message)
+        setServerError(err.error);
       }
     } finally {
-      const btnElement = scheduleButtonRef.current
-      btnElement.style.opacity = '1'
-      btnElement.innerHTML = `
+      const btnElement = scheduleButtonRef.current;
+
+      if (btnElement) {
+        btnElement.style.opacity = '1';
+        btnElement.innerHTML = `
         ${isEdit ? 'Save Changes' : 'Schedule Exam'}
-      `
+      `;
+      }
     }
   }
 
-  async function onSaveEdit() {
+  function onSaveEdit() {
     const examDate = `${form.date}T${form.time}`
     const updatedForm = {
       ...form,
@@ -321,51 +317,59 @@ export default function ScheduleExam() {
     }
     delete updatedForm.date
     delete updatedForm.time
-    try {
-      await saveEditedSchedule(updatedForm, '?action=edit');
-      setModal('scheduled')
-    } catch (err) {
-      if (!err.status && !navigator.onLine) {
-        setIsOffline(true)
+    toast.promise(saveEditedSchedule(updatedForm, '?action=edit'), {
+      loading: 'Editing...',
+      success: 'Edited.',
+      error: false
+    }).catch((err) => {
+      if (!err.status) {
+        setServerError('Couldn\'t reach the server. Check your internet connection and try again')
       } else if (err.status >= 500) {
         setServerError('Something went wrong.')
       } else {
         setServerError(err.error)
       }
-    } finally {
+    }).finally(() => {
       const btnElement = scheduleButtonRef.current
       btnElement.style.opacity = '1'
       btnElement.innerHTML = `
         ${isEdit ? 'Save Changes' : 'Schedule Exam'}
       `
-    }
+    })
   }
 
-  async function onReschedule() {
-    try {
-      const examDate = `${form.date}T${form.time}`
+  function onReschedule() {
+    const examDate = `${form.date}T${form.time}`
+    const updatedForm = {
+      ...form,
+      examDate
+    }
+    delete updatedForm.date
+    delete updatedForm.time
+    toast.promise((async () => {
       await onChangeStatus(form._id, 'scheduled')
-      const updatedForm = {
-        ...form,
-        examDate
-      }
-      delete updatedForm.date
-      delete updatedForm.time
-
       await saveEditedSchedule(updatedForm, '?action=reschedule')
+    })(), {
+      loading: 'Rescheduling...',
+      success: 'Rescheduled',
+      error: false
+    }).then(() => {
       setMissedExams(prev => prev.filter(e => e._id !== form._id))
-      setModal('scheduled')
-    } catch (error) {
-      console.error(error);
-      // handle error with toast
-    } finally {
+    }).catch((err) => {
+      if (!err.status) {
+        setServerError('Couldn\'t reach the server. Check your internet connection and try again')
+      } else if (err.status >= 500) {
+        setServerError('Something went wrong.')
+      } else {
+        setServerError(err.error)
+      }
+    }).finally(() => {
       const btnElement = scheduleButtonRef.current
       btnElement.style.opacity = '1'
       btnElement.innerHTML = `
         ${isEdit ? 'Save Changes' : 'Schedule Exam'}
       `
-    }
-
+    })
 
   }
 
@@ -391,7 +395,7 @@ export default function ScheduleExam() {
     btnElement.style.opacity = '0.5'
     btnElement.innerHTML = `
       <i className="fa-solid fa-calendar-check" aria-hidden="true"></i>
-      ${isEdit ? 'Editing' : 'Scheduling'} Exam. Please wait
+      ${isEdit ? 'Editing...' : 'Scheduling...'}
     `
 
     if (isEdit) {
@@ -404,369 +408,350 @@ export default function ScheduleExam() {
 
   }
 
-    // Date shows its error live; every other field waits until submit.
-    function fieldError(field) {
-      if (field === "date") return errors.date || null;
-      return submitted && errors[ field ] ? errors[ field ] : null;
-    }
-    const onRetry = useCallback(() => {
-      setIsOffline(false)
-      onSave()
-    }, [ setIsOffline ])
+  // Date shows its error live; every other field waits until submit.
+  function fieldError(field) {
+    if (field === "date") return errors.date || null;
+    return submitted && errors[ field ] ? errors[ field ] : null;
+  }
 
-    if (scheduleSuccess) return <ScheduleSuccess exam={scheduleSuccess} />
-    if (isOffline) return <Offline onRetry={onRetry} />
+  if (scheduleSuccess) return <ScheduleSuccess exam={scheduleSuccess} />
 
-    return (
-      <div className="examform-page no-select">
-        {/* Header */}
-        <header className="examform-header">
-          <Link className="examform-back" to="/exam-planner" aria-label="Go back">
-            <i className="fa-solid fa-arrow-left" aria-hidden="true"></i>
-          </Link>
-          <div>
-            <h1 className="examform-header__title">
-              {isEdit ? "Edit Exam" : "Schedule New Exam"}
-            </h1>
-            <p className="examform-header__subtitle">
-              Set up a personal mock exam and work toward a target score.
-            </p>
-          </div>
-        </header>
+  return (
+    <div className="examform-page no-select">
+      {/* Header */}
+      <header className="examform-header">
+        <Link className="examform-back" to="/exam-planner" aria-label="Go back">
+          <i className="fa-solid fa-arrow-left" aria-hidden="true"></i>
+        </Link>
+        <div>
+          <h1 className="examform-header__title">
+            {isEdit ? "Edit Exam" : "Schedule New Exam"}
+          </h1>
+          <p className="examform-header__subtitle">
+            Set up a personal mock exam and work toward a target score.
+          </p>
+        </div>
+      </header>
 
-        <form className="examform-form" onSubmit={handleSubmit} noValidate>
-          {/* Basic details */}
-          <section className="examform-section">
-            <h2 className="examform-section__title">Exam Details</h2>
+      <form className="examform-form" onSubmit={handleSubmit} noValidate>
+        {/* Basic details */}
+        <section className="examform-section">
+          <h2 className="examform-section__title">Exam Details</h2>
 
-            <div className="examform-field">
-              <label className="examform-label" htmlFor="name">
-                Exam Name
-              </label>
-              <input
-                id="name"
-                type="text"
-                className={`examform-input${fieldError("name") ? " examform-input--error" : ""}`}
-                placeholder="e.g. JAMB Mock 1"
-                value={form.name}
-                onChange={(e) => update("name", e.target.value)}
-                aria-invalid={Boolean(fieldError("name"))}
-                aria-describedby={fieldError("name") ? "name-error" : undefined}
-              />
-              {fieldError("name") && (
-                <p className="examform-error" id="name-error">
-                  <i className="fa-solid fa-circle-exclamation" aria-hidden="true"></i>
-                  {fieldError("name")}
-                </p>
-              )}
-            </div>
-
-            <div className="examform-row">
-              <div className="examform-field">
-                <label className="examform-label" htmlFor="date">
-                  Exam Date
-                </label>
-                <input
-                  id="date"
-                  type="date"
-                  className={`examform-input${fieldError("date") ? " examform-input--error" : ""}`}
-                  value={form.date}
-                  onChange={(e) => update("date", e.target.value)}
-                  aria-invalid={Boolean(fieldError("date"))}
-                  aria-describedby={fieldError("date") ? "date-error" : undefined}
-                />
-                {fieldError("date") && (
-                  <p className="examform-error" id="date-error">
-                    <i className="fa-solid fa-circle-exclamation" aria-hidden="true"></i>
-                    {fieldError("date")}
-                  </p>
-                )}
-              </div>
-
-              <div className="examform-field">
-                <label className="examform-label" htmlFor="time">
-                  Exam Time
-                </label>
-                <input
-                  id="time"
-                  type="time"
-                  className={`examform-input${fieldError("time") ? " examform-input--error" : ""}`}
-                  value={form.time}
-                  onChange={(e) => update("time", e.target.value)}
-                  aria-invalid={Boolean(fieldError("time"))}
-                  aria-describedby={fieldError("time") ? "time-error" : undefined}
-                />
-                {fieldError("time") && (
-                  <p className="examform-error" id="time-error">
-                    <i className="fa-solid fa-circle-exclamation" aria-hidden="true"></i>
-                    {fieldError("time")}
-                  </p>
-                )}
-              </div>
-            </div>
-          </section>
-
-          {/* Subjects */}
-          <section className="examform-section">
-            <h2 className="examform-section__title">Subjects</h2>
-            <p className="examform-section__hint">
-              English is compulsory. Select any other subjects to include.
-            </p>
-
-            <div
-              id="subjectsGroup"
-              className={`examform-subjects${fieldError("subjects") ? " examform-subjects--error" : ""
-                }`}
-            >
-              {SUBJECTS.map((subject) => {
-                const checked = form.subjects.includes(subject);
-                const isCompulsory = subject === COMPULSORY_SUBJECT;
-                return (
-                  <label
-                    key={subject}
-                    className={`examform-subject${checked ? " examform-subject--checked" : ""}${isCompulsory ? " examform-subject--locked" : ""
-                      }`}
-                  >
-                    <input
-                      type="checkbox"
-                      checked={checked}
-                      disabled={isCompulsory}
-                      onChange={() => toggleSubject(subject)}
-                    />
-                    <span className="examform-subject__row">
-                      <span className="examform-subject__check">
-                        <i className="fa-solid fa-check" aria-hidden="true"></i>
-                      </span>
-                      <span className="examform-subject__name">{formatName(subject)}</span>
-                    </span>
-                    {isCompulsory && (
-                      <span className="examform-subject__badge">Compulsory</span>
-                    )}
-                  </label>
-                );
-              })}
-            </div>
-            {fieldError("subjects") && (
-              <p className="examform-error">
+          <div className="examform-field">
+            <label className="examform-label" htmlFor="name">
+              Exam Name
+            </label>
+            <input
+              id="name"
+              type="text"
+              className={`examform-input${fieldError("name") ? " examform-input--error" : ""}`}
+              placeholder="e.g. JAMB Mock 1"
+              value={form.name}
+              onChange={(e) => update("name", e.target.value)}
+              aria-invalid={Boolean(fieldError("name"))}
+              aria-describedby={fieldError("name") ? "name-error" : undefined}
+            />
+            {fieldError("name") && (
+              <p className="examform-error" id="name-error">
                 <i className="fa-solid fa-circle-exclamation" aria-hidden="true"></i>
-                {fieldError("subjects")}
+                {fieldError("name")}
               </p>
             )}
-          </section>
+          </div>
 
-          {/* Exam settings */}
-          <section className="examform-section">
-            <h2 className="examform-section__title">Exam Settings</h2>
-
-            <div className="examform-row">
-              <div className="examform-field">
-                <span className="examform-label">Number of Questions</span>
-                <div className="examform-readout">
-                  <span className="examform-readout__value">{form.numQuestions}</span>
-                  <i className="fa-solid fa-lock" aria-hidden="true"></i>
-                </div>
-                <p className="examform-hint">
-                  English: 60 · Others: 40 each — set by your subject choices
-                </p>
-              </div>
-
-              <div className="examform-field">
-                <label className="examform-label" htmlFor="duration">
-                  Duration (minutes)
-                </label>
-                <input
-                  id="duration"
-                  type="number"
-                  min={LIMITS.duration.min}
-                  max={LIMITS.duration.max}
-                  className={`examform-input${fieldError("duration") ? " examform-input--error" : ""
-                    }`}
-                  value={form.duration}
-                  onChange={(e) =>
-                    update("duration", e.target.value === "" ? "" : Number(e.target.value))
-                  }
-                  aria-invalid={Boolean(fieldError("duration"))}
-                  aria-describedby={fieldError("duration") ? "duration-error" : undefined}
-                />
-                {fieldError("duration") && (
-                  <p className="examform-error" id="duration-error">
-                    <i className="fa-solid fa-circle-exclamation" aria-hidden="true"></i>
-                    {fieldError("duration")}
-                  </p>
-                )}
-              </div>
-            </div>
-
+          <div className="examform-row">
             <div className="examform-field">
-              <label className="examform-label" htmlFor="targetScore">
-                Target Score
+              <label className="examform-label" htmlFor="date">
+                Exam Date
               </label>
-              <div className="examform-target">
-                <input
-                  id="targetScore"
-                  type="number"
-                  min="0"
-                  max={total || undefined}
-                  disabled={total === 0}
-                  className={`examform-input${fieldError("targetScore") ? " examform-input--error" : ""
-                    }`}
-                  value={form.targetScore}
-                  onChange={(e) =>
-                    update("targetScore", e.target.value === "" ? "" : Number(e.target.value))
-                  }
-                  aria-invalid={Boolean(fieldError("targetScore"))}
-                  aria-describedby={fieldError("targetScore") ? "targetScore-error" : undefined}
-                />
-                <span className="examform-target__max">/ {total || "—"}</span>
-              </div>
-              {!fieldError("targetScore") && total > 0 && (
-                <p className="examform-hint">
-                  {form.subjects.length} subject{form.subjects.length > 1 ? "s" : ""} ×{" "}
-                  {MARKS_PER_SUBJECT} marks · min target {Math.ceil(total * MIN_TARGET_PERCENT)}
-                </p>
-              )}
-              {fieldError("targetScore") && (
-                <p className="examform-error" id="targetScore-error">
-                  <i className="fa-solid fa-circle-exclamation" aria-hidden="true"></i>
-                  {fieldError("targetScore")}
-                </p>
-              )}
-            </div>
-
-            <div className="examform-field">
-              <span className="examform-label">Difficulty</span>
-              <div className="examform-segmented">
-                {DIFFICULTIES.map((level) => (
-                  <button
-                    type="button"
-                    key={level}
-                    className={`examform-segmented__btn${form.difficulty === level ? " examform-segmented__btn--active" : ""
-                      }`}
-                    onClick={() => update("difficulty", level)}
-                  >
-                    {level}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div className="examform-toggle-row">
-              <div>
-                <div className="examform-toggle-row__label">Shuffle Questions</div>
-                <div className="examform-toggle-row__hint">Randomize question order</div>
-              </div>
-              <label className="examform-switch">
-                <input
-                  type="checkbox"
-                  checked={form.shuffle}
-                  onChange={(e) => update("shuffle", e.target.checked)}
-                />
-                <span className="examform-switch__track"></span>
-              </label>
-            </div>
-
-            <div className="examform-toggle-row">
-              <div>
-                <div className="examform-toggle-row__label">Auto Submit</div>
-                <div className="examform-toggle-row__hint">
-                  Always on — matches real JAMB behavior
-                </div>
-              </div>
-              <span className="examform-switch examform-switch--locked" aria-hidden="true">
-                <span className="examform-switch__track examform-switch__track--on">
-                  <i className="fa-solid fa-lock examform-switch__lock" aria-hidden="true"></i>
-                </span>
-              </span>
-            </div>
-          </section>
-
-          {/* Reminder & notes */}
-          <section className="examform-section">
-            <h2 className="examform-section__title">Reminder & Notes</h2>
-
-            <div className="examform-field">
-              <label className="examform-label" htmlFor="reminder">
-                Reminder
-              </label>
-              <select
-                id="reminder"
-                className="examform-select"
-                value={form.reminder}
-                onChange={(e) => update("reminder", e.target.value)}
-              >
-                {REMINDER_OPTIONS.map((opt) => (
-                  <option key={opt.value} value={opt.value}>
-                    {opt.label}
-                  </option>
-                ))}
-              </select>
-              {fieldError("reminder") && (
-                <p className="examform-error">
-                  <i className="fa-solid fa-circle-exclamation" aria-hidden="true"></i>
-                  {fieldError("reminder")}
-                </p>
-              )}
-            </div>
-
-            <div className="examform-field">
-              <label className="examform-label" htmlFor="notes">
-                Notes <span className="examform-optional">(Optional)</span>
-              </label>
-              <textarea
-                id="notes"
-                className="examform-textarea"
-                placeholder="Focus on speed."
-                rows={3}
-                value={form.notes}
-                onChange={(e) => update("notes", e.target.value)}
+              <input
+                id="date"
+                type="date"
+                className={`examform-input${fieldError("date") ? " examform-input--error" : ""}`}
+                value={form.date}
+                onChange={(e) => update("date", e.target.value)}
+                aria-invalid={Boolean(fieldError("date"))}
+                aria-describedby={fieldError("date") ? "date-error" : undefined}
               />
+              {fieldError("date") && (
+                <p className="examform-error" id="date-error">
+                  <i className="fa-solid fa-circle-exclamation" aria-hidden="true"></i>
+                  {fieldError("date")}
+                </p>
+              )}
             </div>
-          </section>
 
-          {/* Save */}
-          <div className="examform-footer">
-            <div className="examform-footer__inner">
-              {submitted && Object.keys(errors).length > 0 && (
+            <div className="examform-field">
+              <label className="examform-label" htmlFor="time">
+                Exam Time
+              </label>
+              <input
+                id="time"
+                type="time"
+                className={`examform-input${fieldError("time") ? " examform-input--error" : ""}`}
+                value={form.time}
+                onChange={(e) => update("time", e.target.value)}
+                aria-invalid={Boolean(fieldError("time"))}
+                aria-describedby={fieldError("time") ? "time-error" : undefined}
+              />
+              {fieldError("time") && (
+                <p className="examform-error" id="time-error">
+                  <i className="fa-solid fa-circle-exclamation" aria-hidden="true"></i>
+                  {fieldError("time")}
+                </p>
+              )}
+            </div>
+          </div>
+        </section>
+
+        {/* Subjects */}
+        <section className="examform-section">
+          <h2 className="examform-section__title">Subjects</h2>
+          <p className="examform-section__hint">
+            English is compulsory. Select any other subjects to include.
+          </p>
+
+          <div
+            id="subjectsGroup"
+            className={`examform-subjects${fieldError("subjects") ? " examform-subjects--error" : ""
+              }`}
+          >
+            {SUBJECTS.map((subject) => {
+              const checked = form.subjects.includes(subject);
+              const isCompulsory = subject === COMPULSORY_SUBJECT;
+              return (
+                <label
+                  key={subject}
+                  className={`examform-subject${checked ? " examform-subject--checked" : ""}${isCompulsory ? " examform-subject--locked" : ""
+                    }`}
+                >
+                  <input
+                    type="checkbox"
+                    checked={checked}
+                    disabled={isCompulsory}
+                    onChange={() => toggleSubject(subject)}
+                  />
+                  <span className="examform-subject__row">
+                    <span className="examform-subject__check">
+                      <i className="fa-solid fa-check" aria-hidden="true"></i>
+                    </span>
+                    <span className="examform-subject__name">{formatName(subject)}</span>
+                  </span>
+                  {isCompulsory && (
+                    <span className="examform-subject__badge">Compulsory</span>
+                  )}
+                </label>
+              );
+            })}
+          </div>
+          {fieldError("subjects") && (
+            <p className="examform-error">
+              <i className="fa-solid fa-circle-exclamation" aria-hidden="true"></i>
+              {fieldError("subjects")}
+            </p>
+          )}
+        </section>
+
+        {/* Exam settings */}
+        <section className="examform-section">
+          <h2 className="examform-section__title">Exam Settings</h2>
+
+          <div className="examform-row">
+            <div className="examform-field">
+              <span className="examform-label">Number of Questions</span>
+              <div className="examform-readout">
+                <span className="examform-readout__value">{form.numQuestions}</span>
+                <i className="fa-solid fa-lock" aria-hidden="true"></i>
+              </div>
+              <p className="examform-hint">
+                English: 60 · Others: 40 each — set by your subject choices
+              </p>
+            </div>
+
+            <div className="examform-field">
+              <label className="examform-label" htmlFor="duration">
+                Duration (minutes)
+              </label>
+              <input
+                id="duration"
+                type="number"
+                min={LIMITS.duration.min}
+                max={LIMITS.duration.max}
+                className={`examform-input${fieldError("duration") ? " examform-input--error" : ""
+                  }`}
+                value={form.duration}
+                onChange={(e) =>
+                  update("duration", e.target.value === "" ? "" : Number(e.target.value))
+                }
+                aria-invalid={Boolean(fieldError("duration"))}
+                aria-describedby={fieldError("duration") ? "duration-error" : undefined}
+              />
+              {fieldError("duration") && (
+                <p className="examform-error" id="duration-error">
+                  <i className="fa-solid fa-circle-exclamation" aria-hidden="true"></i>
+                  {fieldError("duration")}
+                </p>
+              )}
+            </div>
+          </div>
+
+          <div className="examform-field">
+            <label className="examform-label" htmlFor="targetScore">
+              Target Score
+            </label>
+            <div className="examform-target">
+              <input
+                id="targetScore"
+                type="number"
+                min="0"
+                max={total || undefined}
+                disabled={total === 0}
+                className={`examform-input${fieldError("targetScore") ? " examform-input--error" : ""
+                  }`}
+                value={form.targetScore}
+                onChange={(e) =>
+                  update("targetScore", e.target.value === "" ? "" : Number(e.target.value))
+                }
+                aria-invalid={Boolean(fieldError("targetScore"))}
+                aria-describedby={fieldError("targetScore") ? "targetScore-error" : undefined}
+              />
+              <span className="examform-target__max">/ {total || "—"}</span>
+            </div>
+            {!fieldError("targetScore") && total > 0 && (
+              <p className="examform-hint">
+                {form.subjects.length} subject{form.subjects.length > 1 ? "s" : ""} ×{" "}
+                {MARKS_PER_SUBJECT} marks · min target {Math.ceil(total * MIN_TARGET_PERCENT)}
+              </p>
+            )}
+            {fieldError("targetScore") && (
+              <p className="examform-error" id="targetScore-error">
+                <i className="fa-solid fa-circle-exclamation" aria-hidden="true"></i>
+                {fieldError("targetScore")}
+              </p>
+            )}
+          </div>
+
+          <div className="examform-field">
+            <span className="examform-label">Difficulty</span>
+            <div className="examform-segmented">
+              {DIFFICULTIES.map((level) => (
+                <button
+                  type="button"
+                  key={level}
+                  className={`examform-segmented__btn${form.difficulty === level ? " examform-segmented__btn--active" : ""
+                    }`}
+                  onClick={() => update("difficulty", level)}
+                >
+                  {level}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="examform-toggle-row">
+            <div>
+              <div className="examform-toggle-row__label">Shuffle Questions</div>
+              <div className="examform-toggle-row__hint">Randomize question order</div>
+            </div>
+            <label className="examform-switch">
+              <input
+                type="checkbox"
+                checked={form.shuffle}
+                onChange={(e) => update("shuffle", e.target.checked)}
+              />
+              <span className="examform-switch__track"></span>
+            </label>
+          </div>
+
+          <div className="examform-toggle-row">
+            <div>
+              <div className="examform-toggle-row__label">Auto Submit</div>
+              <div className="examform-toggle-row__hint">
+                Always on — matches real JAMB behavior
+              </div>
+            </div>
+            <span className="examform-switch examform-switch--locked" aria-hidden="true">
+              <span className="examform-switch__track examform-switch__track--on">
+                <i className="fa-solid fa-lock examform-switch__lock" aria-hidden="true"></i>
+              </span>
+            </span>
+          </div>
+        </section>
+
+        {/* Reminder & notes */}
+        <section className="examform-section">
+          <h2 className="examform-section__title">Reminder & Notes</h2>
+
+          <div className="examform-field">
+            <label className="examform-label" htmlFor="reminder">
+              Reminder
+            </label>
+            <select
+              id="reminder"
+              className="examform-select"
+              value={form.reminder}
+              onChange={(e) => update("reminder", e.target.value)}
+            >
+              {REMINDER_OPTIONS.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))}
+            </select>
+            {fieldError("reminder") && (
+              <p className="examform-error">
+                <i className="fa-solid fa-circle-exclamation" aria-hidden="true"></i>
+                {fieldError("reminder")}
+              </p>
+            )}
+          </div>
+
+          <div className="examform-field">
+            <label className="examform-label" htmlFor="notes">
+              Notes <span className="examform-optional">(Optional)</span>
+            </label>
+            <textarea
+              id="notes"
+              className="examform-textarea"
+              placeholder="Focus on speed."
+              rows={3}
+              value={form.notes}
+              onChange={(e) => update("notes", e.target.value)}
+            />
+          </div>
+        </section>
+
+        {/* Save */}
+        <div className="examform-footer">
+          <div className="examform-footer__inner">
+            {submitted && Object.keys(errors).length > 0 && (
+              <p className="examform-form-error">
+                <i className="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
+                Please fix the highlighted fields before saving.
+              </p>
+            )}
+            {serverError && Object.keys(errors).length === 0 &&
+              (
                 <p className="examform-form-error">
                   <i className="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
-                  Please fix the highlighted fields before saving.
+                  {serverError}
                 </p>
-              )}
-              {serverError && Object.keys(errors).length === 0 &&
-                (
-                  <p className="examform-form-error">
-                    <i className="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
-                    {serverError}
-                  </p>
-                )
-              }
-              <button
-                type="submit"
-                className="examform-save"
-                ref={scheduleButtonRef}
-                disabled={!isFormComplete || (isEdit && initialValues === form)}
-                aria-disabled={!isFormComplete}
-              >
-                <i className="fa-solid fa-calendar-check" aria-hidden="true"></i>
-                {isEdit ? 'Save Changes' : 'Schedule Exam'}
-              </button>
-            </div>
+              )
+            }
+            <button
+              type="submit"
+              className="examform-save"
+              ref={scheduleButtonRef}
+              disabled={!isFormComplete || (isEdit && initialValues === form)}
+              aria-disabled={!isFormComplete}
+            >
+              <i className="fa-solid fa-calendar-check" aria-hidden="true"></i>
+              {isEdit ? 'Save Changes' : 'Schedule Exam'}
+            </button>
           </div>
-        </form>
-
-        {modal === 'scheduled' && (
-          <div className="ns-overlay" onClick={() => { setModal(null) }}>
-            <div onClick={e => e.stopPropagation()} style={{ width: '100%', display: 'flex', justifyContent: 'center', padding: '0 1rem' }}>
-              <ModalCentered
-                type="success"
-                title="Exam Scheduled"
-                body="Your exam is all set! Check your scheduled exams to view the details, track the countdown, and get ready for the big day."
-                primaryLabel="Done"
-                onClose={() => { setModal(null) }}
-              />
-            </div>
-          </div>
-        )}
-      </div>
-    );
-  }
+        </div>
+      </form>
+    </div>
+  );
+}

@@ -39,6 +39,7 @@ const updateReminderStatus = (examId) => {
 }
 
 const notificationListener = async (setNotifications, setUnreadCount) => {
+  console.log('listening')
   const now = new Date().toISOString();
   let upcomingExams = scheduledExamStore.getState().upcomingExams ?? []
   upcomingExams = upcomingExams.filter(exam =>
@@ -70,13 +71,13 @@ const notificationListener = async (setNotifications, setUnreadCount) => {
         userId: exam.userId,
         _id: exam._id
       };
+      await addOfflineNotification(notification)
       setNotifications(prev => ([...prev, notification]))
       setUnreadCount(prev => prev + 1)
-      await addOfflineNotification(notification)
       await showNotification({
         title: notification.title,
         body: notification.body
-      })
+      }).catch(() => {})
       updateReminderStatus(exam._id)
     }
   }

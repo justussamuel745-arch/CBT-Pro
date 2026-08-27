@@ -59,33 +59,24 @@ export default function ExamSimulator() {
   const calcModalRef = useRef(null);
   
   const getQuestions = {
-    'practice': {
+    practice: {
       questions: practiceStore(state => state.getPracticeQuestions),
-      errorLogic(err){
-        setModal({
-          type: 'insufficient_question',
-          body: err.message
-        })
+      errorLogic: (err) => {
+        if (!navigator.onLine){
+          setModal({
+            type: 'insufficient_question',
+            body: err.message || 'No questions found.'
+          })
+        } else {
+          setModal('failed_to_load')
+        }
       }
     },
-    'scheduled': {
+    scheduled: {
       questions: scheduledExamStore(state => state.getExamQuestions),
       errorLogic(err){
         console.error('Error:', err.message);
-        function onRetry() {
-          setOffline(null)
-          setLoadError(null)
-          setRefresh(prev => !prev)
-        }
-        if (!navigator.onLine || !err.status){
-          setOffline({
-            onRetry,
-          })
-        } else {
-          setLoadError({
-            onRetry
-          })
-        }
+        setModal('failed_to_load')
       }
     }
   }
@@ -110,7 +101,7 @@ export default function ExamSimulator() {
     document.addEventListener('cut', prevent);
     document.addEventListener('keydown', preventKeys);
     
-    /*===== Render Notification Style ======*/
+    /*===== Render Modal Style ======*/
     const el = document.createElement("style");
     el.id = "__ns_styles";
     el.textContent = CSS[0];
@@ -658,6 +649,25 @@ export default function ExamSimulator() {
             </div>
           </div>
         )}
+        {modal === 'failed_to_load' && (
+          <div className="ns-overlay" onClick={closeModal}>
+            <div onClick={e => e.stopPropagation()} style={{ width: '100%', display: 'flex', justifyContent: 'center', padding: '0 1rem' }}>
+              <ModalStripe
+                type="error"
+                title="Failed to Load Questions"
+                body="We were unable to load the exam questions due to a data loading error. Your session is safe. Click Reload to fetch questions again. If this continues, check your connection and try again."
+                primaryLabel="Reload"
+                onPrimary={() => {
+                  setRefresh(prev => !prev)
+                }}
+                onClose={() => {
+                  goBack()
+                  closeModal()
+                }}
+              />
+            </div>
+          </div>
+        )}
         { typeof modal === 'object' && modal?.type === 'insufficient_question' && (
           <div className="ns-overlay" onClick={closeModal}>
             <div onClick={e => e.stopPropagation()} style={{ width: '100%', display: 'flex', justifyContent: 'center', padding: '0 1rem' }}>
@@ -667,7 +677,7 @@ export default function ExamSimulator() {
                 body={modal.body}
                 primaryLabel="Retry"
                 onPrimary={() => {
-                  setRefresh(true)
+                  setRefresh(prev => !prev)
                 }}
                 onClose={() => {
                   skipAutoSubmit.current = true

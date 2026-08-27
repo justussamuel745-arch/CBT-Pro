@@ -1,16 +1,16 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from 'react-router';
 import { GoogleLogin } from "@react-oauth/google";
-import { ToastProvider, useToast, ModalDestruct, CSS } from '../components/NotificationSystem';
+import { toast } from 'react-hot-toast';
+import {  ModalDestruct, CSS } from '../components/NotificationSystem';
 import { deleteUser } from '../hooks/services/indexedDB/users';
 import { request } from '../scripts/utilis/request';
 import { authStore } from '../stores/authStore';
 import './Delete.css';
 
-function DeleteInner() {
+export default function Delete() {
   const userInfo = authStore(state => state.userInfo)
   const logout = authStore(state => state.logout)
-  const toast = useToast()
   const navigate = useNavigate()
 
   const isGoogleOnly = userInfo?.authProvider === 'google';
@@ -29,13 +29,16 @@ function DeleteInner() {
     ? (!googleToken || !confirmed || loading)
     : (!password.trim() || !confirmed || loading);
 
-  /*===== Render Notification Style ======*/
+  /*===== Render Modal Style ======*/
   useEffect(() => {
     const el = document.createElement("style");
     el.id = "__ns_styles";
     el.textContent = CSS[0];
     document.head.appendChild(el);
-    return () => document.getElementById("__ns_styles")?.remove();
+    return () =>  {
+      toast.dismiss()
+      document.getElementById("__ns_styles")?.remove();
+    }
   }, []);
 
   const handlePasswordChange = (e) => {
@@ -46,7 +49,7 @@ function DeleteInner() {
   const handleGoogleVerify = (credentialResponse) => {
     setGoogleToken(credentialResponse.credential);
     if (error) setError("");
-    toast.push({ variant: 'pill', type: 'success', message: 'Google account verified.' });
+    toast.error('Google account verified.');
   };
 
   const deleteUserAccount = async () => {
@@ -72,7 +75,7 @@ function DeleteInner() {
 
     } catch (err) {
       if (!err.status) {
-        toast.push({ variant: 'pill', type: 'error', message: "Couldn't connect to server." });
+        toast.error("Couldn't connect to the server.");
       } else if (err.error === 'wrong_password') {
         setError('Incorrect password.')
       } else if (err.error === 'GOOGLE_ACCOUNT_MISMATCH') {
@@ -82,9 +85,9 @@ function DeleteInner() {
         setError('Google verification failed or expired.')
         setGoogleToken(null);
       } else if (err.status >= 500) {
-        toast.push({ variant: 'pill', type: 'error', message: "Unexpected error. Try again later" });
+        toast.error("Unexpected error. Try again later");
       } else {
-        toast.push({ variant: 'pill', type: 'error', message: err.error });
+        toast.error(err.error)
       }
 
       setBtnText("Delete Account");
@@ -147,7 +150,7 @@ function DeleteInner() {
                     onSuccess={handleGoogleVerify}
                     onError={() => {
                       setError('Google verification failed. Please try again.');
-                      toast.push({ variant: 'pill', type: 'error', message: 'Google verification failed.' });
+                      toast.error('Google verification failed.');
                     }}
                     shape="pill"
                     theme="outline"
@@ -216,13 +219,5 @@ function DeleteInner() {
         )}
       </main>
     </>
-  );
-}
-
-export default function Delete() {
-  return (
-    <ToastProvider position="top-right">
-      <DeleteInner />
-    </ToastProvider>
   );
 }

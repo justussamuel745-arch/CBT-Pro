@@ -1,5 +1,6 @@
 import { useEffect, lazy, Suspense } from 'react';
 import { Routes, Route } from 'react-router';
+import { Toaster } from 'react-hot-toast';
 import { ProtectRoutes } from './routes/ProtectRoutes';
 import { ProtectExamRoutes } from './routes/ProtectExamRoutes';
 import { Loading } from './components/Loading';
@@ -63,7 +64,7 @@ function App() {
         ])
         await getDashboardInfo().catch(() => {})
       } catch (err) {
-        console.error('Error refreshing session:', err.error);
+        console.error('Error refreshing session:', err.error || err.message);
         if (err.status === 401){
           deleteUser()
         }
@@ -128,6 +129,7 @@ function App() {
         </Route>
         <Route path="*" element={<Invalid />} />
       </Routes>
+      <Toaster position="top-center" reverseOrder={false} />
       <PWAUpdateToast />
       <OfflineNotifier />
     </>

@@ -3,7 +3,7 @@ import { Link } from 'react-router';
 import { formatTime } from '../scripts/utilis/formatTime';
 import { sortByClosestDate } from '../scripts/utilis/dateTimeOp';
 import { Loading } from '../components/Loading';
-import { ToastProvider, useToast, CSS } from '../components/NotificationSystem';
+import { toast } from 'react-hot-toast';
 import { removeHistory } from '../hooks/services/indexedDB/history';
 import { request } from '../scripts/utilis/request';
 import { userStore } from '../stores/userStore';
@@ -169,41 +169,26 @@ const ExpensiveHistoryModal = memo(({ modalInfo, onClose, getScoreClass }) => {
   );
 });
 
-function HistoryInner() {
+export default function History() {
   const historyData = sortByClosestDate(userStore(state => state.historyData), 'createdAt')
   const setHistoryData = userStore(state => state.setHistoryData)
   const fetchUserHistory = userStore(state => state.fetchUserHistory)
   const [modalInfo, setModalInfo] = useState(null)
   const [disable, setDisable] = useState(null)
   const [loading, setLoading] = useState(true)
-  const toast = useToast()
 
   useEffect(() => {
     if (!historyData) {
-      (async () => {
-        try {
-          await fetchUserHistory()
-        } catch (err) {
-          console.error('Error:', err);
-          toast.push({
-            variant: 'pill',
-            type: 'error',
-            message: 'Unable to fetch your history.',
-          });
-        } finally {
+      fetchUserHistory()
+        .catch(() => {
+          toast.error('Unable to fetch your history.');
+        })
+        .finally(() => {
           setLoading(false)
-        }
-      })()
+        })
     } else {
       setLoading(false)
     }
-
-    /*========== Inject Notification styles =========*/
-    const el = document.createElement("style");
-    el.id = "__ns_styles";
-    el.textContent = CSS[0];
-    document.head.appendChild(el);
-    return () => document.getElementById("__ns_styles")?.remove();
   }, [])
 
   const getScoreClass = useCallback((percent) => {
@@ -216,25 +201,23 @@ function HistoryInner() {
     setModalInfo([historyData.find(h => h.testId === id)])
   }
 
-  async function deleteHistory(id) {
-    if (!navigator.onLine) {
-      toast.push({
-        variant: 'pill',
-        type: 'error',
-        message: 'No internet connection.',
-      });
-      return
-    }
+  function deleteHistory(id) {
     setDisable(id)
-    try {
-      await request.auth(`/api/history/${id}`, { method: 'DELETE' })
+    toast.promise(request.auth(`/api/history/${id}`, { method: 'DELETE' }), {
+      loading: 'Deleting...',
+      success: 'Deleted',
+      error: (err) => {
+        if (!err.status){
+          return "Couldn't reach the server"
+        }
+        return 'Failed'
+      }
+    }).then(() => {
       setHistoryData(prev => prev.filter(h => h.testId !== id))
-      await removeHistory(id)
-    } catch (err) {
-      console.error('Error:', err);
-    } finally {
+      removeHistory(id)
+    }).finally(() => {
       setDisable(null)
-    }
+    })
   }
 
   const bestScore = useMemo(() => {
@@ -388,13 +371,5 @@ function HistoryInner() {
         />
       )}
     </div>
-  );
-}
-
-export default function History() {
-  return (
-    <ToastProvider position="top-right">
-      <HistoryInner />
-    </ToastProvider>
   );
 }

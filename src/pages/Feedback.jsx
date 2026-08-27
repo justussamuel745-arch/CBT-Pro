@@ -1,25 +1,15 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router';
-import { ToastProvider, useToast, CSS } from '../components/NotificationSystem';
+import { toast } from 'react-hot-toast';
 import { request } from '../scripts/utilis/request';
 import './Feedback.css';
 
-function FeedbackInner(){
+export default function Feedback(){
   const [feedbackType, setFeedbackType] = useState('')
   const [feedbackComment, setFeedbackComment ] = useState('')
   const [isDisabled, setIsDisabled] = useState(false)
   const [formContainer, setFormContainer] = useState('show')
   const [error, setError] = useState(null)
-  
-  const toast = useToast()
-  
-  useEffect(() => {
-    const el = document.createElement("style");
-    el.id = "__ns_styles";
-    el.textContent = CSS[0];
-    document.head.appendChild(el);
-    return () => document.getElementById("__ns_styles")?.remove();
-  }, []);
   
   async function submitForm(event){
     event.preventDefault()
@@ -56,11 +46,13 @@ function FeedbackInner(){
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (err) {
       if (!err.status) {
-        toast.push({ variant: 'pill', type: 'error', message: "Network Error. Check your connection or try again later" });
+        toast.error("Couldn't connect to the server.");
       } else if (err.status >= 500) {
-        toast.push({ variant: 'pill', type: 'error', message: "Something went wrong. Please try again later" });
+        toast.error("Unexpected error. Try again later");
+      } else {
+        toast.error('Failed')
       }
-      console.error('Error:', err);
+    } finally {
       setIsDisabled(false)
     }
   }
@@ -73,7 +65,7 @@ function FeedbackInner(){
         <nav className="nav">
           <div className="nav-container">
             <div className="nav-content">
-              <Link to="/" className="logo">CBT Pro</Link>
+              <Link to="/" onClick={() => toast.dismiss()} className="logo">CBT Pro</Link>
               <div className="nav-links">
               </div>
             </div>
@@ -83,7 +75,7 @@ function FeedbackInner(){
         <div className="page-header">
           <div className="nav-container">
             <div className="breadcrumb">
-              <Link to="/">Dashboard</Link> / Feedback
+              <Link to="/" onClick={() => toast.dismiss()}>Dashboard</Link> / Feedback
             </div>
             <h1>Send Feedback</h1>
             <p className="page-subtitle">Help us improve CBT Pro. We read every message.</p>
@@ -155,12 +147,4 @@ function FeedbackInner(){
       </div>
     </>
   )
-}
-
-export default function Feedback() {
-  return (
-    <ToastProvider position="top-right">
-      <FeedbackInner />
-    </ToastProvider>
-  );
 }

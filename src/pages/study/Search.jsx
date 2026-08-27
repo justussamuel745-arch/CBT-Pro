@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { useSearchParams, useNavigate} from 'react-router';
+import { toast } from 'react-hot-toast';
 import { MarkdownContent } from '../../components/MarkdownContent';
 import { request } from '../../scripts/utilis/request';
-import { ToastProvider, useToast, CSS } from '../../components/NotificationSystem';
 import { Image } from '../../components/Image';
 import { formatName } from '../../scripts/utilis/formatName.js';
 import { decrypt } from '../../scripts/utilis/crypto';
@@ -94,7 +94,7 @@ function DetailModal({ item, onClose }) {
    MAIN PAGE
    ============================================================ */
 
-function SearchInner() {
+export default function Search() {
   const isActivated = authStore(state => state.isActivated)
   const [query, setQuery] = useState("");
   const [examType, setExamType] = useState("All");
@@ -104,19 +104,10 @@ function SearchInner() {
   const [results, setResults] = useState([]);
   const [selected, setSelected] = useState(null);
   
-  const toast = useToast()
-  
   const navigate = useNavigate()
   const [searchParams] = useSearchParams();
   const subject = searchParams.get('subject')
-  
-  useEffect(() => {
-    const el = document.createElement("style");
-    el.id = "__ns_styles";
-    el.textContent = CSS[0];
-    document.head.appendChild(el);
-    return () => document.getElementById("__ns_styles")?.remove();
-  }, []);
+
 
   const years = ["All", "2025", "2024", "2023", "2022", "2021", "2020", "2019", "2018", "2017", "2016", "2015", "2014", "2013", "2012", "2011", "2010", "2009", "2008", "2007", "2006", "2005", "2004", "2003", "2002", "2001", "2000", "1999", "1998", "1997", "1996", "1995", "1994", "1993", "1992", "1991", "1990", "1989", "1988", "1987", "1986", "1985", "1984", "1983"]
   async function runSearch() {
@@ -137,16 +128,8 @@ function SearchInner() {
       setResults(data);
       setHasSearched(true);
       
-    } catch (err) {
-      console.error('Error:', err);
-      if (!err.status){
-        toast.push({ variant: 'pill', type: 'error', message: "No network connection." });
-      } else if (err.status >= 500){
-        toast.push({ variant: 'pill', type: 'error', message: "Unexpected error. Try again later" });
-      } else {
-        toast.push({ variant: 'pill', type: 'error', message: err.error });
-      }
-
+    } catch {
+      toast.error('Failed to fetch')
     } finally{
       setIsSearching(false);
     }
@@ -256,13 +239,5 @@ function SearchInner() {
 
       {selected && <DetailModal item={selected} onClose={() => setSelected(null)} />}
     </div>
-  );
-}
-
-export default function Search() {
-  return (
-    <ToastProvider position="top-right">
-      <SearchInner />
-    </ToastProvider>
   );
 }

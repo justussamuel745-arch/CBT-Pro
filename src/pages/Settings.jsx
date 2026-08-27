@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, memo } from 'react';
 import { Link, useNavigate } from 'react-router';
-import { ToastProvider, useToast, ModalCentered, ModalDestruct, CSS } from '../components/NotificationSystem';
+import { toast } from 'react-hot-toast';
+import { ModalCentered, ModalDestruct, CSS } from '../components/NotificationSystem';
 import { Ic } from '../scripts/utilis/Ic'
 import defaultAvatar from '../assets/images/avatar.jpg';
 import { saveUser } from '../hooks/services/indexedDB/users';
@@ -116,11 +117,11 @@ const AddPasswordModal = memo(function AddPasswordModal({ userInfo, setUserInfo,
       setModal('password_added');
     } catch (err) {
       if (!err.status) {
-        toast.push({ type: 'error', title: 'No connection', message: 'Check your internet and try again.' });
+        toast.error('Check your internet connection and try again.');
       } else if (err.status >= 500) {
-        toast.push({ type: 'error', title: 'Server error', message: 'Something went wrong. Please try again later.' });
+        toast.error('Something went wrong. Try again later.');
       } else {
-        toast.push({ type: 'error', title: 'Could not set password', message: err.error || 'Please try again.' });
+        toast.error('Failed to set password');
       }
     } finally {
       setNewPwdOnlyLoading(false);
@@ -246,7 +247,7 @@ const AddPasswordModal = memo(function AddPasswordModal({ userInfo, setUserInfo,
 // ─────────────────────────────────────────────────────────────
 // MAIN COMPONENT (inner — uses useToast)
 // ─────────────────────────────────────────────────────────────
-function SettingsInner() {
+export default function Settings() {
   const navigate = useNavigate()
   const token = authStore(state => state.token)
   const logout = authStore(state => state.logout)
@@ -255,7 +256,6 @@ function SettingsInner() {
   const profileFields = userStore((state) => state.profileFields);
   const setProfileFields = userStore((state) => state.setProfileFields);
   const fetchUserInfo = userStore((state) => state.fetchUserInfo);
-  const toast = useToast();
 
   const [loadError, setLoadError] = useState(false);
   const [avatarPreview, setAvatarPreview] = useState(null);
@@ -284,32 +284,45 @@ function SettingsInner() {
   // Modals
   const [modal, setModal] = useState(null);
 
+  const [retry, setRetry] = useState(false)
+
   const fileInputRef = useRef(null);
   const profileFormRef = useRef(null);
   const isMounted = useRef(false)
+
+  
+  /*===== Render Modal Style ======*/
+  useEffect(() => {
+    const el = document.createElement("style");
+    el.id = "__ns_styles";
+    el.textContent = CSS[0];
+    document.head.appendChild(el);
+    return () =>  {
+      toast.dismiss()
+      document.getElementById("__ns_styles")?.remove();
+    }
+  }, []);
 
   // ── Fetch user info ──
   useEffect(() => {
     let cancelled = false;
     if (!userInfo) {
-      try {
-        fetchUserInfo()
-      } catch (err) {
+      fetchUserInfo().catch((err) => {
         if (cancelled) return;
         console.error('Error:', err);
         setLoadError(true);
         if (!err.status) {
-          // do nothing since the offline or eror page will show up
+          toast.error('Failed to load page data')
         } else if (err.status >= 500) {
-          toast.push({ type: 'error', title: 'Server error', message: 'Something went wrong. Please try again later.' });
+          toast.error('Something went wrong. Please try again later.');
         } else {
-          toast.push({ type: 'error', title: 'Could not load settings', message: err.error });
+          toast.error(err.error || 'Failed to load page data');
         }
-      }
+      })
     }
     setPrefs(prev => userInfo ? ( userInfo?.notificationSettings ?? prev ) : prev)
-    return () => { cancelled = true; };
-  }, [setPrefs, userInfo, setLoadError]);
+    return () => { cancelled = true; toast.dismiss() };
+  }, [setPrefs, userInfo, setLoadError, retry]);
 
   // ── Cleanup object URLs ──
   useEffect(() => {
@@ -322,12 +335,12 @@ function SettingsInner() {
     if (!file) return;
 
     if (!file.type.startsWith('image/')) {
-      toast.push({ type: 'error', title: 'Invalid file', message: 'Please select an image file (JPG or PNG).' });
+      toast('Please select an image file (JPG or PNG).');
       e.target.value = '';
       return;
     }
     if (file.size > 2 * 1024 * 1024) {
-      toast.push({ type: 'error', title: 'File too large', message: 'Avatar must be under 2MB.' });
+      toast('Avatar must be under 2MB.');
       e.target.value = '';
       return;
     }
@@ -384,11 +397,12 @@ function SettingsInner() {
     if (!isMounted.current) {
       isMounted.current = true
     } else {
+      console.log('first mount')
       const saveEncrypted = { ...userInfo,  accessToken: token};
       delete saveEncrypted.blob;
       indexDbSave({
         info: encrypt(saveEncrypted),
-        blob: userInfo.blob,
+        blob: userInfo?.blob,
         id: 'current-user',
       });
     }
@@ -401,11 +415,7 @@ function SettingsInner() {
     const errs = validateProfile(profileFields);
     if (Object.keys(errs).length) {
       setProfileErrors(errs);
-      toast.push({
-        type: 'error',
-        title: 'Fix the errors below',
-        message: `${Object.keys(errs).length} field${Object.keys(errs).length > 1 ? 's need' : ' needs'} your attention.`,
-      });
+      toast.error(`${Object.keys(errs).length} field${Object.keys(errs).length > 1 ? 's need' : ' needs'} your attention.`);
       return;
     }
 
@@ -431,7 +441,7 @@ function SettingsInner() {
           }
         } catch (err) {
           console.error('Error:', err);
-          toast.push({ type: 'error', title: 'Update failed', message: 'Failed to load profile pic' });
+          toast.error('Failed to load profile pic');
         }
         
       }
@@ -455,11 +465,11 @@ function SettingsInner() {
       setModal('profile_saved');
     } catch (err) {
       if (!err.status) {
-        toast.push({ type: 'error', title: 'No connection', message: 'Check your internet and try again.' });
+        toast.error('Check your internet connection and try again.');
       } else if (err.status >= 500) {
-        toast.push({ type: 'error', title: 'Server error', message: 'Something went wrong. Please try again later.' });
+        toast.error('Something went wrong. Try again later.');
       } else {
-        toast.push({ type: 'error', title: 'Update failed', message: err.error });
+        toast.error(err.error || 'Update Failed' );
       }
     } finally {
       setProfileLoading(false);
@@ -477,7 +487,7 @@ function SettingsInner() {
     setAvatarPreview(null);
     setProfileErrors({});
     setProfileDirty(false);
-    toast.push({ type: 'info', title: 'Changes discarded', message: 'Your profile has been reset.' });
+    toast('Changes discarded');
   }
 
   // ── Password field setter ──
@@ -531,13 +541,13 @@ function SettingsInner() {
     } catch (err) {
       if (err.status === 401) {
         setPwdErrors({ current: 'Incorrect current password.' });
-        toast.push({ type: 'error', title: 'Incorrect password', message: 'Your current password is wrong.' });
+        toast.error('Incorrect password');
       } else if (!err.status) {
-        toast.push({ type: 'error', title: 'No connection', message: 'Check your internet and try again.' });
+        toast.error('Check your internet connection and try again.');
       } else if (err.status >= 500) {
-        toast.push({ type: 'error', title: 'Server error', message: 'Something went wrong. Please try again later.' });
+        toast.error('Something went wrong. Try again later.');
       } else {
-        toast.push({ type: 'error', title: 'Update failed', message: err.error || 'Failed to update password.' });
+        toast.error(err.error || 'Update failed');
       }
       console.error('Error:', err);
     } finally {
@@ -546,32 +556,35 @@ function SettingsInner() {
   }
 
   // ── Notification preference toggle ──
-  async function togglePref(key) {
-    if (!navigator.onLine) return toast.push({ type: 'error', title: 'No connection', message: 'Check your internet and try again.' });
+  function togglePref(key) {
     const next = { ...prefs, [key]: !prefs[key] }
-    try {
-      await request.auth('/api/notifications/settings/', { method: 'PATCH', body: JSON.stringify(next) });
-      setPrefs(next)
-      toast.push({ type: 'success', title: 'Preference saved', message: 'Your notification settings have been updated.', duration: 2500 });
-    } catch (err) {
-      if (!err.status){
-        toast.push({ type: 'error', title: 'No connection', message: 'Check your internet and try again.' });
-      } else if (err.status >= 500) {
-        toast.push({ type: 'error', title: 'Server error', message: 'Something went wrong. Please try again later.' });
-      } else {
-        toast.push({ type: 'error', title: 'Update failed', message: 'Failed' });
+    toast.promise(
+      request.auth('/api/notifications/settings/', { method: 'PATCH', body: JSON.stringify(next) }),
+      {
+        loading: 'Updating...',
+        success: 'Preference saved',
+        error: (err) => {
+          if (!err.status){
+            return 'Check your internet connection and try again.'
+          } else if (err.status >= 500) {
+            return 'Something went wrong. Try again later.'
+          } else {
+            return 'Failed'
+          }
+        }
       }
-    }
+    ).then(() => {
+      setPrefs(next)
+    })
   }
 
   // ── Logout ──
   function logoutUser() {
-    try {
-      logout()
-    } catch (err) {
-      console.error('Fetch error:', err);
-      toast.push({ type: 'error', title: 'Logout failed', message: 'Please try again.' });
-    }
+    toast.promise(logout(), {
+      loading: 'Logging you out...',
+      success: 'Logged out',
+      error: 'Failed to logout'
+    });
   }
 
   const newPwdStrength = passwordStrength(pwd.newPwd);
@@ -589,10 +602,12 @@ function SettingsInner() {
   // ── Load error state ──
   if (!userInfo && loadError) {
     if (!navigator.onLine) {
-      return <Offline />
+      return <Offline onRetry={() => {
+        setRetry(prev => !prev)
+      }} />
     } else {
       return <LoadError onRetry={() => {
-        navigate('/settings')
+        setRetry(prev => !prev)
       }}/>
     }
   }
@@ -1160,7 +1175,7 @@ function SettingsInner() {
                     setModal(null)
                     await deleteAllQuestions()
                     await clearImages()
-                    toast.push({ type: 'success', title: 'Data Cleared', message: 'Offline data cleared' });
+                    toast.success('Offline data cleared');
                   }}
                   onClose={() => setModal(null)}
                 />
@@ -1170,26 +1185,5 @@ function SettingsInner() {
         </main>
       </div>
     </>
-  );
-}
-
-// ─────────────────────────────────────────────────────────────
-// EXPORT — wraps in ToastProvider + injects NotificationSystem CSS
-// ─────────────────────────────────────────────────────────────
-export default function Settings() {
-  useEffect(() => {
-    const existing = document.getElementById('__ns_styles');
-    if (existing) return;
-    const el = document.createElement('style');
-    el.id = '__ns_styles';
-    el.textContent = CSS[0];
-    document.head.appendChild(el);
-    return () => document.getElementById('__ns_styles')?.remove();
-  }, []);
-
-  return (
-    <ToastProvider position="top-right">
-      <SettingsInner />
-    </ToastProvider>
   );
 }

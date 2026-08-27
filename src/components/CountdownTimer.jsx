@@ -44,6 +44,7 @@ export const CountdownTimer = memo(function CountdownTimer({ onFinish, hours, mi
       if (skipAutoSubmit.current) return;
       const timeTaken = countdownTime - getRemaining();
       const timeAllocated = countdownTime;
+      
       if (examStore.getState().examQuestions.length !== 0) {
         if (examStore.getState().examConfig?.examType === 'practice'){
           calculateScore(timeTaken, timeAllocated);

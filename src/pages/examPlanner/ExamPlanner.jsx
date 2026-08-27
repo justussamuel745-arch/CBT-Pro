@@ -1,5 +1,6 @@
 import { useState, useCallback, useEffect, useRef, memo } from "react";
-import { Link, useNavigate } from 'react-router'
+import { Link, useNavigate } from 'react-router';
+import { toast } from 'react-hot-toast';
 import Countdown, { useLiveCountdown } from "./Countdown";
 import { ExamDetail } from './ExamDetail';
 import { Loading } from '../../components/Loading';
@@ -191,17 +192,17 @@ export default function ExamPlanner() {
     setLoading(false)
   }, [setLoading, setLoadError, setOffline])
   
-  async function onCancelExam(exam){
-    try {
-      await onChangeStatus(exam._id, 'cancelled')
-    } catch (err) {
-      console.error('Error:', err);
-      if (!err.status && !navigator.onLine){
-        setOffline(true)
-      } else {
-        setLoadError(true)
+  function onCancelExam(exam){
+    toast.promise(onChangeStatus(exam._id, 'cancelled'), {
+      loading: 'Cancelling. Please Wait...',
+      success: 'Exam Cancelled',
+      error: (err) => {
+        return err.error || 'Failed'
       }
-    }
+    },{
+      duration: 2500
+    })
+      
   }
 
   function onEditExam(examId) {

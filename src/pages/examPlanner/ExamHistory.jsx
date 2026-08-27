@@ -1,7 +1,10 @@
 import { useMemo, useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router";
+import { toast } from 'react-hot-toast';
 import { request } from "../../scripts/utilis/request";
 import { Loading } from "../../components/Loading";
+import { LoadError } from "../../components/LoadError";
+import { Offline } from "../../components/Offline";
 import { scheduledExamStore } from "../../stores/scheduledExamStore";
 import "./ExamHistory.css";
 
@@ -297,8 +300,9 @@ export default function ExamHistory() {
     (state) => state
   );
 
-  const [loading, setLoading] =
-    useState(true);
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false)
+  const [retry, setRetry] = useState(false)
 
   /*
    * Stores the examId currently being rescheduled.
@@ -374,6 +378,7 @@ export default function ExamHistory() {
           "Failed to load exam history:",
           err
         );
+        setLoadError(true)
       } finally {
         if (mounted) {
           setLoading(false);
@@ -386,14 +391,7 @@ export default function ExamHistory() {
     return () => {
       mounted = false;
     };
-  }, [
-    statsData,
-    history,
-    achievements,
-    setStatsData,
-    setHistory,
-    setAchievements,
-  ]);
+  }, [retry]);
 
   /* ==========================================================
      Reschedule
@@ -431,6 +429,7 @@ export default function ExamHistory() {
         }
       );
     } catch (error) {
+      toast.error("Failed to load exam for rescheduling")
       console.error(
         "Failed to load exam for rescheduling:",
         error
@@ -466,14 +465,6 @@ export default function ExamHistory() {
       (f) => f.key === filter
     )?.label;
 
-  const progress = useMemo(() => {
-    if (!history || history.length === 0 ) return []
-    return history.map(h => ({
-      label: h.name,
-      score: h.score
-    }))
-  },[history])
-
   /* ==========================================================
      Achievements
      ========================================================== */
@@ -491,6 +482,19 @@ export default function ExamHistory() {
         })
       );
     }, [achievements]);
+
+
+  if (loadError && !navigator.onLine) return <Offline onRetry={() => {
+    setLoading(true)
+    setLoadError(false)
+    setRetry(prev => !prev)
+  }}/>
+  
+  if (loadError) return <LoadError onRetry={() => {
+    setLoading(true)
+    setLoadError(false)
+    setRetry(prev => !prev)
+  }}/>
 
   /* ==========================================================
      Loading

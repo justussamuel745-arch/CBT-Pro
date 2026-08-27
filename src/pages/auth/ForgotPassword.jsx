@@ -1,26 +1,16 @@
 import { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router';
-import { ToastProvider, useToast, CSS } from '../../components/NotificationSystem';
+import { toast } from 'react-hot-toast';
 import { authStore } from '../../stores/authStore';
 import './ForgotPassword.css'
 
-function ForgotPasswordInner() {
+export function ForgotPassword() {
   const forgotPassword = authStore(state => state.forgotPassword)
-  const toast = useToast()
   const [email, setEmail] = useState('')
   const [error, setError] = useState(null)
   const [success, setSuccess] = useState(false)
   const formElementRef = useRef(null)
   const btnElementRef = useRef(null)
-  
-  /*===== Render Notification Style ======*/
-  useEffect(() => {
-    const el = document.createElement("style");
-    el.id = "__ns_styles";
-    el.textContent = CSS[0];
-    document.head.appendChild(el);
-    return () => document.getElementById("__ns_styles")?.remove();
-  }, []);
 
   async function requestNewPassword(event) {
     event.preventDefault()
@@ -39,19 +29,15 @@ function ForgotPasswordInner() {
       await forgotPassword({ email })
       const formElement = formElementRef.current
       formElement.style.display = 'none'
-      toast.push({ variant: 'pill', type: 'success', message: 'Reset link sent.' });
+      toast.success('Reset link sent')
       setSuccess(true)
     } catch (err) {
       if (!err.status){
-        toast.push({ variant: 'pill', type: 'error',   message: "Couldn't connect to server." });
-      } else if (err.status >= 500) {
-        toast.push({ variant: 'pill', type: 'error',   message: "Unexpected error. Try again later" });
-      } else if (err.status === 429){
-        toast.push({ variant: 'pill', type: 'error',   message: "Too many requests, try again later" });
+        toast.error("Couldn't connect to the server")
+      } else {
+        toast.error(err.error)
       }
-      else {
-        toast.push({ variant: 'pill', type: 'error',   message: "Request failed. Try again later" });
-      }
+
       btnElementRef.current.disabled = false
       btnElementRef.current.textContent = 'Send Reset Link'
     }
@@ -64,7 +50,7 @@ function ForgotPasswordInner() {
       <nav>
         <div className="nav-container">
           <div className="nav-content">
-            <Link to="/" className="logo">CBT Pro</Link>
+            <Link to="/" onClick={() => toast.dismiss()} className="logo">CBT Pro</Link>
           </div>
         </div>
       </nav>
@@ -116,13 +102,5 @@ function ForgotPasswordInner() {
         </div>
       </div>
     </>
-  )
-}
-
-export function ForgotPassword(){
-  return (
-    <ToastProvider position="top-right">
-      <ForgotPasswordInner />
-    </ToastProvider>
   )
 }

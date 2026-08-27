@@ -1,14 +1,13 @@
 import { useState, useEffect, useRef } from 'react';
 import { useSearchParams, Link, Navigate, useNavigate } from 'react-router';
-import { ToastProvider, useToast, CSS } from '../../components/NotificationSystem';
+import { toast } from 'react-hot-toast';
 import { Message } from '../../components/Message';
 import { authStore } from '../../stores/authStore';
 import './ResetPassword.css';
 
-function ResetPasswordInner() {
+export function ResetPassword() {
   const resetPassword = authStore(state => state.resetPassword)
   const navigate = useNavigate()
-  const toast = useToast()
   const [formData, setFormData] = useState({ password: '', confirmPassword: '' })
   const [error, setError] = useState(true)
   const [success, setSuccess] = useState(false)
@@ -18,14 +17,6 @@ function ResetPasswordInner() {
   const btnElementRef = useRef(null)
   const formElementRef = useRef(null)
   const navRef = useRef(null)
-
-  useEffect(() => {
-    const el = document.createElement("style");
-    el.id = "__ns_styles";
-    el.textContent = CSS[0];
-    document.head.appendChild(el);
-    return () => document.getElementById("__ns_styles")?.remove();
-  }, []);
 
   async function resetPwd(event) {
     event.preventDefault()
@@ -63,22 +54,13 @@ function ResetPasswordInner() {
       await resetPassword(reqData)
       formElementRef.current.style.display = 'none'
       navRef.current.style.display = 'none'
-      toast.push({
-        variant: 'card', type: 'success',
-        title: 'Password Reset!',
-        message: 'Your password has been updated successfully. You can now login with your new password.',
-        action: 'Sign in',
-        onAction: () => navigate('/signin'),
-        duration: 6000,
-      });
+      toast.success('Password Reset!')
       setSuccess(true)
     } catch (err) {
       if (!err.status) {
-        toast.push({ variant: 'pill', type: 'error', message: "Couldn't connect to server." });
-      } else if (err.status >= 500) {
-        toast.push({ variant: 'pill', type: 'error', message: "Unexpected error. Try again later" });
+        toast.error("Couldn't connect to server.");
       } else {
-        toast.push({ variant: 'pill', type: 'error', message: err.error || "Request failed. Try again later" });
+        toast.error(err.error)
       }
       btnElementRef.current.disabled = false
       btnElementRef.current.textContent = 'Reset Password'
@@ -96,7 +78,7 @@ function ResetPasswordInner() {
       <nav>
         <div className="nav-container" ref={navRef}>
           <div className="nav-content">
-            <Link to="/" className="logo">CBT Pro</Link>
+            <Link to="/" onClick={() => toast.dismiss()} className="logo">CBT Pro</Link>
           </div>
         </div>
       </nav>
@@ -157,16 +139,11 @@ function ResetPasswordInner() {
       </div>
       
       {
-        success && <Message title="Password Reset!" message="Your password has been updated successfully. You can now login with your new password." action={() => navigate('/signin')} btnLabel="Sign In" />
+        success && <Message title="Password Reset!" message="Your password has been updated successfully. You can now login with your new password." action={() => {
+          toast.dismiss()
+          navigate('/auth/')
+        }} btnLabel="Sign In" />
       }
     </>
   )
-}
-
-export default function ResetPassword() {
-  return (
-    <ToastProvider position="top-right">
-      <ResetPasswordInner />
-    </ToastProvider>
-  );
 }
