@@ -5,10 +5,14 @@ import { scheduledExamStore } from '../stores/scheduledExamStore';
 import { examStore } from '../stores/examStore';
 import './CountdownTimer.css';
 
+const VITE_ENV = import.meta.env.VITE_ENV
+
 export const CountdownTimer = memo(function CountdownTimer({ onFinish, hours, minutes, skipAutoSubmit }) {
   const calculateScore = practiceStore(state => state.calculateScore);
   const submitScheduledExam = scheduledExamStore(state => state.submitScheduledExam)
   const navigate = useNavigate();
+
+  const useEffectRun = useRef(false)
 
   // Computed ONCE via lazy ref init — survives re-renders, never resets
   const countdownTimeRef = useRef((60 * 60 * hours) + (60 * minutes));
@@ -17,10 +21,10 @@ export const CountdownTimer = memo(function CountdownTimer({ onFinish, hours, mi
 
   const getRemaining = () => Math.max(0, Math.round((endTimeRef.current - Date.now()) / 1000));
 
-  const [timeLeft, setTimeLeft] = useState(getRemaining);
+  const [ timeLeft, setTimeLeft ] = useState(getRemaining);
 
   const onFinishRef = useRef(onFinish);
-  useEffect(() => { onFinishRef.current = onFinish; }, [onFinish]);
+  useEffect(() => { onFinishRef.current = onFinish; }, [ onFinish ]);
 
   const finishedRef = useRef(false);
 
@@ -37,21 +41,22 @@ export const CountdownTimer = memo(function CountdownTimer({ onFinish, hours, mi
     }, 1000);
     return () => clearInterval(interval);
   }, []);
-  
-  
+
+
   useEffect(() => {
+    useEffectRun.current = !useEffectRun.current
+
     return () => {
+      if (useEffectRun.current && VITE_ENV === 'development') return
       if (skipAutoSubmit.current) return;
       const timeTaken = countdownTime - getRemaining();
       const timeAllocated = countdownTime;
-      
-      if (examStore.getState().examQuestions.length !== 0) {
-        if (examStore.getState().examConfig?.examType === 'practice'){
-          calculateScore(timeTaken, timeAllocated);
-          navigate('/practice/score');
-        } else if (examStore.getState().examConfig?.examType === 'scheduled'){
-          submitScheduledExam(timeTaken, navigate)
-        }
+
+      if (examStore.getState().examConfig?.examType === 'practice') {
+        calculateScore(timeTaken, timeAllocated);
+        navigate('/practice/score');
+      } else if (examStore.getState().examConfig?.examType === 'scheduled') {
+        submitScheduledExam(timeTaken, navigate)
       }
     };
   }, []);

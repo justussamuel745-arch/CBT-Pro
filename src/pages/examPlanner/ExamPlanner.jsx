@@ -191,7 +191,7 @@ export default function ExamPlanner() {
       return
     }
     setLoading(false)
-  }, [exam, stats, getDashboardInfo, setLoading, setLoadError, setOffline])
+  }, [exams, stats, getDashboardInfo, setLoading, setLoadError, setOffline])
   
   function onCancelExam(exam){
     toast.promise(onChangeStatus(exam._id, 'cancelled'), {

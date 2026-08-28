@@ -113,7 +113,7 @@ export const AnswerCard = memo(function AnswerCard({ explanation, correctAnswers
   return (
     <div className="mode-answer-section">
       <div className="mode-answer-header">Correct Answer</div>
-      <div className="mode-answer-correct">Option {correctAnswers}</div>
+      <div className="mode-answer-correct">Option {correctAnswers.toUpperCase()}</div>
       <div className="mode-answer-explanation">
         <MarkdownContent>
           {explanation}

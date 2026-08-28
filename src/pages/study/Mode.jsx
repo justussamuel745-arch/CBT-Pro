@@ -148,9 +148,9 @@ export default function Mode() {
           setModal('server_error')
         } else {
           setModal(
-            err.error === 'no_questions_found'
-              ? 'no_questions_found'
-              : 'failed_to_load'
+            err.error && !navigator.onLine
+              ? err.error
+              : err.error === 'no_questions_found' ? 'no_questions_found' : 'failed_to_load'
           )
         }
       } finally {
