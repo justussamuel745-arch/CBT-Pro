@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 import { useNavigate } from 'react-router';
-import { formatDateTime } from '../../scripts/utilis/dateTimeOp';
+import { formatDateTime } from '../../scripts/utils/dateTimeOp';
 import { scheduledExamStore } from '../../stores/scheduledExamStore';
 import "./MissedExam.css";
 

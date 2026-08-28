@@ -11,11 +11,11 @@ const { mockDecrypt, mockEncrypt, mockSaveUser, mockSaveHistory } = vi.hoisted((
   mockSaveHistory: vi.fn(),
 }));
 
-vi.mock("../../../src/scripts/utilis/url.js", () => ({
+vi.mock("../../../src/scripts/utils/url.js", () => ({
   url: "https://api.test",
 }));
 
-vi.mock("../../../src/scripts/utilis/crypto.js", () => ({
+vi.mock("../../../src/scripts/utils/crypto.js", () => ({
   decrypt: mockDecrypt,
   encrypt: mockEncrypt,
 }));
@@ -34,7 +34,7 @@ import {
   fetchWithAuth,
   fetchUserInfo,
   fetchHistory,
-} from "../../../src/scripts/utilis/fetch.js";
+} from "../../../src/scripts/utils/fetch.js";
 
 /* --------------------------------- Helpers -------------------------------- */
 

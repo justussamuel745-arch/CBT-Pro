@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router';
-import { Ic } from '../../scripts/utilis/Ic';
+import { Ic } from '../../scripts/utils/Ic';
 import { adminStore } from '../../stores/AdminStore';
 import './Nav.css';
 

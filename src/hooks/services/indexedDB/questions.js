@@ -1,5 +1,5 @@
 import { openDB } from "./db";
-import { encrypt, decrypt } from '../../../scripts/utilis/crypto.js';
+import { encrypt, decrypt } from '../../../scripts/utils/crypto.js';
 
 /*
   Save questions.

@@ -1,7 +1,7 @@
 import { create } from 'zustand';
-import { request } from '../scripts/utilis/request.js';
+import { request } from '../scripts/utils/request.js';
 import { saveUser } from '../hooks/services/indexedDB/users.js';
-import { encrypt, decrypt } from '../scripts/utilis/crypto.js';
+import { encrypt, decrypt } from '../scripts/utils/crypto.js';
 import { authStore } from './authStore.js';
 import { userStore } from './userStore.js';
 

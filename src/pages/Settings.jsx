@@ -3,13 +3,13 @@ import { Link, useNavigate } from 'react-router';
 import { toast } from 'react-hot-toast';
 import { useNotifications } from '../context/NotificationContext';
 import { ModalCentered, ModalDestruct, CSS } from '../components/NotificationSystem';
-import { Ic } from '../scripts/utilis/Ic'
+import { Ic } from '../scripts/utils/Ic'
 import defaultAvatar from '../assets/images/avatar.jpg';
 import { saveUser } from '../hooks/services/indexedDB/users';
 import { deleteAllQuestions, saveQuestions } from '../hooks/services/indexedDB/questions';
 import { clearImages } from '../hooks/services/indexedDB/images';
-import { encrypt, decrypt } from '../scripts/utilis/crypto';
-import { request } from '../scripts/utilis/request';
+import { encrypt, decrypt } from '../scripts/utils/crypto';
+import { request } from '../scripts/utils/request';
 import { authStore } from '../stores/authStore';
 import { userStore } from '../stores/userStore';
 import { Offline } from '../components/Offline';

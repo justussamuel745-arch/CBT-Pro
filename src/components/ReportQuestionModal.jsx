@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { request } from '../scripts/utilis/request';
+import { request } from '../scripts/utils/request';
 import './ReportQuestionModal.css';
 
 // ─────────────────────────────────────────────────────────────

@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from 'react';
-import { request } from '../../scripts/utilis/request';
+import { request } from '../../scripts/utils/request';
 import { Nav } from './Nav';
 import { adminStore } from '../../stores/AdminStore';
 import './Feedback.css';

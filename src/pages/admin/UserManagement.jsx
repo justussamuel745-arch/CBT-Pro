@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { request } from '../../scripts/utilis/request';
+import { request } from '../../scripts/utils/request';
 import { ModalStripe, ToastProvider, useToast, CSS } from '../../components/NotificationSystem';
 import { Nav } from './Nav';
 import { adminStore } from '../../stores/AdminStore';

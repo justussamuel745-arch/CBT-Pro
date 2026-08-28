@@ -1,4 +1,4 @@
-import { request } from "../scripts/utilis/request.js";
+import { request } from "../scripts/utils/request.js";
 
 const ENDPOINTS = {
   notifications: `/api/notifications`,

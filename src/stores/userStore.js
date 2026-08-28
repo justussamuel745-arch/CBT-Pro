@@ -1,6 +1,6 @@
 import { create } from 'zustand';
-import { request } from '../scripts/utilis/request.js';
-import { decrypt, encrypt } from '../scripts/utilis/crypto.js';
+import { request } from '../scripts/utils/request.js';
+import { decrypt, encrypt } from '../scripts/utils/crypto.js';
 import { saveQuestions } from '../hooks/services/indexedDB/questions.js';
 import { saveUser, getUser } from '../hooks/services/indexedDB/users.js';
 import { saveHistory, clearHistory, getHistory } from '../hooks/services/indexedDB/history.js';
@@ -8,8 +8,8 @@ import { getUserUpcomingExams, deleteUpcomingExam } from '../hooks/services/inde
 import { getExamStats } from '../hooks/services/indexedDB/examStats.js';
 import { authStore } from './authStore.js';
 import { scheduledExamStore } from './scheduledExamStore.js';
-import { submitLocalHistory } from '../scripts/utilis/submitHistory.js';
-import { addMinutes } from '../scripts/utilis/dateTimeOp';
+import { submitLocalHistory } from '../scripts/utils/submitHistory.js';
+import { addMinutes } from '../scripts/utils/dateTimeOp';
 import pushNotificationService from '../services/pushNotificationService.js';
 
 export const userStore = create(set => ({

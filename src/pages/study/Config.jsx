@@ -3,7 +3,7 @@ import { useSearchParams, useNavigate, Link, Navigate } from "react-router";
 import { ModalDialog, ModalCentered, CSS } from '../../components/NotificationSystem'
 import './Config.css';
 import { subjectsData } from '../../scripts/data/subjectsData.js';
-import { formatName } from '../../scripts/utilis/formatName.js';
+import { formatName } from '../../scripts/utils/formatName.js';
 import { authStore } from '../../stores/authStore';
 import { studyStore } from '../../stores/studyStore';
 

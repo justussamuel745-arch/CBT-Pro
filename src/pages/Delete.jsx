@@ -4,7 +4,7 @@ import { GoogleLogin } from "@react-oauth/google";
 import { toast } from 'react-hot-toast';
 import {  ModalDestruct, CSS } from '../components/NotificationSystem';
 import { deleteUser } from '../hooks/services/indexedDB/users';
-import { request } from '../scripts/utilis/request';
+import { request } from '../scripts/utils/request';
 import { authStore } from '../stores/authStore';
 import './Delete.css';
 

@@ -5,7 +5,7 @@ import ScheduleSuccess from './ScheduleSuccess';
 import { scheduledExamStore } from '../../stores/scheduledExamStore';
 import { userStore } from '../../stores/userStore';
 import { subjectsData } from '../../scripts/data/subjectsData';
-import { formatName } from '../../scripts/utilis/formatName';
+import { formatName } from '../../scripts/utils/formatName';
 import "./ScheduleExam.css";
 
 const SUBJECTS = subjectsData.map(sub => sub.name)

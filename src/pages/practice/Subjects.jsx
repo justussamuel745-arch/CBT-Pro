@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router';
 import { subjectsData } from '../../scripts/data/subjectsData';
-import { formatName } from '../../scripts/utilis/formatName';
+import { formatName } from '../../scripts/utils/formatName';
 import { authStore } from '../../stores/authStore';
 import { examStore } from '../../stores/examStore';
 import './Subjects.css'

@@ -1,4 +1,4 @@
-import { url } from "../scripts/utilis/url.js";
+import { url } from "../scripts/utils/url.js";
 
 const BASE_URL = `${url}/api/push`;
 

@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router';
 import { toast } from 'react-hot-toast';
-import { request } from '../scripts/utilis/request';
+import { request } from '../scripts/utils/request';
 import './Feedback.css';
 
 export default function Feedback(){

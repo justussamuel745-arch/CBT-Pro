@@ -1,7 +1,7 @@
 import { useMemo, useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router";
 import { toast } from 'react-hot-toast';
-import { request } from "../../scripts/utilis/request";
+import { request } from "../../scripts/utils/request";
 import { Loading } from "../../components/Loading";
 import { LoadError } from "../../components/LoadError";
 import { Offline } from "../../components/Offline";

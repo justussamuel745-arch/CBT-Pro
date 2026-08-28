@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router';
 import { Message } from '../components/Message';
 import { ToastProvider, useToast, CSS } from '../components/NotificationSystem';
-import { request } from '../scripts/utilis/request';
+import { request } from '../scripts/utils/request';
 import { authStore } from '../stores/authStore';
 import './Payment.css';
 

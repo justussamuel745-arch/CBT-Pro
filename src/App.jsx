@@ -23,7 +23,7 @@ import Auth  from './pages/auth/Auth';
 import Notifications  from './pages/Notifications';
 import ExamPlanners from './pages/examPlanner/ExamPlanners';
 import ExamSimulator from './pages/ExamSimulator';
-import { submitLocalHistory } from './scripts/utilis/submitHistory';
+import { submitLocalHistory } from './scripts/utils/submitHistory';
 import { deleteUser } from './hooks/services/indexedDB/users';
 import { authStore } from './stores/authStore';
 import { userStore } from './stores/userStore';

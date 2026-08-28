@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useSearchParams, Link } from 'react-router';
 import { PDFViewer } from '../components/PdfViewer';
 import { subjectsData } from '../scripts/data/subjectsData.js';
-import { formatName } from '../scripts/utilis/formatName.js';
+import { formatName } from '../scripts/utils/formatName.js';
 import './Syllabus.css'
 
 const AVAILABLE_SYLLABUS = [

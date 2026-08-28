@@ -3,8 +3,8 @@ import './Report.css';
 import { MarkdownContent } from '../../components/MarkdownContent';
 import { Nav } from './Nav';
 import { Loading } from '../../components/Loading';
-import { decrypt } from '../../scripts/utilis/crypto';
-import { request } from '../../scripts/utilis/request';
+import { decrypt } from '../../scripts/utils/crypto';
+import { request } from '../../scripts/utils/request';
 import { adminStore } from '../../stores/AdminStore';
 
 const CATEGORY_LABELS = {

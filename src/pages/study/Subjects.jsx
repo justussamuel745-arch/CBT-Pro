@@ -1,7 +1,7 @@
 import  { useState } from "react";
 import { Link } from 'react-router';
 import { subjectsData } from '../../scripts/data/subjectsData';
-import { formatName } from '../../scripts/utilis/formatName';
+import { formatName } from '../../scripts/utils/formatName';
 import { authStore } from '../../stores/authStore';
 import './Subjects.css';
 

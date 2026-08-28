@@ -7,7 +7,7 @@ import { Loading } from '../../components/Loading';
 import { Offline } from '../../components/Offline';
 import { LoadError } from '../../components/LoadError';
 import { DateTime } from '../../components/common/DateTime';
-import { sortByClosestDate } from '../../scripts/utilis/dateTimeOp';
+import { sortByClosestDate } from '../../scripts/utils/dateTimeOp';
 import { scheduledExamStore } from '../../stores/scheduledExamStore';
 import { deleteUpcomingExam } from '../../hooks/services/indexedDB/upcomingExams';
 import pushNotificationService from '../../services/pushNotificationService';

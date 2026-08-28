@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { useLocation, Link } from 'react-router';
-import { formatTime } from '../../scripts/utilis/formatTime.js';
+import { formatTime } from '../../scripts/utils/formatTime.js';
 import { DateTime } from '../../components/common/DateTime';
 import "./ExamResult.css";
 

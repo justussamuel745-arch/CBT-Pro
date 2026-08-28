@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router';
 import { subjectsData } from '../../scripts/data/subjectsData.js';
-import { formatName } from '../../scripts/utilis/formatName.js';
-import { formatTime } from '../../scripts/utilis/formatTime.js';
+import { formatName } from '../../scripts/utils/formatName.js';
+import { formatTime } from '../../scripts/utils/formatTime.js';
 import { practiceStore } from '../../stores/practiceStore';
 import './Score.css';
 

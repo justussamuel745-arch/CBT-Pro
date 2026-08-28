@@ -1,6 +1,6 @@
 import { create } from 'zustand';
-import { request } from '../scripts/utilis/request.js';
-import { decrypt } from '../scripts/utilis/crypto.js';
+import { request } from '../scripts/utils/request.js';
+import { decrypt } from '../scripts/utils/crypto.js';
 import { deleteAllQuestions } from '../hooks/services/indexedDB/questions.js';
 import { deleteUser } from '../hooks/services/indexedDB/users';
 import pushNotificationService from '../services/pushNotificationService';

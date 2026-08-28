@@ -3,17 +3,17 @@ import { useNavigate } from 'react-router';
 import { MarkdownContent } from '../../components/MarkdownContent';
 import { Calculator } from '../../components/Calculator.jsx'
 import { AstraAIModal } from '../../components/AstraAIModal'
-import { request } from '../../scripts/utilis/request';
+import { request } from '../../scripts/utils/request';
 import { subjectsData } from '../../scripts/data/subjectsData.js'
 import { Image } from '../../components/Image'
-import { formatName } from '../../scripts/utilis/formatName.js';
+import { formatName } from '../../scripts/utils/formatName.js';
 import { ModalStripe, CSS } from '../../components/NotificationSystem';
 import { ReportQuestionModal } from "../../components/ReportQuestionModal";
 import { AnswerCard } from '../../components/AnswerCard';
 import { Loading } from '../../components/Loading';
 import { saveQuestions, getQuestions } from '../../hooks/services/indexedDB/questions';
 import { saveAllImages } from '../../hooks/services/indexedDB/images';
-import { decrypt, encrypt } from '../../scripts/utilis/crypto';
+import { decrypt, encrypt } from '../../scripts/utils/crypto';
 import { studyStore } from '../../stores/studyStore';
 import { userStore } from '../../stores/userStore';
 import './Mode.css'

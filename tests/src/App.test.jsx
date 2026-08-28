@@ -35,17 +35,17 @@ const {
 
 /* ---------------------------- Service mocks ------------------------------ */
 
-vi.mock("../../src/scripts/utilis/fetch", () => ({
+vi.mock("../../src/scripts/utils/fetch", () => ({
   fetchDataGet: mockFetchDataGet,
   fetchUserInfo: mockFetchUserInfo,
   fetchHistory: mockFetchHistory,
 }));
 
-vi.mock("../../src/scripts/utilis/submitHistory", () => ({
+vi.mock("../../src/scripts/utils/submitHistory", () => ({
   on: mockOn,
 }));
 
-vi.mock("../../src/scripts/utilis/crypto", () => ({
+vi.mock("../../src/scripts/utils/crypto", () => ({
   decrypt: mockDecrypt,
 }));
 
