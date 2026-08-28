@@ -3,7 +3,6 @@ import ExamPlanner from './ExamPlanner';
 import ScheduleExam from './ScheduleExam';
 import ExamHistory from './ExamHistory';
 import ExamResult from './ExamResult';
-import Countdown from './Countdown';
 import MissedExam from './MissedExam';
 import ExamInstructions from './ExamInstructions';
 

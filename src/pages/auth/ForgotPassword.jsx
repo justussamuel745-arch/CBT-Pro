@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import { Link } from 'react-router';
 import { toast } from 'react-hot-toast';
 import { authStore } from '../../stores/authStore';

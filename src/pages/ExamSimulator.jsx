@@ -1,7 +1,6 @@
-import { useState, useEffect, useRef, memo, useMemo, useCallback } from 'react';
+import { useState, useEffect, useRef, memo, useCallback } from 'react';
 import { useNavigate } from 'react-router';
 import { MarkdownContent } from '../components/MarkdownContent';
-import { request } from '../scripts/utilis/request';
 import { formatName } from '../scripts/utilis/formatName.js';
 import { CountdownTimer } from '../components/CountdownTimer'
 import { Calculator } from '../components/Calculator'
@@ -10,8 +9,6 @@ import { Offline } from '../components/Offline';
 import { LoadError } from '../components/LoadError';
 import { Image } from '../components/Image'
 import { ModalStripe,  CSS } from '../components/NotificationSystem';
-import { encrypt, decrypt } from '../scripts/utilis/crypto';
-import { authStore } from '../stores/authStore';
 import { practiceStore } from '../stores/practiceStore';
 import { scheduledExamStore } from '../stores/scheduledExamStore';
 import { examStore } from '../stores/examStore';
@@ -22,9 +19,7 @@ const ExpensiveChild = memo(function ExpensiveChild({submitExam, hours, minutes,
 });
 
 export default function ExamSimulator() {
-  const isActivated = authStore(state => state.isActivated)
   const examConfig = examStore((state) => state.examConfig);
-  const setExamQuestions = examStore((state) => state.setExamQuestions);
   const answers = examStore((state) => state.answers);
   const setAnswers = examStore((state) => state.setAnswers);
   const offline = examStore(state => state.offline)

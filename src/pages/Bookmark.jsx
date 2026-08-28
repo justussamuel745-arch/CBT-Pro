@@ -8,7 +8,7 @@ import { decrypt, encrypt } from '../scripts/utilis/crypto';
 import { userStore } from '../stores/userStore';
 import './Bookmark.css'
 
-const ExpensiveBmkModal = memo(({ modalQsInfo, setModalQsInfo }) => {
+const ExpensiveBmkModal = memo(function ExpensiveBmkModal({ modalQsInfo, setModalQsInfo }){
   return (
     <>
     {
@@ -74,15 +74,13 @@ export default function Bookmark() {
   
   useEffect(() => {
     const bookmarks = decrypt(JSON.parse(localStorage.getItem('bookmarks'))) || []
-    console.log(bookmarks);
-    console.log(userInfo?._id);
     const data = bookmarks.filter(bmk => bmk.userId === userInfo?._id)
     setBookmarkData(data)
     setNoBmkFound(data.length === 0 ? true : false)
     allBookmarkRef.current = data
     subjectsBmkRef.current = data
     
-  },[setBookmarkData, setNoBmkFound])
+  },[setBookmarkData, setNoBmkFound, userInfo?._id])
   
   const complexSearch = useCallback((d, keyWord) => {
     if (d.question?.comprehension && d.question.comprehension.toLowerCase().includes(keyWord.toLowerCase())){

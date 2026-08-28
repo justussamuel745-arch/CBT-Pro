@@ -24,6 +24,7 @@ export const formatDateTime = (iso) => {
 }
 
 export const sortByClosestDate = (array, dateField) => {
+  if (!array) return null
   const now = Date.now();
 
   return [...array].sort((a, b) => {

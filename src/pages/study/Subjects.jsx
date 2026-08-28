@@ -205,7 +205,7 @@ export default function Subjects(){
           ) : (
             <div className="subjects-empty">
               <i className="fa-solid fa-magnifying-glass-minus"></i>
-              <p>No subjects match "{searchQuery}"</p>
+              <p>No subjects match &quot;{searchQuery}&quot;</p>
               <button className="filter-btn" onClick={() => { setSearchQuery(""); setActiveFilter("all"); }}>
                 Reset search
               </button>

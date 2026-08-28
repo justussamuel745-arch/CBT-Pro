@@ -75,22 +75,26 @@ function StatChip({ icon, value, label }) {
 export default function ExamInstructions() {
   const [searchParams] = useSearchParams()
   const examId = searchParams.get('examId')
-  if (!examId) return <Navigate to="/exam-planner" replace />
+  
   const upcomingExams = scheduledExamStore(state => state.upcomingExams)
-  
-  const exam = useMemo(() => {
-    return upcomingExams.find(e => e._id === examId)
-  },[upcomingExams])
-  
-  if (!exam) <Navigate to="/exam-planner" replace />
-  const totalScore = exam.subjects.length * 100
   const setExamConfig = examStore(state => state.setExamConfig)
-  
+
   const navigate = useNavigate()
   
   const [acknowledged, setAcknowledged] = useState(false);
   
+  
+  const exam = useMemo(() => {
+    if (!examId) return null
+    return upcomingExams.find(e => e._id === examId)
+  },[upcomingExams, examId])
+  
+  const totalScore = exam?.subjects.length * 100
+  
+  
+  
   function onStart(){
+    if (!examId || !exam) return
     const examQuestions = examStore.getState().examQuestions
     if (examQuestions?.length > 0){
       examStore.setState({
@@ -116,6 +120,8 @@ export default function ExamInstructions() {
     })
     navigate('/simulator')
   }
+
+  if (!examId || !exam) return <Navigate to="/exam-planner" />
   
   return (
     <div className="examinstructions-page no-select">
@@ -157,7 +163,7 @@ export default function ExamInstructions() {
       <section className="examinstructions-section">
         <h2 className="examinstructions-section__title">Get Ready</h2>
         <div className="examinstructions-prep">
-          {PREP_STEPS.map((step, i) => (
+          {PREP_STEPS.map((step) => (
             <div className="examinstructions-prep__item" key={step.title}>
               <div className="examinstructions-prep__icon">
                 <i className={`fa-solid ${step.icon}`} aria-hidden="true"></i>

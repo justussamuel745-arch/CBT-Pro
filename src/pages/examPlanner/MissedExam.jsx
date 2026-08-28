@@ -2,8 +2,6 @@ import { useState, useCallback } from "react";
 import { useNavigate } from 'react-router';
 import { formatDateTime } from '../../scripts/utilis/dateTimeOp';
 import { scheduledExamStore } from '../../stores/scheduledExamStore';
-import { request } from '../../scripts/utilis/request';
-import { decrypt } from '../../scripts/utilis/crypto';
 import "./MissedExam.css";
 
 const VISIBLE_LIMIT = 3;
@@ -142,7 +140,7 @@ export default function MissedExam() {
       }
     })
 
-  }, [setUpcomingExams, navigate, exams])
+  }, [navigate, exams])
   
   if (!exams || exams.length === 0) return null;
 

@@ -49,7 +49,7 @@ const notificationListener = async (setNotifications, setUnreadCount) => {
   for (const exam of upcomingExams) {
     if (exam.reminder.toLowerCase() === 'none') continue
     const alreadyCreated = await getOfflineNotification(exam._id)
-    if (Boolean(alreadyCreated)) {
+    if (alreadyCreated) {
       updateReminderStatus(exam._id)
       continue
     }
@@ -103,7 +103,6 @@ export const OfflineNotifier = memo(function OfflineNotifier() {
   const { setNotifications, setUnreadCount } = useNotifications();
   const token = authStore(state => state.token)
   const userInfo = userStore(state => state.userInfo)
-  const upcomingExams = scheduledExamStore(state => state.upcomingExams)
 
 
   useEffect(() => {

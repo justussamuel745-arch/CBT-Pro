@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useSearchParams, useNavigate} from 'react-router';
 import { toast } from 'react-hot-toast';
 import { MarkdownContent } from '../../components/MarkdownContent';

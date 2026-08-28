@@ -16,7 +16,6 @@ import {
   saveNotifications,
   getLocalNotifications,
   clearLocalNotifications,
-  getLocalUnreadCount,
 } from "../hooks/services/indexedDB/notifications";
 
 import {
@@ -105,7 +104,7 @@ export const NotificationProvider = ({ children }) => {
     } catch (error) {
       console.error("Notification sync failed:", error);
     }
-  }, [updateFromList, userInfo]);
+  }, [updateFromList, userInfo, handlers]);
 
   /**
    * Handle real-time notification from Socket.IO
@@ -168,7 +167,7 @@ export const NotificationProvider = ({ children }) => {
     return () => {
       window.removeEventListener("online", syncNotificationQueue);
     };
-  }, [token, userInfo, handlers]);
+  }, [token, userInfo, handlers,  loadLocalNotifications, syncNotifications]);
 
   
   /**

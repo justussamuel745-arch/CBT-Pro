@@ -93,7 +93,7 @@ const Sparkline = ({ values }) => {
   );
 };
 
-const ExpensiveHistoryModal = memo(({ modalInfo, onClose, getScoreClass }) => {
+const ExpensiveHistoryModal = memo(function ExpensiveHistoryModal({ modalInfo, onClose, getScoreClass }) {
   useEffect(() => {
     function onKeyDown(e) {
       if (e.key === 'Escape') onClose();
@@ -189,7 +189,7 @@ export default function History() {
     } else {
       setLoading(false)
     }
-  }, [])
+  }, [fetchUserHistory, historyData, setLoading])
 
   const getScoreClass = useCallback((percent) => {
     if (percent >= 70) return 'high';

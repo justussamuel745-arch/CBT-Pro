@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useRef, memo } from "react";
+import { useState, useCallback, useEffect, memo } from "react";
 import { Link, useNavigate } from 'react-router';
 import { toast } from 'react-hot-toast';
 import Countdown, { useLiveCountdown } from "./Countdown";
@@ -76,7 +76,7 @@ const UpcomingExamCard = memo(function UpcomingExamCard({ exam, onView, onEdit, 
       title: 'Scheduled Exam Missed',
       body: `Your scheduled exam "${exam.name}" has been marked as missed because it was not completed within 40 minutes of its scheduled time. No performance score was recorded for this attempt. Staying consistent with your scheduled exams helps you measure your progress, identify weak areas, and see how close you are to your target score. Keep your next exam on schedule and use each completed attempt as an opportunity to improve your performance.`,
     })
-  },[setUpcomingExams])
+  },[setUpcomingExams, exam._id, exam.name])
   
   const onReady = useCallback(async () => {
     await showNotification({
@@ -111,6 +111,7 @@ const UpcomingExamCard = memo(function UpcomingExamCard({ exam, onView, onEdit, 
           graceEndsAt={graceEndsAt(exam.examDate)} 
           variant={countdown.urgent ? "full" : "compact"} 
           readyLabel="Ready to start"
+          onReady={onReady}
           onGraceExpired={onGraceExpired}
         />
       </div>
@@ -190,7 +191,7 @@ export default function ExamPlanner() {
       return
     }
     setLoading(false)
-  }, [setLoading, setLoadError, setOffline])
+  }, [exam, stats, getDashboardInfo, setLoading, setLoadError, setOffline])
   
   function onCancelExam(exam){
     toast.promise(onChangeStatus(exam._id, 'cancelled'), {

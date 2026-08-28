@@ -13,7 +13,7 @@ import { AnswerCard } from '../../components/AnswerCard';
 import { Loading } from '../../components/Loading';
 import { saveQuestions, getQuestions } from '../../hooks/services/indexedDB/questions';
 import { saveAllImages } from '../../hooks/services/indexedDB/images';
-import { decrypt } from '../../scripts/utilis/crypto';
+import { decrypt, encrypt } from '../../scripts/utilis/crypto';
 import { studyStore } from '../../stores/studyStore';
 import { userStore } from '../../stores/userStore';
 import './Mode.css'

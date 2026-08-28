@@ -1,7 +1,6 @@
 import { openDB } from "./db";
-import { url } from '../../../scripts/utilis/url.js';;
 
-async function saveImage(imageUrl) {
+export async function saveImage(imageUrl) {
   const response = await fetch(imageUrl);
 
   if (!response.ok) {

@@ -81,8 +81,6 @@ const AddPasswordModal = memo(function AddPasswordModal({ userInfo, setUserInfo,
   const [ showNewOnly, setShowNewOnly ] = useState(false);
   const [ showConfirmOnly, setShowConfirmOnly ] = useState(false);
 
-  const toast = useToast()
-
   function validateNewPwdOnly(p) {
     const errs = {};
     if (!p.newPwd) {
@@ -325,7 +323,7 @@ export default function Settings() {
     }
     setPrefs(prev => userInfo ? (userInfo?.notificationSettings ?? prev) : prev)
     return () => { cancelled = true; toast.dismiss() };
-  }, [ setPrefs, userInfo, setLoadError, retry ]);
+  }, [ fetchUserInfo,  setPrefs, userInfo, setLoadError, retry ]);
 
   // ── Cleanup object URLs ──
   useEffect(() => {

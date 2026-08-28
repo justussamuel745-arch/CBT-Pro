@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef, useMemo } from "react";
+import { useState, useRef, useMemo } from "react";
 import { Link, useSearchParams, useLocation } from "react-router";
 import { toast } from 'react-hot-toast';
 import ScheduleSuccess from './ScheduleSuccess';
@@ -219,9 +219,7 @@ export default function ScheduleExam() {
   const [ errors, setErrors ] = useState({});
   const [ serverError, setServerError ] = useState(null)
   const [ submitted, setSubmitted ] = useState(false);
-  const [ isOffline, setIsOffline ] = useState(false);
   const [ scheduleSuccess, setScheduleSuccess ] = useState(null)
-  const [ modal, setModal ] = useState(null)
 
 
   const total = getTotalScore(form.subjects);

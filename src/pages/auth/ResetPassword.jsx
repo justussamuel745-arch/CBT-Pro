@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useRef } from 'react';
 import { useSearchParams, Link, Navigate, useNavigate } from 'react-router';
 import { toast } from 'react-hot-toast';
 import { Message } from '../../components/Message';

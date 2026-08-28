@@ -148,7 +148,7 @@ export const scheduledExamStore = create((set, get) => ({
       method: 'POST',
       body: JSON.stringify(validateField(form))
     })
-    const { message, stats, upcomingExams } = decrypt(res.body.data)
+    const { stats, upcomingExams } = decrypt(res.body.data)
     set({
       stats,
       upcomingExams
@@ -161,7 +161,7 @@ export const scheduledExamStore = create((set, get) => ({
       method: 'PUT',
       body: JSON.stringify(validateField(form))
     })
-    const { message, upcomingExams } = decrypt(res.body.data)
+    const { upcomingExams } = decrypt(res.body.data)
     set({
       upcomingExams
     })
@@ -256,6 +256,7 @@ export const scheduledExamStore = create((set, get) => ({
   },
 
   retrySubmission: async (navigate) => {
+    const submissionRequirement = get().submissionRequirement
     try {
       const res = await request.auth('/api/exam-planner/exam/submit', {
         method: 'POST',
