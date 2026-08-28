@@ -19,7 +19,10 @@ export const authStore = create(set => ({
   }),
 
   refresh: async () => {
-    const res = await request.send('/api/refresh')
+    const res = await request.send('/api/refresh', {
+      method: 'GET',
+      credentials: 'include'
+    })
     const data = decrypt(res.body.data)
     if (data?.activationExpired) {
       await deleteAllQuestions()
