@@ -40,7 +40,7 @@ export default defineConfig({
         name: "CBT Pro",
         short_name: "CBT Pro",
         description: "JAMB CBT practice platform",
-        theme_color: "#ffffff",
+        theme_color: "#4F46E5",
         background_color: "#4F46E5",
         display: "standalone",
         orientation: "portrait",

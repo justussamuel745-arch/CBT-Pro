@@ -20,7 +20,8 @@ const validateField = (form) => {
     'shuffle',
     'reminder',
     'reminderSent',
-    'notes'
+    'notes',
+    'timeZone'
   ]
 
   const bodyObj = {}
@@ -31,6 +32,9 @@ const validateField = (form) => {
     .forEach(key => {
       bodyObj[ key ] = form[ key ]
     })
+
+  const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  Object.assign(bodyObj, { timeZone })
 
   return bodyObj
 }

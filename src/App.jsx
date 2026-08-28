@@ -29,6 +29,7 @@ import { authStore } from './stores/authStore';
 import { userStore } from './stores/userStore';
 import { scheduledExamStore } from './stores/scheduledExamStore';
 import { useExamDataSync } from './hooks/useExamDataSync';
+import { useAutoThemeColor } from './hooks/useAutoThemeColor';
 import './App.css';
 
 const Games = lazy(() => import('./pages/games/Games.jsx'));
@@ -38,6 +39,7 @@ const Admin = lazy(() => import('./pages/admin/Admin.jsx'));
 function App() {
   // listen for when upcomings exams changes and update the changes in indexedDB
   useExamDataSync()
+  useAutoThemeColor()
   
   const token = authStore((state) => state.token);
   const isLoading = authStore((state) => state.isLoading);
@@ -82,6 +84,7 @@ function App() {
 
   return (
     <>
+      
       <Routes>
         <Route index element={token ? <Dashboard /> : <HomePage />} />
         <Route path="/auth/*" element={<Auth />} />
