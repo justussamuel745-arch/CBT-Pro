@@ -7,6 +7,8 @@ import { Image } from '../../components/Image';
 import { formatName } from '../../scripts/utilis/formatName.js';
 import { decrypt } from '../../scripts/utilis/crypto';
 import { authStore } from '../../stores/authStore';
+import { saveQuestions } from '../../hooks/services/indexedDB/questions';
+import { saveAllImages } from '../../hooks/services/indexedDB/images';
 import './Search.css';
 
 const EXAM_TYPES = ["JAMB"];
@@ -125,8 +127,12 @@ export default function Search() {
         method: 'GET'
       })
       const data = decrypt(res.body.data)
+      await Promise.all([
+        saveQuestions(data),
+        saveAllImages(data)
+      ]).catch((err) => console.log(err))
       setResults(data);
-      setHasSearched(true);
+      setHasSearched(true)
       
     } catch {
       toast.error('Failed to fetch')

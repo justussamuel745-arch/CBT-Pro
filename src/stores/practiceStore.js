@@ -1,11 +1,12 @@
 import { create } from 'zustand';
-import { authStore } from './authStore.js';
-import { userStore } from './userStore.js';
-import { examStore } from './examStore.js';
-import { encrypt, decrypt } from '../scripts/utilis/crypto.js';
+import { authStore } from './authStore';
+import { userStore } from './userStore';
+import { examStore } from './examStore';
+import { encrypt, decrypt } from '../scripts/utilis/crypto';
 import { submitHistory } from '../scripts/utilis/submitHistory';
 import { request } from '../scripts/utilis/request';
 import { saveQuestions } from '../hooks/services/indexedDB/questions';
+import { saveAllImages } from '../hooks/services/indexedDB/images';
 import { getRandomQuestions } from '../hooks/services/examQuestions';
 
 export const practiceStore = create(set => ({
@@ -166,13 +167,8 @@ export const practiceStore = create(set => ({
       data = decrypt(response.body)
       
       // Saving question to indexDB
-      await saveQuestions(
-        data.map(d => ({
-          ...d, 
-          correctAnswers: encrypt(d.correctAnswers),
-          explanation: encrypt(d.explanation)
-        }))
-      )
+      await saveQuestions(data)
+      await saveAllImages(data)
       
     } else {
       const offlineInfo = reqData.subjects.map(sub => {
@@ -197,11 +193,7 @@ export const practiceStore = create(set => ({
            <p>Connect to the internet to stay updated with the latest questions, or start the exam online.</p>`
         );
       } else {
-        data = indexDbData.questions.map(q => ({
-          ...q, 
-          correctAnswers: decrypt(q.correctAnswers),
-          explanation: decrypt(q.explanation)
-        }))
+        data = indexDbData.questions
       }
     }
     examStore.setState({

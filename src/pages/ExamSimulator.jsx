@@ -10,7 +10,6 @@ import { Offline } from '../components/Offline';
 import { LoadError } from '../components/LoadError';
 import { Image } from '../components/Image'
 import { ModalStripe,  CSS } from '../components/NotificationSystem';
-import { saveAllImages } from '../hooks/services/indexedDB/images';
 import { encrypt, decrypt } from '../scripts/utilis/crypto';
 import { authStore } from '../stores/authStore';
 import { practiceStore } from '../stores/practiceStore';
@@ -186,7 +185,6 @@ export default function ExamSimulator() {
       const { questions, errorLogic } = getQuestions[examType]
       try {
         const data = await questions(reqData)
-        await saveAllImages(data)
         init(currentSubVar, currentIdxVar, properties, data)
       } catch (err) {
         errorLogic(err)
@@ -424,7 +422,9 @@ export default function ExamSimulator() {
   
   function goBack(){
     skipAutoSubmit.current = true
-    navigate(`/${examType === 'scheduled' ? 'exam-planner' : examType}`)
+    const { examType } = examConfig
+    const path = examType === '' ? '/exam-planner' : '/practice'
+    navigate(path)
   }
   
   if (loadError) return <LoadError onRetry={loadError?.onRetry ?? undefined} message={loadError?.message ?? undefined} homeTo={loadError?.homeTo ?? undefined} homeLabel={loadError?.homeLabel ?? undefined}/>

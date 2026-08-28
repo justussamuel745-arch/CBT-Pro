@@ -13,7 +13,7 @@ import { AnswerCard } from '../../components/AnswerCard';
 import { Loading } from '../../components/Loading';
 import { saveQuestions, getQuestions } from '../../hooks/services/indexedDB/questions';
 import { saveAllImages } from '../../hooks/services/indexedDB/images';
-import { decrypt, encrypt } from '../../scripts/utilis/crypto';
+import { decrypt } from '../../scripts/utilis/crypto';
 import { studyStore } from '../../stores/studyStore';
 import { userStore } from '../../stores/userStore';
 import './Mode.css'
@@ -116,13 +116,7 @@ export default function Mode() {
         if (navigator.onLine){
           const res = await request.auth('/api/study', { method: 'POST', body: JSON.stringify(studyConfig)})
           data = decrypt(res.body)
-          await saveQuestions(
-            data.map(d => ({
-              ...d, 
-              correctAnswers: encrypt(d.correctAnswers),
-              explanation: encrypt(d.explanation)
-            }))
-          )
+          await saveQuestions(data).catch((err) => console.log(err))
           await saveAllImages(data)
         } else {
           const subject = studyConfig.subject
@@ -137,12 +131,8 @@ export default function Mode() {
           if (qs.length === 0) {
             throw { status: 404, error: 'no_questions_found_offline' }
           } else {
-            data = qs.splice(0, 100).map(q => ({
-              ...q,
-              correctAnswers: decrypt(q.correctAnswers),
-              explanation: decrypt(q.explanation)
-            }))
-            setModal('available_questions') 
+            data = qs.splice(0, 100)
+            setModal(data.length < 100 ? 'available_questions' : null) 
           }
         }
         setQuestions(data)
@@ -152,12 +142,16 @@ export default function Mode() {
         setRecords(data.map(d => ({id: d?.id ?? crypto.randomUUID(), isBookmarked: false})))
         setProgressList(data.map((d, index) => index + 1))
       } catch (err) {
-        if (!err.status){
+        if (!err.status && !navigator.onLine){
           setModal('connection_lost')
         } else if (err.status >= 500){
           setModal('server_error')
         } else {
-          setModal(err.error)
+          setModal(
+            err.error === 'no_questions_found'
+              ? 'no_questions_found'
+              : 'failed_to_load'
+          )
         }
       } finally {
         setLoading(false)
