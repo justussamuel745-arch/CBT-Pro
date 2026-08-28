@@ -6,7 +6,6 @@ import { scheduledExamStore } from '../../stores/scheduledExamStore';
 import { userStore } from '../../stores/userStore';
 import { subjectsData } from '../../scripts/data/subjectsData';
 import { formatName } from '../../scripts/utilis/formatName';
-import { requestNotificationPermission } from '../../services/offlineNotificationService';
 import "./ScheduleExam.css";
 
 const SUBJECTS = subjectsData.map(sub => sub.name)
@@ -277,12 +276,6 @@ export default function ScheduleExam() {
     delete updatedForm.time;
 
     try {
-      if (import.meta.env.VITE_ENV !== 'development') {
-        const allowed = await requestNotificationPermission().catch(() => false);
-
-        console.log('Allowed:', allowed);
-        console.log('Permission:', Notification.permission);
-      }
 
       await toast.promise(saveScheduledExam(updatedForm), {
         loading: 'Scheduling Exam...',

@@ -3,7 +3,7 @@ import { scheduledExamStore } from '../stores/scheduledExamStore';
 import { authStore } from '../stores/authStore';
 import { userStore } from '../stores/userStore';
 import { getOfflineNotification, addOfflineNotification } from '../hooks/services/indexedDB/offlineNotifications';
-import { showNotification } from '../services/offlineNotificationService';
+import pushNotificationService from '../services/pushNotificationService';
 import { useNotifications } from '../context/NotificationContext';
 
 const getReminderDate = (examDate, reminder) => {
@@ -74,7 +74,7 @@ const notificationListener = async (setNotifications, setUnreadCount) => {
       await addOfflineNotification(notification)
       setNotifications(prev => ([...prev, notification]))
       setUnreadCount(prev => prev + 1)
-      await showNotification({
+      await  pushNotificationService.showNotification({
         title: notification.title,
         body: notification.body
       }).catch(() => {})
@@ -88,8 +88,8 @@ const productionTest = () => {
   // Test suite during production
     if (import.meta.env.VITE_ENV === 'production') {
       (async () => {
-        const result = await showNotification({
-          title: 'Upcoming Exam: JAMB Mock 1',
+        const result = await pushNotificationService.showNotification({
+          title: 'Notification Test: JAMB Mock 1',
           body: 'Your scheduled exam "JAMB Mock 1" is 1h away. The exam covers English and Mathematics and is scheduled for 120 minutes, with a target score of 160. Difficulty level: Mixed. Please review your preparation, ensure you have a stable environment, and be ready to begin at the scheduled time. Your progress and performance will be recorded after completion.'
         })
         console.log('This is a production test');

@@ -10,7 +10,7 @@ import { DateTime } from '../../components/common/DateTime';
 import { sortByClosestDate } from '../../scripts/utilis/dateTimeOp';
 import { scheduledExamStore } from '../../stores/scheduledExamStore';
 import { deleteUpcomingExam } from '../../hooks/services/indexedDB/upcomingExams';
-import { showNotification } from '../../services/offlineNotificationService';
+import pushNotificationService from '../../services/pushNotificationService';
 import { hasEditExpires } from './utils/hasEditExpires';
 import { graceEndsAt } from './utils/graceEndsAt.js';
 import MissedExam from './MissedExam';
@@ -72,14 +72,14 @@ const UpcomingExamCard = memo(function UpcomingExamCard({ exam, onView, onEdit, 
   const onGraceExpired = useCallback(async () => {
     await deleteUpcomingExam(exam._id)
     setUpcomingExams(prev => prev.filter(e => e._id !== exam._id))
-    await showNotification({
+    await pushNotificationService.showNotification({
       title: 'Scheduled Exam Missed',
       body: `Your scheduled exam "${exam.name}" has been marked as missed because it was not completed within 40 minutes of its scheduled time. No performance score was recorded for this attempt. Staying consistent with your scheduled exams helps you measure your progress, identify weak areas, and see how close you are to your target score. Keep your next exam on schedule and use each completed attempt as an opportunity to improve your performance.`,
     })
   },[setUpcomingExams, exam._id, exam.name])
   
   const onReady = useCallback(async () => {
-    await showNotification({
+    await pushNotificationService.showNotification({
       title: 'Your Exam Is Ready to Start',
       body: `"${exam.name}" is now ready. You have 20 minutes to start the exam before it is marked as missed.`,
     });

@@ -10,7 +10,7 @@ import { authStore } from './authStore.js';
 import { scheduledExamStore } from './scheduledExamStore.js';
 import { submitLocalHistory } from '../scripts/utilis/submitHistory.js';
 import { addMinutes } from '../scripts/utilis/dateTimeOp';
-import { showNotification } from '../services/offlineNotificationService.js';
+import pushNotificationService from '../services/pushNotificationService.js';
 
 export const userStore = create(set => ({
   /*========
@@ -192,7 +192,7 @@ export const userStore = create(set => ({
         if (addMinutes(unhashed?.examDate, 40) <= now){
           await deleteUpcomingExam(unhashed._id)
           stats.upcoming --
-          await showNotification({
+          await pushNotificationService.showNotification({
             title: 'Scheduled Exam Missed',
             body: `Your scheduled exam "${exam.name}" has been marked as missed because it was not completed within 40 minutes of its scheduled time. No performance score was recorded for this attempt. Staying consistent with your scheduled exams helps you measure your progress, identify weak areas, and see how close you are to your target score. Keep your next exam on schedule and use each completed attempt as an opportunity to improve your performance.`,
           })

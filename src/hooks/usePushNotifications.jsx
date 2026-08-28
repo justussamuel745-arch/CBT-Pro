@@ -16,7 +16,7 @@ export default function usePushNotifications() {
           pushNotificationService.getPermission();
 
         if (permission === "default") {
-          await pushNotificationService.enable();
+          await pushNotificationService.enable(token);
         }
       } catch (error) {
         console.error(

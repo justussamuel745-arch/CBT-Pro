@@ -8,7 +8,7 @@ class PushNotificationService {
   }
 
   /**
-   * Check if Push Notifications are supported.
+   * Check if push notifications are supported.
    */
   isSupported() {
     return (
@@ -19,24 +19,22 @@ class PushNotificationService {
   }
 
   /**
-   * Wait for the registered service worker.
+   * Get the registered service worker.
    */
   async getRegistration() {
     if (!this.isSupported()) {
       throw new Error("Push notifications are not supported.");
     }
 
-    if (this.registration) {
-      return this.registration;
+    if (!this.registration) {
+      this.registration = await navigator.serviceWorker.ready;
     }
-
-    this.registration = await navigator.serviceWorker.ready;
 
     return this.registration;
   }
 
   /**
-   * Current notification permission.
+   * Get current notification permission.
    */
   getPermission() {
     if (!("Notification" in window)) {
@@ -47,18 +45,18 @@ class PushNotificationService {
   }
 
   /**
-   * Ask the user for permission.
+   * Request notification permission.
    */
   async requestPermission() {
     if (!("Notification" in window)) {
       throw new Error("Notifications are not supported.");
     }
 
-    return await Notification.requestPermission();
+    return Notification.requestPermission();
   }
 
   /**
-   * Convert VAPID public key.
+   * Convert VAPID public key to Uint8Array.
    */
   urlBase64ToUint8Array(base64String) {
     const padding = "=".repeat(
@@ -72,21 +70,21 @@ class PushNotificationService {
     const rawData = atob(base64);
 
     return Uint8Array.from(
-      [...rawData].map((char) => char.charCodeAt(0))
+      [ ...rawData ].map((char) => char.charCodeAt(0))
     );
   }
 
   /**
-   * Returns current subscription.
+   * Get current push subscription.
    */
   async getSubscription() {
     const registration = await this.getRegistration();
 
-    return await registration.pushManager.getSubscription();
+    return registration.pushManager.getSubscription();
   }
 
   /**
-   * Check if already subscribed.
+   * Check whether the browser is subscribed.
    */
   async isSubscribed() {
     const subscription = await this.getSubscription();
@@ -95,7 +93,7 @@ class PushNotificationService {
   }
 
   /**
-   * Subscribe browser.
+   * Subscribe the browser to push notifications.
    */
   async subscribe() {
     const registration = await this.getRegistration();
@@ -104,13 +102,17 @@ class PushNotificationService {
       await registration.pushManager.getSubscription();
 
     if (!subscription) {
+      const vapidKey = import.meta.env.VITE_VAPID_PUBLIC_KEY;
+
+      if (!vapidKey) {
+        throw new Error("VAPID public key is missing.");
+      }
+
       subscription =
         await registration.pushManager.subscribe({
           userVisibleOnly: true,
           applicationServerKey:
-            this.urlBase64ToUint8Array(
-              import.meta.env.VITE_VAPID_PUBLIC_KEY
-            ),
+            this.urlBase64ToUint8Array(vapidKey),
         });
     }
 
@@ -128,7 +130,7 @@ class PushNotificationService {
         credentials: "include",
         headers: {
           "Content-Type": "application/json",
-          'Authorization': `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
           subscription,
@@ -143,11 +145,11 @@ class PushNotificationService {
       );
     }
 
-    return await response.json();
+    return response.json();
   }
 
   /**
-   * Remove subscription.
+   * Remove subscription from backend and browser.
    */
   async unsubscribe(token) {
     const subscription =
@@ -184,7 +186,7 @@ class PushNotificationService {
   }
 
   /**
-   * Enable Push Notifications.
+   * Enable push notifications.
    */
   async enable(token) {
     if (!this.isSupported()) {
@@ -196,8 +198,7 @@ class PushNotificationService {
     let permission = this.getPermission();
 
     if (permission === "default") {
-      permission =
-        await this.requestPermission();
+      permission = await this.requestPermission();
     }
 
     if (permission !== "granted") {
@@ -215,6 +216,46 @@ class PushNotificationService {
     );
 
     return subscription;
+  }
+
+
+  /**
+ * Show a notification through the service worker.
+ */
+  async showNotification({
+    title,
+    body,
+  }) {
+    if (
+      !("Notification" in window) ||
+      Notification.permission !== "granted"
+    ) {
+      return false;
+    }
+
+    if (!("serviceWorker" in navigator)) {
+      return false;
+    }
+
+    try {
+      const registration =
+        await navigator.serviceWorker.ready;
+
+      await registration.showNotification(title, {
+        body,
+        icon: `${window.location.origin}/icons/pwa-512x512.png`,
+        badge: `${window.location.origin}/icons/badge-96x96.png`,
+      });
+
+      return true;
+    } catch (err) {
+      console.error(
+        "showNotification failed:",
+        err
+      );
+
+      return false;
+    }
   }
 }
 
