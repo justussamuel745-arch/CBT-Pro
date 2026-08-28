@@ -637,9 +637,8 @@ export default function ExamSimulator() {
                 primaryLabel="Leave Exam"
                 secondaryLabel="Stay"
                 onPrimary={() => {
-                  skipAutoSubmit.current = true;
                   closeModal();
-                  navigate('/practice');
+                  goBack()
                 }}
                 onClose={closeModal}
               />
@@ -655,11 +654,13 @@ export default function ExamSimulator() {
                 body="We were unable to load the exam questions due to a data loading error. Your session is safe. Click Reload to fetch questions again. If this continues, check your connection and try again."
                 primaryLabel="Reload"
                 onPrimary={() => {
+                  closeModal()
+                  setLoading(true)
                   setRefresh(prev => !prev)
                 }}
                 onClose={() => {
-                  goBack()
                   closeModal()
+                  goBack()
                 }}
               />
             </div>
@@ -674,11 +675,12 @@ export default function ExamSimulator() {
                 body={modal.body}
                 primaryLabel="Retry"
                 onPrimary={() => {
+                  closeModal()
+                  setLoading(true)
                   setRefresh(prev => !prev)
                 }}
                 onClose={() => {
-                  skipAutoSubmit.current = true
-                  navigate('/practice')
+                  goBack()
                 }}
               />
             </div>
