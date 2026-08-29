@@ -57,7 +57,7 @@ export function ForgotPassword() {
 
       <div className="forget-wrapper">
         <div className="forget-card">
-          <div id="forgetFormState" ref={formElementRef}>
+          <div id="forgetFormState" data-testid="forget-password-form" ref={formElementRef}>
             <div className="forget-header">
               <div className="forget-icon">🔒</div>
               <h1 className="forget-title">Forgot Password?</h1>
@@ -69,6 +69,7 @@ export function ForgotPassword() {
                 <label className="forget-label" htmlFor="email">Email Address</label>
                 <input
                   className="forget-input"
+                  id="email"
                   placeholder="you@example.com"
                   autoComplete="email"
                   onChange={(event) => { setEmail(event.target.value); setError(null) }}
@@ -87,7 +88,7 @@ export function ForgotPassword() {
           </div>
 
           {/* Success State */}
-          <div className={`forget-success ${success && 'show'}`}>
+          <div className={`forget-success ${success && 'show'}`} data-testid="success-container">
             <div className="forget-success-icon">
               <svg viewBox="0 0 24 24">
                 <polyline points="20 6 9 17 4 12"></polyline>

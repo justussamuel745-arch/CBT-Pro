@@ -9,7 +9,7 @@ export function ResetPassword() {
   const resetPassword = authStore(state => state.resetPassword)
   const navigate = useNavigate()
   const [formData, setFormData] = useState({ password: '', confirmPassword: '' })
-  const [error, setError] = useState(true)
+  const [error, setError] = useState(null)
   const [success, setSuccess] = useState(false)
   const [searchParams] = useSearchParams();
   const resetToken = searchParams.get("token");
@@ -21,6 +21,7 @@ export function ResetPassword() {
   async function resetPwd(event) {
     event.preventDefault()
     const { password, confirmPassword } = formData;
+    
     if (!password) {
       setError({
         field: 'password',
@@ -40,6 +41,7 @@ export function ResetPassword() {
       })
       return
     }
+    
 
     const buttonElement = btnElementRef.current
     buttonElement.disabled = true
@@ -83,7 +85,7 @@ export function ResetPassword() {
         </div>
       </nav>
       
-      <div className="reset-wrapper" ref={formElementRef}>
+      <div className="reset-wrapper" ref={formElementRef} data-testid="form-container">
         <div className="reset-card">
 
           <div>
