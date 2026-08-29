@@ -210,7 +210,6 @@ function SigninInner() {
         },
       });
     } catch (err) {
-      console.log(err);
       if (err.error === 'GOOGLE_SIGNIN_REQUIRED'){
         setModal({
           type: "error",
