@@ -6,10 +6,11 @@ import {  ModalDestruct, CSS } from '../components/NotificationSystem';
 import { deleteUser } from '../hooks/services/indexedDB/users';
 import { request } from '../scripts/utils/request';
 import { authStore } from '../stores/authStore';
+import { userStore } from '../stores/userStore';
 import './Delete.css';
 
 export default function Delete() {
-  const userInfo = authStore(state => state.userInfo)
+  const userInfo = userStore(state => state.userInfo)
   const logout = authStore(state => state.logout)
   const navigate = useNavigate()
 
@@ -49,7 +50,7 @@ export default function Delete() {
   const handleGoogleVerify = (credentialResponse) => {
     setGoogleToken(credentialResponse.credential);
     if (error) setError("");
-    toast.error('Google account verified.');
+    toast.success('Google account verified.');
   };
 
   const deleteUserAccount = async () => {
@@ -166,6 +167,7 @@ export default function Delete() {
               <div className="delete-form-group">
                 <label htmlFor="password">Enter your password to confirm</label>
                 <input
+                  id="password"
                   type="password"
                   value={password}
                   onChange={handlePasswordChange}
