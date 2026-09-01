@@ -52,10 +52,13 @@ export const CountdownTimer = memo(function CountdownTimer({ onFinish, hours, mi
       const timeTaken = countdownTime - getRemaining();
       const timeAllocated = countdownTime;
 
+      
       if (examStore.getState().examConfig?.examType === 'practice') {
-        calculateScore(timeTaken, timeAllocated);
-        navigate('/practice/score');
+        calculateScore(timeTaken, timeAllocated).then(() => {
+          navigate('/practice/score');
+        })
       } else if (examStore.getState().examConfig?.examType === 'scheduled') {
+        
         submitScheduledExam(timeTaken, navigate)
       }
     };

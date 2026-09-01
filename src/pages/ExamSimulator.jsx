@@ -136,6 +136,7 @@ export default function ExamSimulator() {
   // for system view implement the features of using letters to navigate
 
   const init = useCallback(function init(currentSubVar, currentIdxVar, properties, data) {
+    setCurrentSubject(currentSubVar);
     Object.keys(properties).forEach((property) => {
       data.forEach((d) => {
         if (property === d.subject) {
@@ -166,7 +167,6 @@ export default function ExamSimulator() {
     const { subjects, examType } = examConfig;
     const currentSubVar = subjects[ 0 ].name
     const currentIdxVar = 0
-    setCurrentSubject(currentSubVar);
     const properties = {};
     const reqData = { subjects };
     if (examType === 'scheduled') {
@@ -427,13 +427,13 @@ export default function ExamSimulator() {
   if (loadError) return <LoadError onRetry={loadError?.onRetry ?? undefined} message={loadError?.message ?? undefined} homeTo={loadError?.homeTo ?? undefined} homeLabel={loadError?.homeLabel ?? undefined} />
   if (offline) return <Offline onRetry={offline?.onRetry ?? undefined} text={loadError?.text ?? undefined} />
   if (!isActive) return <Loading />
-  if (loading && import.meta.env.VITE_ENV === 'production') return <Loading />
+  if (loading && import.meta.env.VITE_ENV !== 'development') return <Loading />
 
   return (
     <>
       <title>Exam | CBT Pro</title>
 
-      <div className="exam-page no-select" aria-live="polite">
+      <div className="exam-page no-select" aria-live="polite" data-testid="simulator">
         <header className="exam-header">
           <div className="exam-header-inner">
             <button className="exam-back-btn" onClick={goBack}>← Back</button>
@@ -476,7 +476,7 @@ export default function ExamSimulator() {
             <div className="exam-sidebar-title">Subjects</div>
             <div className="exam-subject-list">
               {examConfig.subjects.map((sub, index) => (
-                <div className={`exam-subject-item ${sub.name === currentSubject && 'active'}`} key={index} data-name={sub.name} onClick={switchSubject}>
+                <div className={`exam-subject-item ${sub.name === currentSubject ? 'active' : ''}`} key={index} data-name={sub.name} onClick={switchSubject} data-testid={`subject-item-${sub.name.toLowerCase()}`}>
                   <span>{formatName(sub.name)}</span>
                   <span className="exam-subject-count">{String(sub.qsNo)}</span>
                 </div>
@@ -520,7 +520,7 @@ export default function ExamSimulator() {
                     {
                       ques.options.map(opt =>
                       (
-                        <div className={`exam-option ${opt.id === userAnswer && 'selected'}`} key={opt.id} onClick={selectedOpt} data-selected-id={opt.id} data-id={ques.id}>
+                        <div className={`exam-option ${opt.id === userAnswer && 'selected'}`} key={opt.id} onClick={selectedOpt} data-selected-id={opt.id} data-id={ques.id} data-testid={`selected-option-${opt.id}`}>
                           <div className="exam-option-key">{opt.id.toUpperCase()}</div>
                           <div className="exam-option-content">
                             <div className="exam-option-text">
@@ -594,7 +594,7 @@ export default function ExamSimulator() {
             <div className="exam-progress-grid">
               {progressGridList && progressGridList.map((num, index) =>
               (
-                <button className={`exam-progress-btn ${answeredIdx && answeredIdx.includes(Number(num)) && 'answered'} ${(currentIndex + 1) === num && 'active'}`} key={index} onClick={navigateQues} data-num={num}>{num}</button>
+                <button className={`exam-progress-btn ${answeredIdx && answeredIdx.includes(Number(num)) && 'answered'} ${(currentIndex + 1) === num && 'active'}`} key={index} onClick={navigateQues} data-num={num} data-testid={`navigator-${num}`}>{num}</button>
               ))
               }
             </div>
@@ -620,7 +620,7 @@ export default function ExamSimulator() {
                   ? `You have ${allUnansweredQsLength} unanswered question${allUnansweredQsLength > 1 ? 's' : ''}. Submit anyway?`
                   : "Submit your exam now. This cannot be undone."
                 }
-                primaryLabel="Submit Exam"
+                primaryLabel="Yes, Submit Exam"
                 onPrimary={() => setIsActive(false)}
                 onClose={closeModal}
               />

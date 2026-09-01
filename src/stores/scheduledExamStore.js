@@ -229,7 +229,6 @@ export const scheduledExamStore = create((set, get) => ({
         submissionRequirement: null
       })
     } catch (error) {
-      console.log(error)
       if (!navigator.onLine) {
         examStore.setState({
           offline: {
@@ -265,6 +264,10 @@ export const scheduledExamStore = create((set, get) => ({
       const res = await request.auth('/api/exam-planner/exam/submit', {
         method: 'POST',
         body: JSON.stringify(submissionRequirement)
+      })
+      examStore.setState({
+        offline: null,
+        loadError: null
       })
       const { attempt: result } = res.body
       navigate('/exam-planner/result', {
