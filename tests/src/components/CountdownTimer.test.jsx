@@ -1,4 +1,4 @@
-import { MemoryRouter } from 'react-router';
+import { MemoryRouter, Routes, Route } from 'react-router';
 import { it, expect, describe, vi } from 'vitest';
 import UserEvent from '@testing-library/user-event';
 import { screen, render, waitFor, act } from '@testing-library/react';
@@ -7,14 +7,20 @@ import { CountdownTimer } from '../../../src/components/CountdownTimer';
 
 
 const {
-  mockSubmitScheduledExam 
+  mockSubmitScheduledExam,
+  mockExamStore,
+  mockExamStoreGetState,
+  mockCalculateScore
 } = vi.hoisted(() => ({
-  mockSubmitScheduledExam: vi.fn()
+  mockSubmitScheduledExam: vi.fn(),
+  mockExamStore: vi.fn(),
+  mockExamStoreGetState: vi.fn(),
+  mockCalculateScore: vi.fn()
 }))
 
 vi.mock('../../../src/stores/practiceStore', () => ({
   practiceStore: selector => selector({
-    calculateScore: vi.fn()
+    calculateScore: mockCalculateScore
   })
 }))
 vi.mock('../../../src/stores/scheduledExamStore', () => ({
@@ -23,14 +29,16 @@ vi.mock('../../../src/stores/scheduledExamStore', () => ({
   })
 }))
 vi.mock('../../../src/stores/examStore', () => ({
-  examStore: {
-    getState: vi.fn(() => ({
-      examConfig: {
-        examType: 'scheduled'
-      }
-    }))
-  }
+  examStore: mockExamStore
 }))
+
+mockExamStore.getState = mockExamStoreGetState
+
+mockExamStoreGetState.mockReturnValue({
+  examConfig: {
+    examType: 'scheduled'
+  }
+})
 
 import { practiceStore } from '../../../src/stores/practiceStore';
 import { scheduledExamStore } from '../../../src/stores/scheduledExamStore';
@@ -123,6 +131,4 @@ describe('CountdownTimer', () => {
     const submitScheduledExam = scheduledExamStore(state => state.submitScheduledExam)
     expect(submitScheduledExam).toHaveBeenCalled()
   })
-
-  
 })

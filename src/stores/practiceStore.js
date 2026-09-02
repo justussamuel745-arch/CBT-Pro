@@ -63,7 +63,7 @@ export const practiceStore = create(set => ({
     }))
   },
 
-  calculateScore: (timeTaken, timeAllocated) => {
+  calculateScore: async (timeTaken, timeAllocated) => {
     const userId = userStore.getState().userInfo?._id
     const answers = examStore.getState().answers
     const examQuestions = examStore.getState().examQuestions

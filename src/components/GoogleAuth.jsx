@@ -1,10 +1,10 @@
 import { useState, useRef, useEffect, memo } from 'react';
 import { useNavigate } from 'react-router';
 import { GoogleLogin } from "@react-oauth/google";
-import { Loading } from './Loading';
 import { useToast } from '../pages/auth/Signin';
 import { authStore } from '../stores/authStore';
 import { userStore } from '../stores/userStore';
+import { scheduledExamStore } from '../stores/scheduledExamStore';
 import './GoogleAuth.css';
 
 function getGoogleAuthToast(error) {
@@ -78,10 +78,25 @@ function getGoogleAuthToast(error) {
   }
 }
 
+// GoogleButtonLoading.jsx
+function GoogleButtonLoading( ) {
+  return (
+    <button
+      className="gsi-btn"
+      aria-busy={true}
+      data-testid="google-loading"
+    >
+      <span className="gsi-spinner" aria-hidden="true" />
+      <span className="gsi-text">Signing in…</span>
+    </button>
+  );
+}
+
 
 export const GoogleAuth = memo(function GoogleAuth({ dividerLabel, action }) {
   const googleAuth = authStore(state => state.googleAuth)
   const { fetchUserInfo, fetchUserHistory } = userStore(state => state)
+  const getDashboardInfo = scheduledExamStore(state => state.getDashboardInfo)
   const googleWrapRef = useRef(null);
   const [googleWidth, setGoogleWidth] = useState(360);
   const [isLoading, setIsLoading] = useState(false)
@@ -94,8 +109,6 @@ export const GoogleAuth = memo(function GoogleAuth({ dividerLabel, action }) {
       setGoogleWidth(googleWrapRef.current.offsetWidth);
     }
   }, []);
-  
-  if (isLoading) return <Loading />
 
   return (
     <>
@@ -104,36 +117,41 @@ export const GoogleAuth = memo(function GoogleAuth({ dividerLabel, action }) {
       </div>
 
       <div className="auth-google-wrap" ref={googleWrapRef}>
-        <GoogleLogin
-          width={googleWidth}
-          shape="pill"
-          theme="outline"
-          text={action}
-          logo_alignment="center"
-          onSuccess={async (credentialResponse) => {
-            try {
-              setIsLoading(true)
-              await googleAuth(credentialResponse)
-              navigate('/')
-              await Promise.all([
-                fetchUserInfo(),
-                fetchUserHistory()
-              ]);
-            } catch (error) {
-              toast.push(getGoogleAuthToast(error))
-            } finally {
-              setIsLoading(false)
-            }
-          }}
-          onError={() => {
-            console.log("Google Auth Failed")
-            toast.push({
-              type: 'error',
-              title: 'Google sign-in cancelled',
-              message: 'The Google sign-in window was closed or failed to load. Please try again.',
-            });
-          }}
-        />
+        { isLoading 
+            ? <GoogleButtonLoading />
+            : <GoogleLogin
+                width={googleWidth}
+                shape="pill"
+                theme="outline"
+                text={action}
+                logo_alignment="center"
+                onSuccess={async (credentialResponse) => {
+                  try {
+                    setIsLoading(true)
+                    await googleAuth(credentialResponse)
+                    await Promise.all([
+                      fetchUserInfo(),
+                      fetchUserHistory()
+                    ])
+                      .then(() => getDashboardInfo())
+                      .catch(() => {})
+                    navigate('/')
+                  } catch (error) {
+                    toast.push(getGoogleAuthToast(error))
+                  } finally {
+                    setIsLoading(false)
+                  }
+                }}
+                onError={() => {
+                  console.log("Google Auth Failed")
+                  toast.push({
+                    type: 'error',
+                    title: 'Google sign-in cancelled',
+                    message: 'The Google sign-in window was closed or failed to load. Please try again.',
+                  });
+                }}
+              />
+        }
       </div>
     </>
   )
