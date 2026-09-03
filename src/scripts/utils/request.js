@@ -1,4 +1,4 @@
-import { url } from './url.js';
+import { url } from '../../constant/url.js';
 import { fetchWithAuth } from './fetchWithAuth.js';
 
 export const request = {

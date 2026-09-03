@@ -1,5 +1,5 @@
 import { authStore } from '../../stores/authStore.js';
-import { url } from './url.js';
+import { url } from '../../constant/url.js';
 
 
 export async function fetchWithAuth(path, options = {}) {

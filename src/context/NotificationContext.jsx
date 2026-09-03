@@ -196,6 +196,7 @@ export const NotificationProvider = ({ children }) => {
     setUnreadCount(0);
     setSettings(null);
     setLoading(false);
+    hasLoadNotifications.current = false
   }, [token]);
 
   // =======================

@@ -1,5 +1,5 @@
 import { io } from "socket.io-client";
-import { url } from '../scripts/utils/url.js'
+import { url } from '../constant/url.js'
 
 class SocketService {
   constructor() {
