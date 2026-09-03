@@ -60,7 +60,7 @@ export const adminStore = create((set, get) => ({
     })
   },
   
-  stats: () => {
+  useStats: () => {
     const { feedbacks } = get()
     return {
       total: feedbacks.length,

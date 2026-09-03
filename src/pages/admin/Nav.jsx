@@ -4,9 +4,11 @@ import { adminStore } from '../../stores/AdminStore';
 import './Nav.css';
 
 export function Nav({ sidebarOpen, setSidebarOpen }) {
-  const stats = adminStore(state => state.stats)
+  const useStats = adminStore(state => state.useStats)
   const page = adminStore(state => state.page)
   const navigate = useNavigate()
+
+  const stats = useStats()
   
   const NAV = [
     { key: '', icon: <Ic.Home />, label: 'Home' },

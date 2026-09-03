@@ -56,13 +56,15 @@ const fmtFull = (d) => d ? new Date(d).toLocaleString('en-NG', { dateStyle: 'med
 
 // ==================== COMPONENT ====================
 export default function Feedback() {
-  const { feedbacks, setFeedbacks, stats, setPage } = adminStore()
+  const { feedbacks, setFeedbacks, useStats, setPage } = adminStore()
   const [filter, setFilter] = useState('All');
   const [search, setSearch] = useState('');
   const [drawer, setDrawer] = useState(null);
   const [deleteModal, setDeleteModal] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [toast, setToast] = useState(null);
+
+  const stats = useStats()
   
   useEffect(() => {
     setPage('feedback')
