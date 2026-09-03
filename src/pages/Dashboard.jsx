@@ -1,6 +1,6 @@
 import { useState, memo } from "react";
 import { Link } from 'react-router';
-import { Menu } from '../components/Menu';
+import { Menu } from '../components/layouts/Menu';
 import { InstallAppBanner } from '../components/InstallAppBanner';
 import usePushNotifications from '../hooks/usePushNotifications';
 import { useNotifications } from '../context/NotificationContext';

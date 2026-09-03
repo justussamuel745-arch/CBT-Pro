@@ -243,7 +243,7 @@ class PushNotificationService {
 
       await registration.showNotification(title, {
         body,
-        icon: `${window.location.origin}/icons/pwa-512x512.png`,
+        icon: `${window.location.origin}/icons/pwa-512x512-circle.png`,
         badge: `${window.location.origin}/icons/badge-96x96.png`,
       });
 

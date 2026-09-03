@@ -5,7 +5,7 @@ import { Calculator } from '../../components/Calculator.jsx'
 import { AstraAIModal } from '../../components/AstraAIModal'
 import { request } from '../../scripts/utils/request';
 import { subjectsData } from '../../scripts/data/subjectsData.js'
-import { Image } from '../../components/Image'
+import { Image } from '../../components/common/Image'
 import { formatName } from '../../scripts/utils/formatName.js';
 import { ModalStripe, CSS } from '../../components/NotificationSystem';
 import { ReportQuestionModal } from "../../components/ReportQuestionModal";

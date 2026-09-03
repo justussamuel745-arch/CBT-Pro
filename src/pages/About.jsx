@@ -1,5 +1,5 @@
 import { Link } from 'react-router';
-import { Footer } from '../components/Footer';
+import { Footer } from '../components/layouts/Footer';
 import './About.css';
 
 export default function About(){

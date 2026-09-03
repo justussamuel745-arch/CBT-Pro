@@ -32,7 +32,6 @@ import { useExamDataSync } from './hooks/useExamDataSync';
 import { useAutoThemeColor } from './hooks/useAutoThemeColor';
 import './App.css';
 
-const Games = lazy(() => import('./pages/games/Games.jsx'));
 const Delete = lazy(() => import('./pages/Delete.jsx'));
 const Admin = lazy(() => import('./pages/admin/Admin.jsx'));
 
@@ -105,14 +104,6 @@ function App() {
             <Route path="/simulator" element={<ExamSimulator />} />
           </Route>
           <Route path="/syllabus" element={<Syllabus />} />
-          <Route
-            path="/game/*"
-            element={
-              <Suspense fallback={<Loading />}>
-                <Games />
-              </Suspense>
-            }
-          />
           <Route
             path="/delete"
             element={

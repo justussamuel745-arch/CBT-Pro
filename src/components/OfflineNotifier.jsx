@@ -84,20 +84,6 @@ const notificationListener = async (setNotifications, setUnreadCount) => {
 
 }
 
-const productionTest = () => {
-  // Test suite during production
-    if (import.meta.env.VITE_ENV === 'production') {
-      (async () => {
-        const result = await pushNotificationService.showNotification({
-          title: 'Notification Test: JAMB Mock 1',
-          body: 'Your scheduled exam "JAMB Mock 1" is 1h away. The exam covers English and Mathematics and is scheduled for 120 minutes, with a target score of 160. Difficulty level: Mixed. Please review your preparation, ensure you have a stable environment, and be ready to begin at the scheduled time. Your progress and performance will be recorded after completion.'
-        })
-        console.log('This is a production test');
-        console.log('Offline Notification Test');
-        console.log(result);
-      })()
-    }
-}
 
 export const OfflineNotifier = memo(function OfflineNotifier() {
   const { setNotifications, setUnreadCount } = useNotifications();
@@ -107,7 +93,6 @@ export const OfflineNotifier = memo(function OfflineNotifier() {
 
   useEffect(() => {
     if (!token || !userInfo || !userInfo?.notificationSettings?.reminder) return
-    productionTest()
     
     // start after 1 minute
     const intervalId = setInterval(() => notificationListener(setNotifications, setUnreadCount), 1000 * 60)

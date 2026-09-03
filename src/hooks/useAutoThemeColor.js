@@ -27,12 +27,14 @@ export function useAutoThemeColor() {
       const bg = getClosestBackground(topEl);
       const hex = rgbToHex(bg);
 
+      /*
       console.log('[theme-color]', {
         sampledElement: topEl,
         className: topEl.className,
         rawBg: bg,
         hex,
       });
+      */
 
       meta.setAttribute('content', hex);
     };

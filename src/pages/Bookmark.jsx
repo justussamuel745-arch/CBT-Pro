@@ -3,7 +3,7 @@ import { Link } from 'react-router';
 import { MarkdownContent } from '../components/MarkdownContent';
 import { subjectsData } from '../scripts/data/subjectsData.js';
 import { formatName } from '../scripts/utils/formatName.js';
-import { Image } from '../components/Image';
+import { Image } from '../components/common/Image';
 import { decrypt, encrypt } from '../scripts/utils/crypto';
 import { userStore } from '../stores/userStore';
 import './Bookmark.css'

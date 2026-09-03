@@ -3,7 +3,7 @@ import { useSearchParams, useNavigate} from 'react-router';
 import { toast } from 'react-hot-toast';
 import { MarkdownContent } from '../../components/MarkdownContent';
 import { request } from '../../scripts/utils/request';
-import { Image } from '../../components/Image';
+import { Image } from '../../components/common/Image';
 import { formatName } from '../../scripts/utils/formatName.js';
 import { decrypt } from '../../scripts/utils/crypto';
 import { authStore } from '../../stores/authStore';

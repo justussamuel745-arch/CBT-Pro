@@ -1,5 +1,5 @@
 import { useState, memo, useEffect } from 'react';
-import { getImage } from '../hooks/services/indexedDB/images';
+import { getImage } from '../../hooks/services/indexedDB/images';
 import './Image.css';
 
 

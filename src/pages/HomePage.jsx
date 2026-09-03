@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router'
-import { Footer } from '../components/Footer';
+import { Footer } from '../components/layouts/Footer';
 import { InstallAppBanner } from '../components/InstallAppBanner';
 import { authStore } from '../stores/authStore';
 import './HomePage.css'

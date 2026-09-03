@@ -5,7 +5,7 @@ import { Loading } from '../../components/Loading';
 import { Calculator } from '../../components/Calculator';
 import { AstraAIModal } from '../../components/AstraAIModal';
 import { formatName } from '../../scripts/utils/formatName';
-import { Image } from '../../components/Image'
+import { Image } from '../../components/common/Image'
 import { ModalDialog, CSS } from '../../components/NotificationSystem';
 import { ReportQuestionModal } from "../../components/ReportQuestionModal";
 import { AnswerCard } from '../../components/AnswerCard';
