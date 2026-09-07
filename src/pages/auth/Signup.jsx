@@ -203,6 +203,14 @@ function Register() {
       applySignUpScenario('success');
       setLoading(false)
     } catch (err) {
+      if (Array.isArray(err.error)){
+        const errs = {}
+        err.error.forEach(e => {
+          errs[e.field] = e.message
+        })
+        setErrors(errs)
+        return
+      }
       console.error('Error:', err);
       if (!err.status){
         applySignUpScenario('network');

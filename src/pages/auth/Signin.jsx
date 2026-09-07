@@ -23,7 +23,7 @@ function ToastProvider({ children }) {
       const toast = p.find(t => t.id === id);
       if (dismissType){
         //if (toast?.type === 'success') navigate('/');
-        if (toast?.type === 'info') navigate('/signup')
+        if (toast?.type === 'info') navigate('/auth/signup')
       }
       return p.map(t => t.id === id? {...t, exiting: true } : t);
     });
@@ -210,6 +210,14 @@ function SigninInner() {
         },
       });
     } catch (err) {
+      if (Array.isArray(err.error)){
+        const errs = {}
+        err.error.forEach(e => {
+          errs[e.field] = e.message
+        })
+        setErrors(errs)
+        return
+      }
       if (err.error === 'GOOGLE_SIGNIN_REQUIRED'){
         setModal({
           type: "error",
@@ -227,14 +235,21 @@ function SigninInner() {
         setFormAlert({ kind: "error", title: "Incorrect password", message: "The password you entered doesn't match this account. Try again or reset your password." });
         setErrors({ password: "Incorrect password." });
         toast.push({ type: "error", title: "Sign in failed", message: "Incorrect password." });
-      } else if (err.error === 'no_account'){
+      } else if (err.error === 'invalid_credential'){
         setModal({
-          type: "error", icon: <Ic.X />,
-          title: "No account found",
-          message: "We couldn't find an account with <strong>" + email + "</strong>. Check the email or create a new account.",
-          primaryLabel: "Create account",
-          secondaryLabel: "Try again",
-          onPrimary: () => { setModal(null); toast.push({ type: "info", title: "Switch to Sign Up", message: "Creating a new account." });}
+          type: "error",
+          icon: <Ic.X />,
+          title: "Invalid email or password",
+          message: "The email or password you entered is incorrect. Please check your details and try again.",
+          primaryLabel: "Try again",
+          secondaryLabel: "Create account",
+          onPrimary: () => {
+            setModal(null);
+          },
+          onSecondary: () => {
+            setModal(null);
+            navigate('/auth/signup')
+          }
         });
       } else if (err.status === 429){
         setModal({

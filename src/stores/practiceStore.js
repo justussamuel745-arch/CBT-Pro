@@ -67,7 +67,6 @@ export const practiceStore = create(set => ({
     const userId = userStore.getState().userInfo?._id
     const answers = examStore.getState().answers
     const examQuestions = examStore.getState().examQuestions
-    console.log(examQuestions);
     const bookmarksRaw = JSON.parse(localStorage.getItem('bookmarks'))
     let bookmarks = bookmarksRaw ? decrypt(bookmarksRaw) : []
     const subjectStats = {};
