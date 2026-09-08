@@ -6,7 +6,7 @@
 */
 
 const DB_NAME = "CBTPro";
-const DB_VERSION = 14;
+const DB_VERSION = 15;
 
 
 /* ================================
@@ -372,6 +372,28 @@ const createExamStatsStore = (db) => {
   });
 };
 
+/* ================================
+   BOOKMARKS
+================================ */
+
+/* ================================
+   BOOKMARKS
+================================ */
+
+const createBookmarksStore = (db) => {
+  if (db.objectStoreNames.contains("bookmarks")) {
+    return;
+  }
+
+  const store = db.createObjectStore("bookmarks", {
+    keyPath: "id",
+  });
+
+  store.createIndex("userId", "userId", {
+    unique: false,
+  });
+};
+
 
 /* ================================
    OPEN DATABASE
@@ -397,7 +419,8 @@ export function openDB() {
       createNotificationQueueStore(db);
       createOfflineNotificationsStore(db);
       createUpcomingExamsStore(db);
-      createExamStatsStore(db)
+      createExamStatsStore(db);
+      createBookmarksStore(db)
     };
 
     request.onsuccess = () => {

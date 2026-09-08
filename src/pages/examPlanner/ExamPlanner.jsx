@@ -152,7 +152,7 @@ function EmptyState() {
       <p className="planner-empty__text">
         Create your first personal mock exam and start working toward your target score.
       </p>
-      <Link className="planner-btn planner-btn--primary" to="/exam-planners/schedule">
+      <Link className="planner-btn planner-btn--primary" to="/exam-planner/schedule">
         <i className="fa-solid fa-plus" aria-hidden="true"></i>
         Create Exam
       </Link>

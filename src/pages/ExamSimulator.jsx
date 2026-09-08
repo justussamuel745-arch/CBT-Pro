@@ -12,6 +12,8 @@ import { ModalStripe, CSS } from '../components/NotificationSystem';
 import { practiceStore } from '../stores/practiceStore';
 import { scheduledExamStore } from '../stores/scheduledExamStore';
 import { examStore } from '../stores/examStore';
+import { userStore } from '../stores/userStore';
+import { addBookmark, deleteBookmark} from '../hooks/services/indexedDB/bookmarks.js';
 import './ExamSimulator.css';
 
 const ExpensiveChild = memo(function ExpensiveChild({ submitExam, hours, minutes, skipAutoSubmit }) {
@@ -26,6 +28,7 @@ export default function ExamSimulator() {
   const setOffline = examStore(state => state.setOffline)
   const loadError = examStore(state => state.loadError)
   const setLoadError = examStore(state => state.setLoadError)
+  const userId = userStore(state => state.userId)
   const navigate = useNavigate();
   const [ toggleCalc, setToggleCalc ] = useState(false);
   const [ toggleNav, setToggleNav ] = useState(false);
@@ -231,10 +234,22 @@ export default function ExamSimulator() {
 
   }, [ currentIndex, currentSubject ])
 
-  function addToBookmark() {
-    const qsId = currentQues[ 0 ].id
+  async function addToBookmark() {
+    const  { id:qsId, ...qs } = currentQues[ 0 ]
     const findAns = answers.find(ans => ans.id === qsId)
     let isBmk = !findAns.isBookmarked
+
+    const id = 'bmk' + qsId + userId
+    if (isBmk){
+      const localBookmark = {
+        id,
+        userId,
+        ...qs
+      }
+      await addBookmark(localBookmark)
+    } else {
+      await deleteBookmark(id)
+    }
     setAnswers(prev => prev.map(ans => ans.id === qsId ? { ...ans, isBookmarked: isBmk } : ans))
     setSavedBookmark(isBmk)
   }

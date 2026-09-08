@@ -3,6 +3,7 @@ import { request } from '../scripts/utils/request.js';
 import { decrypt } from '../scripts/utils/crypto.js';
 import { deleteAllQuestions } from '../hooks/services/indexedDB/questions.js';
 import { deleteUser } from '../hooks/services/indexedDB/users';
+import { userStore } from './userStore.js';
 import pushNotificationService from '../services/pushNotificationService';
 
 export const authStore = create(set => ({
@@ -92,8 +93,17 @@ export const authStore = create(set => ({
       deleteUser()
     ])
 
+    userStore.setState({
+      userId: null,
+      userInfo: null,
+      profileFields: {},
+      historyData: null
+    })
+
     set({
-      token: null
+      token: null,
+      isAdmin: false,
+      isActivated: false
     })
   },
   

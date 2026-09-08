@@ -369,7 +369,7 @@ export default function Review() {
                   }
                   <AnswerCard
                     explanation={ques.explanation.text}
-                    correctAnswers={ques.correctAnswers}
+                    correctAnswers={ques.correctAnswers.join(' ').toUpperCase()}
                     ques={ques}
                     setChatWithAI={setChatWithAI}
                   />

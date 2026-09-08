@@ -1,11 +1,12 @@
 import { useState, useEffect, useCallback, useRef,  memo } from 'react';
 import { Link } from 'react-router';
+import { toast } from 'react-hot-toast';
 import { MarkdownContent } from '../components/MarkdownContent';
 import { subjectsData } from '../scripts/data/subjectsData.js';
 import { formatName } from '../scripts/utils/formatName.js';
 import { Image } from '../components/common/Image';
-import { decrypt, encrypt } from '../scripts/utils/crypto';
 import { userStore } from '../stores/userStore';
+import { getUserBookmarks, deleteBookmark } from '../hooks/services/indexedDB/bookmarks.js';
 import './Bookmark.css'
 
 const ExpensiveBmkModal = memo(function ExpensiveBmkModal({ modalQsInfo, setModalQsInfo }){
@@ -64,7 +65,7 @@ const ExpensiveBmkModal = memo(function ExpensiveBmkModal({ modalQsInfo, setModa
 
 
 export default function Bookmark() {
-  const userInfo = userStore(state => state.userInfo)
+  const userId = userStore(state => state.userId)
   const [bookmarkData, setBookmarkData] = useState([])
   const [noBmkFound, setNoBmkFound] = useState(false)
   const [modalQsInfo, setModalQsInfo] = useState(null)
@@ -73,14 +74,15 @@ export default function Bookmark() {
   const subjectsBmkRef = useRef([])
   
   useEffect(() => {
-    const bookmarks = decrypt(JSON.parse(localStorage.getItem('bookmarks'))) || []
-    const data = bookmarks.filter(bmk => bmk.userId === userInfo?._id)
-    setBookmarkData(data)
-    setNoBmkFound(data.length === 0 ? true : false)
-    allBookmarkRef.current = data
-    subjectsBmkRef.current = data
+    (async () => {
+      const bookmarks = await getUserBookmarks(userId).catch(() => null)
+      setBookmarkData(bookmarks ? bookmarks : [])
+      setNoBmkFound(!bookmarks || bookmarks.length === 0 ? true : false)
+      allBookmarkRef.current = bookmarks
+      subjectsBmkRef.current = bookmarks
+    })()
     
-  },[setBookmarkData, setNoBmkFound, userInfo?._id])
+  },[setBookmarkData, setNoBmkFound, userId])
   
   const complexSearch = useCallback((d, keyWord) => {
     if (d.question?.comprehension && d.question.comprehension.toLowerCase().includes(keyWord.toLowerCase())){
@@ -142,9 +144,13 @@ export default function Bookmark() {
     allBookmarkRef.current = updatedBookmarks
     subjectsBmkRef.current = subjectsBmkRef.current.filter(b => b.id !== qsId)
     const filter = bookmarkData.filter(b => b.id !== qsId)
-    setBookmarkData(filter)
-    setNoBmkFound(filter.length <= 0 || updatedBookmarks.length <= 0 ? true : false)
-    localStorage.setItem('bookmarks', JSON.stringify(encrypt(filter)));
+    try {
+      await deleteBookmark(qsId)
+      setBookmarkData(filter)
+      setNoBmkFound(filter.length <= 0 || updatedBookmarks.length <= 0 ? true : false)
+    } catch (err) {
+      toast.error(err.message || 'Error deleting bookmarked')
+    }
   }
   
   return (

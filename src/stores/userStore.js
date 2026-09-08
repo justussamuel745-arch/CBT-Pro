@@ -17,6 +17,7 @@ export const userStore = create(set => ({
     STORE
   ==========*/
   userInfo: null,
+  userId: null,
   profileFields: {},
   historyData: null,
 
@@ -90,6 +91,7 @@ export const userStore = create(set => ({
         blob: blob,
         id: 'current-user'
       },
+      userId: data._id,
       profileFields: {
         fullName: data.fullName || '',
         phoneNumber: data.phoneNumber || '',
@@ -164,6 +166,7 @@ export const userStore = create(set => ({
 
     set({
       userInfo: user,
+      userId: user._id,
       profileFields: {
         fullName: user?.fullName || '',
         phoneNumber: user?.phoneNumber || '',

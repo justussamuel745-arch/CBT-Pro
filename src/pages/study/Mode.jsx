@@ -13,7 +13,8 @@ import { AnswerCard } from '../../components/AnswerCard';
 import { Loading } from '../../components/Loading';
 import { saveQuestions, getQuestions } from '../../hooks/services/indexedDB/questions';
 import { saveAllImages } from '../../hooks/services/indexedDB/images';
-import { decrypt, encrypt } from '../../scripts/utils/crypto';
+import { addBookmark, deleteBookmark} from '../../hooks/services/indexedDB/bookmarks.js';
+import { decrypt } from '../../scripts/utils/crypto';
 import { studyStore } from '../../stores/studyStore';
 import { userStore } from '../../stores/userStore';
 import './Mode.css'
@@ -38,7 +39,7 @@ const Notification = memo(function Notification({type, title, body, primaryLabel
 
 export default function Mode() {
   const studyConfig = studyStore(state => state.studyConfig)
-  const userId = userStore(state => state.userInfo)?._id
+  const userId = userStore(state => state.userId)
   const navigate = useNavigate()
   const [toggleCalc, setToggleCalc] = useState(false);
   const [toggleNav, setToggleNav] = useState(false);
@@ -308,21 +309,23 @@ export default function Mode() {
                   <rect x="3" y="14" width="7" height="7"></rect>
                 </svg>
               </button>
-              <button className={`mode-icon-btn ${currentBmkCheck && 'active'}`} onClick={() => {
+              <button className={`mode-icon-btn ${currentBmkCheck && 'active'}`} onClick={async () => {
                 const toggle = !toggleBmk
+                const { id: qsId, ...qs } = currentQuestion[0]
+                const id = 'bmk' + qsId + userId
+                if (toggle){
+                  const localBookmark = {
+                    id,
+                    userId,
+                    ...qs
+                  }
+                  await addBookmark(localBookmark)
+                } else {
+                  await deleteBookmark(id)
+                }
                 setToggleBmk(toggle)
                 setCurrentBmkCheck(toggle)
                 setRecords(prev => prev.map(r => r.id === currentQuestion[0].id ? {...r, isBookmarked: toggle} : r))
-                const raw = localStorage.getItem('bookmarks')
-                const questionsStorage = raw ? (decrypt(JSON.parse(raw)) || []) : []
-                const currentQ = currentQuestion[0]
-
-                const updatedStorage = toggle
-                ? [...questionsStorage.filter(qs => qs.id !== currentQ.id), { userId, ...currentQ}]
-                : questionsStorage.filter(qs => qs.id !== currentQ.id)
-
-                localStorage.setItem('bookmarks', JSON.stringify(encrypt(updatedStorage)))
-                
               }}>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path>

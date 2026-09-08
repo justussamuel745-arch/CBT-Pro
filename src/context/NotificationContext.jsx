@@ -44,7 +44,7 @@ export const NotificationProvider = ({ children }) => {
   // 1. CONTEXT & HOOKS
   // =======================
   const token = authStore(state => state.token)
-  const userInfo = userStore(state => state.userInfo)
+  const userId = userStore(state => state.userId)
 
   // =======================
   // 2. LOCAL STATE
@@ -95,16 +95,16 @@ export const NotificationProvider = ({ children }) => {
     try {
       const data = await handlers.getNotifications();
       const serverNotifications = data.notifications || [];
-      const offline = await getOfflineNotifications(userInfo?._id)
+      const offline = await getOfflineNotifications(userId)
 
-      await clearLocalNotifications(userInfo?._id).catch(() => {})
+      await clearLocalNotifications(userId).catch(() => {})
       // Cache server data locally
       await saveNotifications(serverNotifications);
       updateFromList(serverNotifications.concat(offline));
     } catch (error) {
       console.error("Notification sync failed:", error);
     }
-  }, [updateFromList, userInfo, handlers]);
+  }, [updateFromList, userId, handlers]);
 
   /**
    * Handle real-time notification from Socket.IO
@@ -128,12 +128,12 @@ export const NotificationProvider = ({ children }) => {
    * Runs once on mount and also listens to 'online' event
    */
   useEffect(() => {
-    if (!token ||!userInfo?._id) return;
+    if (!token || !userId) return;
 
     const syncNotificationQueue = async () => {
-      const pending = await getPendingQueueActions(userInfo._id);
+      const pending = await getPendingQueueActions(userId);
       if (!pending || pending.length === 0) return;
-      await processQueue(userInfo._id, handlers);
+      await processQueue(userId, handlers);
     };
 
     
@@ -146,7 +146,7 @@ export const NotificationProvider = ({ children }) => {
     const initialize = async () => {
       setLoading(true);
       // Step 1: Load cached data
-      await loadLocalNotifications(userInfo._id);
+      await loadLocalNotifications(userId);
       // Step 2: Sync with server if online
       if (navigator.onLine) {
         // sync offline queue before getting the notifications
@@ -167,7 +167,7 @@ export const NotificationProvider = ({ children }) => {
     return () => {
       window.removeEventListener("online", syncNotificationQueue);
     };
-  }, [token, userInfo, handlers,  loadLocalNotifications, syncNotifications]);
+  }, [token, userId, handlers,  loadLocalNotifications, syncNotifications]);
 
   
   /**
@@ -175,7 +175,7 @@ export const NotificationProvider = ({ children }) => {
    * Listens for "notification" events and cleans up on unmount/logout
    */
   useEffect(() => {
-    if (!token ||!userInfo?._id) return;
+    if (!token ||!userId) return;
 
     const socket = socketService.connect(token);
     socket.on("notification", handleNewNotification);
@@ -184,7 +184,7 @@ export const NotificationProvider = ({ children }) => {
       socket.off("notification", handleNewNotification);
       socketService.disconnect();
     };
-  }, [token, userInfo, handleNewNotification]);
+  }, [token, userId, handleNewNotification]);
 
   /**
    * Effect 3: Clear state on logout
@@ -218,7 +218,7 @@ export const NotificationProvider = ({ children }) => {
     syncNotifications,
 
     // Meta
-    userId: userInfo?._id,
+    userId,
     handlers,
     pwa
   };
