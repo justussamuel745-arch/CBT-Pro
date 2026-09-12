@@ -46,7 +46,9 @@ export default function Syllabus() {
   
   function closeSyllabus(){
     setModalActive(false)
-    syllabusFrameRef.current.src = ''
+    if (syllabusFrameRef.current) {
+      syllabusFrameRef.current.src = ''
+    }
     document.body.style.overflow = 'auto'
   }
   
