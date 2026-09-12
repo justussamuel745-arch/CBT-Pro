@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router';
 import { Message } from '../components/Message';
-import { ToastProvider, useToast, CSS } from '../components/NotificationSystem';
 import { request } from '../scripts/utils/request';
 import { authStore } from '../stores/authStore';
 import './Payment.css';
@@ -560,20 +559,11 @@ function CreditsForm({ toast }) {
 // ─────────────────────────────────────────────────────────────
 // MAIN PAGE
 // ─────────────────────────────────────────────────────────────
-function PaymentInner() {
+export default function Payment() {
   const isActivated = authStore(state => state.isActivated)
   const [innerTab, setInnerTab] = useState('pay');
   const [blockPayment, setBlockPayment] = useState(false)
   const toast = useToastState();
-
-  /*=========== Inject Notification Styles (used by the activation-blocked toast) ==============*/
-  useEffect(() => {
-    const el = document.createElement("style");
-    el.id = "__ns_styles";
-    el.textContent = CSS[0];
-    document.head.appendChild(el);
-    return () => document.getElementById("__ns_styles")?.remove();
-  }, []);
 
   if (blockPayment) {
     return <Message title="Account Already Activated" message="Your account is activated and ready to use. No further action needed." action={() => setBlockPayment(false)} btnLabel="Go Back" />
@@ -614,13 +604,5 @@ function PaymentInner() {
         </div>
       </div>
     </div>
-  );
-}
-
-export default function Payment() {
-  return (
-    <ToastProvider position="top-right">
-      <PaymentInner />
-    </ToastProvider>
   );
 }

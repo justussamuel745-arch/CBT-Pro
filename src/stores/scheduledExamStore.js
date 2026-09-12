@@ -8,6 +8,7 @@ import {
   deleteOfflineNotification,
   updateOfflineNotification
 } from '../hooks/services/indexedDB/offlineNotifications.js';
+import { toast } from 'react-hot-toast';
 
 const validateField = (form) => {
   const acceptedFields = [
@@ -197,6 +198,33 @@ export const scheduledExamStore = create((set, get) => ({
     return questions
   },
 
+  fetchScheduledExamHistory: async () => {
+    const res = await request.auth(
+      "/api/exam-planner/history",
+      {
+        method: "GET",
+      }
+    );
+
+    const {
+      historyStats,
+      history: historyData,
+      achievements: achievementsData,
+    } = res.body;
+
+    setHistoryStats(historyStats)
+    setHistory(
+      Array.isArray(historyData)
+        ? historyData
+        : []
+    )
+    setAchievements(
+      Array.isArray(achievementsData)
+        ? achievementsData
+        : []
+    )
+  },
+
   submitScheduledExam: async (timeSpent, navigate) => {
     const { examId, startedAt } = get().submissionRequirement
     const completedAt = new Date().toISOString()
@@ -227,6 +255,10 @@ export const scheduledExamStore = create((set, get) => ({
         stats: result.stats,
         upcomingExams: result.upcomingExams,
         submissionRequirement: null
+      })
+
+      fetchScheduledExamHistory().catch((err) => {
+        toast.error(err?.error || 'Failed to update exam history.')
       })
     } catch (error) {
       if (!navigator.onLine) {
@@ -276,7 +308,13 @@ export const scheduledExamStore = create((set, get) => ({
         }
       })
       set({
+        stats: result.stats,
+        upcomingExams: result.upcomingExams,
         submissionRequirement: null
+      })
+      
+      fetchScheduledExamHistory().catch((err) => {
+        toast.error(err?.error || 'Failed to update exam history.')
       })
     } catch (error) {
       console.log(error)
