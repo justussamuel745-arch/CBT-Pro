@@ -246,15 +246,17 @@ export const scheduledExamStore = create((set, get) => ({
         body: JSON.stringify(submissionRequirement)
       })
       const { attempt: result } = res.body
-      navigate('/exam-planner/result', {
-        state: {
-          result
-        }
-      })
+
       set({
         stats: result.stats,
         upcomingExams: result.upcomingExams,
         submissionRequirement: null
+      })
+      
+      navigate('/exam-planner/result', {
+        state: {
+          result
+        }
       })
 
       fetchScheduledExamHistory().catch((err) => {
@@ -302,15 +304,17 @@ export const scheduledExamStore = create((set, get) => ({
         loadError: null
       })
       const { attempt: result } = res.body
-      navigate('/exam-planner/result', {
-        state: {
-          result
-        }
-      })
+
       set({
         stats: result.stats,
         upcomingExams: result.upcomingExams,
         submissionRequirement: null
+      })
+      
+      navigate('/exam-planner/result', {
+        state: {
+          result
+        }
       })
       
       fetchScheduledExamHistory().catch((err) => {
