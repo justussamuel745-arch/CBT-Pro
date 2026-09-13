@@ -4,7 +4,7 @@ import { AIStore } from '../stores/AIStore';
 
 export const AnswerCard = memo(function AnswerCard({ explanation, correctAnswers, ques, setChatWithAI }){
   const { onAskAI, setChatMessages, aiExplanations, setAiExplanations } = AIStore(state => state)
-  const question = ques.question?.qs || ques.question
+  const question = ques.question?.qs ?? ques.question ?? ""
   const qsId = ques.id
   const [aiOpen, setAiOpen] = useState(false);
   const [aiLoading, setAiLoading] = useState(false);

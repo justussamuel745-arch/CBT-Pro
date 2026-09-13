@@ -381,15 +381,15 @@ export default function Mode() {
                       
                       {typeof ques.question === 'object' && ques.question?.instruction && <><strong><MarkdownContent>{ques.question.instruction}</MarkdownContent></strong><br /></>}
                       {typeof ques.question === 'object' && ques.question?.comprehension && <><strong dangerouslySetInnerHTML={{ __html: ques.question.comprehension }} /><br /></>}
-                      {ques.question?.qs 
+                      {typeof ques.question === 'object'
                         ? (
                             <MarkdownContent>
-                              {ques.question.qs}
+                              {ques.question.qs ?? ""}
                             </MarkdownContent>
                           )
                         : (
                             <MarkdownContent >
-                              {ques.question}
+                              {ques.question ?? ""}
                             </MarkdownContent>
                           )
                       }

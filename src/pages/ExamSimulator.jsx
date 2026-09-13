@@ -514,18 +514,18 @@ export default function ExamSimulator() {
 
                     {ques.image?.url && <Image imageUrl={ques.image.url} />}
 
-                    {ques.question.instruction && <><strong><MarkdownContent>{ques.question.instruction}</MarkdownContent></strong><br /></>}
-                    {ques.question.comprehension && <><strong dangerouslySetInnerHTML={{ __html: ques.question.comprehension }}></strong><br /></>}
+                    {ques.question?.instruction && <><strong><MarkdownContent>{ques.question.instruction}</MarkdownContent></strong><br /></>}
+                    {ques.question?.comprehension && <><strong dangerouslySetInnerHTML={{ __html: ques.question.comprehension }}></strong><br /></>}
                     {
-                      ques.question?.qs
+                      typeof ques.question === 'object'
                         ? (
                           <MarkdownContent>
-                            {ques.question.qs}
+                            {ques.question.qs ?? ""}
                           </MarkdownContent>
                         )
                         : (
                           <MarkdownContent >
-                            {ques.question}
+                            {ques.question ?? ""}
                           </MarkdownContent>
                         )
                     }
