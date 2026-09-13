@@ -10,6 +10,7 @@ import HomePage from './pages/HomePage';
 import  Study from './pages/study/Study';
 import Practice from './pages/practice/Practice';
 import About  from './pages/About';
+import HelpCenter  from './pages/HelpCenter';
 import Feedback from './pages/Feedback';
 import Legal from './pages/Legal';
 import Payment from './pages/Payment';
@@ -89,6 +90,7 @@ function App() {
         <Route path="/auth/*" element={<Auth />} />
         <Route path="/about" element={<About />} />
         <Route path="/legal" element={<Legal />} />
+        <Route path="/help" element={<HelpCenter />} />
 
         <Route element={<ProtectRoutes />}>
           <Route path="/notifications" element={<Notifications />} />

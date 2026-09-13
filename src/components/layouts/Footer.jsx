@@ -1,7 +1,10 @@
-import { Link } from 'react-router'
+import { Link } from 'react-router';
+import { authStore } from '../../stores/authStore';
 import './Footer.css'
 
 export function Footer() {
+  const token = authStore(state => state.token)
+  
   return (
     <footer>
       <div className="footer-container">
@@ -12,10 +15,24 @@ export function Footer() {
           </div>
           <div>
             <h4>Explore</h4>
-            <a href="#home">Home</a>
+            {
+              token
+                ? 
+                (
+                  <>
+                    <Link to="/">Dashboard</Link>
+                    <Link to="/payment">Pricing/ Go Premium</Link>
+                  </>
+                )
+                : 
+                (
+                  <>
+                    <a href="#home">Home</a>
+                    <a href="#faq">FAQ</a>
+                  </>
+                )
+            }
             <Link to="/about">About</Link>
-            <Link to="/payment">Pricing/ Go Premium</Link>
-            <a href="#faq">FAQ</a>
           </div>
           <div>
             <h4>Resources</h4>
@@ -26,7 +43,7 @@ export function Footer() {
           </div>
           <div>
             <h4>Support</h4>
-            <a href="#help">Help Center</a>
+            <Link to="/help">Help Center</Link>
             <a href="mailto:teamcbtpro@gmail.com">Contact Us</a>
             <a href="#whatsapp">WhatsApp Group</a>
             <Link to="/legal">Terms &amp; Privacy</Link>

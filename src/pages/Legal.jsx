@@ -1,11 +1,15 @@
 import { useState } from 'react';
-import { Link } from 'react-router';
+import { Link, useSearchParams } from 'react-router';
 import './Legal.css';
 
 export default function Legal(){
+  const [ searchParams ] = useSearchParams()
+
+  const activeTab = searchParams.get('tab')
+  
   // TABS NAVIGATION STATE
-  const [ termsTab, setTermsTab ] = useState('active')
-  const [ privacyTab, setPrivacyTab ] = useState('')
+  const [ termsTab, setTermsTab ] = useState(!activeTab || activeTab !== 'privacy' ? 'active' : '')
+  const [ privacyTab, setPrivacyTab ] = useState(activeTab === 'privacy' ? 'active' : '')
   
   // TABS NAVIGATION
   function showTermTab(){
