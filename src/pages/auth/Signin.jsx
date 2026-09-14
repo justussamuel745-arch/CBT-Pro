@@ -231,10 +231,6 @@ function SigninInner() {
             setModal(null);
           }
         });
-      } else if (err.error === 'wrong_password'){
-        setFormAlert({ kind: "error", title: "Incorrect password", message: "The password you entered doesn't match this account. Try again or reset your password." });
-        setErrors({ password: "Incorrect password." });
-        toast.push({ type: "error", title: "Sign in failed", message: "Incorrect password." });
       } else if (err.error === 'invalid_credential'){
         setModal({
           type: "error",

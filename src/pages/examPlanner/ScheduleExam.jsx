@@ -1,11 +1,12 @@
-import { useState, useRef, useMemo } from "react";
-import { Link, useSearchParams, useLocation } from "react-router";
+import { useState, useEffect, useRef, useMemo } from "react";
+import { Link, useSearchParams, useLocation, useNavigate } from "react-router";
 import { toast } from 'react-hot-toast';
 import ScheduleSuccess from './ScheduleSuccess';
 import { scheduledExamStore } from '../../stores/scheduledExamStore';
 import { userStore } from '../../stores/userStore';
 import { subjectsData } from '../../scripts/data/subjectsData';
 import { formatName } from '../../scripts/utils/formatName';
+import { ModalDialog, CSS } from '../../components/NotificationSystem';
 import "./ScheduleExam.css";
 
 const SUBJECTS = subjectsData.map(sub => sub.name)
@@ -189,6 +190,11 @@ export default function ScheduleExam() {
   const onChangeStatus = scheduledExamStore(state => state.onChangeStatus)
   const setMissedExams = scheduledExamStore(state => state.setMissedExams)
 
+  const [modal, setModal] = useState(null)
+  const closeModal = () => setModal(null)
+
+  const navigate = useNavigate()
+
   const { state } = useLocation()
 
   const [ searchParams ] = useSearchParams()
@@ -210,6 +216,15 @@ export default function ScheduleExam() {
       ...formatDateTimeForInputs(examDate),
     };
   }, [ examId, state?.initialValues, upcomingExams ]);
+
+  useEffect(() => {
+    /*===== Render Modal Style ======*/
+    const el = document.createElement("style");
+    el.id = "__ns_styles";
+    el.textContent = CSS[0];
+    document.head.appendChild(el);
+    return () => document.getElementById("__ns_styles")?.remove();
+  }, [])
 
   const isEdit = Boolean(examId && initialValues);
   const isReschedule = Boolean(state?.initialValues)
@@ -275,6 +290,8 @@ export default function ScheduleExam() {
     delete updatedForm.date;
     delete updatedForm.time;
 
+    setServerError(null)
+
     try {
 
       await toast.promise(saveScheduledExam(updatedForm), {
@@ -291,8 +308,10 @@ export default function ScheduleExam() {
         );
       } else if (err.status >= 500) {
         setServerError('Something went wrong.');
+      } else if (err.status === 401) {
+        setModal(err.error)
       } else {
-        setServerError(err.error);
+        setServerError(err.error)
       }
     } finally {
       const btnElement = scheduleButtonRef.current;
@@ -755,6 +774,31 @@ export default function ScheduleExam() {
           </div>
         </div>
       </form>
+
+      {modal === 'app_activation_required' && (
+        <div className="ns-overlay" onClick={closeModal}>
+          <div
+            onClick={e => e.stopPropagation()}
+            style={{
+              width: '100%',
+              display: 'flex',
+              justifyContent: 'center',
+              padding: '0 1rem'
+            }}
+          >
+            <ModalDialog
+              type="info"
+              title="Activation Required"
+              subtitle="Exam Scheduling Limit • CBT Pro Policy"
+              body="You can only schedule one exam per day with free access. Activate the app to schedule additional exams and plan multiple practice sessions without this daily limit."
+              primaryLabel="Activate App"
+              onPrimary={() => navigate('/payment')}
+              onClose={closeModal}
+              closeLabel="Continue"
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

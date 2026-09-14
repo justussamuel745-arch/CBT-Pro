@@ -79,7 +79,7 @@ export default function Review() {
     });
     getReviewQuestions(subjectsObject, currentSubjectVar)
 
-    /*===== Render Notification Style ======*/
+    /*===== Render Modal Style ======*/
     const el = document.createElement("style");
     el.id = "__ns_styles";
     el.textContent = CSS[0];
