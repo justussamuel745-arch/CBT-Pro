@@ -97,7 +97,7 @@ export const AnswerCard = memo(function AnswerCard({ explanation, correctAnswers
   
   if (question.trim().split(/\s+/).length > 30){
     return (
-      <div className="mode-answer-section">
+      <div className="mode-answer-section" data-testid="answer-card">
         <div className="mode-answer-header">Correct Answer</div>
         <div className="mode-answer-correct">Option {correctAnswers}</div>
         <div className="mode-answer-explanation">
@@ -111,7 +111,7 @@ export const AnswerCard = memo(function AnswerCard({ explanation, correctAnswers
   }
   
   return (
-    <div className="mode-answer-section">
+    <div className="mode-answer-section" data-testid="answer-card">
       <div className="mode-answer-header">Correct Answer</div>
       <div className="mode-answer-correct">Option {correctAnswers}</div>
       <div className="mode-answer-explanation">

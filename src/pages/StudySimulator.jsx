@@ -18,7 +18,7 @@ import { decrypt } from '../scripts/utils/crypto';
 import { studyStore } from '../stores/studyStore';
 import { userStore } from '../stores/userStore';
 import { examStore } from '../stores/examStore';
-import './Mode.css';
+//import './Mode.css';
 
 function updateProgress(questions, qsId, status, progress){
   let index = questions.findIndex(item => item.id === qsId)
@@ -117,13 +117,10 @@ export default function StudySimulator() {
   }, [currentQs, questionsState])
 
   const progressBadge = useCallback((num) => {
-    if (!num) return ''
     const qsId = activeSubjectDetail?.questions[num]?.id
     const status = questionsState.find(s => s.qsId == qsId)?.status ?? ''
     return `${activeState?.qsId === qsId ? 'active' : ''} ${status}`
   },[activeState])
-
-  let PROGRESS_INDEX = -1
   
   //============ Future Update ==========//
   // user uses keyboard to navigate questions
@@ -304,17 +301,19 @@ export default function StudySimulator() {
   
   function getSelectedOption(qsId, optId = ''){
     let status;
-    setQuestionsState(prev => prev.map(q => {
-      if (q.qsId === qsId ){
-        const { userAnswer, correctAnswers } = q
-        status = !optId 
-          ? 'selected' 
-          : correctAnswers.includes(optId)
-            ? 'correct'
-            : 'wrong'
-        return {...q, userAnswer: optId, status }
-      } else {
-        return q
+    setQuestionsState(prev => 
+      prev.map(q => {
+        if (q.qsId === qsId ){
+          const { userAnswer, correctAnswers } = q
+          status = !optId 
+            ? 'selected' 
+            : correctAnswers.includes(optId)
+              ? 'correct'
+              : 'wrong'
+          return {...q, userAnswer: optId, status }
+        } else {
+          return q
+        }
       }
     ))
     setSubjectsDetail(prev => 
@@ -430,6 +429,7 @@ export default function StudySimulator() {
 
   if (!mode) return <Navigate to="/" />
   if (loading) return <Loading />
+  
   
   return (
     <>
@@ -604,7 +604,7 @@ export default function StudySimulator() {
               {
                 Array.from({ length: activeSubjectDetail.count }, (_, index) => index).map((index) => 
                   (
-                    <button className={`mode-progress-btn ${progressBadge(index)}` key={index} onClick={() => 
+                    <button className={`mode-progress-btn ${progressBadge(index)}`} key={index} onClick={() => 
                       {
                         const { currentQsIdx } = activeSubjectDetail
                         if (index === currentQsIdx) return
@@ -660,7 +660,7 @@ export default function StudySimulator() {
               {
                 Array.from({ length: activeSubjectDetail.count }, (_, index) => index).map(index => 
                   (
-                    <button className={`mode-progress-btn ${progressBadge(index)}` key={index} onClick={() => 
+                    <button className={`mode-progress-btn ${progressBadge(index)}`} key={index} onClick={() => 
                       {
                         const { currentQsIdx } = activeSubjectDetail
                         if (index === currentQsIdx) {
