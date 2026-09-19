@@ -18,7 +18,7 @@ import { decrypt } from '../scripts/utils/crypto';
 import { studyStore } from '../stores/studyStore';
 import { userStore } from '../stores/userStore';
 import { examStore } from '../stores/examStore';
-//import './Mode.css';
+import './StudySimulator.css';
 
 function updateProgress(questions, qsId, status, progress){
   let index = questions.findIndex(item => item.id === qsId)
