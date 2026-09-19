@@ -217,10 +217,10 @@ export default function Mode() {
     if (currentIdx > 0){
       const decreaseCurrentIdx = currentIdx - 1
       setCurrentIdx(decreaseCurrentIdx)
-      setOptionsCheck(null)
-      setDisplayAnswer(false)
     } else {
       setCurrentIdx(questions.length - 1)
+      setOptionsCheck(null)
+      setDisplayAnswer(false)
     }
   }
   
