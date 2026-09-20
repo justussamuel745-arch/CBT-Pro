@@ -1,23 +1,23 @@
 import { useState, useEffect, useRef, memo, useCallback, useMemo } from 'react'
 import { useNavigate, useSearchParams, Navigate } from 'react-router';
-import { MarkdownContent } from '../components/MarkdownContent';
-import { Calculator } from '../components/Calculator.jsx'
-import { AstraAIModal } from '../components/AstraAIModal'
-import { request } from '../scripts/utils/request';
-import { subjectsData } from '../scripts/data/subjectsData.js'
-import { Image } from '../components/common/Image'
-import { formatName } from '../scripts/utils/formatName.js';
-import { ModalStripe, CSS } from '../components/NotificationSystem';
-import { ReportQuestionModal } from "../components/ReportQuestionModal";
-import { AnswerCard } from '../components/AnswerCard';
-import { Loading } from '../components/Loading';
-import { saveQuestions, getQuestions } from '../hooks/services/indexedDB/questions';
-import { saveAllImages } from '../hooks/services/indexedDB/images';
-import { addBookmark, deleteBookmark } from '../hooks/services/indexedDB/bookmarks.js';
-import { decrypt } from '../scripts/utils/crypto';
-import { studyStore } from '../stores/studyStore';
-import { userStore } from '../stores/userStore';
-import { examStore } from '../stores/examStore';
+import { MarkdownContent } from '../../components/MarkdownContent';
+import { Calculator } from '../../components/Calculator.jsx'
+import { AstraAIModal } from '../../components/AstraAIModal'
+import { request } from '../../scripts/utils/request';
+import { subjectsData } from '../../scripts/data/subjectsData.js'
+import { Image } from '../../components/common/Image'
+import { formatName } from '../../scripts/utils/formatName.js';
+import { ModalStripe, CSS } from '../../components/NotificationSystem';
+import { ReportQuestionModal } from '../../components/ReportQuestionModal';
+import { AnswerCard } from '../../components/AnswerCard';
+import { saveQuestions, getQuestions } from '../../hooks/services/indexedDB/questions';
+import { saveAllImages } from '../../hooks/services/indexedDB/images';
+import { addBookmark, deleteBookmark } from '../../hooks/services/indexedDB/bookmarks.js';
+import { decrypt } from '../../scripts/utils/crypto';
+import { studyStore } from '../../stores/studyStore';
+import { userStore } from '../../stores/userStore';
+import { examStore } from '../../stores/examStore';
+import { SimulatorSkeleton } from './components/SimulatorSkeleton';
 import './StudySimulator.css';
 
 /* ============================================================
@@ -63,7 +63,7 @@ const HeaderActions = memo(function HeaderActions({ openReport, openAiChat, open
           <rect x="3" y="14" width="7" height="7"></rect>
         </svg>
       </button>
-      <button className="mode-icon-btn" onClick={openCalculator}>
+      <button className="mode-icon-btn" title="Calculator" onClick={openCalculator}>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <rect x="7" y="21" width="10" height="2"></rect>
           <rect x="7" y="17" width="10" height="2"></rect>
@@ -83,7 +83,7 @@ const Header = memo(function Header({ goBack, openReport, openAiChat, openNaviga
         <button className="mode-back-btn" onClick={goBack}>← Back</button>
         <div className="mode-header-actions">
           <HeaderActions openReport={openReport} openAiChat={openAiChat} openNavigator={openNavigator} openCalculator={openCalculator} />
-          <button className={`mode-icon-btn ${isBookmarked ? 'active' : ''}`} onClick={toggleBookmark}>
+          <button className={`mode-icon-btn ${isBookmarked ? 'active' : ''}`} title="Bookmark" onClick={toggleBookmark}>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path>
             </svg>
@@ -498,7 +498,7 @@ export default function StudySimulator() {
   const retry = useCallback(() => { closeModal(); setRefresh((r) => !r) }, [closeModal])
 
   if (!mode) return <Navigate to="/" />
-  if (loading) return <Loading />
+  if (loading) return <SimulatorSkeleton />
 
   const modalCopy = modal ? MODAL_COPY[modal] : null
 

@@ -9,6 +9,7 @@ export const examStore = create(set => ({
   answers: [],
   offline: null,
   loadError: null,
+  submissionStep: null,
 
   /*========
     ACTION

@@ -20,8 +20,8 @@ import Dashboard from '../pages/Dashboard';
 import Auth  from '../pages/auth/Auth';
 import Notifications  from '../pages/Notifications';
 import ExamPlanners from '../pages/examPlanner/ExamPlanners';
-import ExamSimulator from '../pages/ExamSimulator';
-import StudySimulator from '../pages/StudySimulator';
+import ExamSimulator from '../pages/simulator/ExamSimulator';
+import StudySimulator from '../pages/simulator/StudySimulator';
 
 const Delete = lazy(() => import('../pages/Delete.jsx'));
 const Admin = lazy(() => import('../pages/admin/Admin.jsx'));

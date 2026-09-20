@@ -1,0 +1,237 @@
+/* components/SubmittingOverlay.css */
+
+/* ---------- Overlay ---------- */
+.sub-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5em;
+  background: rgba(15, 18, 30, 0.55);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  animation: subFadeIn 0.25s ease both;
+}
+
+@keyframes subFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ---------- Card ---------- */
+.sub-card {
+  width: 100%;
+  max-width: 380px;
+  padding: 2em 1.75em 1.75em;
+  border-radius: 18px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 24px 60px rgba(15, 18, 30, 0.28);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  animation: subPop 0.35s cubic-bezier(0.2, 0.9, 0.3, 1.2) both;
+}
+
+@keyframes subPop {
+  from { opacity: 0; transform: translateY(14px) scale(0.96); }
+  to   { opacity: 1; transform: translateY(0)    scale(1); }
+}
+
+/* ---------- Spinner ---------- */
+.sub-spinner {
+  position: relative;
+  width: 84px;
+  height: 84px;
+  margin-bottom: 1.25em;
+}
+
+.sub-orbit {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 3px solid transparent;
+  border-top-color: #4f46e5;
+  border-right-color: rgba(79, 70, 229, 0.35);
+  animation: subSpin 1.1s linear infinite;
+}
+
+.sub-orbit:nth-child(2) {
+  inset: 10px;
+  border-top-color: #06b6d4;
+  border-right-color: rgba(6, 182, 212, 0.3);
+  animation-duration: 1.5s;
+  animation-direction: reverse;
+}
+
+.sub-orbit:nth-child(3) {
+  inset: 20px;
+  border-top-color: #a855f7;
+  border-right-color: rgba(168, 85, 247, 0.3);
+  animation-duration: 0.85s;
+}
+
+.sub-core {
+  position: absolute;
+  inset: 32px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #6d63ff, #4f46e5 70%);
+  box-shadow: 0 0 16px rgba(79, 70, 229, 0.5);
+  animation: subPulse 1.6s ease-in-out infinite;
+}
+
+@keyframes subSpin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes subPulse {
+  0%, 100% { transform: scale(1);    opacity: 1; }
+  50%      { transform: scale(0.88); opacity: 0.75; }
+}
+
+/* ---------- Title ---------- */
+.sub-title {
+  margin: 0 0 0.25em;
+  font-size: 1.15em;
+  font-weight: 700;
+  color: #111827;
+  letter-spacing: 0.01em;
+}
+
+.sub-subtitle {
+  margin: 0 0 1.5em;
+  font-size: 0.85em;
+  color: #6b7280;
+}
+
+/* ---------- Steps ---------- */
+.sub-steps {
+  list-style: none;
+  margin: 0 0 1.25em;
+  padding: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7em;
+}
+
+.sub-step {
+  display: flex;
+  align-items: center;
+  gap: 0.7em;
+  font-size: 0.9em;
+  text-align: left;
+  color: #9ca3af;
+  transition: color 0.3s ease;
+}
+
+.sub-step-marker {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background: #f3f4f6;
+  border: 1.5px solid #e5e7eb;
+  transition: all 0.3s ease;
+}
+
+.sub-step-marker svg {
+  width: 12px;
+  height: 12px;
+  color: #ffffff;
+}
+
+.sub-step-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #d1d5db;
+  transition: all 0.3s ease;
+}
+
+/* Idle */
+.sub-step.idle .sub-step-label { color: #9ca3af; }
+
+/* Active */
+.sub-step.active { color: #111827; }
+.sub-step.active .sub-step-marker {
+  background: #eef2ff;
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.12);
+}
+.sub-step.active .sub-step-dot {
+  background: #4f46e5;
+  animation: subDotPulse 1s ease-in-out infinite;
+}
+.sub-step.active .sub-step-label { font-weight: 600; }
+
+@keyframes subDotPulse {
+  0%, 100% { transform: scale(1);   opacity: 1; }
+  50%      { transform: scale(1.4); opacity: 0.6; }
+}
+
+/* Done */
+.sub-step.done { color: #059669; }
+.sub-step.done .sub-step-marker {
+  background: #059669;
+  border-color: #059669;
+}
+.sub-step.done .sub-step-label { font-weight: 500; }
+
+/* ---------- Progress bar ---------- */
+.sub-progress {
+  width: 100%;
+  height: 4px;
+  border-radius: 999px;
+  background: #f3f4f6;
+  overflow: hidden;
+}
+
+.sub-progress-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #4f46e5, #06b6d4, #a855f7);
+  background-size: 200% 100%;
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: subGradientShift 2.5s linear infinite;
+}
+
+@keyframes subGradientShift {
+  0%   { background-position:   0% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 480px) {
+  .sub-card {
+    padding: 1.5em 1.25em 1.25em;
+    border-radius: 14px;
+  }
+  .sub-spinner {
+    width: 72px;
+    height: 72px;
+  }
+  .sub-title { font-size: 1.05em; }
+  .sub-step  { font-size: 0.85em; }
+}
+
+/* ---------- Accessibility ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .sub-overlay,
+  .sub-card,
+  .sub-orbit,
+  .sub-core,
+  .sub-step-dot,
+  .sub-progress-fill {
+    animation: none !important;
+  }
+  .sub-progress-fill {
+    background: #4f46e5;
+  }
+}

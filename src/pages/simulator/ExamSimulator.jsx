@@ -1,19 +1,20 @@
 import { useState, useEffect, useRef, memo, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router';
-import { MarkdownContent } from '../components/MarkdownContent';
-import { formatName } from '../scripts/utils/formatName.js';
-import { CountdownTimer } from '../components/CountdownTimer'
-import { Calculator } from '../components/Calculator'
-import { Loading } from '../components/Loading';
-import { Offline } from '../components/Offline';
-import { LoadError } from '../components/LoadError';
-import { Image } from '../components/common/Image'
-import { ModalStripe, CSS } from '../components/NotificationSystem';
-import { practiceStore } from '../stores/practiceStore';
-import { scheduledExamStore } from '../stores/scheduledExamStore';
-import { examStore } from '../stores/examStore';
-import { userStore } from '../stores/userStore';
-import { addBookmark, deleteBookmark } from '../hooks/services/indexedDB/bookmarks.js';
+import { MarkdownContent } from '../../components/MarkdownContent';
+import { formatName } from '../../scripts/utils/formatName.js';
+import { CountdownTimer } from '../../components/CountdownTimer'
+import { Calculator } from '../../components/Calculator'
+import { Loading } from '../../components/Loading';
+import { Offline } from '../../components/Offline';
+import { Image } from '../../components/common/Image'
+import { ModalStripe, CSS } from '../../components/NotificationSystem';
+import { practiceStore } from '../../stores/practiceStore';
+import { scheduledExamStore } from '../../stores/scheduledExamStore';
+import { examStore } from '../../stores/examStore';
+import { userStore } from '../../stores/userStore';
+import { addBookmark, deleteBookmark } from '../../hooks/services/indexedDB/bookmarks.js';
+import { SimulatorSkeleton } from './components/SimulatorSkeleton';
+import { SubmittingOverlay } from './components/SubmittingOverlay';
 import './ExamSimulator.css';
 
 /* ============================================================
@@ -144,6 +145,7 @@ export default function ExamSimulator() {
   const setOffline = examStore((state) => state.setOffline)
   const loadError = examStore((state) => state.loadError)
   const setLoadError = examStore((state) => state.setLoadError)
+  const submissionStep = examStore((state) => state.submissionStep)
   const userId = userStore((state) => state.userId)
   const navigate = useNavigate();
 
@@ -271,6 +273,11 @@ export default function ExamSimulator() {
       }
     })()
 
+    // reset submissionStep
+    examStore.setState({
+      submissionStep: null
+    })
+
     return () => {
       cancelled = true
       setOffline(null)
@@ -340,12 +347,12 @@ export default function ExamSimulator() {
     const { id: qsId, ...qs } = currentQs
     const toggle = !answersById[qsId]?.isBookmarked
     const id = 'bmk' + qsId + userId
+    setAnswers((prev) => prev.map((ans) => ans.id === qsId ? { ...ans, isBookmarked: toggle } : ans))
     if (toggle) {
       await addBookmark({ id, userId, ...qs })
     } else {
       await deleteBookmark(id)
     }
-    setAnswers((prev) => prev.map((ans) => ans.id === qsId ? { ...ans, isBookmarked: toggle } : ans))
   }, [currentQs, answersById, userId, setAnswers])
 
   // --- Submit / navigation chrome ---
@@ -372,10 +379,11 @@ export default function ExamSimulator() {
     setRefresh((r) => !r)
   }, [closeModal])
 
+
   if (loadError) return <LoadError onRetry={loadError?.onRetry ?? undefined} message={loadError?.message ?? undefined} homeTo={loadError?.homeTo ?? undefined} homeLabel={loadError?.homeLabel ?? undefined} />
   if (offline) return <Offline onRetry={offline?.onRetry ?? undefined} text={loadError?.text ?? undefined} />
-  if (!isActive) return <Loading />
-  if (loading && import.meta.env.VITE_ENV !== 'development') return <Loading />
+  if (!isActive) return <SubmittingOverlay currentStep={submissionStep}/>
+  if (loading && import.meta.env.VITE_ENV !== 'development') return <SimulatorSkeleton />
 
   return (
     <>
@@ -397,12 +405,12 @@ export default function ExamSimulator() {
                   <rect x="3" y="14" width="7" height="7"></rect>
                 </svg>
               </button>
-              <button className={`exam-icon-btn ${savedBookmark ? 'active' : ''}`} onClick={toggleBookmark}>
+              <button className={`exam-icon-btn ${savedBookmark ? 'active' : ''}`} title="Bookmark" onClick={toggleBookmark}>
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path>
                 </svg>
               </button>
-              <button className="exam-icon-btn" onClick={toggleCalculator}>
+              <button className="exam-icon-btn" title="Calculator" onClick={toggleCalculator}>
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <rect x="7" y="21" width="10" height="2"></rect>
                   <rect x="7" y="17" width="10" height="2"></rect>

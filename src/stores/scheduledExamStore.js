@@ -252,6 +252,10 @@ export const scheduledExamStore = create((set, get) => ({
         upcomingExams: result.upcomingExams,
         submissionRequirement: null
       })
+
+      examStore.setState({
+        submissionStep: 4 // done
+      })
       
       navigate('/exam-planner/result', {
         state: {
@@ -309,6 +313,10 @@ export const scheduledExamStore = create((set, get) => ({
         stats: result.stats,
         upcomingExams: result.upcomingExams,
         submissionRequirement: null
+      })
+
+      examStore.setState({
+        submissionStep: 4 // done
       })
       
       navigate('/exam-planner/result', {

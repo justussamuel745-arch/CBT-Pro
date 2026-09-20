@@ -55,6 +55,9 @@ export const CountdownTimer = memo(function CountdownTimer({ onFinish, hours, mi
       
       if (examStore.getState().examConfig?.examType === 'practice') {
         calculateScore(timeTaken, timeAllocated).then(() => {
+          examStore.setState({
+            submissionStep: 4 // done
+          })
           navigate('/practice/score');
         })
       } else if (examStore.getState().examConfig?.examType === 'scheduled') {
