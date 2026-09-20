@@ -1,9 +1,20 @@
+import { useEffect } from 'react';
 import { Link } from 'react-router';
 import { authStore } from '../../stores/authStore';
 import './Footer.css'
 
 export function Footer() {
   const token = authStore(state => state.token)
+
+  useEffect(() => {
+    const id = window.location.hash.slice(1);
+  
+    if (id) {
+      document.getElementById(id)?.scrollIntoView({
+        behavior: 'smooth'
+      });
+    }
+  }, []);
   
   return (
     <footer>
@@ -27,8 +38,8 @@ export function Footer() {
                 : 
                 (
                   <>
-                    <a href="#home">Home</a>
-                    <a href="#faq">FAQ</a>
+                    <Link to="/#home">Home</Link>
+                    <Link to="/#faq">FAQ</Link>
                   </>
                 )
             }

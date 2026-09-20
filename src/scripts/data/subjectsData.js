@@ -23,431 +23,10 @@ import hausaImg from '../../assets/images/hausa.jpg';
 import historyImg from '../../assets/images/history.jpg';
 import frenchImg from '../../assets/images/french.jpg';
 import homeEconomicsImg from '../../assets/images/homeEconomics.jpg';
+import lekkiHeadmasterImg from '../../assets/images/lekkiHeadmaster.png';
 import insuranceImg from '../../assets/images/insurance.jpg';
 import civicImg from '../../assets/images/civic.jpg';
 import currentAffairsImg from '../../assets/images/current-affairs.jpg';
-
-/* COMPLETE SUBJECTS */
-/* export const subjectsData = [
-  {
-    id: "ENG001",
-    icon: `<img src="${englishImg}" style="width: 100%; border-radius: 16px" />`,
-    name: "English",
-    totalQuestions: 2450,
-    topics: [
-      "Comprehension and Summary",
-      "Description",
-      "Narration",
-      "Exposition",
-      "Argumentation/Persuasion",
-      "Synthesis of Ideas",
-      "Synonyms",
-      "Antonyms",
-      "Clause and Sentence Patterns",
-      "Word Classes",
-      "Agreement/Concord",
-      "Question Tags",
-      "Mechanics",
-      "Figurative Usage",
-      "Idiomatic Usage",
-      "Oral Forms",
-      "Vowels",
-      "Consonants",
-      "Consonant Clusters",
-      "Rhymes and Homophones",
-      "Word Stress",
-      "Emphatic Stress"
-    ],
-    category: 'all'
-  },
-
-  {
-    id: "MTH001",
-    icon: `<img src="${mathematicsImg}" style="width: 100%; border-radius: 16px" />`,
-    name: "Mathematics",
-    totalQuestions: 1890,
-    topics: [
-      "Algebra",
-      "Geometry",
-      "Trigonometry",
-      "Mensuration",
-      "Statistics",
-      "Probability",
-      "Calculus"
-    ],
-    category: 'science commercial'
-  },
-
-  {
-    id: "CHM001",
-    icon: `<img src="${chemistryImg}" style="width: 100%; border-radius: 16px" />`,
-    name: "Chemistry",
-    totalQuestions: 1560,
-    topics: [
-      "Atomic Structure",
-      "Periodic Table",
-      "Chemical Bonding",
-      "Organic Chemistry",
-      "Acids Bases and Salts",
-      "Electrolysis"
-    ],
-    category: 'science'
-  },
-
-  {
-    id: "PHY001",
-    icon: `<img src="${physicsImg}" style="width: 100%; border-radius: 16px" />`,
-    name: "Physics",
-    totalQuestions: 1420,
-    topics: [
-      "Measurements",
-      "Motion",
-      "Newton Laws",
-      "Heat Energy",
-      "Electricity",
-      "Waves",
-      "Optics"
-    ],
-    category: 'science'
-  },
-
-  {
-    id: "BIO001",
-    icon: `<img src="${biologyImg}" style="width: 100%; border-radius: 16px" />`,
-    name: "Biology",
-    totalQuestions: 1680,
-    topics: [
-      "Cell Structure",
-      "Nutrition",
-      "Respiration",
-      "Genetics",
-      "Ecology",
-      "Evolution"
-    ],
-    category: 'science'
-  },
-
-  {
-    id: "ECO001",
-    icon: `<img src="${economicsImg}" style="width: 100%; border-radius: 16px"/>`,
-    name: "Economics",
-    totalQuestions: 1340,
-    topics: [
-      "Economics as a Science",
-      "Economic Systems",
-      "Methods and Tools of Economic Analysis",
-      "The Theory of Demand",
-      "The Theory of Consumer Behaviour",
-      "The Theory of Supply",
-      "The Theory of Price Determination",
-      "The Theory of Production",
-      "Theory of Costs and Revenue",
-      "Market Structures",
-      "National Income",
-      "Money and Inflation",
-      "Financial Institutions",
-      "Public Finance",
-      "Economic Growth and Development",
-      "Agriculture in Nigeria",
-      "Industry and Industrialization",
-      "Natural Resources and the Nigerian Economy",
-      "Business Organizations",
-      "Population",
-      "International Trade",
-      "International Economic Organizations",
-      "Factors of Production and their Theories"
-    ],
-    category: 'commercial arts'
-  },
-
-  {
-    id: "GOV001",
-    icon: `<img src="${governmentImg}" style="width: 100%; border-radius: 16px" />`,
-    name: "Government",
-    totalQuestions: 1210,
-    topics: [
-      "Constitution",
-      "Democracy",
-      "Citizenship",
-      "Political Parties",
-      "Federalism",
-      "Arms of Government"
-    ],
-    category: 'arts'
-  },
-
-  {
-    id: "CSC001",
-    icon: `<img src="${computerImg}" style="width: 100%; border-radius: 16px" />`,
-    name: 'Computer Studies',
-    totalQuestions: 1210,
-    topics: [
-      "Computer Hardware",
-      "Computer Software",
-      "Networking",
-      "Internet",
-      "Programming",
-      "Cyber Security"
-    ],
-    category: 'science'
-  },
-
-  {
-    id: "LIT001",
-    icon: `<img src="${literatureImg}" style="width: 100%; border-radius: 16px" />`,
-    name: "englishLit",
-    totalQuestions: 980,
-    topics: [
-      "Drama",
-      "Poetry",
-      "Prose",
-      "Figures of Speech",
-      "African Literature"
-    ],
-    category: 'arts'
-  },
-
-  {
-    id: "GEO001",
-    icon: `<img src="${geographyImg}" style="width: 100%; border-radius: 16px" />`,
-    name: "Geography",
-    totalQuestions: 1120,
-    topics: [
-      "Map Reading",
-      "Climate",
-      "Vegetation",
-      "Population",
-      "Industry",
-      "Agriculture"
-    ],
-    category: 'arts science'
-  },
-
-  {
-    id: "CRK001",
-    icon: `<img src="${crkImg}" style="width: 100%; border-radius: 16px" />`,
-    name: "CRK",
-    totalQuestions: 890,
-    topics: [
-      "Creation",
-      "Leadership",
-      "Prophets",
-      "Miracles",
-      "Christian Living"
-    ],
-    category: 'arts'
-  },
-
-  {
-    id: "IRK001",
-    icon: `<img src="${irkImg}" style="width: 100%; border-radius: 16px" />`,
-    name: "IRK",
-    totalQuestions: 760,
-    topics: [
-      "Tawhid",
-      "Qur'an",
-      "Hadith",
-      "Sharia",
-      "Islamic Morality"
-    ],
-    category: 'arts'
-  },
-
-  {
-    id: "HIS001",
-    icon: `<img src="${historyImg}" style="width: 100%; border-radius: 16px" />`,
-    name: "History",
-    totalQuestions: 760,
-    topics: [
-      "Pre Colonial Nigeria",
-      "Colonial Rule",
-      "Nationalism",
-      "Independence",
-      "Civil War"
-    ],
-    category: 'arts'
-  },
-
-  {
-    id: "ACC001",
-    icon: `<img src="${accountingImg}" style="width: 100%; border-radius: 16px" />`,
-    name: "Accounting",
-    totalQuestions: 1050,
-    topics: [
-      "Ledger",
-      "Cash Book",
-      "Trial Balance",
-      "Final Accounts",
-      "Depreciation"
-    ],
-    category: 'commercial'
-  },
-
-  {
-    id: "COM001",
-    icon: `<img src="${commerceImg}" style="width: 100%; border-radius: 16px" />`,
-    name: "Commerce",
-    totalQuestions: 940,
-    topics: [
-      "Trade",
-      "Insurance",
-      "Banking",
-      "Advertising",
-      "Transportation"
-    ],
-    category: 'commercial'
-  },
-
-  {
-    id: "AGR001",
-    icon: `<img src="${agricultureImg}" style="width: 100%; border-radius: 16px" />`,
-    name: "Agriculture",
-    totalQuestions: 870,
-    topics: [
-      "Soil Science",
-      "Crop Production",
-      "Animal Production",
-      "Forestry",
-      "Fisheries"
-    ],
-    category: 'science'
-  },
-
-  {
-    id: "ART001",
-    icon: `<img src="${fineArtImg}" style="width: 100%; border-radius: 16px" />`,
-    name: "FineArt",
-    totalQuestions: 620,
-    topics: [
-      "Elements of Art",
-      "Drawing",
-      "Painting",
-      "Sculpture",
-      "Design"
-    ],
-    category: 'arts'
-  },
-
-  {
-    id: "MUS001",
-    icon: `<img src="${musicImg}" style="width: 100%; border-radius: 16px" />`,
-    name: "Music",
-    totalQuestions: 540,
-    topics: [
-      "Rhythm",
-      "Melody",
-      "Harmony",
-      "Instruments",
-      "Music Theory"
-    ],
-    category: 'arts'
-  },
-
-  {
-    id: "HME001",
-    icon: `<img src="${homeEconomicsImg}" style="width: 100%; border-radius: 16px" />`,
-    name: "HomeEconomics",
-    totalQuestions: 710,
-    topics: [
-      "Nutrition",
-      "Family Living",
-      "Home Management",
-      "Clothing",
-      "Food Preparation"
-    ],
-    category: 'arts'
-  },
-
-  {
-    id: "PHE001",
-    icon: `<img src="${physicalHealthImg}" style="width: 100%; border-radius: 16px" />`,
-    name: "PhysicalHealth",
-    totalQuestions: 650,
-    topics: [
-      "Human Body",
-      "Exercise",
-      "Sports",
-      "Health Education",
-      "First Aid"
-    ],
-    category: 'all'
-  },
-
-  {
-    id: "FRN001",
-    icon: `<img src="${frenchImg}" style="width: 100%; border-radius: 16px" />`,
-    name: "French",
-    totalQuestions: 490,
-    topics: [
-      "Grammar",
-      "Vocabulary",
-      "Comprehension",
-      "Translation",
-      "Oral French"
-    ],
-    category: 'arts'
-  },
-
-  {
-    id: "ARB001",
-    icon: `<img src="${arabicImg}" style="width: 100%; border-radius: 16px" />`,
-    name: "Arabic",
-    totalQuestions: 420,
-    topics: [
-      "Grammar",
-      "Translation",
-      "Vocabulary",
-      "Comprehension",
-      "Essay"
-    ],
-    category: 'arts'
-  },
-
-  {
-    id: "IGB001",
-    icon: `<img src="${igboImg}" style="width: 100%; border-radius: 16px" />`,
-    name: "Igbo",
-    totalQuestions: 380,
-    topics: [
-      "Grammar",
-      "Culture",
-      "Comprehension",
-      "Essay",
-      "Proverbs"
-    ],
-    category: 'arts'
-  },
-
-  {
-    id: "HAU001",
-    icon: `<img src="${hausaImg}" style="width: 100%; border-radius: 16px" />`,
-    name: "Hausa",
-    totalQuestions: 380,
-    topics: [
-      "Grammar",
-      "Culture",
-      "Comprehension",
-      "Essay",
-      "Vocabulary"
-    ],
-    category: 'arts'
-  },
-
-  {
-    id: "YOR001",
-    icon: `<img src="${yorubaImg}" style="width: 100%; border-radius: 16px" />`,
-    name: "Yoruba",
-    totalQuestions: 360,
-    topics: [
-      "Grammar",
-      "Culture",
-      "Comprehension",
-      "Essay",
-      "Proverbs"
-    ],
-    category: 'arts'
-  }
-]; */
 
 /* AVAILABLE SUBJECTS */
 export const subjectsData = [
@@ -480,7 +59,13 @@ export const subjectsData = [
       "Word Stress",
       "Emphatic Stress"
     ],
-    category: 'all'
+    category: 'all',
+    studyMaterial: {
+      syllabus: true,
+      search: true,
+      note: false,
+    },
+    years: Array.from({ length: 2026 - 1983 + 1 }, (_, i) => 1983 + i)
   },
 
   {
@@ -489,7 +74,6 @@ export const subjectsData = [
     name: "Mathematics",
     totalQuestions: 1890,
     topics: [
-      // Number and Numeration
       "Number Bases - Operations in different number bases (2 to 10)",
       "Number Bases - Conversion from one base to another (including fractions)",
       "Number Bases - Modulo arithmetic",
@@ -512,8 +96,6 @@ export const subjectsData = [
       "Sets - Types of sets",
       "Sets - Algebra of sets",
       "Sets - Venn diagrams and applications",
-    
-      // Algebra
       "Polynomials - Change of subject of formula",
       "Polynomials - Multiplication and division of polynomials",
       "Polynomials - Factorization (degree not exceeding 3)",
@@ -536,8 +118,6 @@ export const subjectsData = [
       "Matrices and Determinants - Algebra of matrices (not exceeding 3x3)",
       "Matrices and Determinants - Determinants of matrices (not exceeding 3x3)",
       "Matrices and Determinants - Inverses of 2x2 matrices",
-    
-      // Geometry and Trigonometry
       "Euclidean Geometry - Properties of angles and lines",
       "Euclidean Geometry - Polygons (triangles, quadrilaterals, general)",
       "Euclidean Geometry - Circles (angle properties, cyclic quadrilaterals, intersecting chords)",
@@ -558,16 +138,12 @@ export const subjectsData = [
       "Trigonometry - Areas and solutions of triangles",
       "Trigonometry - Graphs of sine and cosine",
       "Trigonometry - Sine and cosine formulae",
-    
-      // Calculus
       "Differentiation - Limit of a function",
       "Differentiation - Differentiation of algebraic and trig functions",
       "Application of Differentiation - Rate of change",
       "Application of Differentiation - Maxima and minima",
       "Integration - Integration of algebraic and trig functions",
       "Integration - Area under the curve",
-    
-      // Statistics
       "Representation of Data - Frequency distribution",
       "Representation of Data - Histogram, bar chart, pie chart",
       "Measures of Location - Mean, mode, median (ungrouped/grouped)",
@@ -578,7 +154,13 @@ export const subjectsData = [
       "Probability - Experimental probability",
       "Probability - Addition and multiplication of probabilities",
     ],
-    category: 'science commercial'
+    category: 'science commercial',
+    studyMaterial: {
+      syllabus: true,
+      search: true,
+      note: false,
+    },
+    years: Array.from({ length: 2026 - 1983 + 1 }, (_, i) => 1983 + i)
   },
 
   {
@@ -606,7 +188,13 @@ export const subjectsData = [
       "Organic Compounds",
       "Chemistry and Industry"
     ],
-    category: 'science'
+    category: 'science',
+    studyMaterial: {
+      syllabus: true,
+      search: true,
+      note: false,
+    },
+    years: Array.from({ length: 2026 - 1983 + 1 }, (_, i) => 1983 + i)
   },
 
   {
@@ -652,7 +240,13 @@ export const subjectsData = [
       "Elementary Modern Physics-Bohr's Theory",
       "Introductory Electronics"
     ],
-    category: 'science'
+    category: 'science',
+    studyMaterial: {
+      syllabus: true,
+      search: true,
+      note: false,
+    },
+    years: Array.from({ length: 2026 - 1983 + 1 }, (_, i) => 1983 + i)
   },
 
   {
@@ -723,7 +317,13 @@ export const subjectsData = [
       "Heredity and Variations - Theories of Evolution",
       "Heredity and Variations - Evidence of Evolution"
     ],
-    category: 'science'
+    category: 'science',
+    studyMaterial: {
+      syllabus: true,
+      search: true,
+      note: false,
+    },
+    years: Array.from({ length: 2026 - 1983 + 1 }, (_, i) => 1983 + i)
   },
 
   {
@@ -756,7 +356,13 @@ export const subjectsData = [
       "International Economic Organizations",
       "Factors of Production and their Theories"
     ],
-    category: 'commercial arts'
+    category: 'commercial arts',
+    studyMaterial: {
+      syllabus: true,
+      search: true,
+      note: false,
+    },
+    years: Array.from({ length: 2026 - 1983 + 1 }, (_, i) => 1983 + i)
   },
 
   {
@@ -856,7 +462,13 @@ export const subjectsData = [
       "International Organizations - UNO",
       "International Organizations - African Petroleum Producers Association"
     ],
-    category: 'arts'
+    category: 'arts',
+    studyMaterial: {
+      syllabus: true,
+      search: true,
+      note: false,
+    },
+    years: Array.from({ length: 2026 - 1983 + 1 }, (_, i) => 1983 + i)
   },
 
   {
@@ -925,7 +537,13 @@ export const subjectsData = [
       "Prescribed Texts - Poetry (Non-African): Fleur Adcock: The Telephone Call",
       "Prescribed Texts - Poetry (Non-African): Wilfred Wilson Gipson: The Stone"
     ],
-    category: 'arts'
+    category: 'arts',
+    studyMaterial: {
+      syllabus: true,
+      search: true,
+      note: false,
+    },
+    years: Array.from({ length: 2026 - 1983 + 1 }, (_, i) => 1983 + i)
   },
 
   {
@@ -1022,7 +640,13 @@ export const subjectsData = [
       "ECOWAS - Advantages and disadvantages",
       "ECOWAS - Problems and solutions"
     ],
-    category: 'arts science'
+    category: 'arts science',
+    studyMaterial: {
+      syllabus: true,
+      search: true,
+      note: false,
+    },
+    years: Array.from({ length: 2026 - 1983 + 1 }, (_, i) => 1983 + i)
   },
 
   {
@@ -1129,7 +753,13 @@ export const subjectsData = [
       "Corruption - Timothy, Peter, James",
       "Sexual Immorality - Prostitution, Adultery and Fornication, Homosexuality"
     ],
-    category: 'arts'
+    category: 'arts',
+    studyMaterial: {
+      syllabus: true,
+      search: true,
+      note: false,
+    },
+    years: Array.from({ length: 2026 - 1983 + 1 }, (_, i) => 1983 + i)
   },
 
   {
@@ -1277,7 +907,13 @@ export const subjectsData = [
       "Contributions of Islam to Education - Islamic Education Institutions (House of Wisdom, al-Azhar, Nizamiyyah)",
       "Contributions of Islam to Education - Lives and contributions of Ibn Sina, al-Ghazali, Ibn Rushd, ar-Razi, Ibn Khaldun"
     ],
-    category: 'arts'
+    category: 'arts',
+    studyMaterial: {
+      syllabus: true,
+      search: true,
+      note: false,
+    },
+    years: Array.from({ length: 2026 - 1983 + 1 }, (_, i) => 1983 + i)
   },
 
   {
@@ -1424,7 +1060,13 @@ export const subjectsData = [
       "Problems of Nation-building in Africa - Boundary disputes and threat to African unity",
       "Problems of Nation-building in Africa - Civil wars and the refugee problem"
     ],
-    category: 'arts'
+    category: 'arts',
+    studyMaterial: {
+      syllabus: true,
+      search: true,
+      note: false,
+    },
+    years: Array.from({ length: 2026 - 1983 + 1 }, (_, i) => 1983 + i)
   },
 
   {
@@ -1507,7 +1149,13 @@ export const subjectsData = [
       "Information Technology in Accounting - Computer hardware and software",
       "Information Technology in Accounting - Advantages and disadvantages of manual and computerized Accounting processing system"
     ],
-    category: 'commercial'
+    category: 'commercial',
+    studyMaterial: {
+      syllabus: true,
+      search: true,
+      note: false,
+    },
+    years: Array.from({ length: 2026 - 1983 + 1 }, (_, i) => 1983 + i)
   },
 
   {
@@ -1610,7 +1258,41 @@ export const subjectsData = [
       "Business Environment and Social Responsibility - Safe products, philanthropic and societal consideration",
       "Business Environment and Social Responsibility - Types and implication of pollution (water, air, land, etc.)"
     ],
-    category: 'commercial'
+    category: 'commercial',
+    studyMaterial: {
+      syllabus: true,
+      search: true,
+      note: false,
+    },
+    years: Array.from({ length: 2026 - 1983 + 1 }, (_, i) => 1983 + i)
+  },
+
+  {
+    id: 'LEKKI001',
+    icon: `<img src="${lekkiHeadmasterImg}" style="width: 100%; border-radius: 16px" />`,
+    name: 'Lekki',
+    totalQuestions: 0,
+    topics: [
+      "Chapter 1: Dusk",
+      "Chapter 2: The Enticement",
+      "Chapter 3: Migration Tales",
+      "Chapter 4: A Case of Visa Denied",
+      "Chapter 5: Snake in the Roof",
+      "Chapter 6: Ade as Well as Jide COMES vs. COME",
+      "Chapter 7: Ritualists",
+      "Chapter 8: Missions Unaccomplished",
+      "Chapter 9: Laughing Waterfalls",
+      "Chapter 10: Passport Pains",
+      "Chapter 11: Point of No Return",
+      "Chapter 12: Dawn"
+    ],
+    category: 'All',
+    studyMaterial: {
+      syllabus: false,
+      search: false,
+      note: false,
+    },
+    years: Array.from({ length: 2026 - 1983 + 1 }, (_, i) => 1983 + i)
   },
 
   {
@@ -1627,7 +1309,13 @@ export const subjectsData = [
       "Insurance Law and Practice",
       "Reinsurance"
     ],
-    category: 'commercial'
+    category: 'commercial',
+    studyMaterial: {
+      syllabus: true,
+      search: true,
+      note: false,
+    },
+    years: Array.from({ length: 2026 - 1983 + 1 }, (_, i) => 1983 + i)
   },
 
   {
@@ -1647,7 +1335,13 @@ export const subjectsData = [
       "Cultism and Drug Abuse",
       "National Institutions"
     ],
-    category: 'arts'
+    category: 'arts',
+    studyMaterial: {
+      syllabus: true,
+      search: true,
+      note: false,
+    },
+    years: Array.from({ length: 2026 - 1983 + 1 }, (_, i) => 1983 + i)
   },
 
   {
@@ -1667,6 +1361,12 @@ export const subjectsData = [
       "Environment",
       "Awards and Honours"
     ],
-    category: 'all'
+    category: 'all',
+    studyMaterial: {
+      syllabus: true,
+      search: true,
+      note: false,
+    },
+    years: Array.from({ length: 2026 - 1983 + 1 }, (_, i) => 1983 + i)
   }
 ];
