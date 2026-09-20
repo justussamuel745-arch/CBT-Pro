@@ -370,7 +370,7 @@ export default function Score() {
 
         {/* ── ACTIONS ── */}
         <div className="score-actions">
-          <Link to="/practice/review" className="btn btn-primary">Review answers</Link>
+          <Link to="/study-simulator?mode=review" className="btn btn-primary">Review answers</Link>
           <Link to="/practice" className="btn btn-outline">Try again</Link>
           <Link to="/" className="btn btn-outline">Back to home</Link>
         </div>

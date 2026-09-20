@@ -126,7 +126,7 @@ export default function Config() {
     }
 
     setStudyConfig(configuration)
-    navigate('/study/mode')
+    navigate('/study-simulator?mode=study')
   }
 
 
