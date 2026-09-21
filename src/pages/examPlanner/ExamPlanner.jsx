@@ -12,7 +12,8 @@ import { scheduledExamStore } from '../../stores/scheduledExamStore';
 import { deleteUpcomingExam } from '../../hooks/services/indexedDB/upcomingExams';
 import pushNotificationService from '../../services/pushNotificationService';
 import { hasEditExpires } from './utils/hasEditExpires';
-import { graceEndsAt } from './utils/graceEndsAt.js';
+import { graceEndsAt } from './utils/graceEndsAt';
+import { ExamPlannerSkeleton } from './components/ExamPlannerSkeleton';
 import MissedExam from './MissedExam';
 import "./ExamPlanner.css";
 
@@ -170,9 +171,11 @@ export default function ExamPlanner() {
   const [loading, setLoading] = useState(true)
   const [offline, setOffline] = useState(false)
   const [loadError, setLoadError] = useState(false)
+  const [retry, setRetry] = useState(false)
   const navigate = useNavigate()
 
   useEffect(() => {
+    setLoading(true)
     if (!stats || !exams) {
       (async () => {
         try {
@@ -191,7 +194,7 @@ export default function ExamPlanner() {
       return
     }
     setLoading(false)
-  }, [exams, stats, getDashboardInfo, setLoading, setLoadError, setOffline])
+  }, [retry, exams, stats, getDashboardInfo, setLoading, setLoadError, setOffline])
   
   function onCancelExam(exam){
     toast.promise(onChangeStatus(exam._id, 'cancelled'), {
@@ -223,9 +226,9 @@ export default function ExamPlanner() {
     setViewDetails(null)
   }, [setViewExam])
   
-  if (offline) return <Offline />
-  if (loadError) return <LoadError onRetry={() => navigate('/exam-planner')} />
-  if (loading) return <Loading />
+  if (offline) return <Offline onRetry={() => setRetry(prev => !prev)} />
+  if (loadError) return <LoadError onRetry={() => setRetry(prev => !prev)} />
+  if (loading) return <ExamPlannerSkeleton />
 
   return (
     <div className="planner-page no-select">

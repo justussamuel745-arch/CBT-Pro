@@ -212,17 +212,15 @@ export const scheduledExamStore = create((set, get) => ({
       achievements: achievementsData,
     } = res.body;
 
-    setHistoryStats(historyStats)
-    setHistory(
-      Array.isArray(historyData)
+    set({
+      historyStats,
+      history: Array.isArray(historyData)
         ? historyData
-        : []
-    )
-    setAchievements(
-      Array.isArray(achievementsData)
+        : [],
+      achievements: Array.isArray(achievementsData)
         ? achievementsData
         : []
-    )
+    })
   },
 
   submitScheduledExam: async (timeSpent, navigate) => {
@@ -263,10 +261,12 @@ export const scheduledExamStore = create((set, get) => ({
         }
       })
 
+      const fetchScheduledExamHistory = get().fetchScheduledExamHistory
+
       fetchScheduledExamHistory().catch((err) => {
         toast.error(err?.error || 'Failed to update exam history.')
       })
-    } catch (error) {
+    } catch{
       if (!navigator.onLine) {
         examStore.setState({
           offline: {
@@ -324,6 +324,8 @@ export const scheduledExamStore = create((set, get) => ({
           result
         }
       })
+
+      const fetchScheduledExamHistory = get().fetchScheduledExamHistory
       
       fetchScheduledExamHistory().catch((err) => {
         toast.error(err?.error || 'Failed to update exam history.')

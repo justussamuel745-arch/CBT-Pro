@@ -1,4 +1,4 @@
-import { useEffect, lazy, Suspense } from 'react';
+import { lazy, Suspense } from 'react';
 import { Routes, Route } from 'react-router';
 import { ProtectRoutes } from './ProtectRoutes';
 import { ProtectExamRoutes } from './ProtectExamRoutes';

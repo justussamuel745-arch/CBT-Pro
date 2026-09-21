@@ -4,8 +4,8 @@ import { MarkdownContent } from '../../components/MarkdownContent';
 import { formatName } from '../../scripts/utils/formatName.js';
 import { CountdownTimer } from '../../components/CountdownTimer'
 import { Calculator } from '../../components/Calculator'
-import { Loading } from '../../components/Loading';
 import { Offline } from '../../components/Offline';
+import { LoadError } from '../../components/LoadError';
 import { Image } from '../../components/common/Image'
 import { ModalStripe, CSS } from '../../components/NotificationSystem';
 import { practiceStore } from '../../stores/practiceStore';

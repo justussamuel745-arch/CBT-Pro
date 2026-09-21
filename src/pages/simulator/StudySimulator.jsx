@@ -101,15 +101,15 @@ const Sidebar = memo(function Sidebar({ subjects, currentSubject, onSwitch }) {
     <aside className="mode-sidebar">
       <div className="mode-sidebar-title">Subjects</div>
       <div className="mode-subject-list">
-        {subjects.map(({ subject, count }) => (
+        {subjects?.map(s => (
           <div
-            key={subject}
-            className={`mode-subject-item ${subject === currentSubject ? 'active' : ''}`}
-            data-subject={subject}
+            key={s?.subject}
+            className={`mode-subject-item ${s?.subject === currentSubject ? 'active' : ''}`}
+            data-subject={s?.subject}
             onClick={onSwitch}
           >
-            <span>{formatName(subject)}</span>
-            <span className="mode-subject-count">{count}</span>
+            <span>{formatName(s?.subject)}</span>
+            <span className="mode-subject-count">{s?.count}</span>
           </div>
         ))}
       </div>
@@ -294,8 +294,8 @@ export default function StudySimulator() {
     [subjects, currentSubject]
   )
   const currentQsIdx = idxBySubject[currentSubject] ?? 0
-  const currentQs = activeSubject?.questions[currentQsIdx]
-  const activeState = currentQs ? answers[currentQs.id] : undefined
+  const currentQs = activeSubject?.questions?.[currentQsIdx] || {}
+  const activeState = Object.keys(currentQs).length > 0 ? answers[currentQs.id] : undefined
   const isBookmarked = !!activeState?.isBookmarked
   const isDisablePrevious = currentSubjectIndex === 0 && currentQsIdx === 0
 
@@ -379,7 +379,7 @@ export default function StudySimulator() {
             Promise.all([saveQuestions(data), saveAllImages(data)]).catch((err) => console.error(err))
           } else {
             const qs = await getQuestions({ subject, years, topics })
-            if (qs.length === 0) throw { status: 404, error: 'no_questions_found_offline' }
+            if (!qs?.length) throw { status: 404, error: 'no_questions_found_offline' }
             data = qs.slice(0, 100)
             if (data.length < 100) setModal('available_questions')
           }
@@ -508,131 +508,140 @@ export default function StudySimulator() {
 
       {chatWithAI && <AstraAIModal setChatWithAI={setChatWithAI} />}
 
-      <div className="mode-page no-select" aria-live="polite">
-        <Header
-          goBack={goBack}
-          openReport={openReport}
-          openAiChat={openAiChat}
-          openNavigator={openNavigator}
-          openCalculator={openCalculator}
-          toggleBookmark={toggleBookmark}
-          isBookmarked={isBookmarked}
-        />
-
-        <div className="mode-container">
-          <Sidebar subjects={subjects} currentSubject={currentSubject} onSwitch={switchSubject} />
-
-          <main className="mode-main">
-            <div className="mode-nav">
-              <button className="mode-nav-btn" onClick={prevQuestion} disabled={isDisablePrevious}>← Prev</button>
-              <div className="mode-question-info">Question {currentQsIdx + 1} of {activeSubject.count}</div>
-              <button className="mode-nav-btn" onClick={nextQuestion}>Next →</button>
-            </div>
-
-            <div>
-              <QuestionView currentQs={currentQs} />
-              <OptionsList options={currentQs?.options} activeState={activeState} mode={mode} onSelect={selectOption} />
-              {activeState?.status && (
-                <AnswerCard
-                  explanation={currentQs.explanation.text}
-                  correctAnswers={currentQs.correctAnswers.join(' ').toUpperCase()}
-                  ques={currentQs}
-                  setChatWithAI={setChatWithAI}
+      {
+        !modalCopy
+          ? 
+            (
+              <div className="mode-page no-select" aria-live="polite">
+                <Header
+                  goBack={goBack}
+                  openReport={openReport}
+                  openAiChat={openAiChat}
+                  openNavigator={openNavigator}
+                  openCalculator={openCalculator}
+                  toggleBookmark={toggleBookmark}
+                  isBookmarked={isBookmarked}
                 />
-              )}
-              <div className="mode-actions">
-                <button className="mode-btn-show" disabled={!!activeState?.status} onClick={() => selectOption()}>
-                  Show Answer
-                </button>
+        
+                <div className="mode-container">
+                  <Sidebar subjects={subjects} currentSubject={currentSubject} onSwitch={switchSubject} />
+        
+                  <main className="mode-main">
+                    <div className="mode-nav">
+                      <button className="mode-nav-btn" onClick={prevQuestion} disabled={isDisablePrevious}>← Prev</button>
+                      <div className="mode-question-info">Question {currentQsIdx + 1} of {activeSubject?.count}</div>
+                      <button className="mode-nav-btn" onClick={nextQuestion}>Next →</button>
+                    </div>
+        
+                    <div>
+                      <QuestionView currentQs={currentQs} />
+                      <OptionsList options={currentQs?.options} activeState={activeState} mode={mode} onSelect={selectOption} />
+                      {activeState?.status && (
+                        <AnswerCard
+                          explanation={currentQs.explanation.text}
+                          correctAnswers={currentQs.correctAnswers.join(' ').toUpperCase()}
+                          ques={currentQs}
+                          setChatWithAI={setChatWithAI}
+                        />
+                      )}
+                      <div className="mode-actions">
+                        <button className="mode-btn-show" disabled={!!activeState?.status} onClick={() => selectOption()}>
+                          Show Answer
+                        </button>
+                      </div>
+                    </div>
+                  </main>
+        
+                  <aside className="mode-panel">
+                    <div className="mode-panel-header">
+                      <div className="mode-panel-title">Question Navigator</div>
+                    </div>
+                    <NavigatorGrid
+                      questions={activeSubject?.questions}
+                      currentQsIdx={currentQsIdx}
+                      answers={answers}
+                      onSelect={(index) => goToIndex(currentSubject, index)}
+                    />
+                  </aside>
+                </div>
+        
+                <button className="mode-fab" onClick={() => setToggleNav((v) => !v)}>≡</button>
+        
+                <div className={`mode-overlay ${toggleNav ? 'show' : ''}`}>
+                  <div className="mode-modal" ref={navModalRef}>
+                    <div className="mode-modal-header">
+                      <div className="mode-modal-title">Question Navigator</div>
+                      <button className="mode-modal-close" onClick={() => setToggleNav(false)}>×</button>
+                    </div>
+                    <NavigatorGrid
+                      questions={activeSubject?.questions}
+                      currentQsIdx={currentQsIdx}
+                      answers={answers}
+                      onSelect={(index) => { goToIndex(currentSubject, index); setToggleNav(false) }}
+                    />
+                  </div>
+                </div>
+        
               </div>
-            </div>
-          </main>
+            )
+          :
+            <SimulatorSkeleton />
+      }
+      
+      {modalCopy && (
+        <Modal
+          {...modalCopy}
+          onPrimary={() => {
+            switch (modal) {
+              case 'server_error':
+              case 'connection_lost':
+              case 'failed_to_load':
+                retry()
+                break
+              case 'subject_not_found':
+              case 'no_questions_found_offline':
+              case 'no_questions_found':
+                navigate(modal === 'subject_not_found' ? '/study' : `/study/config?id=${subjectId}`)
+                break
+              default:
+                closeModal()
+            }
+          }}
+          onClose={() => {
+            switch (modal) {
+              case 'server_error':
+              case 'connection_lost':
+                closeModal(); navigate(-1)
+                break
+              case 'subject_not_found':
+                navigate('/study')
+                break
+              case 'no_questions_found_offline':
+                navigate('/study')
+                break
+              case 'no_questions_found':
+                navigate('/study')
+                break
+              case 'failed_to_load':
+                navigate(`/study/config?id=${subjectId}`)
+                break
+              default:
+                closeModal()
+            }
+          }}
+        />
+      )}
 
-          <aside className="mode-panel">
-            <div className="mode-panel-header">
-              <div className="mode-panel-title">Question Navigator</div>
-            </div>
-            <NavigatorGrid
-              questions={activeSubject.questions}
-              currentQsIdx={currentQsIdx}
-              answers={answers}
-              onSelect={(index) => goToIndex(currentSubject, index)}
-            />
-          </aside>
-        </div>
+      {reportOpen && (
+        <ReportQuestionModal
+          questionId={currentQs?.id}
+          subject={currentQs?.subject}
+          questionNo={currentQsIdx + 1}
+          onClose={closeReport}
+        />
+      )}
 
-        <button className="mode-fab" onClick={() => setToggleNav((v) => !v)}>≡</button>
-
-        <div className={`mode-overlay ${toggleNav ? 'show' : ''}`}>
-          <div className="mode-modal" ref={navModalRef}>
-            <div className="mode-modal-header">
-              <div className="mode-modal-title">Question Navigator</div>
-              <button className="mode-modal-close" onClick={() => setToggleNav(false)}>×</button>
-            </div>
-            <NavigatorGrid
-              questions={activeSubject.questions}
-              currentQsIdx={currentQsIdx}
-              answers={answers}
-              onSelect={(index) => { goToIndex(currentSubject, index); setToggleNav(false) }}
-            />
-          </div>
-        </div>
-
-        {modalCopy && (
-          <Modal
-            {...modalCopy}
-            onPrimary={() => {
-              switch (modal) {
-                case 'server_error':
-                case 'connection_lost':
-                case 'failed_to_load':
-                  retry()
-                  break
-                case 'subject_not_found':
-                case 'no_questions_found_offline':
-                case 'no_questions_found':
-                  navigate(modal === 'subject_not_found' ? '/study' : `/study/config?id=${subjectId}`)
-                  break
-                default:
-                  closeModal()
-              }
-            }}
-            onClose={() => {
-              switch (modal) {
-                case 'server_error':
-                case 'connection_lost':
-                  closeModal(); navigate(-1)
-                  break
-                case 'subject_not_found':
-                  navigate('/study')
-                  break
-                case 'no_questions_found_offline':
-                  navigate('/study')
-                  break
-                case 'no_questions_found':
-                  navigate('/study')
-                  break
-                case 'failed_to_load':
-                  navigate(`/study/config?id=${subjectId}`)
-                  break
-                default:
-                  closeModal()
-              }
-            }}
-          />
-        )}
-
-        {reportOpen && (
-          <ReportQuestionModal
-            questionId={currentQs?.id}
-            subject={currentQs?.subject}
-            questionNo={currentQsIdx + 1}
-            onClose={closeReport}
-          />
-        )}
-
-        <Calculator toggleCalc={toggleCalc} setToggleCalc={setToggleCalc} calcModalRef={calcModalRef} />
-      </div>
+      <Calculator toggleCalc={toggleCalc} setToggleCalc={setToggleCalc} calcModalRef={calcModalRef} />
     </>
   )
 }

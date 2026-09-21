@@ -1,0 +1,197 @@
+/* ============================================================
+   ExamPlanner — Skeleton loader (self-contained colors)
+   Depends on layout classes from ExamPlanner.css
+   ============================================================ */
+
+/* ---------- Base shimmer ---------- */
+.sk-planner {
+  --sk-base: #e5e7eb;
+  --sk-shine: #f3f4f6;
+
+  background-color: var(--sk-base);
+  background-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--sk-shine) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  background-repeat: no-repeat;
+  animation: skPlannerShimmer 1.4s ease-in-out infinite;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+@keyframes skPlannerShimmer {
+  0%   { background-position: -100% 0; }
+  100% { background-position:  200% 0; }
+}
+
+/* ---------- Header ---------- */
+.sk-planner__back,
+.sk-planner__history {
+  width: 38px;
+  height: 38px;
+  min-width: 38px;
+  border-radius: 50%;
+}
+
+.sk-planner__title {
+  flex: 1;
+  height: 20px;
+  max-width: 180px;
+  border-radius: 6px;
+}
+
+/* ---------- Summary card (on gradient background) ---------- */
+/* Use a lighter base since these sit on the purple gradient */
+.sk-planner__summary {
+  /* keep the gradient wrapper from the real component */
+  min-height: 1px;
+}
+
+.sk-planner__summary .sk-planner {
+  --sk-base: rgba(255, 255, 255, 0.22);
+  --sk-shine: rgba(255, 255, 255, 0.4);
+}
+
+.sk-planner__summary-icon {
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+}
+
+.sk-planner__summary-heading {
+  width: 130px;
+  height: 16px;
+  border-radius: 6px;
+}
+
+.sk-planner__stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.sk-planner__stat-icon {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+}
+
+.sk-planner__stat-value {
+  width: 48px;
+  height: 20px;
+  border-radius: 6px;
+}
+
+.sk-planner__stat-label {
+  width: 60px;
+  height: 10px;
+  border-radius: 4px;
+}
+
+/* ---------- Section header ---------- */
+.sk-planner__section-title {
+  width: 160px;
+  height: 20px;
+  border-radius: 6px;
+}
+
+.sk-planner__section-btn {
+  width: 150px;
+  height: 34px;
+  border-radius: var(--radius-sm, 8px);
+}
+
+/* ---------- Exam cards ---------- */
+/* Suppress the real card's hover lift during loading */
+.sk-planner__card {
+  pointer-events: none;
+}
+
+.sk-planner__card:hover {
+  transform: none;
+  box-shadow: var(--shadow);
+}
+
+.sk-planner__card-calendar {
+  position: absolute;
+  top: 0.85rem;
+  right: 0.85rem;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+}
+
+.sk-planner__card-name {
+  width: 70%;
+  height: 18px;
+  border-radius: 6px;
+}
+
+.sk-planner__card-date {
+  width: 55%;
+  height: 13px;
+  border-radius: 6px;
+}
+
+/* Target score row */
+.sk-planner__card-target {
+  /* real .planner-exam-card__target already gives bg + padding */
+  min-height: 38px;
+}
+
+.sk-planner__card-target-label {
+  width: 70px;
+  height: 12px;
+  border-radius: 4px;
+}
+
+.sk-planner__card-target-value {
+  width: 32px;
+  height: 16px;
+  border-radius: 4px;
+}
+
+/* Countdown row */
+.sk-planner__card-countdown {
+  min-height: 32px;
+}
+
+.sk-planner__countdown-num {
+  width: 26px;
+  height: 18px;
+  border-radius: 4px;
+}
+
+.sk-planner__countdown-unit {
+  width: 34px;
+  height: 12px;
+  border-radius: 4px;
+  margin-right: 0.5rem;
+}
+
+/* Action buttons */
+.sk-planner__card-btn {
+  flex: 1;
+  height: 32px;
+  border-radius: var(--radius-sm, 8px);
+}
+
+/* ---------- Responsive parity with ExamPlanner.css ---------- */
+@media (max-width: 640px) {
+  /* Hide the section-header button like the real page */
+  .sk-planner__section-btn {
+    display: none;
+  }
+}
+
+/* ---------- Accessibility ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .sk-planner {
+    animation: none;
+    background-image: none;
+  }
+}
