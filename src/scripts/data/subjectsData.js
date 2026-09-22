@@ -24,9 +24,6 @@ import historyImg from '../../assets/images/history.jpg';
 import frenchImg from '../../assets/images/french.jpg';
 import homeEconomicsImg from '../../assets/images/homeEconomics.jpg';
 import lekkiHeadmasterImg from '../../assets/images/lekkiHeadmaster.png';
-import insuranceImg from '../../assets/images/insurance.jpg';
-import civicImg from '../../assets/images/civic.jpg';
-import currentAffairsImg from '../../assets/images/current-affairs.jpg';
 
 /* AVAILABLE SUBJECTS */
 export const subjectsData = [
@@ -360,7 +357,7 @@ export const subjectsData = [
     ],
     category: 'commercial arts',
     studyMaterial: {
-      syllabus: true,
+      syllabus: false,
       search: true,
       note: false,
     },
@@ -466,7 +463,7 @@ export const subjectsData = [
     ],
     category: 'arts',
     studyMaterial: {
-      syllabus: true,
+      syllabus: false,
       search: true,
       note: false,
     },
@@ -541,7 +538,7 @@ export const subjectsData = [
     ],
     category: 'arts',
     studyMaterial: {
-      syllabus: true,
+      syllabus: false,
       search: true,
       note: false,
     },
@@ -911,7 +908,7 @@ export const subjectsData = [
     ],
     category: 'arts',
     studyMaterial: {
-      syllabus: true,
+      syllabus: false,
       search: true,
       note: false,
     },
@@ -1064,7 +1061,7 @@ export const subjectsData = [
     ],
     category: 'arts',
     studyMaterial: {
-      syllabus: true,
+      syllabus: false,
       search: true,
       note: false,
     },
@@ -1262,7 +1259,7 @@ export const subjectsData = [
     ],
     category: 'commercial',
     studyMaterial: {
-      syllabus: true,
+      syllabus: false,
       search: true,
       note: false,
     },
@@ -1292,81 +1289,6 @@ export const subjectsData = [
     studyMaterial: {
       syllabus: false,
       search: false,
-      note: false,
-    },
-    years: Array.from({ length: 2026 - 1983 + 1 }, (_, i) => 1983 + i)
-  },
-
-  {
-    id: "INS001",
-    icon: `<img src="${insuranceImg}" style="width: 100%; border-radius: 16px" />`,
-    name: "Insurance",
-    totalQuestions: 1456,
-    topics: [
-      "Principles of Insurance",
-      "Types of Insurance",
-      "Insurance Contract",
-      "Risk Management",
-      "Claims and Underwriting",
-      "Insurance Law and Practice",
-      "Reinsurance"
-    ],
-    category: 'commercial',
-    studyMaterial: {
-      syllabus: true,
-      search: true,
-      note: false,
-    },
-    years: Array.from({ length: 2026 - 1983 + 1 }, (_, i) => 1983 + i)
-  },
-
-  {
-    id: "CIV001",
-    icon: `<img src="${civicImg}" style="width: 100%; border-radius: 16px" />`,
-    name: "Civic",
-    totalQuestions: 1345,
-    topics: [
-      "National Consciousness",
-      "Values",
-      "Rights and Responsibilities",
-      "Human Rights",
-      "Citizenship",
-      "Democracy",
-      "Rule of Law",
-      "Traffic Regulations",
-      "Cultism and Drug Abuse",
-      "National Institutions"
-    ],
-    category: 'arts',
-    studyMaterial: {
-      syllabus: true,
-      search: true,
-      note: false,
-    },
-    years: Array.from({ length: 2026 - 1983 + 1 }, (_, i) => 1983 + i)
-  },
-
-  {
-    id: "CUR001",
-    icon: `<img src="${currentAffairsImg}" style="width: 100%; border-radius: 16px" />`,
-    name: "CurrentAffairs",
-    totalQuestions: 1123,
-    topics: [
-      "National News",
-      "International News",
-      "Politics and Governance",
-      "Economy and Business",
-      "Science and Technology",
-      "Sports",
-      "Health",
-      "Education",
-      "Environment",
-      "Awards and Honours"
-    ],
-    category: 'all',
-    studyMaterial: {
-      syllabus: true,
-      search: true,
       note: false,
     },
     years: Array.from({ length: 2026 - 1983 + 1 }, (_, i) => 1983 + i)
