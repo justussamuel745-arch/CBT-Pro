@@ -6,40 +6,44 @@ import { examStore } from '../../stores/examStore.js';
 import { generateObjectId } from './generateObjectId.js';
 
 export async function submitLocalHistory() {
-  const unsavedHistoryRaw = JSON.parse(localStorage.getItem('unsavedHistory'));
+  const unsavedHistoryRaw = JSON.parse(
+    localStorage.getItem('unsavedHistory')
+  );
+
   let unsavedHistory = unsavedHistoryRaw
     ? decrypt(unsavedHistoryRaw)
-    : []
+    : [];
 
-  if (!unsavedHistory || unsavedHistory.length === 0 || !Array.isArray(unsavedHistory)) {
+  if (
+    !Array.isArray(unsavedHistory) ||
+    unsavedHistory.length === 0
+  ) {
     return;
   }
 
-  const failedHistory = [];
+  const validHistory = unsavedHistory.filter(
+    history => history && typeof history === 'object'
+  );
 
-  for (const history of unsavedHistory) {
-    if (!history || typeof history !== 'object') {
-      continue;
-    }
-
-    try {
-      await request.auth(
+  const results = await Promise.allSettled(
+    validHistory.map(history =>
+      request.auth(
         '/api/history/submit',
         {
           method: 'POST',
           body: JSON.stringify(history)
         }
-      );
+      )
+    )
+  );
 
-      // Success: do nothing.
-      // Since we don't push it into failedHistory,
-      // it will be removed from localStorage.
+  const failedHistory = [];
 
-    } catch {
-      // Keep this one for the next retry.
-      failedHistory.push(history);
+  results.forEach((result, index) => {
+    if (result.status === 'rejected') {
+      failedHistory.push(validHistory[index]);
     }
-  }
+  });
 
   if (failedHistory.length === 0) {
     localStorage.removeItem('unsavedHistory');
