@@ -71,7 +71,7 @@ export const subjectsData = [
     id: "MTH001",
     icon: `<img src="${mathematicsImg}" style="width: 100%; border-radius: 16px" />`,
     name: "Mathematics",
-    totalQuestions: 1890,
+    totalQuestions: 1975,
     topics: [
       "Number Bases - Operations in different number bases (2 to 10)",
       "Number Bases - Conversion from one base to another (including fractions)",
@@ -166,7 +166,7 @@ export const subjectsData = [
     id: "CHM001",
     icon: `<img src="${chemistryImg}" style="width: 100%; border-radius: 16px" />`,
     name: "Chemistry",
-    totalQuestions: 1560,
+    totalQuestions: 1494,
     topics: [
       "Separation of Mixtures and Purification of Chemical Substances",
       "Chemical Combination",
@@ -200,7 +200,7 @@ export const subjectsData = [
     id: "PHY001",
     icon: `<img src="${physicsImg}" style="width: 100%; border-radius: 16px" />`,
     name: "Physics",
-    totalQuestions: 1420,
+    totalQuestions: 1319,
     topics: [
       "Measurements and Units",
       "Scalars and Vectors",
@@ -252,7 +252,7 @@ export const subjectsData = [
     id: "BIO001",
     icon: `<img src="${biologyImg}" style="width: 100%; border-radius: 16px" />`,
     name: "Biology",
-    totalQuestions: 1680,
+    totalQuestions: 1384,
     topics: [
       "Variety of Organisms - Characteristics of Living Organisms",
       "Variety of Organisms - Cell Structure and Functions",
@@ -329,7 +329,7 @@ export const subjectsData = [
     id: "ECO001",
     icon: `<img src="${economicsImg}" style="width: 100%; border-radius: 16px"/>`,
     name: "Economics",
-    totalQuestions: 1340,
+    totalQuestions: 2692,
     topics: [
       "Economics as a Science",
       "Economic Systems",
@@ -368,7 +368,7 @@ export const subjectsData = [
     id: "GOV001",
     icon: `<img src="${governmentImg}" style="width: 100%; border-radius: 16px" />`,
     name: "Government",
-    totalQuestions: 1210,
+    totalQuestions: 1316,
     topics: [
       "Basic Concepts in Government - Power, Authority, Legitimacy, Sovereignty",
       "Basic Concepts in Government - Society, State, Nation, Nation-State",
@@ -474,7 +474,7 @@ export const subjectsData = [
     id: "LIT001",
     icon: `<img src="${literatureImg}" style="width: 100%; border-radius: 16px" />`,
     name: "Literature",
-    totalQuestions: 1438,
+    totalQuestions: 1538,
     topics: [
       "Drama - Types: Tragedy",
       "Drama - Types: Comedy",
@@ -549,7 +549,7 @@ export const subjectsData = [
     id: "GEO001",
     icon: `<img src="${geographyImg}" style="width: 100%; border-radius: 16px" />`,
     name: "Geography",
-    totalQuestions: 1120,
+    totalQuestions: 1700,
     topics: [
       "Maps - Definition, types and uses of maps",
       "Scale and measurement of distances - Types of scale and their application to distances and area measurement",
@@ -652,7 +652,7 @@ export const subjectsData = [
     id: "CRK001",
     icon: `<img src="${crkImg}" style="width: 100%; border-radius: 16px" />`,
     name: "CRK",
-    totalQuestions: 890,
+    totalQuestions: 1743,
     topics: [
       "The Sovereignty of God - God as Creator and Controller of the Universe",
       "The Covenant - The flood and God's covenant with Noah",
@@ -765,7 +765,7 @@ export const subjectsData = [
     id: "IRK001",
     icon: `<img src="${irkImg}" style="width: 100%; border-radius: 16px" />`,
     name: "IRK",
-    totalQuestions: 760,
+    totalQuestions: 570,
     topics: [
       "Revelation of the Glorious Qur'an - Visits of the Prophet (SAW) to Cave Hira",
       "Revelation of the Glorious Qur'an - His reaction to the first revelation and its importance",
@@ -1072,7 +1072,7 @@ export const subjectsData = [
     id: "ACC001",
     icon: `<img src="${accountingImg}" style="width: 100%; border-radius: 16px" />`,
     name: "Accounting",
-    totalQuestions: 1358,
+    totalQuestions: 1682,
     topics: [
       "Nature and Significance of Book keeping and Accounting - Development of Accounting (including branches of Accounting)",
       "Nature and Significance of Book keeping and Accounting - Objectives of Book Keeping and Accounting",
