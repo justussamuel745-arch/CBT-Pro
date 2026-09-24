@@ -150,7 +150,7 @@ const OptionsList = memo(function OptionsList({ options, activeState, mode, onSe
   if (!options) return null
   return options.map((opt) => (
     <div className="mode-options" key={opt.id} onClick={() => !activeState?.status && mode !== 'review' && onSelect(opt.id)}>
-      <div className={`mode-option ${activeState?.userAnswer === opt.id ? activeState.status : ''}`}>
+      <div className={`mode-option ${activeState?.userAnswer === opt.id ? activeState.status : activeState.correctAnswers.includes(opt.id) && activeState?.userAnswer ? 'correct' : ''}`}>
         <div className="mode-option-key">{opt.id.toUpperCase()}</div>
         <div className="mode-option-content">
           <div className="mode-option-text">

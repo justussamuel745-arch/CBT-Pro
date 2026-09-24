@@ -38,6 +38,7 @@ export async function saveQuestions(questions) {
 }
 
 export async function getQuestions(filters = {}) {
+  console.log(filters)
   const db = await openDB();
 
   const transaction = db.transaction("questions", "readonly");

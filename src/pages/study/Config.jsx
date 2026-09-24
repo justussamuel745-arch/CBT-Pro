@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { useSearchParams, useNavigate, Link, Navigate } from "react-router";
 import { ModalDialog, ModalCentered, CSS } from '../../components/NotificationSystem'
 import './Config.css';
@@ -6,10 +6,6 @@ import { subjectsData } from '../../scripts/data/subjectsData.js';
 import { formatName } from '../../scripts/utils/formatName.js';
 import { authStore } from '../../stores/authStore';
 import { studyStore } from '../../stores/studyStore';
-
-
-const yearsList = ["2025","2024","2023","2022","2021","2020","2019","2018", "2017", "2016", "2015", "2014", "2013", "2012", "2011", "2010", "2009", "2008", "2007", "2006", "2005", "2004", "2003", "2002", "2001", "2000", "1999", "1998", "1997", "1996", "1995", "1994", "1993", "1992", "1991", "1990", "1989", "1988", "1987", "1986", "1985", "1984", "1983"];
-
 
 export default function Config() {
   const isActivated = authStore(state => state.isActivated)
@@ -27,9 +23,11 @@ export default function Config() {
   const [yearsOpen, setYearsOpen] = useState(false);
   const [selectedTopics, setSelectedTopics] = useState([]);
   const [selectedYears, setSelectedYears] = useState([]);
+  const [topicSearch, setTopicSearch] = useState("");
 
   const topicsRef = useRef(null);
   const yearsRef = useRef(null);
+  const topicSearchInputRef = useRef(null);
 
   /*===== Render Notification Style ======*/
   useEffect(() => {
@@ -40,20 +38,22 @@ export default function Config() {
     return () => document.getElementById("__ns_styles")?.remove();
   }, []);
 
-  // Reset when subject changes
+  // Reset when subject changes — pull years straight from the subject now
   useEffect(() => {
-    setSelectedTopics(
-      subjectsData.find(sub => sub.id === subjectId)?.topics || []
-    );
-    setSelectedYears(yearsList);
+    const sub = subjectsData.find(sub => sub.id === subjectId);
+    setSelectedTopics(sub?.topics || []);
+    setSelectedYears(sub?.years || []);
     setTopicsOpen(false);
     setYearsOpen(false);
+    setTopicSearch("");
   }, [subjectId]);
 
   // Close dropdowns on outside click
   useEffect(() => {
     const handleClickOutside = (e) => {
-      if (topicsRef.current && !topicsRef.current.contains(e.target)) setTopicsOpen(false);
+      if (topicsRef.current && !topicsRef.current.contains(e.target)) {
+        setTopicsOpen(false);
+      }
       if (yearsRef.current && !yearsRef.current.contains(e.target)) setYearsOpen(false);
     };
     document.addEventListener("mousedown", handleClickOutside);
@@ -62,8 +62,23 @@ export default function Config() {
 
   // Only one dropdown open at a time
   const toggleTopics = () => {
-    setTopicsOpen(!topicsOpen);
+    const next = !topicsOpen;
+    setTopicsOpen(next);
     setYearsOpen(false);
+    if (next) {
+      // Focus the search box as soon as the dropdown opens
+      //requestAnimationFrame(() => topicSearchInputRef.current?.focus());
+    } else {
+      setTopicSearch("");
+    }
+  };
+
+  const openTopicsDropdown = () => {
+    if (!topicsOpen) {
+      setTopicsOpen(true);
+      setYearsOpen(false);
+      requestAnimationFrame(() => topicSearchInputRef.current?.focus());
+    }
   };
 
   const toggleYears = () => {
@@ -88,7 +103,7 @@ export default function Config() {
   };
 
   const handleSelectAllYears = (e) => {
-    setSelectedYears(e.target.checked ? yearsList : []);
+    setSelectedYears(e.target.checked ? subject.years : []);
   };
 
   const getTopicsLabel = () => {
@@ -99,9 +114,31 @@ export default function Config() {
   };
 
   const getYearsLabel = () => {
+    if (!subject) return "Select Years";
     if (selectedYears.length === 0) return "Select Years";
-    if (selectedYears.length === yearsList.length) return "All Years";
+    if (selectedYears.length === subject.years.length) return "All Years";
     return `${selectedYears.length} Years`;
+  };
+
+  // Filtered topic list driven by the search box
+  const filteredTopics = useMemo(() => {
+    if (!subject) return [];
+    const q = topicSearch.trim().toLowerCase();
+    if (!q) return subject.topics;
+    return subject.topics.filter(t => t.toLowerCase().includes(q));
+  }, [subject, topicSearch]);
+
+  const allFilteredSelected =
+    filteredTopics.length > 0 && filteredTopics.every(t => selectedTopics.includes(t));
+
+  const handleSelectAllFilteredTopics = (e) => {
+    if (e.target.checked) {
+      // Add every currently-filtered topic to the selection
+      setSelectedTopics(prev => Array.from(new Set([...prev, ...filteredTopics])));
+    } else {
+      // Remove every currently-filtered topic from the selection
+      setSelectedTopics(prev => prev.filter(t => !filteredTopics.includes(t)));
+    }
   };
 
   function startStudy() {
@@ -129,11 +166,34 @@ export default function Config() {
     navigate('/study-simulator?mode=study')
   }
 
-
-
   if (!subject) {
     return <Navigate to="/study" />
   }
+
+  // Build the action cards from this subject's own studyMaterial flags
+  const actionCards = [
+    subject.studyMaterial?.search && {
+      key: 'search',
+      to: `/study/search?subject=${subject.name}`,
+      icon: 'fa-search',
+      title: 'Search',
+      desc: 'Search past questions quickly'
+    },
+    subject.studyMaterial?.syllabus && {
+      key: 'syllabus',
+      to: `/syllabus?subject=${subject.name.toLowerCase()}`,
+      icon: 'fa-book-open',
+      title: 'Syllabus',
+      desc: 'JAMB topics & outline'
+    },
+    subject.studyMaterial?.note && {
+      key: 'note',
+      to: `/study/notes?subject=${subject.name.toLowerCase()}`,
+      icon: 'fa-note-sticky',
+      title: 'Notes',
+      desc: 'Read summarized study notes'
+    },
+  ].filter(Boolean);
 
   return (
     <>
@@ -173,7 +233,7 @@ export default function Config() {
               <div className="subject-name-wrap">
                 <h1>{formatName(subject.name)}</h1>
                 <div className="subject-stats">
-                  <span>{subject.totalQuestions.toLocaleString()} Questions</span> • <span>{subject.topics.length} Topics</span>
+                  <span>{subject.totalQuestions.toLocaleString()} Questions</span> • <span>{subject.topics.length} Topics</span> • <span>{subject.years.length} Years</span>
                 </div>
               </div>
             </div>
@@ -188,72 +248,116 @@ export default function Config() {
                 </label>
                 {topicsOpen && (
                   <div className="dropdown-menu">
-                    <div className="checkbox-item">
+                    <div className="dropdown-search">
+                      <i className="fas fa-search dropdown-search-icon"></i>
+                      <input
+                        ref={topicSearchInputRef}
+                        type="text"
+                        className="dropdown-search-input"
+                        placeholder="Search topics..."
+                        value={topicSearch}
+                        onChange={(e) => setTopicSearch(e.target.value)}
+                        onFocus={openTopicsDropdown}
+                        onClick={(e) => e.stopPropagation()}
+                      />
+                      {topicSearch && (
+                        <button
+                          type="button"
+                          className="dropdown-search-clear"
+                          onClick={() => setTopicSearch("")}
+                          aria-label="Clear search"
+                        >
+                          <i className="fas fa-times"></i>
+                        </button>
+                      )}
+                    </div>
+
+                    <div className="checkbox-item select-all-row">
                       <input
                         type="checkbox"
                         id="topic-select-all"
                         className="select-all"
-                        checked={selectedTopics.length === subject.topics.length}
-                        onChange={handleSelectAllTopics}
+                        checked={allFilteredSelected}
+                        onChange={handleSelectAllFilteredTopics}
                       />
-                      <label htmlFor="topic-select-all"><strong>Select All Topics</strong></label>
+                      <label htmlFor="topic-select-all">
+                        <strong>{topicSearch ? "Select All Shown" : "Select All Topics"}</strong>
+                      </label>
                     </div>
                     <div className="divider"></div>
-                    {subject.topics.map((topic, idx) => (
-                      <div className="checkbox-item" key={idx}>
-                        <input
-                          type="checkbox"
-                          id={`topic-${idx}`}
-                          name="topics"
-                          value={topic}
-                          className="item-checkbox"
-                          checked={selectedTopics.includes(topic)}
-                          onChange={() => handleTopicChange(topic)}
-                        />
-                        <label htmlFor={`topic-${idx}`}>{topic}</label>
-                      </div>
-                    ))}
+
+                    <div className="dropdown-scroll-area">
+                      {filteredTopics.length > 0 ? (
+                        filteredTopics.map((topic, idx) => (
+                          <div className="checkbox-item" key={idx}>
+                            <input
+                              type="checkbox"
+                              id={`topic-${idx}`}
+                              name="topics"
+                              value={topic}
+                              className="item-checkbox"
+                              checked={selectedTopics.includes(topic)}
+                              onChange={() => handleTopicChange(topic)}
+                            />
+                            <label htmlFor={`topic-${idx}`}>{topic}</label>
+                          </div>
+                        ))
+                      ) : (
+                        <div className="dropdown-no-results">
+                          <i className="fas fa-circle-exclamation"></i>
+                          No topics match "{topicSearch}"
+                        </div>
+                      )}
+                    </div>
                   </div>
                 )}
               </div>
 
-              {/* YEARS DROPDOWN */}
-              <div className="css-dropdown" ref={yearsRef} tabIndex={0}>
-                <input type="checkbox" id="years-toggle" className="dropdown-toggle" checked={yearsOpen} readOnly />
-                <label htmlFor="years-toggle" className="dropdown-label" onClick={toggleYears}>
-                  <span id="yearsLabel">{getYearsLabel()}</span>
-                  <span className="dropdown-arrow">▼</span>
-                </label>
-                {yearsOpen && (
-                  <div className="dropdown-menu">
-                    <div className="checkbox-item">
-                      <input
-                        type="checkbox"
-                        id="year-select-all"
-                        className="select-all"
-                        checked={selectedYears.length === yearsList.length}
-                        onChange={handleSelectAllYears}
-                      />
-                      <label htmlFor="year-select-all"><strong>Select All Years</strong></label>
+              {/* YEARS DROPDOWN — sourced from subject.years */}
+              {
+                subject?.name?.toLowerCase() !== 'lekki' &&
+                  
+                  (
+                    <div className="css-dropdown" ref={yearsRef} tabIndex={0}>
+                      <input type="checkbox" id="years-toggle" className="dropdown-toggle" checked={yearsOpen} readOnly />
+                      <label htmlFor="years-toggle" className="dropdown-label" onClick={toggleYears}>
+                        <span id="yearsLabel">{getYearsLabel()}</span>
+                        <span className="dropdown-arrow">▼</span>
+                      </label>
+                      {yearsOpen  && (
+                        <div className="dropdown-menu">
+                          <div className="checkbox-item select-all-row">
+                            <input
+                              type="checkbox"
+                              id="year-select-all"
+                              className="select-all"
+                              checked={selectedYears.length === subject.years.length}
+                              onChange={handleSelectAllYears}
+                            />
+                            <label htmlFor="year-select-all"><strong>Select All Years</strong></label>
+                          </div>
+                          <div className="divider"></div>
+                          <div className="dropdown-scroll-area">
+                            {subject.years.map(year => (
+                              <div className="checkbox-item" key={year}>
+                                <input
+                                  type="checkbox"
+                                  id={`year-${year}`}
+                                  name="years"
+                                  value={year}
+                                  className="item-checkbox"
+                                  checked={selectedYears.includes(year)}
+                                  onChange={() => handleYearChange(year)}
+                                />
+                                <label htmlFor={`year-${year}`}>{year}</label>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
                     </div>
-                    <div className="divider"></div>
-                    {yearsList.map(year => (
-                      <div className="checkbox-item" key={year}>
-                        <input
-                          type="checkbox"
-                          id={`year-${year}`}
-                          name="years"
-                          value={year}
-                          className="item-checkbox"
-                          checked={selectedYears.includes(year)}
-                          onChange={() => handleYearChange(year)}
-                        />
-                        <label htmlFor={`year-${year}`}>{year}</label>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
+                  )
+              }
             </form>
           </div>
         </div>
@@ -262,18 +366,30 @@ export default function Config() {
       <main className="study-two-main" id="study-two-container">
         <div className="study-two-card">
           <h3 className="study-two-card-title">Start Study Session</h3>
-          <div className="study-two-action-grid">
-            <Link to={`/study/search?subject=${subject.name}`} className="study-two-action-card">
-              <div className="study-two-action-icon"><i className="fas fa-search"></i></div>
-              <div className="study-two-action-title"> Search</div>
-              <div className="study-two-action-desc">Search past questions quickly</div>
-            </Link>
-            <Link to={`/syllabus?subject=${subject.name.toLowerCase()}`} className="study-two-action-card">
-              <div className="study-two-action-icon"><i className="fas fa-book-open"></i></div>
-              <div className="study-two-action-title">Syllabus</div>
-              <div className="study-two-action-desc">JAMB topics &amp; outline</div>
-            </Link>
-          </div>
+
+          {actionCards.length > 0 ? (
+            <div
+              className="study-two-action-grid"
+              data-count={actionCards.length}
+            >
+              {actionCards.map(card => (
+                <Link key={card.key} to={card.to} className="study-two-action-card">
+                  <div className="study-two-action-icon"><i className={`fas ${card.icon}`}></i></div>
+                  <div className="study-two-action-title">{card.title}</div>
+                  <div className="study-two-action-desc">{card.desc}</div>
+                </Link>
+              ))}
+            </div>
+          ) : (
+            <div className="study-two-empty-state">
+              <div className="study-two-empty-icon"><i className="fas fa-hourglass-half"></i></div>
+              <div className="study-two-empty-title">Study materials coming soon</div>
+              <div className="study-two-empty-desc">
+                There's no search or syllabus material for {formatName(subject.name)} just yet — you can still jump straight into a study session below.
+              </div>
+            </div>
+          )}
+
           <button type="button" className="btn-primary study-two-btn" onClick={startStudy}>
             Start Study Session
           </button>

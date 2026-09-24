@@ -31,7 +31,7 @@ export const subjectsData = [
     id: "ENG001",
     icon: `<img src="${englishImg}" style="width: 100%; border-radius: 16px" />`,
     name: "English",
-    totalQuestions: 3150,
+    totalQuestions: 2831,
     topics: [
       "Comprehension & Summary - Comprehension and Summary",
     
@@ -64,7 +64,7 @@ export const subjectsData = [
       search: true,
       note: false,
     },
-    years: Array.from({ length: 2026 - 1983 + 1 }, (_, i) => 1983 + i)
+    years: Array.from({ length: 2026 - 1983 + 1 }, (_, i) => String(1983 + i))
   },
 
   {
@@ -245,7 +245,7 @@ export const subjectsData = [
       search: true,
       note: false,
     },
-    years: Array.from({ length: 2026 - 1983 + 1 }, (_, i) => 1983 + i)
+    years: Array.from({ length: 2026 - 1983 + 1 }, (_, i) => String(1983 + i))
   },
 
   {
@@ -322,7 +322,7 @@ export const subjectsData = [
       search: true,
       note: false,
     },
-    years: Array.from({ length: 2026 - 1983 + 1 }, (_, i) => 1983 + i)
+    years: Array.from({ length: 2026 - 1983 + 1 }, (_, i) => String(1983 + i))
   },
 
   {
@@ -361,7 +361,7 @@ export const subjectsData = [
       search: true,
       note: false,
     },
-    years: Array.from({ length: 2026 - 1983 + 1 }, (_, i) => 1983 + i)
+    years: Array.from({ length: 2026 - 1983 + 1 }, (_, i) => String(1983 + i))
   },
 
   {
@@ -467,7 +467,7 @@ export const subjectsData = [
       search: true,
       note: false,
     },
-    years: Array.from({ length: 2026 - 1983 + 1 }, (_, i) => 1983 + i)
+    years: Array.from({ length: 2026 - 1983 + 1 }, (_, i) => String(1983 + i))
   },
 
   {
@@ -542,7 +542,7 @@ export const subjectsData = [
       search: true,
       note: false,
     },
-    years: Array.from({ length: 2026 - 1983 + 1 }, (_, i) => 1983 + i)
+    years: Array.from({ length: 2026 - 1983 + 1 }, (_, i) => String(1983 + i))
   },
 
   {
@@ -645,7 +645,7 @@ export const subjectsData = [
       search: true,
       note: false,
     },
-    years: Array.from({ length: 2026 - 1983 + 1 }, (_, i) => 1983 + i)
+    years: Array.from({ length: 2026 - 1983 + 1 }, (_, i) => String(1983 + i))
   },
 
   {
@@ -758,7 +758,7 @@ export const subjectsData = [
       search: true,
       note: false,
     },
-    years: Array.from({ length: 2026 - 1983 + 1 }, (_, i) => 1983 + i)
+    years: Array.from({ length: 2026 - 1983 + 1 }, (_, i) => String(1983 + i))
   },
 
   {
@@ -912,7 +912,7 @@ export const subjectsData = [
       search: true,
       note: false,
     },
-    years: Array.from({ length: 2026 - 1983 + 1 }, (_, i) => 1983 + i)
+    years: Array.from({ length: 2026 - 1983 + 1 }, (_, i) => String(1983 + i))
   },
 
   {
@@ -1065,7 +1065,7 @@ export const subjectsData = [
       search: true,
       note: false,
     },
-    years: Array.from({ length: 2026 - 1983 + 1 }, (_, i) => 1983 + i)
+    years: Array.from({ length: 2026 - 1983 + 1 }, (_, i) => String(1983 + i))
   },
 
   {
@@ -1154,7 +1154,7 @@ export const subjectsData = [
       search: true,
       note: false,
     },
-    years: Array.from({ length: 2026 - 1983 + 1 }, (_, i) => 1983 + i)
+    years: Array.from({ length: 2026 - 1983 + 1 }, (_, i) => String(1983 + i))
   },
 
   {
@@ -1263,7 +1263,7 @@ export const subjectsData = [
       search: true,
       note: false,
     },
-    years: Array.from({ length: 2026 - 1983 + 1 }, (_, i) => 1983 + i)
+    years: Array.from({ length: 2026 - 1983 + 1 }, (_, i) => String(1983 + i))
   },
 
   {
@@ -1289,8 +1289,8 @@ export const subjectsData = [
     studyMaterial: {
       syllabus: false,
       search: false,
-      note: false,
+      note: true,
     },
-    years: Array.from({ length: 2026 - 1983 + 1 }, (_, i) => 1983 + i)
+    years: Array.from({ length: 2026 - 1983 + 1 }, (_, i) => String(1983 + i))
   }
 ];

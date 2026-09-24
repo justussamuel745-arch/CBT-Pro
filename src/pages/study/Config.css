@@ -1,16 +1,16 @@
 /* =====================================
   PAGE SPECIFIC STYLE
   ======================================*/
-  #study-two-container{
-    max-width: 1280px;
-    margin: 0 auto;
-    padding: 0 1.25rem;
-  }
-  
-  .mb-1{
-    margin-bottom: 1rem;
-  }
-  
+#study-two-container{
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 1.25rem;
+}
+
+.mb-1{
+  margin-bottom: 1rem;
+}
+
 .subject-header {
   display: flex;
   flex-direction: column;
@@ -91,7 +91,6 @@
 }
 
 .dropdown-menu {
-  display: none;
   position: absolute;
   top: 110%;
   left: 0;
@@ -100,15 +99,13 @@
   border: 1px solid var(--border);
   border-radius: var(--radius);
   box-shadow: var(--shadow-lg);
-  max-height: 400px;
-  overflow-y: auto;
+  max-height: 420px;
+  display: flex;
+  flex-direction: column;
   padding: 0.5rem;
   z-index: 50;
   animation: slideDown 0.2s ease;
-}
-
-.dropdown-toggle:checked~.dropdown-menu {
-  display: block;
+  overflow: hidden;
 }
 
 @keyframes slideDown {
@@ -116,11 +113,91 @@
     opacity: 0;
     transform: translateY(-10px);
   }
-  
+
   to {
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+/* SEARCH BOX INSIDE TOPICS DROPDOWN */
+.dropdown-search {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin: 0.25rem 0.25rem 0.5rem;
+}
+
+.dropdown-search-icon {
+  position: absolute;
+  left: 0.85rem;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+.dropdown-search-input {
+  width: 100%;
+  padding: 0.65rem 2.25rem 0.65rem 2.25rem;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.dropdown-search-input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgb(79 70 229 / 0.12);
+}
+
+.dropdown-search-clear {
+  position: absolute;
+  right: 0.6rem;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 0.8rem;
+  padding: 0.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background 0.15s, color 0.15s;
+}
+
+.dropdown-search-clear:hover {
+  background: var(--border);
+  color: var(--text);
+}
+
+.select-all-row {
+  flex-shrink: 0;
+}
+
+/* Scrollable list area (search + select-all stay pinned above it) */
+.dropdown-scroll-area {
+  overflow-y: auto;
+  flex: 1 1 auto;
+}
+
+.dropdown-no-results {
+  padding: 1.5rem 1rem;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.dropdown-no-results i {
+  font-size: 1.1rem;
+  opacity: 0.7;
 }
 
 .checkbox-item {
@@ -142,6 +219,7 @@
   height: 18px;
   accent-color: var(--primary);
   cursor: pointer;
+  flex-shrink: 0;
 }
 
 .checkbox-item label {
@@ -154,28 +232,7 @@
   height: 1px;
   background: var(--border);
   margin: 0.5rem 0;
-}
-
-/* PURE CSS SELECT ALL */
-/* When select-all is checked, visually check all items using :has() */
-.dropdown-menu:has(.select-all:checked) input[type="checkbox"]:not(.select-all) {
-  appearance: auto;
-}
-
-/* This is the magic: use form + :checked to control siblings */
-.select-all:checked~.checkbox-item input[type="checkbox"] {
-  accent-color: var(--primary);
-}
-
-/* Make it actually check them - requires :has() support */
-.dropdown-menu:has(.select-all:checked) .item-checkbox {
-  accent-color: var(--primary);
-}
-
-/* Fallback: Use general sibling selector for browsers without :has() */
-.select-all:checked~.checkbox-item .item-checkbox {
-  pointer-events: none;
-  opacity: 0.7;
+  flex-shrink: 0;
 }
 
 /* MAIN */
@@ -201,11 +258,22 @@
   gap: 0.5rem;
 }
 
-/* QUICK ACTIONS */
+/* QUICK ACTIONS — sizes itself to however many cards exist */
 .study-two-action-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
   gap: 1rem;
+  justify-content: center;
+}
+
+/* One card: don't let it stretch edge-to-edge */
+.study-two-action-grid[data-count="1"] {
+  grid-template-columns: minmax(160px, 260px);
+}
+
+/* Two cards: cap width so they don't balloon on wide screens */
+.study-two-action-grid[data-count="2"] {
+  grid-template-columns: repeat(2, minmax(160px, 220px));
 }
 
 .study-two-action-card {
@@ -243,6 +311,36 @@
   color: var(--text-muted);
 }
 
+/* EMPTY STATE — shown when a subject has no study materials at all */
+.study-two-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.5rem;
+  padding: 2rem 1rem;
+  background: var(--bg);
+  border: 2px dashed var(--border);
+  border-radius: 12px;
+}
+
+.study-two-empty-icon {
+  font-size: 1.75rem;
+  color: var(--text-muted);
+  margin-bottom: 0.25rem;
+}
+
+.study-two-empty-title {
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.study-two-empty-desc {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  max-width: 360px;
+}
+
 .study-two-btn {
   width: 100%;
   padding: 1rem;
@@ -265,20 +363,18 @@
   .subject-name-wrap h1 {
     font-size: 1.5rem;
   }
-  
-  .study-two-action-grid {
+
+  .dropdown-menu {
+    max-height: 340px;
+  }
+
+  .study-two-action-grid,
+  .study-two-action-grid[data-count="1"],
+  .study-two-action-grid[data-count="2"] {
     grid-template-columns: 1fr 1fr;
   }
-}
 
-/* Pure CSS form validation indicator */
-form:has(input[name="topics"]:checked):has(input[name="years"]:checked) .btn-primary {
-  opacity: 1;
-  pointer-events: auto;
-}
-
-form:not(:has(input[name="topics"]:checked)) .btn-primary,
-form:not(:has(input[name="years"]:checked)) .btn-primary {
-  opacity: 0.5;
-  pointer-events: none;
+  .study-two-action-grid[data-count="1"] {
+    grid-template-columns: minmax(0, 220px);
+  }
 }
