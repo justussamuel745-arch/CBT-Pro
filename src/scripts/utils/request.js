@@ -18,7 +18,11 @@ export const request = {
     const res = await fetchWithAuth(path, options)
     const data = await res.json().catch(() => ({}))
     if (!res.ok) {
-      throw { status: res.status, error: errMsg || data?.message || data?.errors || data?.error || 'Request Failed' }
+      throw { 
+        status: res.status, 
+        code: data?.code,
+        error: errMsg || data?.message || data?.errors || data?.error || 'Request Failed' 
+      }
     }
 
     return ({

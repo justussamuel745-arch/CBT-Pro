@@ -1,5 +1,6 @@
 import { openDB } from "./db";
 import { encrypt, decrypt } from '../../../scripts/utils/crypto.js';
+import { shuffleArray } from '../../../scripts/utils/shuffle.js';
 
 /*
   Save questions.
@@ -38,7 +39,6 @@ export async function saveQuestions(questions) {
 }
 
 export async function getQuestions(filters = {}) {
-  console.log(filters)
   const db = await openDB();
 
   const transaction = db.transaction("questions", "readonly");
@@ -46,6 +46,7 @@ export async function getQuestions(filters = {}) {
 
   const years = filters.years ?? [];
   const topics = filters.topics ?? [];
+  const shuffle = Boolean(filters.shuffle) 
 
   const results = [];
   const seen = new Set();
@@ -55,19 +56,20 @@ export async function getQuestions(filters = {}) {
     return new Promise((resolve, reject) => {
       const index = store.index(indexName);
       const request = index.getAll(key);
-
-      request.onsuccess = () => resolve(
-        request.result.map(q =>
-        ({
-          ...q,
-          question: decrypt(q.question),
-          options: decrypt(q.options),
-          image: decrypt(q.image),
-          correctAnswers: decrypt(q.correctAnswers),
-          explanation: decrypt(q.explanation)
-        })
+      
+      request.onsuccess = () =>
+        resolve(
+          request?.result?.map(q =>
+            ({
+              ...q,
+              question: decrypt(q.question),
+              options: decrypt(q.options),
+              image: decrypt(q.image),
+              correctAnswers: decrypt(q.correctAnswers),
+              explanation: decrypt(q.explanation)
+            })
+          )
         )
-      );
 
       request.onerror = () => reject(request.error);
     });
@@ -91,7 +93,7 @@ export async function getQuestions(filters = {}) {
       }
     }
 
-    return results;
+    return shuffle ? shuffleArray(results) : results;
   }
 
   // Subject + Years
@@ -110,7 +112,7 @@ export async function getQuestions(filters = {}) {
       }
     }
 
-    return results;
+    return shuffle ? shuffleArray(results) : results;
   }
 
   // Subject only
@@ -131,7 +133,7 @@ export async function getQuestions(filters = {}) {
       }
     }
 
-    return results;
+    return shuffle ? shuffleArray(results) : results;
   }
 
   // Topics only
@@ -147,13 +149,12 @@ export async function getQuestions(filters = {}) {
       }
     }
 
-    return results;
+    return shuffle ? shuffleArray(results) : results;
   }
 
   // Get all questions
   return new Promise((resolve, reject) => {
     const request = store.getAll();
-
     request.onsuccess = () => resolve(
       request.result.map(q =>
       ({

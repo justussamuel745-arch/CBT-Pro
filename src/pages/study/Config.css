@@ -228,6 +228,20 @@
   flex: 1;
 }
 
+/* Disabled state once the download cap is reached */
+.checkbox-item-disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.checkbox-item-disabled label {
+  cursor: not-allowed;
+}
+
+.checkbox-item-disabled input {
+  cursor: not-allowed;
+}
+
 .divider {
   height: 1px;
   background: var(--border);
@@ -519,10 +533,52 @@
   line-height: 1.5;
 }
 
+.download-modal-subtitle strong {
+  color: var(--text);
+}
+
 .download-modal-list {
   overflow-y: auto;
   flex: 1;
   margin: 0.25rem 0 1.5rem;
+}
+
+/* Row for a subject in the select-subjects list: checkbox + label + an
+   optional "Update" tag when the subject is already saved offline. */
+.download-subject-row {
+  justify-content: space-between;
+}
+
+.download-subject-label {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.subject-downloaded-tag {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: var(--primary);
+  background: rgb(79 70 229 / 0.1);
+  border-radius: 999px;
+  padding: 0.3rem 0.65rem;
+}
+
+.download-limit-note {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  color: var(--primary);
+  background: rgb(79 70 229 / 0.08);
+  border-radius: 8px;
+  padding: 0.6rem 0.85rem;
+  margin: -0.75rem 0 1rem;
 }
 
 .download-modal-actions {
@@ -548,7 +604,7 @@
   box-shadow: none;
 }
 
-/* ============ DOWNLOADING OVERLAY ============ */
+/* ============ DOWNLOAD PROGRESS OVERLAY ============ */
 .downloading-overlay {
   display: flex;
   align-items: center;
@@ -558,38 +614,91 @@
 .downloading-box {
   background: var(--card);
   border-radius: var(--radius);
-  padding: 2.75rem 2.25rem;
+  padding: 2rem;
   text-align: center;
   max-width: 320px;
   box-shadow: var(--shadow-lg);
 }
 
-.downloading-spinner {
-  width: 44px;
-  height: 44px;
-  border: 4px solid var(--border);
-  border-top-color: var(--primary);
-  border-radius: 50%;
-  margin: 0 auto 1.5rem;
-  animation: spin 0.8s linear infinite;
+/* Wider variant used once the box shows a per-subject progress list
+   rather than just a spinner. */
+.downloading-box-list {
+  width: 100%;
+  max-width: 440px;
+  max-height: 82vh;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
 }
 
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-.downloading-text {
+.downloading-title {
   font-weight: 700;
-  font-size: 1rem;
-  margin-bottom: 0.4rem;
+  font-size: 1.1rem;
+  margin-bottom: 0.35rem;
+  text-align: center;
 }
 
 .downloading-subtext {
   font-size: 0.85rem;
   color: var(--text-muted);
   line-height: 1.5;
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.download-progress-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  overflow-y: auto;
+  margin-bottom: 1.25rem;
+}
+
+.download-progress-item {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1rem 1.1rem;
+}
+
+.download-progress-name {
+  font-weight: 700;
+  font-size: 0.92rem;
+  margin-bottom: 0.6rem;
+}
+
+.download-progress-step {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  padding: 0.15rem 0;
+}
+
+.step-icon {
+  width: 16px;
+  text-align: center;
+  flex-shrink: 0;
+  font-size: 0.85rem;
+}
+
+.step-icon-success { color: #16a34a; }
+.step-icon-error { color: #dc2626; }
+.step-icon-progress { color: var(--primary); }
+.step-icon-pending { color: var(--border); }
+.step-icon-skipped { color: var(--text-muted); }
+
+.download-progress-error {
+  font-size: 0.78rem;
+  color: #dc2626;
+  margin: 0.2rem 0 0.2rem 1.6rem;
+  line-height: 1.4;
+}
+
+.downloading-done-btn {
+  width: 100%;
 }
 
 /* RESPONSIVE */
@@ -628,7 +737,16 @@
     align-items: flex-start;
   }
 
-  .download-modal-box {
+  .download-modal-box,
+  .downloading-box-list {
     padding: 1.5rem;
+  }
+
+  .download-subject-row {
+    flex-wrap: wrap;
+  }
+
+  .subject-downloaded-tag {
+    margin-left: 2.35rem;
   }
 }

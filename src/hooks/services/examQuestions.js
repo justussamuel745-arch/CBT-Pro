@@ -1,4 +1,6 @@
 import { getQuestions } from "./indexedDB//questions";
+import { shuffleArray } from '../../scripts/utils/shuffle.js';
+import { authStore } from '../../stores/authStore.js';
 
 /*
   ONE SUBJECT
@@ -34,31 +36,35 @@ export async function getRandomQuestions(subjects) {
   const questions = [];
   const insufficientSubjects = [];
 
+  const isActivated = authStore.getState()?.isActivated
+
   for (const { subject, amount } of subjects) {
     const subjectQuestions = await getQuestions({
       subject,
     });
 
-    // Fisher-Yates Shuffle
-    const shuffled = [...subjectQuestions];
+    if (!isActivated){
+      const sortedQuestions = subjectQuestions.sort((a, b) => Number(a.year) - Number(b.year))
+      const selectedQuestions = sortedQuestions.slice(
+        0,
+        Math.min(amount, sortedQuestions.length)
+      );
 
-    for (let i = shuffled.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
+      const shuffled = shuffleArray([...selectedQuestions]);
 
-      [shuffled[i], shuffled[j]] = [
-        shuffled[j],
-        shuffled[i],
-      ];
+      questions.push(...shuffled)
+    } else {
+
+      const shuffled = shuffleArray([...subjectQuestions]);
+
+      const selectedQuestions = shuffled.slice(
+        0,
+        Math.min(amount, shuffled.length)
+      );
+
+      questions.push(...selectedQuestions)
     }
-
-    const selectedQuestions = shuffled.slice(
-      0,
-      Math.min(amount, shuffled.length)
-    );
-
-    // Keep subjects in the same order they were requested
-    questions.push(...selectedQuestions);
-
+    
     // Record subjects with insufficient questions
     if (subjectQuestions.length < amount) {
       insufficientSubjects.push({
@@ -69,6 +75,8 @@ export async function getRandomQuestions(subjects) {
       });
     }
   }
+
+  console.log(questions)
 
   return {
     questions,

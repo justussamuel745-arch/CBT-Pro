@@ -6,6 +6,31 @@ import { subjectsData } from '../../scripts/data/subjectsData.js';
 import { formatName } from '../../scripts/utils/formatName.js';
 import { authStore } from '../../stores/authStore';
 import { studyStore } from '../../stores/studyStore';
+import { request } from '../../scripts/utils/request';
+import { decrypt } from '../../scripts/utils/crypto';
+import { saveQuestions } from '../../hooks/services/indexedDB/questions';
+import { saveAllImages } from '../../hooks/services/indexedDB/images';
+
+const MAX_DOWNLOAD_SUBJECTS = 4;
+const DOWNLOADED_SUBJECTS_KEY = 'cbtpro_downloaded_subjects';
+
+// Small pure helper — renders the right icon for a step's current state.
+// Kept outside the component since it needs no hooks and shouldn't be
+// recreated on every render.
+function StepIcon({ state }) {
+  switch (state) {
+    case 'success':
+      return <i className="fas fa-circle-check step-icon step-icon-success"></i>;
+    case 'error':
+      return <i className="fas fa-circle-xmark step-icon step-icon-error"></i>;
+    case 'in-progress':
+      return <i className="fas fa-spinner fa-spin step-icon step-icon-progress"></i>;
+    case 'skipped':
+      return <i className="fas fa-minus step-icon step-icon-skipped"></i>;
+    default:
+      return <i className="far fa-circle step-icon step-icon-pending"></i>;
+  }
+}
 
 export default function Config() {
   const isActivated = authStore(state => state.isActivated)
@@ -26,13 +51,25 @@ export default function Config() {
   const [topicSearch, setTopicSearch] = useState("");
 
   // Offline download flow
-  const [downloadCardVisible, setDownloadCardVisible] = useState(true);
   const [downloadModalOpen, setDownloadModalOpen] = useState(false);
   const [downloadSelection, setDownloadSelection] = useState([]);
   const [isDownloading, setIsDownloading] = useState(false);
+  // One entry per subject being processed this run, tracked live as each
+  // subject's fetch + save steps progress. Empty array = overlay hidden.
+  const [downloadProgress, setDownloadProgress] = useState([]);
+  // Subjects the device already has offline. Persisted locally so the
+  // "Study Offline" banner and the per-subject "Update" tag survive reloads.
+  const [downloadedSubjects, setDownloadedSubjects] = useState(() => {
+    try {
+      const raw = localStorage.getItem(DOWNLOADED_SUBJECTS_KEY);
+      return raw ? JSON.parse(raw) : [];
+    } catch {
+      return [];
+    }
+  });
 
   // Shuffle toggle (scoped to this subject/session)
-  const [shuffleEnabled, setShuffleEnabled] = useState(false);
+  const [shuffleEnabled, setShuffleEnabled] = useState(true);
 
   const topicsRef = useRef(null);
   const yearsRef = useRef(null);
@@ -46,6 +83,15 @@ export default function Config() {
     document.head.appendChild(el);
     return () => document.getElementById("__ns_styles")?.remove();
   }, []);
+
+  // Persist which subjects are available offline
+  useEffect(() => {
+    try {
+      localStorage.setItem(DOWNLOADED_SUBJECTS_KEY, JSON.stringify(downloadedSubjects));
+    } catch {
+      // Non-fatal — worst case the banner re-shows next reload.
+    }
+  }, [downloadedSubjects]);
 
   // Reset when subject changes — pull years straight from the subject now
   useEffect(() => {
@@ -177,6 +223,8 @@ export default function Config() {
   }
 
   // ===== Offline download flow =====
+  const allSubjectsDownloaded = subjectsData.every(s => downloadedSubjects.includes(s.id));
+
   const handleDownloadClick = () => {
     if (!isActivated) {
       setModal('activate_app'); // reuses the existing activation modal
@@ -186,21 +234,85 @@ export default function Config() {
     setDownloadModalOpen(true);
   };
 
+  // Caps the selection at MAX_DOWNLOAD_SUBJECTS — extra taps are ignored
   const toggleDownloadSubject = (id) => {
-    setDownloadSelection(prev =>
-      prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]
-    );
+    setDownloadSelection(prev => {
+      if (prev.includes(id)) return prev.filter(x => x !== id);
+      if (prev.length >= MAX_DOWNLOAD_SUBJECTS) return prev;
+      return [...prev, id];
+    });
   };
 
-  const handleConfirmDownload = () => {
+  const downloadLimitReached = downloadSelection.length >= MAX_DOWNLOAD_SUBJECTS;
+
+  const updateSubjectProgress = (id, patch) => {
+    setDownloadProgress(prev => prev.map(item => (item.id === id ? { ...item, ...patch } : item)));
+  };
+
+  // Downloads are done one subject at a time so a failure on one subject
+  // never blocks the rest — each subject gets its own fetch step and its
+  // own save-to-IndexedDB step, tracked live in downloadProgress.
+  const handleConfirmDownload = async () => {
+    const queue = downloadSelection
+      .map(id => subjectsData.find(s => s.id === id))
+      .filter(Boolean);
+
     setDownloadModalOpen(false);
+    setDownloadProgress(queue.map(s => ({
+      id: s.id,
+      name: s.name,
+      fetchState: 'pending',
+      fetchError: null,
+      saveState: 'pending',
+      saveError: null,
+    })));
     setIsDownloading(true);
-    // Simulated for now — swap this timeout for real fetch/persist logic later
-    setTimeout(() => {
-      setIsDownloading(false);
-      setDownloadCardVisible(false);
-      setModal('download_success');
-    }, 2500);
+
+    const succeeded = [];
+
+    for (const s of queue) {
+      updateSubjectProgress(s.id, { fetchState: 'in-progress' });
+
+      let questions;
+      try {
+        const res = await request.auth('/api/questions/download', {
+          method: 'POST',
+          body: JSON.stringify({ subjects: [s.name] })
+        });
+        const subjectQuestions = decrypt(res.body.questions);
+        questions = Object.values(subjectQuestions).flat();
+        updateSubjectProgress(s.id, { fetchState: 'success' });
+      } catch (err) {
+        updateSubjectProgress(s.id, {
+          fetchState: 'error',
+          fetchError: err?.error || 'Could not reach the server.',
+          saveState: 'skipped',
+        });
+        continue;
+      }
+
+      updateSubjectProgress(s.id, { saveState: 'in-progress' });
+      try {
+        await Promise.all([
+          saveQuestions(questions),
+          saveAllImages(questions),
+        ]);
+        updateSubjectProgress(s.id, { saveState: 'success' });
+        succeeded.push(s.id);
+      } catch {
+        updateSubjectProgress(s.id, {
+          saveState: 'error',
+          saveError: 'Could not save to this device.',
+        });
+      }
+    }
+
+    if (succeeded.length > 0) {
+      setDownloadedSubjects(prev => Array.from(new Set([...prev, ...succeeded])));
+    }
+    setIsDownloading(false);
+    // The overlay stays open (showing per-subject results) until the user
+    // dismisses it with the "Done" button.
   };
 
   if (!subject) {
@@ -401,7 +513,7 @@ export default function Config() {
       </div>
 
       <main className="study-two-main" id="study-two-container">
-        {downloadCardVisible && (
+        {!allSubjectsDownloaded && (
           <div className="offline-banner">
             <div className="offline-banner-icon">
               <i className="fas fa-cloud-arrow-down"></i>
@@ -409,7 +521,9 @@ export default function Config() {
             <div className="offline-banner-text">
               <h3 className="offline-banner-title">Study Offline</h3>
               <p className="offline-banner-desc">
-                Download past questions so you can keep practicing without an internet connection.
+                {downloadedSubjects.length > 0
+                  ? `You've downloaded ${downloadedSubjects.length} of ${subjectsData.length} subjects. Download or update more to keep practicing offline.`
+                  : "Download past questions so you can keep practicing without an internet connection."}
               </p>
             </div>
             <button type="button" className="btn btn-outline offline-banner-btn" onClick={handleDownloadClick}>
@@ -510,21 +624,6 @@ export default function Config() {
             </div>
           </div>
         )}
-
-        {modal === 'download_success' && (
-          <div className="ns-overlay" onClick={closeModal}>
-            <div onClick={e => e.stopPropagation()} style={{ width: '100%', display: 'flex', justifyContent: 'center', padding: '0 1rem' }}>
-              <ModalCentered
-                type="info"
-                title="Download Complete"
-                body="Your selected subjects are now available offline — you can practice anytime, even without an internet connection."
-                primaryLabel="Great"
-                onPrimary={closeModal}
-                onClose={closeModal}
-              />
-            </div>
-          </div>
-        )}
       </main>
 
       {downloadModalOpen && (
@@ -533,37 +632,46 @@ export default function Config() {
             <div className="download-modal-header">
               <h3 className="download-modal-title">Select Subjects</h3>
               <p className="download-modal-subtitle">
-                Choose which subjects you'd like to download for offline use.
+                Choose up to {MAX_DOWNLOAD_SUBJECTS} subjects to download for offline use. Subjects
+                marked <strong>Update</strong> are already saved and will be refreshed.
               </p>
             </div>
 
-            <div className="checkbox-item select-all-row">
-              <input
-                type="checkbox"
-                id="dl-select-all"
-                className="select-all"
-                checked={downloadSelection.length === subjectsData.length}
-                onChange={(e) =>
-                  setDownloadSelection(e.target.checked ? subjectsData.map(s => s.id) : [])
-                }
-              />
-              <label htmlFor="dl-select-all"><strong>Select All Subjects</strong></label>
-            </div>
-            <div className="divider"></div>
-
             <div className="download-modal-list">
-              {subjectsData.map(s => (
-                <div className="checkbox-item" key={s.id}>
-                  <input
-                    type="checkbox"
-                    id={`dl-${s.id}`}
-                    checked={downloadSelection.includes(s.id)}
-                    onChange={() => toggleDownloadSubject(s.id)}
-                  />
-                  <label htmlFor={`dl-${s.id}`}>{formatName(s.name)}</label>
-                </div>
-              ))}
+              {subjectsData.map(s => {
+                const checked = downloadSelection.includes(s.id);
+                const disabled = !checked && downloadLimitReached;
+                const isDownloaded = downloadedSubjects.includes(s.id);
+                return (
+                  <div
+                    className={`checkbox-item download-subject-row${disabled ? ' checkbox-item-disabled' : ''}`}
+                    key={s.id}
+                  >
+                    <input
+                      type="checkbox"
+                      id={`dl-${s.id}`}
+                      checked={checked}
+                      disabled={disabled}
+                      onChange={() => toggleDownloadSubject(s.id)}
+                    />
+                    <label htmlFor={`dl-${s.id}`} className="download-subject-label">
+                      {formatName(s.name)}
+                    </label>
+                    {isDownloaded && (
+                      <span className="subject-downloaded-tag">
+                        <i className="fas fa-rotate"></i> Update
+                      </span>
+                    )}
+                  </div>
+                );
+              })}
             </div>
+
+            {downloadLimitReached && (
+              <p className="download-limit-note">
+                <i className="fas fa-circle-info"></i> You can only pick {MAX_DOWNLOAD_SUBJECTS} subjects at a time. Deselect one to choose another.
+              </p>
+            )}
 
             <div className="download-modal-actions">
               <button type="button" className="btn btn-outline" onClick={() => setDownloadModalOpen(false)}>
@@ -582,12 +690,51 @@ export default function Config() {
         </div>
       )}
 
-      {isDownloading && (
+      {downloadProgress.length > 0 && (
         <div className="ns-overlay downloading-overlay">
-          <div className="downloading-box">
-            <div className="downloading-spinner"></div>
-            <p className="downloading-text">Downloading questions…</p>
-            <p className="downloading-subtext">This may take a moment. Please don't close the app.</p>
+          <div className="downloading-box downloading-box-list">
+            <h3 className="downloading-title">
+              {isDownloading ? 'Downloading Questions…' : 'Download Complete'}
+            </h3>
+            <p className="downloading-subtext">
+              {isDownloading
+                ? "Please don't close the app while this finishes."
+                : "Here's how each subject went."}
+            </p>
+
+            <div className="download-progress-list">
+              {downloadProgress.map(item => (
+                <div className="download-progress-item" key={item.id}>
+                  <div className="download-progress-name">{formatName(item.name)}</div>
+
+                  <div className="download-progress-step">
+                    <StepIcon state={item.fetchState} />
+                    <span>Fetch from server</span>
+                  </div>
+                  {item.fetchState === 'error' && (
+                    <p className="download-progress-error">{item.fetchError}</p>
+                  )}
+
+                  <div className="download-progress-step">
+                    <StepIcon state={item.saveState} />
+                    <span>Save offline</span>
+                  </div>
+                  {item.saveState === 'error' && (
+                    <p className="download-progress-error">{item.saveError}</p>
+                  )}
+                </div>
+              ))}
+            </div>
+
+            {!isDownloading && (
+              <button
+                type="button"
+                className="btn btn-primary downloading-done-btn"
+                onClick={() => setDownloadProgress([])}
+              >
+                Done
+              </button>
+            )}
           </div>
         </div>
       )}

@@ -370,7 +370,7 @@ export default function StudySimulator() {
         if (!studyConfig) return navigate('/')
         setLoading(true)
         try {
-          const { subject, years, topics } = studyConfig
+          const { subject, years, topics, shuffle } = studyConfig
           let data
 
           if (navigator.onLine) {
@@ -378,7 +378,7 @@ export default function StudySimulator() {
             data = decrypt(res.body)
             Promise.all([saveQuestions(data), saveAllImages(data)]).catch((err) => console.error(err))
           } else {
-            const qs = await getQuestions({ subject, years, topics })
+            const qs = await getQuestions({ subject, years, topics, shuffle })
             if (!qs?.length) throw { status: 404, error: 'no_questions_found_offline' }
             data = qs.slice(0, 100)
             if (data.length < 100) setModal('available_questions')
