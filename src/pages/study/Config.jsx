@@ -25,6 +25,15 @@ export default function Config() {
   const [selectedYears, setSelectedYears] = useState([]);
   const [topicSearch, setTopicSearch] = useState("");
 
+  // Offline download flow
+  const [downloadCardVisible, setDownloadCardVisible] = useState(true);
+  const [downloadModalOpen, setDownloadModalOpen] = useState(false);
+  const [downloadSelection, setDownloadSelection] = useState([]);
+  const [isDownloading, setIsDownloading] = useState(false);
+
+  // Shuffle toggle (scoped to this subject/session)
+  const [shuffleEnabled, setShuffleEnabled] = useState(false);
+
   const topicsRef = useRef(null);
   const yearsRef = useRef(null);
   const topicSearchInputRef = useRef(null);
@@ -159,12 +168,40 @@ export default function Config() {
     const configuration = {
       subject: subject.name,
       years: selectedYears,
-      topics: selectedTopics
+      topics: selectedTopics,
+      shuffle: shuffleEnabled
     }
 
     setStudyConfig(configuration)
     navigate('/study-simulator?mode=study')
   }
+
+  // ===== Offline download flow =====
+  const handleDownloadClick = () => {
+    if (!isActivated) {
+      setModal('activate_app'); // reuses the existing activation modal
+      return;
+    }
+    setDownloadSelection(subject ? [subject.id] : []);
+    setDownloadModalOpen(true);
+  };
+
+  const toggleDownloadSubject = (id) => {
+    setDownloadSelection(prev =>
+      prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]
+    );
+  };
+
+  const handleConfirmDownload = () => {
+    setDownloadModalOpen(false);
+    setIsDownloading(true);
+    // Simulated for now — swap this timeout for real fetch/persist logic later
+    setTimeout(() => {
+      setIsDownloading(false);
+      setDownloadCardVisible(false);
+      setModal('download_success');
+    }, 2500);
+  };
 
   if (!subject) {
     return <Navigate to="/study" />
@@ -364,6 +401,24 @@ export default function Config() {
       </div>
 
       <main className="study-two-main" id="study-two-container">
+        {downloadCardVisible && (
+          <div className="offline-banner">
+            <div className="offline-banner-icon">
+              <i className="fas fa-cloud-arrow-down"></i>
+            </div>
+            <div className="offline-banner-text">
+              <h3 className="offline-banner-title">Study Offline</h3>
+              <p className="offline-banner-desc">
+                Download past questions so you can keep practicing without an internet connection.
+              </p>
+            </div>
+            <button type="button" className="btn btn-outline offline-banner-btn" onClick={handleDownloadClick}>
+              <i className="fas fa-download"></i>
+              <span> Download</span>
+            </button>
+          </div>
+        )}
+
         <div className="study-two-card">
           <h3 className="study-two-card-title">Start Study Session</h3>
 
@@ -390,7 +445,25 @@ export default function Config() {
             </div>
           )}
 
-          <button type="button" className="btn-primary study-two-btn" onClick={startStudy}>
+          <div className="shuffle-row">
+            <div className="shuffle-label">
+              <span className="shuffle-icon"><i className="fas fa-shuffle"></i></span>
+              <div className="shuffle-text">
+                <span className="shuffle-title">Shuffle Questions</span>
+                <span className="shuffle-subtitle">Randomize question order each session</span>
+              </div>
+            </div>
+            <label className="switch">
+              <input
+                type="checkbox"
+                checked={shuffleEnabled}
+                onChange={(e) => setShuffleEnabled(e.target.checked)}
+              />
+              <span className="switch-slider"></span>
+            </label>
+          </div>
+
+          <button type="button" className="btn btn-primary study-two-btn" onClick={startStudy}>
             Start Study Session
           </button>
         </div>
@@ -437,7 +510,87 @@ export default function Config() {
             </div>
           </div>
         )}
+
+        {modal === 'download_success' && (
+          <div className="ns-overlay" onClick={closeModal}>
+            <div onClick={e => e.stopPropagation()} style={{ width: '100%', display: 'flex', justifyContent: 'center', padding: '0 1rem' }}>
+              <ModalCentered
+                type="info"
+                title="Download Complete"
+                body="Your selected subjects are now available offline — you can practice anytime, even without an internet connection."
+                primaryLabel="Great"
+                onPrimary={closeModal}
+                onClose={closeModal}
+              />
+            </div>
+          </div>
+        )}
       </main>
+
+      {downloadModalOpen && (
+        <div className="ns-overlay" onClick={() => setDownloadModalOpen(false)}>
+          <div className="download-modal-box" onClick={e => e.stopPropagation()}>
+            <div className="download-modal-header">
+              <h3 className="download-modal-title">Select Subjects</h3>
+              <p className="download-modal-subtitle">
+                Choose which subjects you'd like to download for offline use.
+              </p>
+            </div>
+
+            <div className="checkbox-item select-all-row">
+              <input
+                type="checkbox"
+                id="dl-select-all"
+                className="select-all"
+                checked={downloadSelection.length === subjectsData.length}
+                onChange={(e) =>
+                  setDownloadSelection(e.target.checked ? subjectsData.map(s => s.id) : [])
+                }
+              />
+              <label htmlFor="dl-select-all"><strong>Select All Subjects</strong></label>
+            </div>
+            <div className="divider"></div>
+
+            <div className="download-modal-list">
+              {subjectsData.map(s => (
+                <div className="checkbox-item" key={s.id}>
+                  <input
+                    type="checkbox"
+                    id={`dl-${s.id}`}
+                    checked={downloadSelection.includes(s.id)}
+                    onChange={() => toggleDownloadSubject(s.id)}
+                  />
+                  <label htmlFor={`dl-${s.id}`}>{formatName(s.name)}</label>
+                </div>
+              ))}
+            </div>
+
+            <div className="download-modal-actions">
+              <button type="button" className="btn btn-outline" onClick={() => setDownloadModalOpen(false)}>
+                Cancel
+              </button>
+              <button
+                type="button"
+                className="btn btn-primary"
+                disabled={downloadSelection.length === 0}
+                onClick={handleConfirmDownload}
+              >
+                Download{downloadSelection.length > 0 ? ` (${downloadSelection.length})` : ''}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {isDownloading && (
+        <div className="ns-overlay downloading-overlay">
+          <div className="downloading-box">
+            <div className="downloading-spinner"></div>
+            <p className="downloading-text">Downloading questions…</p>
+            <p className="downloading-subtext">This may take a moment. Please don't close the app.</p>
+          </div>
+        </div>
+      )}
     </>
   );
 }

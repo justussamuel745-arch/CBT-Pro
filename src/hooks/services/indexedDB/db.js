@@ -74,7 +74,7 @@ const createQuestionsStore = (db) => {
 const createSettingsStore = (db) => {
   if (!db.objectStoreNames.contains("settings")) {
     db.createObjectStore("settings", {
-      keyPath: "id",
+      keyPath: "userId",
     });
   }
 };
@@ -371,10 +371,6 @@ const createExamStatsStore = (db) => {
     keyPath: "userId",
   });
 };
-
-/* ================================
-   BOOKMARKS
-================================ */
 
 /* ================================
    BOOKMARKS

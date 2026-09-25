@@ -343,19 +343,253 @@
 
 .study-two-btn {
   width: 100%;
-  padding: 1rem;
-  border: none;
-  border-radius: 12px;
-  font-weight: 700;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: all 0.2s;
   margin-top: 1.5rem;
 }
 
-.study-two-btn a {
-  color: white;
-  display: block;
+/* ============ SHUFFLE TOGGLE ============ */
+.shuffle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.1rem 0;
+  border-top: 1px solid var(--border);
+  margin-top: 1.5rem;
+}
+
+.shuffle-label {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  min-width: 0;
+}
+
+.shuffle-icon {
+  flex-shrink: 0;
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary);
+  font-size: 0.95rem;
+}
+
+.shuffle-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.shuffle-title {
+  font-weight: 700;
+  font-size: 0.92rem;
+}
+
+.shuffle-subtitle {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 46px;
+  height: 26px;
+  flex-shrink: 0;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.switch-slider {
+  position: absolute;
+  inset: 0;
+  cursor: pointer;
+  background: var(--border);
+  border-radius: 999px;
+  transition: background 0.2s ease;
+}
+
+.switch-slider::before {
+  content: "";
+  position: absolute;
+  height: 20px;
+  width: 20px;
+  left: 3px;
+  top: 3px;
+  background: white;
+  border-radius: 50%;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+  transition: transform 0.2s ease;
+}
+
+.switch input:checked + .switch-slider {
+  background: var(--primary);
+}
+
+.switch input:checked + .switch-slider::before {
+  transform: translateX(20px);
+}
+
+/* ============ OFFLINE DOWNLOAD BANNER ============ */
+.offline-banner {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.offline-banner-icon {
+  flex-shrink: 0;
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  color: var(--primary);
+}
+
+.offline-banner-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.offline-banner-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.offline-banner-desc {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.offline-banner-btn {
+  flex-shrink: 0;
+}
+
+/* ============ DOWNLOAD SUBJECT-SELECT MODAL ============ */
+.download-modal-box {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 1.75rem;
+  width: 100%;
+  max-width: 440px;
+  max-height: 82vh;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow-lg);
+}
+
+.download-modal-header {
+  margin-bottom: 1.25rem;
+}
+
+.download-modal-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin-bottom: 0.35rem;
+}
+
+.download-modal-subtitle {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.download-modal-list {
+  overflow-y: auto;
+  flex: 1;
+  margin: 0.25rem 0 1.5rem;
+}
+
+.download-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--border);
+  margin-top: auto;
+}
+
+.download-modal-actions .btn {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.download-modal-actions .btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  pointer-events: none;
+  transform: none;
+  box-shadow: none;
+}
+
+/* ============ DOWNLOADING OVERLAY ============ */
+.downloading-overlay {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.downloading-box {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 2.75rem 2.25rem;
+  text-align: center;
+  max-width: 320px;
+  box-shadow: var(--shadow-lg);
+}
+
+.downloading-spinner {
+  width: 44px;
+  height: 44px;
+  border: 4px solid var(--border);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  margin: 0 auto 1.5rem;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.downloading-text {
+  font-weight: 700;
+  font-size: 1rem;
+  margin-bottom: 0.4rem;
+}
+
+.downloading-subtext {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  line-height: 1.5;
 }
 
 /* RESPONSIVE */
@@ -376,5 +610,25 @@
 
   .study-two-action-grid[data-count="1"] {
     grid-template-columns: minmax(0, 220px);
+  }
+
+  .offline-banner {
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+    padding: 1.25rem;
+  }
+
+  .offline-banner-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .shuffle-row {
+    align-items: flex-start;
+  }
+
+  .download-modal-box {
+    padding: 1.5rem;
   }
 }
