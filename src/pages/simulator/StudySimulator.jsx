@@ -10,7 +10,7 @@ import { formatName } from '../../scripts/utils/formatName.js';
 import { ModalStripe, CSS } from '../../components/NotificationSystem';
 import { ReportQuestionModal } from '../../components/ReportQuestionModal';
 import { AnswerCard } from '../../components/AnswerCard';
-import { saveQuestions, getQuestions } from '../../hooks/services/indexedDB/questions';
+import { saveQuestions, loadQuestionsInBackground } from '../../hooks/services/indexedDB/questions';
 import { saveAllImages } from '../../hooks/services/indexedDB/images';
 import { addBookmark, deleteBookmark } from '../../hooks/services/indexedDB/bookmarks.js';
 import { decrypt } from '../../scripts/utils/crypto';
@@ -19,6 +19,16 @@ import { userStore } from '../../stores/userStore';
 import { examStore } from '../../stores/examStore';
 import { SimulatorSkeleton } from './components/SimulatorSkeleton';
 import './StudySimulator.css';
+
+// Max number of questions a study session shows (same cap as before).
+const STUDY_LIMIT = 100
+
+// Thrown from inside the loader callbacks to stop loading when the effect is cleaned up.
+const CANCELLED = Symbol('study-load-cancelled')
+
+// Lets the browser paint between questions, otherwise the loader's tight
+// loop would finish before React ever gets a chance to render question #1.
+const yieldToBrowser = () => new Promise((resolve) => setTimeout(resolve, 0))
 
 /* ============================================================
    Small, stable, memoized pieces.
@@ -150,7 +160,7 @@ const OptionsList = memo(function OptionsList({ options, activeState, mode, onSe
   if (!options) return null
   return options.map((opt) => (
     <div className="mode-options" key={opt.id} onClick={() => !activeState?.status && mode !== 'review' && onSelect(opt.id)}>
-      <div className={`mode-option ${activeState?.userAnswer === opt.id ? activeState.status : activeState.correctAnswers.includes(opt.id) && activeState?.userAnswer ? 'correct' : ''}`}>
+      <div className={`mode-option ${activeState?.userAnswer === opt.id ? activeState?.status  : activeState?.correctAnswers.includes(opt.id) && activeState?.userAnswer ? 'correct' : ''}`}>
         <div className="mode-option-key">{opt.id.toUpperCase()}</div>
         <div className="mode-option-content">
           <div className="mode-option-text">
@@ -164,24 +174,48 @@ const OptionsList = memo(function OptionsList({ options, activeState, mode, onSe
 
 // Progress badge lookups are O(1) object reads (answers is keyed by question id),
 // so this whole grid is a single O(n) pass instead of the old O(n^2) "find per button".
-const NavigatorGrid = memo(function NavigatorGrid({ questions, currentQsIdx, answers, onSelect }) {
+//
+// `total` is how many questions the subject will have once loading finishes.
+// Any slot past the loaded `questions` is rendered as a disabled spinner
+// until its question arrives.
+const NavigatorGrid = memo(function NavigatorGrid({ questions, total, currentQsIdx, answers, onSelect }) {
+  const slots = Math.max(total ?? 0, questions?.length ?? 0)
+  const buttons = []
+
+  for (let index = 0; index < slots; index++) {
+    const q = questions[index]
+
+    if (!q) {
+      buttons.push(
+        <button
+          key={`pending-${index}`}
+          className="mode-progress-btn pending"
+          disabled
+          aria-label={`Question ${index + 1} is loading`}
+          title="Loading..."
+        >
+          <span className="mode-spinner small" aria-hidden="true" />
+        </button>
+      )
+      continue
+    }
+
+    const status = answers[q.id]?.status ?? ''
+    const isActive = index === currentQsIdx
+    buttons.push(
+      <button
+        key={q.id}
+        className={`mode-progress-btn ${isActive ? 'active' : ''} ${status}`}
+        onClick={() => onSelect(index)}
+      >
+        {index + 1}
+      </button>
+    )
+  }
+
   return (
     <>
-      <div className="mode-progress-grid">
-        {questions.map((q, index) => {
-          const status = answers[q.id]?.status ?? ''
-          const isActive = index === currentQsIdx
-          return (
-            <button
-              key={q.id}
-              className={`mode-progress-btn ${isActive ? 'active' : ''} ${status}`}
-              onClick={() => onSelect(index)}
-            >
-              {index + 1}
-            </button>
-          )
-        })}
-      </div>
+      <div className="mode-progress-grid">{buttons}</div>
       <div className="exam-progress-legend">
         <div className="exam-legend-item"><div className="exam-legend-box current"></div><span>Current Question</span></div>
         <div className="exam-legend-item"><div className="exam-legend-box answered"></div><span>Correct</span></div>
@@ -258,6 +292,7 @@ export default function StudySimulator() {
 
   // Loaded once per session and left alone afterwards — navigating between
   // questions never touches this, so the Sidebar never re-renders for it.
+  // In study mode, `questions` grows and `count` is the expected total while streaming.
   const [subjects, setSubjects] = useState([])
   const [currentSubject, setCurrentSubject] = useState(null)
 
@@ -271,6 +306,8 @@ export default function StudySimulator() {
   const [answers, setAnswers] = useState({})
 
   const [loading, setLoading] = useState(true)
+  // True while the remaining study questions are still being loaded in the background.
+  const [isStreaming, setIsStreaming] = useState(false)
   const [refresh, setRefresh] = useState(false)
   const [modal, setModal] = useState(null)
   const [chatWithAI, setChatWithAI] = useState(false)
@@ -298,6 +335,14 @@ export default function StudySimulator() {
   const activeState = Object.keys(currentQs).length > 0 ? answers[currentQs.id] : undefined
   const isBookmarked = !!activeState?.isBookmarked
   const isDisablePrevious = currentSubjectIndex === 0 && currentQsIdx === 0
+
+  // The next question exists in the sequence but hasn't finished loading yet.
+  // (Only ever true in study mode while streaming.)
+  const isNextPending =
+    isStreaming &&
+    !!activeSubject &&
+    currentQsIdx + 1 < activeSubject.count &&
+    !activeSubject.questions?.[currentQsIdx + 1]
 
   // --- Global no-copy protection (unchanged) ---
   useEffect(() => {
@@ -334,6 +379,7 @@ export default function StudySimulator() {
   // --- Load data for the current mode ---
   useEffect(() => {
     let cancelled = false
+    const controller = new AbortController()
 
     if (mode === 'review') {
       const { examQuestions, examConfig, answers: globalAnswers } = examStore.getState()
@@ -361,41 +407,109 @@ export default function StudySimulator() {
       setAnswers(answersMap)
       setIdxBySubject({})
       setCurrentSubject(builtSubjects[0]?.subject ?? null)
+      setIsStreaming(false)
       setLoading(false)
       return
     }
 
     if (mode === 'study') {
-      (async () => {
+      // Questions that have been handed to the UI so far (used by the streaming path).
+      const loaded = []
+
+      const newAnswerEntry = (q) => [
+        q.id,
+        { userAnswer: '', status: '', isBookmarked: false, correctAnswers: q.correctAnswers },
+      ]
+
+      // Everything already arrived in one go (online response) — nothing to stream.
+      const showAll = (subject, data) => {
+        setSubjects([{ subject, count: data.length, questions: data }])
+        setAnswers(Object.fromEntries(data.map(newAnswerEntry)))
+        setIdxBySubject({})
+        setCurrentSubject(subject)
+        setIsStreaming(false)
+      }
+
+      // Stop showing spinners: whatever has loaded is the final list.
+      const finishStreaming = (subject) => {
+        setSubjects([{ subject, count: loaded.length, questions: [...loaded] }])
+        setIsStreaming(false)
+      }
+
+      ;(async () => {
         if (!studyConfig) return navigate('/')
         setLoading(true)
+        setIsStreaming(false)
         try {
           const { subject, years, topics, shuffle } = studyConfig
-          let data
 
           if (navigator.onLine) {
             const res = await request.auth('/api/study', { method: 'POST', body: JSON.stringify(studyConfig) })
-            data = decrypt(res.body)
+            const data = decrypt(res.body)
             Promise.all([saveQuestions(data), saveAllImages(data)]).catch((err) => console.error(err))
+
+            if (cancelled) return
+            showAll(subject, data)
           } else {
-            const qs = await getQuestions({ subject, years, topics, shuffle })
-            if (!qs?.length) throw { status: 404, error: 'no_questions_found_offline' }
-            data = qs.slice(0, 100)
-            if (data.length < 100) setModal('available_questions')
+            // Offline: stream questions out of IndexedDB one by one.
+            // The page opens as soon as the first question is ready.
+            await loadQuestionsInBackground(
+              { subject, years, topics, shuffle },
+              {
+                limit: STUDY_LIMIT,
+                signal: controller.signal,
+
+                onQuestion: async (question) => {
+                  if (cancelled || controller.signal.aborted) throw CANCELLED
+                  loaded.push(question)
+
+                  // Expected total is the limit until we know better; the
+                  // navigator shows a spinner for every slot not loaded yet.
+                  setSubjects([{ subject, count: STUDY_LIMIT, questions: [...loaded] }])
+                  setAnswers((prev) => ({ ...prev, ...Object.fromEntries([newAnswerEntry(question)]) }))
+
+                  if (loaded.length === 1) {
+                    // First question is ready → show the page right away.
+                    setIdxBySubject({})
+                    setCurrentSubject(subject)
+                    setIsStreaming(true)
+                    setLoading(false)
+                  }
+
+                  // Let React paint before the next question is pulled in.
+                  await yieldToBrowser()
+                },
+
+                onComplete: () => {
+                  if (cancelled || controller.signal.aborted) return
+                  if (loaded.length === 0) return
+                  finishStreaming(subject)
+                  const subTopicsCount = subjectsData.find(s => s.name === subject)?.topics?.length
+                  const selectedTopicsCount = topics?.length
+                  const selectedDiff = subTopicsCount - selectedTopicsCount
+                  if (loaded.length < STUDY_LIMIT && selectedDiff > (subTopicsCount / 2) && years.length >= 5) setModal('available_questions')
+                },
+
+                onError: (error) => {
+                  if (controller.signal.aborted) return
+                  console.log(error)
+                }
+              }
+            )
+
+            if (cancelled) return
+            if (loaded.length === 0) throw { status: 404, error: 'no_questions_found_offline' }
+          }
+        } catch (err) {
+          if (cancelled || err === CANCELLED) return
+
+          // Already showing some questions? Keep them, just stop the spinners.
+          if (loaded.length > 0) {
+            finishStreaming(studyConfig.subject)
+            return
           }
 
-          if (cancelled) return
-
-          setSubjects([{ subject, count: data.length, questions: data }])
-          setAnswers(
-            Object.fromEntries(
-              data.map((d) => [d.id, { userAnswer: '', status: '', isBookmarked: false, correctAnswers: d.correctAnswers }])
-            )
-          )
-          setIdxBySubject({})
-          setCurrentSubject(subject)
-        } catch (err) {
-          if (cancelled) return
+          setIsStreaming(false)
           if (!err.status && !navigator.onLine) setModal('connection_lost')
           else if (err.status >= 500) setModal('server_error')
           else setModal(err.error && !navigator.onLine ? err.error : err.error === 'no_questions_found' ? 'no_questions_found' : 'failed_to_load')
@@ -405,7 +519,10 @@ export default function StudySimulator() {
       })()
     }
 
-    return () => { cancelled = true }
+    return () => { 
+      cancelled = true
+      controller.abort()
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mode, refresh])
 
@@ -446,6 +563,9 @@ export default function StudySimulator() {
   }, [isDisablePrevious, currentQsIdx, currentSubjectIndex, subjects, currentSubject, goToIndex])
 
   const nextQuestion = useCallback(() => {
+    // Next question is still loading — the button is disabled, this is just a safety net.
+    if (isNextPending) return
+
     const isLastQuestion = currentQsIdx === activeSubject.count - 1
     const isLastSubject = currentSubjectIndex === subjects.length - 1
 
@@ -456,7 +576,7 @@ export default function StudySimulator() {
     const nextSubject = subjects[isLastSubject ? 0 : currentSubjectIndex + 1]
     setCurrentSubject(nextSubject.subject)
     goToIndex(nextSubject.subject, 0)
-  }, [currentQsIdx, activeSubject, currentSubjectIndex, subjects, currentSubject, goToIndex])
+  }, [isNextPending, currentQsIdx, activeSubject, currentSubjectIndex, subjects, currentSubject, goToIndex])
 
   const switchSubject = useCallback((event) => {
     setCurrentSubject(event.currentTarget.dataset.subject)
@@ -509,7 +629,7 @@ export default function StudySimulator() {
       {chatWithAI && <AstraAIModal setChatWithAI={setChatWithAI} />}
 
       {
-        !modalCopy
+        !modalCopy || modal === 'available_questions'
           ? 
             (
               <div className="mode-page no-select" aria-live="polite">
@@ -530,7 +650,21 @@ export default function StudySimulator() {
                     <div className="mode-nav">
                       <button className="mode-nav-btn" onClick={prevQuestion} disabled={isDisablePrevious}>← Prev</button>
                       <div className="mode-question-info">Question {currentQsIdx + 1} of {activeSubject?.count}</div>
-                      <button className="mode-nav-btn" onClick={nextQuestion}>Next →</button>
+                      <button
+                        className={`mode-nav-btn ${isNextPending ? 'is-loading' : ''}`}
+                        onClick={nextQuestion}
+                        disabled={isNextPending}
+                        aria-busy={isNextPending}
+                      >
+                        {isNextPending ? (
+                          <>
+                            <span className="mode-spinner small" aria-hidden="true" />
+                            Loading
+                          </>
+                        ) : (
+                          'Next →'
+                        )}
+                      </button>
                     </div>
         
                     <div>
@@ -558,6 +692,7 @@ export default function StudySimulator() {
                     </div>
                     <NavigatorGrid
                       questions={activeSubject?.questions}
+                      total={activeSubject?.count}
                       currentQsIdx={currentQsIdx}
                       answers={answers}
                       onSelect={(index) => goToIndex(currentSubject, index)}
@@ -575,6 +710,7 @@ export default function StudySimulator() {
                     </div>
                     <NavigatorGrid
                       questions={activeSubject?.questions}
+                      total={activeSubject?.count}
                       currentQsIdx={currentQsIdx}
                       answers={answers}
                       onSelect={(index) => { goToIndex(currentSubject, index); setToggleNav(false) }}

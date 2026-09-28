@@ -1,16 +1,17 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import StudySimulator from '../../../src/pages/simulator/StudySimulator';
 
 /* ------------------------------------------------------------------ */
 /* Hoisted mutable mock state                                         */
 /* ------------------------------------------------------------------ */
-const { mockExamState, mockSearchParams, mockNavigate } = vi.hoisted(() => {
+const { mockExamState, mockSearchParams, mockNavigate, mockStudyStore } = vi.hoisted(() => {
   return {
     mockExamState: { current: null },
     mockSearchParams: { current: new URLSearchParams('mode=study') },
     mockNavigate: vi.fn(),
+    mockStudyStore: vi.fn()
   };
 });
 
@@ -60,7 +61,19 @@ vi.mock('../../../src/scripts/utils/crypto', () => ({
   decrypt: (body) => body,
 }));
 vi.mock('../../../src/scripts/data/subjectsData.js', () => ({
-  subjectsData: [{ id: 'eng-1', name: 'English' }],
+  subjectsData: [
+    { 
+      id: 'eng-1', 
+      name: 'English',
+      topics: [
+        'vowel',
+        'consonants',
+        'antoynms',
+        'synoynms'
+      ],
+      years: Array.from({ length: 2025 - 1983 + 1 }, (_, index) => String(1983 + index))
+    }
+  ],
 }));
 
 const mockRequestAuth = vi.fn();
@@ -70,9 +83,10 @@ vi.mock('../../../src/scripts/utils/request', () => ({
 
 const mockAddBookmark = vi.fn().mockResolvedValue(undefined);
 const mockDeleteBookmark = vi.fn().mockResolvedValue(undefined);
+const mockLoadQuestions = vi.fn();
 vi.mock('../../../src/hooks/services/indexedDB/questions', () => ({
   saveQuestions: vi.fn().mockResolvedValue(undefined),
-  getQuestions: vi.fn().mockResolvedValue([]),
+  loadQuestionsInBackground: (...args) => mockLoadQuestions(...args),
 }));
 vi.mock('../../../src/hooks/services/indexedDB/images', () => ({
   saveAllImages: vi.fn().mockResolvedValue(undefined),
@@ -83,9 +97,14 @@ vi.mock('../../../src/hooks/services/indexedDB/bookmarks.js', () => ({
 }));
 
 vi.mock('../../../src/stores/studyStore', () => ({
-  studyStore: (selector) =>
-    selector({ studyConfig: { subject: 'English', years: [2020], topics: [] } }),
+  studyStore: mockStudyStore,
 }));
+
+mockStudyStore.mockImplementation(
+  (selector) =>
+    selector({ studyConfig: { subject: 'English', years: [2020], topics: [] } })
+)
+
 vi.mock('../../../src/stores/userStore', () => ({
   userStore: (selector) => selector({ userId: 'user-1' }),
 }));
@@ -94,7 +113,7 @@ vi.mock('../../../src/stores/examStore', () => ({
 }));
 
 /* ------------------------------------------------------------------ */
-/* Fixtures                                                            */
+/* Fixtures & helpers                                                  */
 /* ------------------------------------------------------------------ */
 function makeQuestion(id, overrides = {}) {
   return {
@@ -113,10 +132,56 @@ function makeQuestion(id, overrides = {}) {
   };
 }
 
+/**
+ * Gives a test manual control over `loadQuestionsInBackground`:
+ * the test decides exactly when each question "arrives" from IndexedDB.
+ */
+function createQuestionStream() {
+  let options = null;
+  let resolveDone;
+  let rejectDone;
+  const done = new Promise((resolve, reject) => {
+    resolveDone = resolve;
+    rejectDone = reject;
+  });
+
+  mockLoadQuestions.mockImplementation((_filters, opts) => {
+    options = opts;
+    return done;
+  });
+
+  return {
+    // Wait until the component has actually started loading.
+    ready: () => waitFor(() => expect(options).not.toBeNull()),
+    get options() {
+      return options;
+    },
+    emit: (question, position) =>
+      act(async () => {
+        await options.onQuestion(question, position);
+      }),
+    complete: (questions) =>
+      act(async () => {
+        await options.onComplete(questions);
+        resolveDone(questions);
+      }),
+    fail: (error) =>
+      act(async () => {
+        rejectDone(error);
+        // let the component's catch block run
+        await done.catch(() => {});
+      }),
+  };
+}
+
+const goOffline = () =>
+  Object.defineProperty(window.navigator, 'onLine', { value: false, configurable: true });
+
 beforeEach(() => {
   vi.clearAllMocks();
   mockSearchParams.current = new URLSearchParams('mode=study');
   mockRequestAuth.mockResolvedValue({ body: [] });
+  mockLoadQuestions.mockResolvedValue([]);
 });
 
 /* ================================================================== */
@@ -144,12 +209,29 @@ describe('StudySimulator — review mode data loading', () => {
       expect(screen.getByTestId('answer-card')).toHaveTextContent('Correct: A');
     });
   });
+
+  it('has every question available immediately — no loading placeholders and no background loader', async () => {
+    mockSearchParams.current = new URLSearchParams('mode=review');
+
+    mockExamState.current = {
+      examQuestions: [makeQuestion('q1'), makeQuestion('q2')],
+      examConfig: { subjects: [{ name: 'English', qsNo: 2 }] },
+      answers: [{ id: 'q1', subject: 'English', userAnswers: [] }],
+    };
+
+    render(<StudySimulator />);
+    await waitFor(() => screen.getByText('Question 1 of 2'));
+
+    expect(screen.queryAllByLabelText(/is loading/i)).toHaveLength(0);
+    expect(screen.getByRole('button', { name: /next/i })).toBeEnabled();
+    expect(mockLoadQuestions).not.toHaveBeenCalled();
+  });
 });
 
 /* ================================================================== */
-/* 2. Study mode: fetching and rendering questions                    */
+/* 2. Study mode (online): fetching and rendering questions           */
 /* ================================================================== */
-describe('StudySimulator — study mode data loading', () => {
+describe('StudySimulator — study mode data loading (online)', () => {
   it('loads questions from the API when online and renders the first one', async () => {
     const questions = [makeQuestion('q1'), makeQuestion('q2')];
     mockRequestAuth.mockResolvedValue({ body: questions });
@@ -164,10 +246,231 @@ describe('StudySimulator — study mode data loading', () => {
       expect.objectContaining({ method: 'POST' })
     );
   });
+
+  it('shows everything at once online: no IndexedDB streaming and no loading placeholders', async () => {
+    mockRequestAuth.mockResolvedValue({ body: [makeQuestion('q1'), makeQuestion('q2')] });
+
+    render(<StudySimulator />);
+    await waitFor(() => screen.getByText('Question 1 of 2'));
+
+    expect(mockLoadQuestions).not.toHaveBeenCalled();
+    expect(screen.queryAllByLabelText(/is loading/i)).toHaveLength(0);
+    expect(screen.getByRole('button', { name: /next/i })).toBeEnabled();
+  });
 });
 
 /* ================================================================== */
-/* 3. Navigation between questions                                    */
+/* 3. Study mode (offline): progressive loading                       */
+/* ================================================================== */
+describe('StudySimulator — study mode progressive loading (offline)', () => {
+  const originalOnLine = window.navigator.onLine;
+
+  beforeEach(goOffline);
+
+  afterEach(() => {
+    Object.defineProperty(window.navigator, 'onLine', {
+      value: originalOnLine,
+      configurable: true,
+    });
+  });
+
+  it('asks the loader for the study filters with a 100-question limit', async () => {
+    const stream = createQuestionStream();
+
+    render(<StudySimulator />);
+    await stream.ready();
+
+    expect(mockLoadQuestions).toHaveBeenCalledWith(
+      expect.objectContaining({ subject: 'English', years: [2020], topics: [] }),
+      expect.objectContaining({ limit: 100 })
+    );
+    expect(mockRequestAuth).not.toHaveBeenCalled();
+  });
+
+  it('displays the page as soon as the first question arrives, while the rest are still loading', async () => {
+    const stream = createQuestionStream();
+
+    render(<StudySimulator />);
+    await stream.ready();
+
+    // Nothing has arrived yet → no question page.
+    expect(screen.queryByText(/Question \d+ of \d+/)).not.toBeInTheDocument();
+
+    await stream.emit(makeQuestion('q1', { question: 'First question' }), 1);
+
+    expect(screen.getByText('First question')).toBeInTheDocument();
+    expect(screen.getByText('Question 1 of 100')).toBeInTheDocument();
+  });
+
+  it('shows a disabled spinner slot in the navigator for every question that has not loaded', async () => {
+    const stream = createQuestionStream();
+
+    render(<StudySimulator />);
+    await stream.ready();
+    await stream.emit(makeQuestion('q1'), 1);
+
+    // Two navigators are rendered (side panel + mobile modal).
+    const pendingTwo = screen.getAllByLabelText('Question 2 is loading');
+    expect(pendingTwo).toHaveLength(2);
+    pendingTwo.forEach((btn) => {
+      expect(btn).toBeDisabled();
+      expect(btn).toHaveClass('pending');
+    });
+
+    // Slot 1 is loaded and clickable.
+    expect(screen.getAllByRole('button', { name: '1' })[0]).toBeEnabled();
+  });
+
+  it('turns a pending navigator slot into a clickable number once that question arrives', async () => {
+    const user = userEvent.setup();
+    const stream = createQuestionStream();
+
+    render(<StudySimulator />);
+    await stream.ready();
+    await stream.emit(makeQuestion('q1', { question: 'First question' }), 1);
+    expect(screen.queryByRole('button', { name: '2' })).not.toBeInTheDocument();
+
+    await stream.emit(makeQuestion('q2', { question: 'Second question' }), 2);
+
+    expect(screen.queryAllByLabelText('Question 2 is loading')).toHaveLength(0);
+    await user.click(screen.getAllByRole('button', { name: '2' })[0]);
+
+    expect(screen.getByText('Second question')).toBeInTheDocument();
+    expect(screen.getByText('Question 2 of 100')).toBeInTheDocument();
+  }, 10000);
+
+  it('disables Next with a loading state while the next question is not ready, then enables it when it arrives', async () => {
+    const user = userEvent.setup();
+    const stream = createQuestionStream();
+
+    render(<StudySimulator />);
+    await stream.ready();
+    await stream.emit(makeQuestion('q1', { question: 'First question' }), 1);
+
+    const loadingNext = screen.getByRole('button', { name: 'Loading' });
+    expect(loadingNext).toBeDisabled();
+    expect(loadingNext).toHaveClass('is-loading');
+    expect(screen.queryByRole('button', { name: /next/i })).not.toBeInTheDocument();
+
+    await stream.emit(makeQuestion('q2', { question: 'Second question' }), 2);
+
+    const next = screen.getByRole('button', { name: /next/i });
+    expect(next).toBeEnabled();
+    expect(screen.queryByRole('button', { name: 'Loading' })).not.toBeInTheDocument();
+
+    await user.click(next);
+    expect(screen.getByText('Second question')).toBeInTheDocument();
+
+    // Question 3 hasn't loaded, so Next goes back to its loading state.
+    expect(screen.getByRole('button', { name: 'Loading' })).toBeDisabled();
+  }, 10000);
+
+  it('lets the user go back to earlier questions while later ones are still loading', async () => {
+    const user = userEvent.setup();
+    const stream = createQuestionStream();
+
+    render(<StudySimulator />);
+    await stream.ready();
+    await stream.emit(makeQuestion('q1', { question: 'First question' }), 1);
+    await stream.emit(makeQuestion('q2', { question: 'Second question' }), 2);
+
+    await user.click(screen.getByRole('button', { name: /next/i }));
+    expect(screen.getByText('Second question')).toBeInTheDocument();
+
+    await user.click(screen.getByRole('button', { name: /prev/i }));
+    expect(screen.getByText('First question')).toBeInTheDocument();
+  });
+
+  it('keeps answers given to early questions as more questions stream in', async () => {
+    const user = userEvent.setup();
+    const stream = createQuestionStream();
+
+    render(<StudySimulator />);
+    await stream.ready();
+    await stream.emit(makeQuestion('q1'), 1);
+
+    await user.click(screen.getByText('A naming word'));
+    expect(await screen.findByTestId('answer-card')).toHaveTextContent('Correct: A');
+
+    await stream.emit(makeQuestion('q2', { question: 'Second question' }), 2);
+
+    // Still on question 1, still answered.
+    expect(screen.getByText('Question 1 of 100')).toBeInTheDocument();
+    expect(screen.getByTestId('answer-card')).toHaveTextContent('Correct: A');
+  });
+
+  it('removes the loading placeholders and shrinks the total to the real count when loading completes', async () => {
+    const stream = createQuestionStream();
+    const q1 = makeQuestion('q1');
+    const q2 = makeQuestion('q2', { question: 'Second question' });
+
+    render(<StudySimulator />);
+    await stream.ready();
+    await stream.emit(q1, 1);
+    await stream.emit(q2, 2);
+    expect(screen.getByText('Question 1 of 100')).toBeInTheDocument();
+
+    await stream.complete([q1, q2]);
+
+    expect(screen.getByText('Question 1 of 2')).toBeInTheDocument();
+    expect(screen.queryAllByLabelText(/is loading/i)).toHaveLength(0);
+    expect(screen.getByRole('button', { name: /next/i })).toBeEnabled();
+  });
+
+  it('tells the user when fewer than 100 questions were available offline', async () => {
+    const stream = createQuestionStream();
+    const q1 = makeQuestion('q1');
+
+    mockStudyStore.mockImplementationOnce(
+      (selector) =>
+        selector({ studyConfig: { subject: 'English', years: [2020, 2021, 2022, 2023, 2024, 2025], topics: ['vowel'] } })
+    )
+
+    render(<StudySimulator />);
+    await stream.ready();
+    await stream.emit(q1, 1);
+
+    expect(screen.queryByText('Available Offline Questions')).not.toBeInTheDocument();
+
+    await stream.complete([q1]);
+
+    expect(await screen.findByText('Available Offline Questions')).toBeInTheDocument();
+    // The question page is still displayed behind the modal.
+    expect(screen.getByText('Question 1 of 1')).toBeInTheDocument();
+  });
+
+  it('keeps the questions that already loaded and stops the spinners if loading fails midway', async () => {
+    const stream = createQuestionStream();
+
+    render(<StudySimulator />);
+    await stream.ready();
+    await stream.emit(makeQuestion('q1', { question: 'First question' }), 1);
+
+    await stream.fail(new Error('IndexedDB blew up'));
+
+    expect(screen.getByText('First question')).toBeInTheDocument();
+    expect(screen.getByText('Question 1 of 1')).toBeInTheDocument();
+    expect(screen.queryAllByLabelText(/is loading/i)).toHaveLength(0);
+    expect(screen.queryByTestId('modal-stripe')).not.toBeInTheDocument();
+  });
+
+  // NOTE: requires the AbortController edits (`signal` passed to the loader,
+  // `controller.abort()` in the effect cleanup).
+  it('aborts background loading when the page is left', async () => {
+    const stream = createQuestionStream();
+
+    const { unmount } = render(<StudySimulator />);
+    await stream.ready();
+    expect(stream.options.signal.aborted).toBe(false);
+
+    unmount();
+
+    expect(stream.options.signal.aborted).toBe(true);
+  });
+});
+
+/* ================================================================== */
+/* 4. Navigation between questions                                    */
 /* ================================================================== */
 describe('StudySimulator — question navigation', () => {
   it('moves to the next and previous question when the nav buttons are clicked', async () => {
@@ -187,7 +490,7 @@ describe('StudySimulator — question navigation', () => {
 });
 
 /* ================================================================== */
-/* 4. Answering a question updates progress/status                    */
+/* 5. Answering a question updates progress/status                    */
 /* ================================================================== */
 describe('StudySimulator — answer selection and progress tracking', () => {
   it('marks the selected option correct and reveals the answer card', async () => {
@@ -236,7 +539,7 @@ describe('StudySimulator — answer selection and progress tracking', () => {
 });
 
 /* ================================================================== */
-/* 5. Crossing subject boundaries with Next/Prev                      */
+/* 6. Crossing subject boundaries with Next/Prev                      */
 /* ================================================================== */
 describe('StudySimulator — switching subjects when a subject is exhausted', () => {
   function setUpTwoSubjects() {
@@ -324,7 +627,7 @@ describe('StudySimulator — switching subjects when a subject is exhausted', ()
 });
 
 /* ================================================================== */
-/* 6. Bookmarking                                                      */
+/* 7. Bookmarking                                                      */
 /* ================================================================== */
 describe('StudySimulator — bookmarking a question', () => {
   // The bookmark button has no `title`/`aria-label` on the page, so it's
@@ -370,24 +673,16 @@ describe('StudySimulator — bookmarking a question', () => {
 });
 
 /* ================================================================== */
-/* 7. Error / empty-state modals                                       */
+/* 8. Error / empty-state modals                                       */
 /* ================================================================== */
 /*
- * NOTE: These two tests target a real bug in StudySimulator.jsx.
- *
- * On any load failure, the page finishes with `subjects = []` and
- * `currentSubject = null`, but still renders
- *     `Question {currentQsIdx + 1} of {activeSubject.count}`
- * → `activeSubject` is `undefined` → the component throws mid-render,
- *   React clears the tree, and the modal (which *was* set in state)
- *   never commits to the DOM.
- *
- * Until the page guards against `activeSubject === undefined`, no test
- * can observe the modal in that state. Skipping for now — either fix
- * the page (early-return the modal-only tree when there's no active
- * subject) or drop these tests.
+ * These were skipped earlier because the page used to crash with
+ * `activeSubject === undefined` when a modal was showing. The page now
+ * renders <SimulatorSkeleton /> instead of the question UI whenever an
+ * error modal is active (except for "available_questions"), so the modal
+ * can be observed again.
  */
-describe.skip('StudySimulator — load failures', () => {
+describe('StudySimulator — load failures', () => {
   const originalOnLine = window.navigator.onLine;
 
   afterEach(() => {
@@ -395,7 +690,9 @@ describe.skip('StudySimulator — load failures', () => {
   });
 
   it('shows a "Questions Not Found" modal when offline with nothing cached, without crashing the page', async () => {
-    Object.defineProperty(window.navigator, 'onLine', { value: false, configurable: true });
+    goOffline();
+    // Default mock: the loader finishes without ever emitting a question.
+    mockLoadQuestions.mockResolvedValue([]);
 
     render(<StudySimulator />);
 
@@ -409,10 +706,11 @@ describe.skip('StudySimulator — load failures', () => {
     mockRequestAuth.mockRejectedValueOnce({ status: 500 });
 
     render(<StudySimulator />);
-    await screen.findByText('Failed to Load Questions');
+    // A 5xx response maps to the "Server Error" modal.
+    await screen.findByText('Server Error');
 
     mockRequestAuth.mockResolvedValueOnce({ body: [makeQuestion('q1')] });
-    await user.click(screen.getByRole('button', { name: /reload/i }));
+    await user.click(screen.getByRole('button', { name: /retry/i }));
 
     await waitFor(() => screen.getByText('Question 1 of 1'));
   });

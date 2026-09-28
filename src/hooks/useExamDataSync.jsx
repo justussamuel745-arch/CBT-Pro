@@ -61,7 +61,6 @@ export function useExamDataSync() {
         return
       }
       await saveExamStats(userId, encrypt(stats))
-      console.log('stats updated');
     })()
   }, [stats])
 

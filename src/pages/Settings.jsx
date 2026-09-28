@@ -14,6 +14,7 @@ import { authStore } from '../stores/authStore';
 import { userStore } from '../stores/userStore';
 import { Offline } from '../components/Offline';
 import { LoadError } from '../components/LoadError';
+import { DOWNLOADED_SUBJECTS_KEY } from '../constant/key';
 import './Settings.css';
 
 
@@ -1183,8 +1184,11 @@ export default function Settings() {
                   primaryLabel="Clear offline data"
                   onPrimary={async () => {
                     setModal(null)
-                    await deleteAllQuestions()
-                    await clearImages()
+                    await Promise.all([
+                      deleteAllQuestions(),
+                      clearImages()
+                    ])
+                    localStorage.removeItem(DOWNLOADED_SUBJECTS_KEY)
                     toast.success('Offline data cleared');
                   }}
                   onClose={() => setModal(null)}

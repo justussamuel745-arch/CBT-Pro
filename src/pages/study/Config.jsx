@@ -10,9 +10,10 @@ import { request } from '../../scripts/utils/request';
 import { decrypt } from '../../scripts/utils/crypto';
 import { saveQuestions } from '../../hooks/services/indexedDB/questions';
 import { saveAllImages } from '../../hooks/services/indexedDB/images';
+import { DOWNLOADED_SUBJECTS_KEY } from '../../constant/key'
 
 const MAX_DOWNLOAD_SUBJECTS = 4;
-const DOWNLOADED_SUBJECTS_KEY = 'cbtpro_downloaded_subjects';
+;
 
 // Small pure helper — renders the right icon for a step's current state.
 // Kept outside the component since it needs no hooks and shouldn't be

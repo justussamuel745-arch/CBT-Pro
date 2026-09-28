@@ -159,7 +159,7 @@ export const subjectsData = [
       search: true,
       note: false,
     },
-    years: Array.from({ length: 2026 - 1983 + 1 }, (_, i) => 1983 + i)
+    years: Array.from({ length: 2026 - 1983 + 1 }, (_, i) => String(1983 + i))
   },
 
   {

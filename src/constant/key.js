@@ -1,0 +1,1 @@
+export const DOWNLOADED_SUBJECTS_KEY = 'cbtpro_downloaded_subjects'

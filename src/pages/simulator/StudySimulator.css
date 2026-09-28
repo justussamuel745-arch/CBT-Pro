@@ -196,6 +196,17 @@
   cursor: not-allowed;
 }
 
+/* Next button while the next question is still loading */
+.mode-nav-btn.is-loading {
+  opacity: 1;
+  min-width: 104px;
+  justify-content: center;
+  cursor: progress;
+  color: var(--text-muted);
+  background: var(--bg);
+  border-color: var(--primary);
+}
+
 .mode-question-info {
   font-weight: 600;
   color: var(--text-muted);
@@ -535,6 +546,26 @@
   /* border-color: var(--success); */
 }
 
+/* Navigator slot whose question hasn't loaded yet */
+.mode-progress-btn.pending {
+  cursor: not-allowed;
+  border-style: dashed;
+  background:
+    linear-gradient(
+      110deg,
+      var(--bg) 30%,
+      var(--primary-light) 50%,
+      var(--bg) 70%
+    );
+  background-size: 200% 100%;
+  animation: modeShimmer 1.6s ease-in-out infinite;
+}
+
+.mode-progress-btn.pending:hover {
+  border-color: var(--border);
+  transform: none;
+}
+
 /* MODALS */
 .mode-overlay {
   display: none;
@@ -724,6 +755,9 @@
     padding: 0.5em 0.875em;
     font-size: 0.85em;
   }
+.mode-nav-btn.is-loading {
+    min-width: 92px;
+  }
 }
 
 @media (max-width: 480px) {
@@ -893,4 +927,40 @@
 .mode-ai-continue-btn.ghost:hover {
   background: var(--bg);
   color: var(--text);
+}
+
+/* ============================================================
+   PROGRESSIVE LOADING (study mode)
+   ============================================================ */
+
+/* Ring spinner: a gradient arc that fades out, spinning around a faint track */
+.mode-spinner {
+  display: inline-block;
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, transparent 0deg, var(--primary) 320deg);
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 2.5px));
+          mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 2.5px));
+  animation: modeSpin 0.8s linear infinite;
+}
+
+.mode-spinner.small {
+  width: 16px;
+  height: 16px;
+}
+
+@keyframes modeSpin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes modeShimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mode-spinner { animation-duration: 2s; }
+  .mode-progress-btn.pending { animation: none; }
 }

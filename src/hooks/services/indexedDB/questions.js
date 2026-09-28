@@ -93,6 +93,8 @@ export async function getQuestions(filters = {}) {
       }
     }
 
+    console.log(results)
+
     return shuffle ? shuffleArray(results) : results;
   }
 
@@ -222,6 +224,108 @@ export async function getQuestions(filters = {}) {
   GET ALL QUESTIONS
   await getQuestions();
 */
+
+export async function loadQuestionsInBackground(
+  filters = {},
+  {
+    limit = Infinity,
+    signal,
+    onQuestion,
+    onComplete,
+    onError
+  } = {}
+) {
+  try {
+    const db = await openDB();
+
+    if (signal?.aborted) return
+
+    const shuffle = Boolean(filters.shuffle);
+
+    const years = shuffle ? shuffleArray(filters.years ?? []) : filters.years;
+    const topics = shuffle ? shuffleArray(filters.topics ?? []) : filters.topics;
+
+    const seen = new Set();
+    const questions = [];
+
+    const decryptQuestion = (q) => ({
+      ...q,
+      question: decrypt(q.question),
+      options: decrypt(q.options),
+      image: decrypt(q.image),
+      correctAnswers: decrypt(q.correctAnswers),
+      explanation: decrypt(q.explanation)
+    });
+
+    // The IDB request finishes fast; once its results are in memory we no
+    // longer touch IndexedDB, so it's safe to await the UI callbacks here.
+    const processQuestions = (request) =>
+      new Promise((resolve, reject) => {
+        request.onsuccess = async () => {
+          try {
+            let results = request.result ?? [];
+            if (shuffle) results = shuffleArray(results);
+
+            for (const rawQuestion of results) {
+              if (signal?.aborted || questions.length >= limit) break;
+              if (seen.has(rawQuestion.id)) continue;
+              seen.add(rawQuestion.id);
+
+              const question = decryptQuestion(rawQuestion);
+              questions.push(question);
+
+              if (onQuestion) await onQuestion(question, questions.length);
+            }
+            resolve();
+          } catch (error) {
+            reject(error);
+          }
+        };
+        request.onerror = () => reject(request.error);
+      });
+
+    const queries = [];
+
+    if (filters.subject && years.length && topics.length) {
+      for (const year of years)
+        for (const topic of topics)
+          queries.push({ index: "subject_year_topic", key: [filters.subject, year, topic] });
+    } else if (filters.subject && years.length) {
+      for (const year of years)
+        queries.push({ index: "subject_year", key: [filters.subject, year] });
+    } else if (filters.subject) {
+      queries.push({ index: "subject", key: filters.subject });
+    } else if (years.length) {
+      for (const year of years) queries.push({ index: "year", key: year });
+    } else if (topics.length) {
+      for (const topic of topics) queries.push({ index: "topic", key: topic });
+    } else {
+      queries.push({ store: true });
+    }
+
+    const shuffledQueries = shuffle ? shuffleArray(queries) : queries
+
+    for (const query of shuffledQueries) {
+      if (signal?.aborted || questions.length >= limit) break;
+
+      // Fresh transaction per query, created synchronously right before use.
+      const store = db.transaction("questions", "readonly").objectStore("questions");
+      const request = query.store
+        ? store.getAll()
+        : store.index(query.index).getAll(query.key);
+
+      await processQuestions(request);
+    }
+
+    if (signal?.aborted) return questions;
+
+    if (onComplete) await onComplete(questions);
+    return questions;
+  } catch (error) {
+    if (onError) onError(error);
+    throw error;
+  }
+}
 
 export async function deleteAllQuestions() {
   const db = await openDB();
