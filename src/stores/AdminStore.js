@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { request } from '../scripts/utils/request.js';
+import { request } from '@lib/api/request.js';
 
 export const adminStore = create((set, get) => ({
   /*========

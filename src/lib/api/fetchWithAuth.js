@@ -1,12 +1,12 @@
-import { authStore } from '../../stores/authStore.js';
-import { url } from '../../constant/url.js';
+import { authStore } from '@/stores/authStore.js';
+import { BACKEND_URL } from '@lib/config/app.js';
 
 
 export async function fetchWithAuth(path, options = {}) {
   const makeRequest = () => {
     const token = authStore.getState().token;
 
-    return fetch(`${url}${path}`, {
+    return fetch(`${BACKEND_URL}${path}`, {
       ...options,
       credentials: 'include',
       headers: options?.headers

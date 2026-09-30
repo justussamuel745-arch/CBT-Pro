@@ -1,13 +1,15 @@
 import { Link } from "react-router";
 import { formatDateTime, addMinutes } from '../../scripts/utils/dateTimeOp';
-import { EDIT_LOCK_MINUTES, GRACE_WINDOW_MINUTES } from './constant/time';
+import { graceEndsAt } from './utils/graceEndsAt'
+import { EXAM_CONFIG } from '@lib/config/app';
 import "./ScheduleSuccess.css";
 
+const { EDIT_LOCK_MINUTES, GRACE_WINDOW_MINUTES } = EXAM_CONFIG
 
 function buildTimeline(examDate) {
   const start = new Date(examDate);
   const editLocksAt = addMinutes(start, -EDIT_LOCK_MINUTES);
-  const graceEndsAt = addMinutes(start, GRACE_WINDOW_MINUTES);
+  const graceEndsAt = graceEndsAt(start)
 
   return [
     {

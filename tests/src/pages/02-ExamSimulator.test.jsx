@@ -3,7 +3,7 @@ import { MemoryRouter } from 'react-router';
 import UserEvent from '@testing-library/user-event';
 import { render, screen, act, waitFor } from '@testing-library/react';
 
-import ExamSimulator from '../../../src/pages/simulator/ExamSimulator'
+import ExamSimulator from '@/pages/simulator/ExamSimulator'
 
 import { questions } from '../utils/questions';
 
@@ -16,7 +16,7 @@ const {
 }))
 
 
-vi.mock('../../../src/stores/practiceStore', () => ({
+vi.mock('@/stores/practiceStore', () => ({
   practiceStore: mockPracticeStore
 }))
 
@@ -36,25 +36,25 @@ mockPracticeStore.getState = vi.fn(() => ({
 mockGetPracticeQuestions.mockResolvedValue(questions)
 
 
-vi.mock('../../../src/scripts/utils/request', () => ({
+vi.mock('@lib/api/request', () => ({
   request: {
     auth: mockAuth
   }
 }))
 
 
-vi.mock('../../../src/scripts/utils/crypto', () => ({
+vi.mock('@/scripts/utils/crypto', () => ({
   decrypt: vi.fn((value) => value)
 }))
 
 
 
 
-import { practiceStore } from '../../../src/stores/practiceStore';
-import { scheduledExamStore } from '../../../src/stores/scheduledExamStore';
-import { examStore } from '../../../src/stores/examStore';
-import { request } from '../../../src/scripts/utils/request';
-import { decrypt } from '../../../src/scripts/utils/crypto';
+import { practiceStore } from '@/stores/practiceStore';
+import { scheduledExamStore } from '@/stores/scheduledExamStore';
+import { examStore } from '@/stores/examStore';
+import { request } from '@lib/api/request';
+import { decrypt } from '@/scripts/utils/crypto';
 
 
 describe('ExamSimulator Page', () => {

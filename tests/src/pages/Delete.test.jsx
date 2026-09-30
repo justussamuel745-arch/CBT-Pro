@@ -3,7 +3,7 @@ import { it, expect, describe, vi } from 'vitest';
 import UserEvent from '@testing-library/user-event';
 import { screen, render, waitFor } from '@testing-library/react';
 
-import Delete from '../../../src/pages/Delete';
+import Delete from '@pages/Delete';
 
 
 const {
@@ -23,13 +23,13 @@ vi.mock('@react-oauth/google', () => ({
   GoogleLogin: mockGoogleLogin
 }))
 
-vi.mock('../../../src/stores/authStore', () => ({
+vi.mock('@/stores/authStore', () => ({
   authStore: selector => selector({
     logout: mockLogout
   })
 }))
 
-vi.mock('../../../src/stores/userStore', () => ({
+vi.mock('@/stores/userStore', () => ({
   userStore: mockUserStore
 }))
 
@@ -41,23 +41,23 @@ vi.mock('react-hot-toast', () => ({
   }
 }))
 
-vi.mock('../../../src/scripts/utils/request', () => ({
+vi.mock('@lib/api/request', () => ({
   request: {
     auth: mockRequestAuth
   }
 }))
 
-vi.mock('../../../src/hooks/services/indexedDB/users', () => ({
+vi.mock('@/hooks/services/indexedDB/users', () => ({
   deleteUser: vi.fn()
 }))
 
 
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { GoogleLogin } from "@react-oauth/google";
-import { authStore } from '../../../src/stores/authStore';
-import { userStore } from '../../../src/stores/userStore';
-import { request } from '../../../src/scripts/utils/request';
-import { deleteUser } from '../../../src/hooks/services/indexedDB/users'
+import { authStore } from '@/stores/authStore';
+import { userStore } from '@/stores/userStore';
+import { request } from '@lib/api/request';
+import { deleteUser } from '@/hooks/services/indexedDB/users'
 import { toast } from 'react-hot-toast';
 
 

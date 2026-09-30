@@ -1,4 +1,4 @@
-import { request } from "../scripts/utils/request.js";
+import { request } from "@lib/api/request.js";
 
 const ENDPOINTS = {
   notifications: `/api/notifications`,

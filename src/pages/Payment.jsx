@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router';
 import { Message } from '../components/Message';
-import { request } from '../scripts/utils/request';
+import { request } from '@lib/api/request';
 import { authStore } from '../stores/authStore';
 import './Payment.css';
 

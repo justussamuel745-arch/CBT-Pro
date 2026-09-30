@@ -1,5 +1,5 @@
 import { io } from "socket.io-client";
-import { url } from '../constant/url.js'
+import { BACKEND_URL } from '@lib/config/app.js';
 
 class SocketService {
   constructor() {
@@ -11,7 +11,7 @@ class SocketService {
       return this.socket;
     }
 
-    this.socket = io(url, {
+    this.socket = io(BACKEND_URL, {
       transports: ["websocket"],
       auth: {
         token,

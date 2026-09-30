@@ -1,6 +1,6 @@
-import { url } from "../constant/url.js";
+import { BACKEND_URL } from "@lib/config/app.js";
 
-const BASE_URL = `${url}/api/push`;
+const PATH = `${BACKEND_URL}/api/push`;
 
 class PushNotificationService {
   constructor() {
@@ -124,7 +124,7 @@ class PushNotificationService {
    */
   async saveSubscription(subscription, token) {
     const response = await fetch(
-      `${BASE_URL}/subscribe`,
+      `${PATH}/subscribe`,
       {
         method: "POST",
         credentials: "include",
@@ -160,7 +160,7 @@ class PushNotificationService {
     }
 
     const response = await fetch(
-      `${BASE_URL}/unsubscribe`,
+      `${PATH}/unsubscribe`,
       {
         method: "DELETE",
         credentials: "include",

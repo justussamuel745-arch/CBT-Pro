@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { request } from '../scripts/utils/request.js';
+import { request } from '@lib/api/request.js';
 import { saveUser } from '../hooks/services/indexedDB/users.js';
 import { encrypt, decrypt } from '../scripts/utils/crypto.js';
 import { authStore } from './authStore.js';

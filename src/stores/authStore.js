@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { request } from '../scripts/utils/request.js';
+import { request } from '@lib/api/request.js';
 import { decrypt } from '../scripts/utils/crypto.js';
 import { deleteAllQuestions } from '../hooks/services/indexedDB/questions.js';
 import { deleteUser } from '../hooks/services/indexedDB/users';

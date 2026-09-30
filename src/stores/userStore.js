@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { request } from '../scripts/utils/request.js';
+import { request } from '@lib/api/request.js';
 import { decrypt, encrypt } from '../scripts/utils/crypto.js';
 import { saveQuestions } from '../hooks/services/indexedDB/questions.js';
 import { saveUser, getUser } from '../hooks/services/indexedDB/users.js';
@@ -8,7 +8,7 @@ import { getUserUpcomingExams, deleteUpcomingExam } from '../hooks/services/inde
 import { getExamStats } from '../hooks/services/indexedDB/examStats.js';
 import { authStore } from './authStore.js';
 import { scheduledExamStore } from './scheduledExamStore.js';
-import { submitLocalHistory } from '../scripts/utils/submitHistory.js';
+import { submitLocalHistory } from '@lib/api/submitHistory.js';
 import { addMinutes } from '../scripts/utils/dateTimeOp';
 import pushNotificationService from '../services/pushNotificationService.js';
 

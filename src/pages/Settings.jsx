@@ -9,12 +9,12 @@ import { saveUser } from '../hooks/services/indexedDB/users';
 import { deleteAllQuestions, saveQuestions } from '../hooks/services/indexedDB/questions';
 import { clearImages } from '../hooks/services/indexedDB/images';
 import { encrypt, decrypt } from '../scripts/utils/crypto';
-import { request } from '../scripts/utils/request';
+import { request } from '@lib/api/request';
 import { authStore } from '../stores/authStore';
 import { userStore } from '../stores/userStore';
 import { Offline } from '../components/Offline';
 import { LoadError } from '../components/LoadError';
-import { DOWNLOADED_SUBJECTS_KEY } from '../constant/key';
+import { DOWNLOADED_SUBJECTS_KEY } from '@lib/config/app';
 import './Settings.css';
 
 

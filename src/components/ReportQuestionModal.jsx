@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { request } from '../scripts/utils/request';
+import { request } from '@lib/api/request';
 import './ReportQuestionModal.css';
 
 // ─────────────────────────────────────────────────────────────

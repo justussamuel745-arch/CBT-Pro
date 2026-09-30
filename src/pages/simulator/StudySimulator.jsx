@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams, Navigate } from 'react-router';
 import { MarkdownContent } from '../../components/MarkdownContent';
 import { Calculator } from '../../components/Calculator.jsx'
 import { AstraAIModal } from '../../components/AstraAIModal'
-import { request } from '../../scripts/utils/request';
+import { request } from '@lib/api/request';
 import { SUBJECTS_DATA } from '@lib/data/subjects'
 import { Image } from '../../components/common/Image'
 import { formatName } from '../../scripts/utils/formatName.js';

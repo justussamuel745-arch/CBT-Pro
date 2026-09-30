@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { Toaster } from 'react-hot-toast';
 import { OfflineNotifier } from './components/OfflineNotifier';
 import { Loading } from './components/Loading';
-import { submitLocalHistory } from './scripts/utils/submitHistory';
+import { submitLocalHistory } from '@lib/api/submitHistory';
 import { deleteUser } from './hooks/services/indexedDB/users';
 import { authStore } from './stores/authStore';
 import { userStore } from './stores/userStore';

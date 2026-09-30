@@ -1,9 +1,9 @@
-import { request } from './request.js';
-import { encrypt, decrypt } from './crypto.js';
-import { saveHistory } from '../../hooks/services/indexedDB/history.js';
-import { userStore } from '../../stores/userStore.js';
-import { examStore } from '../../stores/examStore.js';
-import { generateObjectId } from './generateObjectId.js';
+import { request } from '@lib/api/request.js';
+import { encrypt, decrypt } from '@/scripts/utils/crypto.js';
+import { saveHistory } from '@/hooks/services/indexedDB/history.js';
+import { userStore } from '@/stores/userStore.js';
+import { examStore } from '@/stores/examStore.js';
+import { generateObjectId } from '@/scripts/utils/generateObjectId.js';
 
 export async function submitLocalHistory() {
   const unsavedHistoryRaw = JSON.parse(

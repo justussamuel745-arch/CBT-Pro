@@ -6,11 +6,11 @@ import { SUBJECTS_DATA } from '@lib/data/subjects';
 import { formatName } from '../../scripts/utils/formatName';
 import { authStore } from '../../stores/authStore';
 import { studyStore } from '../../stores/studyStore';
-import { request } from '../../scripts/utils/request';
+import { request } from '@lib/api/request';
 import { decrypt } from '../../scripts/utils/crypto';
 import { saveQuestions } from '../../hooks/services/indexedDB/questions';
 import { saveAllImages } from '../../hooks/services/indexedDB/images';
-import { DOWNLOADED_SUBJECTS_KEY } from '../../constant/key'
+import { DOWNLOADED_SUBJECTS_KEY } from '@lib/config/app'
 
 const MAX_DOWNLOAD_SUBJECTS = 4;
 ;

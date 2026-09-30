@@ -1,9 +1,9 @@
-import { url } from '../../constant/url.js';
+import { BACKEND_URL } from '@lib/config/app.js';
 import { fetchWithAuth } from './fetchWithAuth.js';
 
 export const request = {
   async send(path, options = {}) {
-    const res = await fetch(`${url}${path}`, options)
+    const res = await fetch(`${BACKEND_URL}${path}`, options)
     const data = await res.json().catch(() => ({}))
     if (!res.ok) {
       throw { status: res.status, error: data?.message || data?.errors || data?.error || 'Request Failed' }
