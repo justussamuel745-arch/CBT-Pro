@@ -33,39 +33,31 @@ import { authStore } from '../../stores/authStore.js';
 */
 
 export async function getRandomQuestions(subjects) {
+  const isActivated = authStore.getState()?.isActivated;
+
+  // 1. Fetch ALL subjects in parallel — IndexedDB loves this
+  const allResults = await Promise.all(
+    subjects.map(async ({ subject, amount }) => {
+      const subjectQuestions = await getQuestions({ subject });
+      return { subject, amount, subjectQuestions };
+    })
+  );
+
   const questions = [];
   const insufficientSubjects = [];
 
-  const isActivated = authStore.getState()?.isActivated
-
-  for (const { subject, amount } of subjects) {
-    const subjectQuestions = await getQuestions({
-      subject,
-    });
-
-    if (!isActivated){
-      const sortedQuestions = subjectQuestions.sort((a, b) => Number(a.year) - Number(b.year))
-      const selectedQuestions = sortedQuestions.slice(
-        0,
-        Math.min(amount, sortedQuestions.length)
-      );
-
-      const shuffled = shuffleArray([...selectedQuestions]);
-
-      questions.push(...shuffled)
+  // 2. Process after fetch (no await here, just CPU work)
+  for (const { subject, amount, subjectQuestions } of allResults) {
+    if (!isActivated) {
+      const sorted = [...subjectQuestions].sort((a, b) => Number(a.year) - Number(b.year));
+      const selected = sorted.slice(0, Math.min(amount, sorted.length));
+      questions.push(...shuffleArray(selected));
     } else {
-
       const shuffled = shuffleArray([...subjectQuestions]);
-
-      const selectedQuestions = shuffled.slice(
-        0,
-        Math.min(amount, shuffled.length)
-      );
-
-      questions.push(...selectedQuestions)
+      const selected = shuffled.slice(0, Math.min(amount, shuffled.length));
+      questions.push(...selected);
     }
-    
-    // Record subjects with insufficient questions
+
     if (subjectQuestions.length < amount) {
       insufficientSubjects.push({
         subject,
@@ -76,10 +68,5 @@ export async function getRandomQuestions(subjects) {
     }
   }
 
-  console.log(questions)
-
-  return {
-    questions,
-    insufficientSubjects,
-  };
+  return { questions, insufficientSubjects };
 }
