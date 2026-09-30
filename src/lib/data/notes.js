@@ -1,4 +1,4 @@
-export const notesData = {
+export const NOTES_DATA = {
   LEKKI001: [
     {
       topic: 'Characters And Their Roles',
@@ -1895,6 +1895,6 @@ export const notesData = {
 ]
 };
 
-export function getSubjectNotes(subjectId) {
-  return notesData[subjectId] || [];
+export function getSubjectNotes(subjectId){
+  return NOTES_DATA[subjectId] || [];
 }

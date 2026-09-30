@@ -4,7 +4,7 @@ import { MarkdownContent } from '../../components/MarkdownContent';
 import { Calculator } from '../../components/Calculator.jsx'
 import { AstraAIModal } from '../../components/AstraAIModal'
 import { request } from '../../scripts/utils/request';
-import { subjectsData } from '../../scripts/data/subjectsData.js'
+import { SUBJECTS_DATA } from '@lib/data/subjects'
 import { Image } from '../../components/common/Image'
 import { formatName } from '../../scripts/utils/formatName.js';
 import { ModalStripe, CSS } from '../../components/NotificationSystem';
@@ -484,7 +484,7 @@ export default function StudySimulator() {
                   if (cancelled || controller.signal.aborted) return
                   if (loaded.length === 0) return
                   finishStreaming(subject)
-                  const subTopicsCount = subjectsData.find(s => s.name === subject)?.topics?.length
+                  const subTopicsCount = SUBJECTS_DATA.find(s => s.name === subject)?.topics?.length
                   const selectedTopicsCount = topics?.length
                   const selectedDiff = subTopicsCount - selectedTopicsCount
                   if (loaded.length < STUDY_LIMIT && selectedDiff > (subTopicsCount / 2) && years.length >= 5) setModal('available_questions')
@@ -541,7 +541,7 @@ export default function StudySimulator() {
   }, [toggleCalc, toggleNav])
 
   const subjectId = useMemo(
-    () => subjectsData.find((s) => s.name === studyConfig.subject)?.id,
+    () => SUBJECTS_DATA.find((s) => s.name === studyConfig.subject)?.id,
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   )

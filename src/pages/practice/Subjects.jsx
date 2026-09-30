@@ -1,12 +1,12 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router';
-import { subjectsData } from '../../scripts/data/subjectsData';
+import { SUBJECTS_DATA } from '@lib/data/subjects';
 import { formatName } from '../../scripts/utils/formatName';
 import { authStore } from '../../stores/authStore';
 import { examStore } from '../../stores/examStore';
 import './Subjects.css'
 
-const JAMB_SUBJECTS = subjectsData.map(subject => subject.name)
+const JAMB_SUBJECTS = SUBJECTS_DATA.map(subject => subject.name)
 
 export default function Subjects() {
   const isActivated = authStore(state => state.isActivated)

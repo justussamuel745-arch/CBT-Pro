@@ -2,11 +2,11 @@ import { useState, useEffect, useCallback, useRef,  memo } from 'react';
 import { Link } from 'react-router';
 import { toast } from 'react-hot-toast';
 import { MarkdownContent } from '../components/MarkdownContent';
-import { subjectsData } from '../scripts/data/subjectsData.js';
-import { formatName } from '../scripts/utils/formatName.js';
+import { SUBJECTS_DATA } from '@lib/data/subjects';
+import { formatName } from '../scripts/utils/formatName';
 import { Image } from '../components/common/Image';
 import { userStore } from '../stores/userStore';
-import { getUserBookmarks, deleteBookmark } from '../hooks/services/indexedDB/bookmarks.js';
+import { getUserBookmarks, deleteBookmark } from '../hooks/services/indexedDB/bookmarks';
 import './Bookmark.css'
 
 const ExpensiveBmkModal = memo(function ExpensiveBmkModal({ modalQsInfo, setModalQsInfo }){
@@ -179,7 +179,7 @@ export default function Bookmark() {
           <select className="bookmark-filter" onChange={filterBySubject}>
             <option value="all">All Subjects</option>
             {
-            subjectsData.map(sub => 
+            SUBJECTS_DATA.map(sub => 
               (
                 <option value={sub.name} key={sub.id}>{formatName(sub.name)}</option>
               )

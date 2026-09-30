@@ -1,8 +1,8 @@
 import { useState, useRef, useEffect } from 'react';
 import { useSearchParams, Link } from 'react-router';
 import { PDFViewer } from '../components/PdfViewer';
-import { subjectsData } from '../scripts/data/subjectsData.js';
-import { formatName } from '../scripts/utils/formatName.js';
+import { SUBJECTS_DATA } from '@lib/data/subjects';
+import { formatName } from '../scripts/utils/formatName';
 import './Syllabus.css'
 
 const AVAILABLE_SYLLABUS = [
@@ -85,7 +85,7 @@ export default function Syllabus() {
 
         <div className="syllabus-grid">
           {
-            subjectsData.filter(sub => AVAILABLE_SYLLABUS.includes(sub.name.toLowerCase())).map(subject => 
+            SUBJECTS_DATA.filter(sub => AVAILABLE_SYLLABUS.includes(sub.name.toLowerCase())).map(subject => 
               (
                 <div className="syllabus-card" key={subject.id}>
                   <div className="syllabus-card-icon subject-logo" dangerouslySetInnerHTML={{__html: subject.icon}}/>

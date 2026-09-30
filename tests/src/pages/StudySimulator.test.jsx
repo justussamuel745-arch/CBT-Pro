@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, waitFor, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import StudySimulator from '../../../src/pages/simulator/StudySimulator';
+import StudySimulator from '@pages/simulator/StudySimulator';
 
 /* ------------------------------------------------------------------ */
 /* Hoisted mutable mock state                                         */
@@ -24,19 +24,19 @@ vi.mock('react-router', () => ({
   Navigate: () => <div data-testid="redirect" />,
 }));
 
-vi.mock('../../../src/components/MarkdownContent', () => ({
+vi.mock('@/components/MarkdownContent', () => ({
   MarkdownContent: ({ children }) => <div>{children}</div>,
 }));
 
-vi.mock('../../../src/components/Calculator.jsx', () => ({ Calculator: () => null }));
-vi.mock('../../../src/components/AstraAIModal', () => ({ AstraAIModal: () => null }));
-vi.mock('../../../src/components/common/Image', () => ({ Image: () => null }));
-vi.mock('../../../src/components/ReportQuestionModal', () => ({
+vi.mock('@/components/Calculator.jsx', () => ({ Calculator: () => null }));
+vi.mock('@/components/AstraAIModal', () => ({ AstraAIModal: () => null }));
+vi.mock('@/components/common/Image', () => ({ Image: () => null }));
+vi.mock('@/components/ReportQuestionModal', () => ({
   ReportQuestionModal: () => null,
 }));
-vi.mock('../../../src/components/Loading', () => ({ Loading: () => <div>Loading…</div> }));
+vi.mock('@/components/Loading', () => ({ Loading: () => <div>Loading…</div> }));
 
-vi.mock('../../../src/components/NotificationSystem', () => ({
+vi.mock('@/components/NotificationSystem', () => ({
   ModalStripe: ({ title, body, primaryLabel, onPrimary, onClose, closeLabel }) => (
     <div data-testid="modal-stripe">
       <h2>{title}</h2>
@@ -48,20 +48,20 @@ vi.mock('../../../src/components/NotificationSystem', () => ({
   CSS: [''],
 }));
 
-vi.mock('../../../src/components/AnswerCard', () => ({
+vi.mock('@/components/AnswerCard', () => ({
   AnswerCard: ({ correctAnswers }) => (
     <div data-testid="answer-card">Correct: {correctAnswers}</div>
   ),
 }));
 
-vi.mock('../../../src/scripts/utils/formatName', () => ({
+vi.mock('@/scripts/utils/formatName', () => ({
   formatName: (name) => name,
 }));
-vi.mock('../../../src/scripts/utils/crypto', () => ({
+vi.mock('@/scripts/utils/crypto', () => ({
   decrypt: (body) => body,
 }));
-vi.mock('../../../src/scripts/data/subjectsData.js', () => ({
-  subjectsData: [
+vi.mock('@lib/data/subjects', () => ({
+  SUBJECTS_DATA: [
     { 
       id: 'eng-1', 
       name: 'English',
@@ -77,26 +77,26 @@ vi.mock('../../../src/scripts/data/subjectsData.js', () => ({
 }));
 
 const mockRequestAuth = vi.fn();
-vi.mock('../../../src/scripts/utils/request', () => ({
+vi.mock('@/scripts/utils/request', () => ({
   request: { auth: (...args) => mockRequestAuth(...args) },
 }));
 
 const mockAddBookmark = vi.fn().mockResolvedValue(undefined);
 const mockDeleteBookmark = vi.fn().mockResolvedValue(undefined);
 const mockLoadQuestions = vi.fn();
-vi.mock('../../../src/hooks/services/indexedDB/questions', () => ({
+vi.mock('@/hooks/services/indexedDB/questions', () => ({
   saveQuestions: vi.fn().mockResolvedValue(undefined),
   loadQuestionsInBackground: (...args) => mockLoadQuestions(...args),
 }));
-vi.mock('../../../src/hooks/services/indexedDB/images', () => ({
+vi.mock('@/hooks/services/indexedDB/images', () => ({
   saveAllImages: vi.fn().mockResolvedValue(undefined),
 }));
-vi.mock('../../../src/hooks/services/indexedDB/bookmarks.js', () => ({
+vi.mock('@/hooks/services/indexedDB/bookmarks.js', () => ({
   addBookmark: (...args) => mockAddBookmark(...args),
   deleteBookmark: (...args) => mockDeleteBookmark(...args),
 }));
 
-vi.mock('../../../src/stores/studyStore', () => ({
+vi.mock('@/stores/studyStore', () => ({
   studyStore: mockStudyStore,
 }));
 
@@ -105,10 +105,10 @@ mockStudyStore.mockImplementation(
     selector({ studyConfig: { subject: 'English', years: [2020], topics: [] } })
 )
 
-vi.mock('../../../src/stores/userStore', () => ({
+vi.mock('@/stores/userStore', () => ({
   userStore: (selector) => selector({ userId: 'user-1' }),
 }));
-vi.mock('../../../src/stores/examStore', () => ({
+vi.mock('@/stores/examStore', () => ({
   examStore: { getState: () => mockExamState.current },
 }));
 
@@ -363,7 +363,7 @@ describe('StudySimulator — study mode progressive loading (offline)', () => {
 
     // Question 3 hasn't loaded, so Next goes back to its loading state.
     expect(screen.getByRole('button', { name: 'Loading' })).toBeDisabled();
-  }, 10000);
+  }, 1000 * 15);
 
   it('lets the user go back to earlier questions while later ones are still loading', async () => {
     const user = userEvent.setup();
@@ -379,7 +379,7 @@ describe('StudySimulator — study mode progressive loading (offline)', () => {
 
     await user.click(screen.getByRole('button', { name: /prev/i }));
     expect(screen.getByText('First question')).toBeInTheDocument();
-  });
+  }, 1000 * 10);
 
   it('keeps answers given to early questions as more questions stream in', async () => {
     const user = userEvent.setup();

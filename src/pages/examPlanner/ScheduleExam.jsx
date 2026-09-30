@@ -4,12 +4,12 @@ import { toast } from 'react-hot-toast';
 import ScheduleSuccess from './ScheduleSuccess';
 import { scheduledExamStore } from '../../stores/scheduledExamStore';
 import { userStore } from '../../stores/userStore';
-import { subjectsData } from '../../scripts/data/subjectsData';
+import { SUBJECTS_DATA } from '@lib/data/subjects';
 import { formatName } from '../../scripts/utils/formatName';
 import { ModalDialog, CSS } from '../../components/NotificationSystem';
 import "./ScheduleExam.css";
 
-const SUBJECTS = subjectsData.map(sub => sub.name)
+const SUBJECTS = SUBJECTS_DATA.map(sub => sub.name)
 
 const COMPULSORY_SUBJECT = "English";
 

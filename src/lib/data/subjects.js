@@ -26,7 +26,7 @@ import homeEconomicsImg from '../../assets/images/homeEconomics.jpg';
 import lekkiHeadmasterImg from '../../assets/images/lekkiHeadmaster.png';
 
 /* AVAILABLE SUBJECTS */
-export const subjectsData = [
+export const SUBJECTS_DATA = [
   {
     id: "ENG001",
     icon: `<img src="${englishImg}" style="width: 100%; border-radius: 16px" />`,

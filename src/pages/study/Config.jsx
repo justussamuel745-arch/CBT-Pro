@@ -2,8 +2,8 @@ import { useState, useEffect, useRef, useMemo } from "react";
 import { useSearchParams, useNavigate, Link, Navigate } from "react-router";
 import { ModalDialog, ModalCentered, CSS } from '../../components/NotificationSystem'
 import './Config.css';
-import { subjectsData } from '../../scripts/data/subjectsData.js';
-import { formatName } from '../../scripts/utils/formatName.js';
+import { SUBJECTS_DATA } from '@lib/data/subjects';
+import { formatName } from '../../scripts/utils/formatName';
 import { authStore } from '../../stores/authStore';
 import { studyStore } from '../../stores/studyStore';
 import { request } from '../../scripts/utils/request';
@@ -43,7 +43,7 @@ export default function Config() {
   const [modal, setModal] = useState(null);
   const closeModal = () => setModal(null);
 
-  const subject = subjectsData.find(s => s.id === subjectId);
+  const subject = SUBJECTS_DATA.find(s => s.id === subjectId);
 
   const [topicsOpen, setTopicsOpen] = useState(false);
   const [yearsOpen, setYearsOpen] = useState(false);
@@ -96,7 +96,7 @@ export default function Config() {
 
   // Reset when subject changes — pull years straight from the subject now
   useEffect(() => {
-    const sub = subjectsData.find(sub => sub.id === subjectId);
+    const sub = SUBJECTS_DATA.find(sub => sub.id === subjectId);
     setSelectedTopics(sub?.topics || []);
     setSelectedYears(sub?.years || []);
     setTopicsOpen(false);
@@ -224,7 +224,7 @@ export default function Config() {
   }
 
   // ===== Offline download flow =====
-  const allSubjectsDownloaded = subjectsData.every(s => downloadedSubjects.includes(s.id));
+  const allSubjectsDownloaded = SUBJECTS_DATA.every(s => downloadedSubjects.includes(s.id));
 
   const handleDownloadClick = () => {
     if (!isActivated) {
@@ -255,7 +255,7 @@ export default function Config() {
   // own save-to-IndexedDB step, tracked live in downloadProgress.
   const handleConfirmDownload = async () => {
     const queue = downloadSelection
-      .map(id => subjectsData.find(s => s.id === id))
+      .map(id => SUBJECTS_DATA.find(s => s.id === id))
       .filter(Boolean);
 
     setDownloadModalOpen(false);
@@ -523,7 +523,7 @@ export default function Config() {
               <h3 className="offline-banner-title">Study Offline</h3>
               <p className="offline-banner-desc">
                 {downloadedSubjects.length > 0
-                  ? `You've downloaded ${downloadedSubjects.length} of ${subjectsData.length} subjects. Download or update more to keep practicing offline.`
+                  ? `You've downloaded ${downloadedSubjects.length} of ${SUBJECTS_DATA.length} subjects. Download or update more to keep practicing offline.`
                   : "Download past questions so you can keep practicing without an internet connection."}
               </p>
             </div>
@@ -639,7 +639,7 @@ export default function Config() {
             </div>
 
             <div className="download-modal-list">
-              {subjectsData.map(s => {
+              {SUBJECTS_DATA.map(s => {
                 const checked = downloadSelection.includes(s.id);
                 const disabled = !checked && downloadLimitReached;
                 const isDownloaded = downloadedSubjects.includes(s.id);

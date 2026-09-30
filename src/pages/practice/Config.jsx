@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router';
-import { subjectsData } from '../../scripts/data/subjectsData.js';
-import { formatName } from '../../scripts/utils/formatName.js';
+import { SUBJECTS_DATA } from '@lib/data/subjects';
+import { formatName } from '../../scripts/utils/formatName';
 import { ModalStripe, ModalDialog, CSS } from '../../components/NotificationSystem';
 import { authStore } from '../../stores/authStore';
 import { practiceStore } from '../../stores/practiceStore';
@@ -31,7 +31,7 @@ export default function Config() {
 
   useMemo(() => {
     examConfig.subjects.forEach((sub) => {
-      const data = subjectsData.find(d => d.name === sub.name);
+      const data = SUBJECTS_DATA.find(d => d.name === sub.name);
       if (data) subjectsIcon[sub.name] = data.icon;
     });
     setSubjectsIcon(subjectsIcon)

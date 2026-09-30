@@ -1,6 +1,6 @@
 import  { useState } from "react";
 import { Link } from 'react-router';
-import { subjectsData } from '../../scripts/data/subjectsData';
+import { SUBJECTS_DATA } from '@lib/data/subjects';
 import { formatName } from '../../scripts/utils/formatName';
 import { authStore } from '../../stores/authStore';
 import './Subjects.css';
@@ -17,7 +17,7 @@ export default function Subjects(){
     { label: "Commercial", value: "commercial" },
   ];
 
-  const filteredSubjects = subjectsData.filter((sub) => {
+  const filteredSubjects = SUBJECTS_DATA.filter((sub) => {
     const matchesFilter = activeFilter === "all" || sub.category.includes(activeFilter);
     const matchesSearch = formatName(sub.name)
       .toLowerCase()

@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router';
-import { subjectsData } from '../../scripts/data/subjectsData.js';
-import { formatName } from '../../scripts/utils/formatName.js';
-import { formatTime } from '../../scripts/utils/formatTime.js';
+import { SUBJECTS_DATA } from '@lib/data/subjects';
+import { formatName } from '../../scripts/utils/formatName';
+import { formatTime } from '../../scripts/utils/formatTime';
 import { practiceStore } from '../../stores/practiceStore';
 import './Score.css';
 
@@ -115,7 +115,7 @@ export default function Score() {
   // Build subject array ranked by score
   const subjects = Object.entries(examResults.performance)
     .map(([name, score]) => {
-      const found = subjectsData.find(s => s.name === name);
+      const found = SUBJECTS_DATA.find(s => s.name === name);
       return { name, score, total: 100, icon: found?.icon || null };
     })
     .sort((a, b) => b.score - a.score);

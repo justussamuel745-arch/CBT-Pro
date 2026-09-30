@@ -1,15 +1,15 @@
 import { useState, useMemo } from "react";
 import { useSearchParams, Link, Navigate } from "react-router";
 import './Notes.css';
-import { subjectsData } from '../../scripts/data/subjectsData';
-import { getSubjectNotes } from '../../constant/notesData';
+import { SUBJECTS_DATA } from '@lib/data/subjects';
+import { getSubjectNotes } from '@lib/data/notes';
 import { formatName } from '../../scripts/utils/formatName';
 
 export default function Notes() {
   const [searchParams] = useSearchParams();
   const subjectParam = searchParams.get("subject");
 
-  const subject = subjectsData.find(
+  const subject = SUBJECTS_DATA.find(
     s => s.name.toLowerCase() === (subjectParam || "").toLowerCase()
   );
 
