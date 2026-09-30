@@ -5,9 +5,9 @@ import { useNotifications } from '../context/NotificationContext';
 import { ModalCentered, ModalDestruct, CSS } from '../components/NotificationSystem';
 import { Ic } from '../scripts/utils/Ic'
 import defaultAvatar from '../assets/images/avatar.jpg';
-import { saveUser } from '../hooks/services/indexedDB/users';
-import { deleteAllQuestions, saveQuestions } from '../hooks/services/indexedDB/questions';
-import { clearImages } from '../hooks/services/indexedDB/images';
+import { saveUser } from '@lib/db/users';
+import { deleteAllQuestions, saveQuestions } from '@lib/db/questions';
+import { clearImages } from '@lib/db/images';
 import { encrypt, decrypt } from '../scripts/utils/crypto';
 import { request } from '@lib/api/request';
 import { authStore } from '../stores/authStore';

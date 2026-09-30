@@ -12,7 +12,7 @@ import { practiceStore } from '../../stores/practiceStore';
 import { scheduledExamStore } from '../../stores/scheduledExamStore';
 import { examStore } from '../../stores/examStore';
 import { userStore } from '../../stores/userStore';
-import { addBookmark, deleteBookmark } from '../../hooks/services/indexedDB/bookmarks.js';
+import { addBookmark, deleteBookmark } from '@lib/db/bookmarks.js';
 import { SimulatorSkeleton } from './components/SimulatorSkeleton';
 import { SubmittingOverlay } from './components/SubmittingOverlay';
 import './ExamSimulator.css';

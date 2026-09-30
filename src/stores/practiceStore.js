@@ -5,9 +5,8 @@ import { examStore } from './examStore';
 import { encrypt, decrypt } from '../scripts/utils/crypto';
 import { submitHistory } from '@lib/api/submitHistory';
 import { request } from '@lib/api/request';
-import { saveQuestions } from '../hooks/services/indexedDB/questions';
-import { saveAllImages } from '../hooks/services/indexedDB/images';
-import { getRandomQuestions } from '../hooks/services/examQuestions';
+import { saveQuestions, getRandomQuestions } from '@lib/db/questions';
+import { saveAllImages } from '@lib/db/images';
 
 export const practiceStore = create(set => ({
   /*========

@@ -47,7 +47,7 @@ vi.mock('@lib/api/request', () => ({
   }
 }))
 
-vi.mock('@/hooks/services/indexedDB/users', () => ({
+vi.mock('@lib/db/users', () => ({
   deleteUser: vi.fn()
 }))
 
@@ -57,7 +57,7 @@ import { GoogleLogin } from "@react-oauth/google";
 import { authStore } from '@/stores/authStore';
 import { userStore } from '@/stores/userStore';
 import { request } from '@lib/api/request';
-import { deleteUser } from '@/hooks/services/indexedDB/users'
+import { deleteUser } from '@lib/db/users'
 import { toast } from 'react-hot-toast';
 
 

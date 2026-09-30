@@ -2,7 +2,7 @@ import { MemoryRouter, Routes, Route } from 'react-router'
 import { vi, it, expect, describe} from 'vitest'
 import UserEvent from '@testing-library/user-event'
 import { render, screen, waitFor } from '@testing-library/react'
-import { Signin } from '../../../../src/pages/auth/Signin';
+import { Signin } from '@/pages/auth/Signin';
 
 vi.mock('@react-oauth/google', async () => {
   const actual = await vi.importActual('@react-oauth/google')
@@ -13,13 +13,13 @@ vi.mock('@react-oauth/google', async () => {
   }
 })
 
-vi.mock('../../../../src/components/GoogleAuth', () => ({
+vi.mock('@/components/GoogleAuth', () => ({
   GoogleAuth: () => <button>Sign in with google</button>
 }))
 
 const mockSignin = vi.fn()
 
-vi.mock('../../../../src/stores/authStore', () => ({
+vi.mock('@/stores/authStore', () => ({
   authStore: (selector) => selector({
     signin: mockSignin
   })
@@ -28,7 +28,7 @@ vi.mock('../../../../src/stores/authStore', () => ({
 const mockFetchUser = vi.fn()
 const mockFetchHistory = vi.fn()
 
-vi.mock('../../../../src/stores/userStore', () => ({
+vi.mock('@/stores/userStore', () => ({
   userStore: (selector) => selector({
     fetchUserInfo: mockFetchUser,
     fetchUserHistory: mockFetchHistory
@@ -39,7 +39,7 @@ const mockDashboardInfo = vi.fn().mockResolvedValue({
   catch: vi.fn()
 })
 
-vi.mock('../../../../src/stores/scheduledExamStore', () => ({
+vi.mock('@/stores/scheduledExamStore', () => ({
   scheduledExamStore: (selector) => selector({
     getDashboardInfo: mockDashboardInfo
   })
@@ -47,10 +47,10 @@ vi.mock('../../../../src/stores/scheduledExamStore', () => ({
 
 
 import { GoogleOAuthProvider } from "@react-oauth/google";
-import { GoogleAuth } from '../../../../src/components/GoogleAuth';
-import { authStore } from '../../../../src/stores/authStore';
-import { userStore } from '../../../../src/stores/userStore';
-import { scheduledExamStore } from '../../../../src/stores/scheduledExamStore';
+import { GoogleAuth } from '@/components/GoogleAuth';
+import { authStore } from '@/stores/authStore';
+import { userStore } from '@/stores/userStore';
+import { scheduledExamStore } from '@/stores/scheduledExamStore';
 
 describe('Signin Page', () => {
   afterEach(() => {

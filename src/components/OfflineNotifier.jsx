@@ -2,7 +2,7 @@ import { useEffect, memo } from 'react';
 import { scheduledExamStore } from '../stores/scheduledExamStore';
 import { authStore } from '../stores/authStore';
 import { userStore } from '../stores/userStore';
-import { getOfflineNotification, addOfflineNotification } from '../hooks/services/indexedDB/offlineNotifications';
+import { getOfflineNotification, addOfflineNotification } from '@lib/db/offlineNotifications';
 import pushNotificationService from '../services/pushNotificationService';
 import { useNotifications } from '../context/NotificationContext';
 

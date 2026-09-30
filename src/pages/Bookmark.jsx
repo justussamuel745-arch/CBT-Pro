@@ -6,7 +6,7 @@ import { SUBJECTS_DATA } from '@lib/data/subjects';
 import { formatName } from '../scripts/utils/formatName';
 import { Image } from '../components/common/Image';
 import { userStore } from '../stores/userStore';
-import { getUserBookmarks, deleteBookmark } from '../hooks/services/indexedDB/bookmarks';
+import { getUserBookmarks, deleteBookmark } from '@lib/db/bookmarks';
 import './Bookmark.css'
 
 const ExpensiveBmkModal = memo(function ExpensiveBmkModal({ modalQsInfo, setModalQsInfo }){

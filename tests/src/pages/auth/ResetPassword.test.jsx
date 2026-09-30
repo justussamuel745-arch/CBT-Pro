@@ -2,18 +2,18 @@ import { MemoryRouter, Routes, Route } from 'react-router'
 import { vi, it, expect, describe} from 'vitest'
 import UserEvent from '@testing-library/user-event'
 import { render, screen, waitFor } from '@testing-library/react'
-import { ResetPassword } from '../../../../src/pages/auth/ResetPassword';
+import { ResetPassword } from '@/pages/auth/ResetPassword';
 
 
 const resetPasswordMock = vi.fn().mockResolvedValue()
 
-vi.mock('../../../../src/stores/authStore', () => ({
+vi.mock('@/stores/authStore', () => ({
   authStore: vi.fn((selector) => selector({
     resetPassword: resetPasswordMock
   }))
 }))
 
-import { authStore } from '../../../../src/stores/authStore';
+import { authStore } from '@/stores/authStore';
 
 vi.mock('react-hot-toast', () => ({
   toast: {

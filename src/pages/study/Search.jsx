@@ -7,8 +7,8 @@ import { Image } from '../../components/common/Image';
 import { formatName } from '../../scripts/utils/formatName.js';
 import { decrypt } from '../../scripts/utils/crypto';
 import { authStore } from '../../stores/authStore';
-import { saveQuestions } from '../../hooks/services/indexedDB/questions';
-import { saveAllImages } from '../../hooks/services/indexedDB/images';
+import { saveQuestions } from '@lib/db/questions';
+import { saveAllImages } from '@lib/db/images';
 import './Search.css';
 
 const EXAM_TYPES = ["JAMB"];

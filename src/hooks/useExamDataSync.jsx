@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
 import { scheduledExamStore } from '../stores/scheduledExamStore';
 import { userStore } from '../stores/userStore';
-import { addUpcomingExams, deleteUserUpcomingExams } from './services/indexedDB/upcomingExams.js';
-import { saveExamStats } from './services/indexedDB/examStats';
+import { addUpcomingExams, deleteUserUpcomingExams } from '@lib/db/upcomingExams.js';
+import { saveExamStats } from '@lib/db/examStats';
 import { encrypt } from '../scripts/utils/crypto';
 
 // listen when upcomingExams changes and update the changes in indexDB

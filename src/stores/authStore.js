@@ -1,8 +1,8 @@
 import { create } from 'zustand';
 import { request } from '@lib/api/request.js';
 import { decrypt } from '../scripts/utils/crypto.js';
-import { deleteAllQuestions } from '../hooks/services/indexedDB/questions.js';
-import { deleteUser } from '../hooks/services/indexedDB/users';
+import { deleteAllQuestions } from '@lib/db/questions.js';
+import { deleteUser } from '@lib/db/users';
 import { userStore } from './userStore.js';
 import pushNotificationService from '../services/pushNotificationService';
 

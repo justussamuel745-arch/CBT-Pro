@@ -16,16 +16,16 @@ import {
   saveNotifications,
   getLocalNotifications,
   clearLocalNotifications,
-} from "../hooks/services/indexedDB/notifications";
+} from "@lib/db/notifications";
 
 import {
   getOfflineNotifications
-} from "../hooks/services/indexedDB/offlineNotifications"
+} from "@lib/db/offlineNotifications"
 
 import {
   getPendingQueueActions,
   processQueue
-} from "../hooks/services/indexedDB/notificationQueue";
+} from "@lib/db/notificationQueue";
 
 
 import { authStore } from '../stores/authStore';

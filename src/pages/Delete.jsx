@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router';
 import { GoogleLogin } from "@react-oauth/google";
 import { toast } from 'react-hot-toast';
 import {  ModalDestruct, CSS } from '../components/NotificationSystem';
-import { deleteUser } from '../hooks/services/indexedDB/users';
+import { deleteUser } from '@lib/db/users';
 import { request } from '@lib/api/request';
 import { authStore } from '../stores/authStore';
 import { userStore } from '../stores/userStore';

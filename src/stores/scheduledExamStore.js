@@ -7,7 +7,7 @@ import {
   getOfflineNotifications,
   deleteOfflineNotification,
   updateOfflineNotification
-} from '../hooks/services/indexedDB/offlineNotifications.js';
+} from '@lib/db/offlineNotifications.js';
 import { toast } from 'react-hot-toast';
 
 const validateField = (form) => {

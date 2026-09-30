@@ -8,8 +8,8 @@ import { authStore } from '../../stores/authStore';
 import { studyStore } from '../../stores/studyStore';
 import { request } from '@lib/api/request';
 import { decrypt } from '../../scripts/utils/crypto';
-import { saveQuestions } from '../../hooks/services/indexedDB/questions';
-import { saveAllImages } from '../../hooks/services/indexedDB/images';
+import { saveQuestions } from '@lib/db/questions';
+import { saveAllImages } from '@lib/db/images';
 import { DOWNLOADED_SUBJECTS_KEY } from '@lib/config/app'
 
 const MAX_DOWNLOAD_SUBJECTS = 4;

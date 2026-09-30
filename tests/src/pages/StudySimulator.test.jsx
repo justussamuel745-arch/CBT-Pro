@@ -77,21 +77,21 @@ vi.mock('@lib/data/subjects', () => ({
 }));
 
 const mockRequestAuth = vi.fn();
-vi.mock('@/scripts/utils/request', () => ({
+vi.mock('@lib/api/request', () => ({
   request: { auth: (...args) => mockRequestAuth(...args) },
 }));
 
 const mockAddBookmark = vi.fn().mockResolvedValue(undefined);
 const mockDeleteBookmark = vi.fn().mockResolvedValue(undefined);
 const mockLoadQuestions = vi.fn();
-vi.mock('@/hooks/services/indexedDB/questions', () => ({
+vi.mock('@lib/db/questions', () => ({
   saveQuestions: vi.fn().mockResolvedValue(undefined),
   loadQuestionsInBackground: (...args) => mockLoadQuestions(...args),
 }));
-vi.mock('@/hooks/services/indexedDB/images', () => ({
+vi.mock('@lib/db/images', () => ({
   saveAllImages: vi.fn().mockResolvedValue(undefined),
 }));
-vi.mock('@/hooks/services/indexedDB/bookmarks.js', () => ({
+vi.mock('@lib/db/bookmarks.js', () => ({
   addBookmark: (...args) => mockAddBookmark(...args),
   deleteBookmark: (...args) => mockDeleteBookmark(...args),
 }));

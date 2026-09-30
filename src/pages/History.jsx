@@ -4,7 +4,7 @@ import { formatTime } from '../scripts/utils/formatTime';
 import { sortByClosestDate } from '../scripts/utils/dateTimeOp';
 import { Loading } from '../components/Loading';
 import { toast } from 'react-hot-toast';
-import { removeHistory } from '../hooks/services/indexedDB/history';
+import { removeHistory } from '@lib/db/history';
 import { request } from '@lib/api/request';
 import { userStore } from '../stores/userStore';
 import { DateTime } from '../components/common/DateTime';

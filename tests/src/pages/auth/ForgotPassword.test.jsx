@@ -2,14 +2,14 @@ import { MemoryRouter } from 'react-router'
 import { vi, it, expect, describe } from 'vitest'
 import UserEvent from '@testing-library/user-event'
 import { render, screen } from '@testing-library/react'
-import { ForgotPassword } from '../../../../src/pages/auth/ForgotPassword';
+import { ForgotPassword } from '@/pages/auth/ForgotPassword';
 
-vi.mock('../../../../src/stores/authStore', () => ({
+vi.mock('@/stores/authStore', () => ({
   authStore: vi.fn((selector) => selector({
     forgotPassword: vi.fn().mockResolvedValue()
   }))
 }))
-import { authStore } from '../../../../src/stores/authStore';
+import { authStore } from '@/stores/authStore';
 
 
 describe('ForgotPassword Page', () => {

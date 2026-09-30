@@ -9,7 +9,7 @@ import { LoadError } from '../../components/LoadError';
 import { DateTime } from '../../components/common/DateTime';
 import { sortByClosestDate } from '../../scripts/utils/dateTimeOp';
 import { scheduledExamStore } from '../../stores/scheduledExamStore';
-import { deleteUpcomingExam } from '../../hooks/services/indexedDB/upcomingExams';
+import { deleteUpcomingExam } from '@lib/db/upcomingExams';
 import pushNotificationService from '../../services/pushNotificationService';
 import { hasEditExpires } from './utils/hasEditExpires';
 import { graceEndsAt } from './utils/graceEndsAt';

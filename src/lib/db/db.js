@@ -6,7 +6,7 @@
 */
 
 const DB_NAME = "CBTPro";
-const DB_VERSION = 15;
+const DB_VERSION = 16;
 
 
 /* ================================
@@ -112,48 +112,6 @@ const createImagesStore = (db) => {
     });
   }
 };
-
-
-/* ================================
-   GAMES
-================================ */
-
-const createGamesStore = (db) => {
-  if (db.objectStoreNames.contains("games")) return;
-
-  const store = db.createObjectStore("games", {
-    keyPath: "id",
-  });
-
-  store.createIndex("subject", "subject", {
-    unique: false,
-  });
-
-  store.createIndex("league", "league", {
-    unique: false,
-  });
-
-  store.createIndex("level", "level", {
-    unique: false,
-  });
-
-  store.createIndex(
-    "subject_league",
-    ["subject", "league"],
-    {
-      unique: false,
-    }
-  );
-
-  store.createIndex(
-    "subject_league_level",
-    ["subject", "league", "level"],
-    {
-      unique: false,
-    }
-  );
-};
-
 
 /* ================================
    NOTIFICATIONS
