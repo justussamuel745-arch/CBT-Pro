@@ -1,5 +1,5 @@
 import './DateTime.css';
-import { formatDateTime } from '../../scripts/utils/dateTimeOp.js';
+import { formatDateTime } from '@lib/utils/dateTimeOp.js';
 
 
 export function DateTime({ iso }){

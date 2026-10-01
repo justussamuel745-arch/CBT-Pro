@@ -3,7 +3,7 @@ import { useSearchParams, Link, Navigate } from "react-router";
 import './Notes.css';
 import { SUBJECTS_DATA } from '@lib/data/subjects';
 import { getSubjectNotes } from '@lib/data/notes';
-import { formatName } from '../../scripts/utils/formatName';
+import { formatName } from '@lib/utils/formatName';
 
 export default function Notes() {
   const [searchParams] = useSearchParams();

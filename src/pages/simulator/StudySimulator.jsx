@@ -6,14 +6,14 @@ import { AstraAIModal } from '../../components/AstraAIModal'
 import { request } from '@lib/api/request';
 import { SUBJECTS_DATA } from '@lib/data/subjects'
 import { Image } from '../../components/common/Image'
-import { formatName } from '../../scripts/utils/formatName.js';
+import { formatName } from '@lib/utils/formatName.js';
 import { ModalStripe, CSS } from '../../components/NotificationSystem';
 import { ReportQuestionModal } from '../../components/ReportQuestionModal';
 import { AnswerCard } from '../../components/AnswerCard';
 import { saveQuestions, loadQuestionsInBackground } from '@lib/db/questions';
 import { saveAllImages } from '@lib/db/images';
 import { addBookmark, deleteBookmark } from '@lib/db/bookmarks.js';
-import { decrypt } from '../../scripts/utils/crypto';
+import { decrypt } from '@lib/utils/crypto';
 import { studyStore } from '../../stores/studyStore';
 import { userStore } from '../../stores/userStore';
 import { examStore } from '../../stores/examStore';

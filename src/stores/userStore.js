@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { request } from '@lib/api/request.js';
-import { decrypt, encrypt } from '../scripts/utils/crypto.js';
+import { decrypt, encrypt } from '@lib/utils/crypto.js';
 import { saveQuestions } from '@lib/db/questions.js';
 import { saveUser, getUser } from '@lib/db/users.js';
 import { saveHistory, clearHistory, getHistory } from '@lib/db/history.js';
@@ -9,7 +9,7 @@ import { getExamStats } from '@lib/db/examStats.js';
 import { authStore } from './authStore.js';
 import { scheduledExamStore } from './scheduledExamStore.js';
 import { submitLocalHistory } from '@lib/api/submitHistory.js';
-import { addMinutes } from '../scripts/utils/dateTimeOp';
+import { addMinutes } from '@lib/utils/dateTimeOp';
 import pushNotificationService from '../services/pushNotificationService.js';
 
 export const userStore = create(set => ({

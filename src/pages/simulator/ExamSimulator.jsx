@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, memo, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router';
 import { MarkdownContent } from '../../components/MarkdownContent';
-import { formatName } from '../../scripts/utils/formatName.js';
+import { formatName } from '@lib/utils/formatName.js';
 import { CountdownTimer } from '../../components/CountdownTimer'
 import { Calculator } from '../../components/Calculator'
 import { Offline } from '../../components/Offline';

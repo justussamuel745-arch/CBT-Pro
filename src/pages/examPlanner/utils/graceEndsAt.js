@@ -1,4 +1,4 @@
-import { addMinutes } from '../../../scripts/utils/dateTimeOp.js';
+import { addMinutes } from '@lib/utils/dateTimeOp.js';
 import { EXAM_CONFIG } from '@lib/config/app.js';
 
 export const graceEndsAt = (examDate) => {

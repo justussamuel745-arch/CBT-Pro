@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { authStore } from './authStore';
 import { userStore } from './userStore';
 import { examStore } from './examStore';
-import { encrypt, decrypt } from '../scripts/utils/crypto';
+import { encrypt, decrypt } from '@lib/utils/crypto';
 import { submitHistory } from '@lib/api/submitHistory';
 import { request } from '@lib/api/request';
 import { saveQuestions, getRandomQuestions } from '@lib/db/questions';

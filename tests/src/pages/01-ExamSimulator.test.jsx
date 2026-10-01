@@ -3,7 +3,7 @@ import { MemoryRouter } from 'react-router';
 import UserEvent from '@testing-library/user-event';
 import { render, screen, act, waitFor } from '@testing-library/react';
 
-import ExamSimulator from '../../../src/pages/simulator/ExamSimulator'
+import ExamSimulator from '@/pages/simulator/ExamSimulator'
 
 import { questions } from '../utils/questions';
 
@@ -18,7 +18,7 @@ const {
 }))
 
 
-vi.mock('../../../src/stores/practiceStore', () => ({
+vi.mock('@/stores/practiceStore', () => ({
   practiceStore: mockPracticeStore
 }))
 
@@ -39,7 +39,7 @@ mockGetPracticeQuestions.mockResolvedValue(questions)
 
 
 
-vi.mock('../../../src/stores/scheduledExamStore', () => ({
+vi.mock('@/stores/scheduledExamStore', () => ({
   scheduledExamStore: mockScheduledExamStore
 }))
 
@@ -57,7 +57,7 @@ mockScheduledExamStore.getState = vi.fn(() => ({
 
 mockGetExamQuestions.mockResolvedValue(questions)
 
-vi.mock('../../../src/stores/examStore', () => ({
+vi.mock('@/stores/examStore', () => ({
   examStore: mockExamStore
 }))
 
@@ -90,9 +90,9 @@ mockExamStore.setState = vi.fn()
 mockExamStore.getState = mockExamStoreGetState
 
 
-import { practiceStore } from '../../../src/stores/practiceStore';
-import { scheduledExamStore } from '../../../src/stores/scheduledExamStore';
-import { examStore } from '../../../src/stores/examStore';
+import { practiceStore } from '@/stores/practiceStore';
+import { scheduledExamStore } from '@/stores/scheduledExamStore';
+import { examStore } from '@/stores/examStore';
 
 
 describe('ExamSimulator Page', () => {

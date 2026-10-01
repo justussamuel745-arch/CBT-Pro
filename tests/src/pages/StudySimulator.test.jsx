@@ -57,7 +57,7 @@ vi.mock('@/components/AnswerCard', () => ({
 vi.mock('@/scripts/utils/formatName', () => ({
   formatName: (name) => name,
 }));
-vi.mock('@/scripts/utils/crypto', () => ({
+vi.mock('@lib/utils/crypto', () => ({
   decrypt: (body) => body,
 }));
 vi.mock('@lib/data/subjects', () => ({

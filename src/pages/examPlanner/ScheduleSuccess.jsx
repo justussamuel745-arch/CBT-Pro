@@ -1,5 +1,5 @@
 import { Link } from "react-router";
-import { formatDateTime, addMinutes } from '../../scripts/utils/dateTimeOp';
+import { formatDateTime, addMinutes } from '@lib/utils/dateTimeOp';
 import { graceEndsAt } from './utils/graceEndsAt'
 import { EXAM_CONFIG } from '@lib/config/app';
 import "./ScheduleSuccess.css";

@@ -43,7 +43,7 @@ vi.mock('@lib/api/request', () => ({
 }))
 
 
-vi.mock('@/scripts/utils/crypto', () => ({
+vi.mock('@lib/utils/crypto', () => ({
   decrypt: vi.fn((value) => value)
 }))
 
@@ -54,7 +54,7 @@ import { practiceStore } from '@/stores/practiceStore';
 import { scheduledExamStore } from '@/stores/scheduledExamStore';
 import { examStore } from '@/stores/examStore';
 import { request } from '@lib/api/request';
-import { decrypt } from '@/scripts/utils/crypto';
+import { decrypt } from '@lib/utils/crypto';
 
 
 describe('ExamSimulator Page', () => {

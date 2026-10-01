@@ -368,7 +368,6 @@ export function openDB() {
       createSettingsStore(db);
       createHistoryStore(db);
       createImagesStore(db);
-      createGamesStore(db);
       createNotificationsStore(db);
       createNotificationQueueStore(db);
       createOfflineNotificationsStore(db);

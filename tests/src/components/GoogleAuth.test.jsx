@@ -3,7 +3,7 @@ import { MemoryRouter, Routes, Route } from 'react-router';
 import UserEvent from '@testing-library/user-event';
 import { render, screen, act, waitFor } from '@testing-library/react';
 
-import { GoogleAuth } from '../../../src/components/GoogleAuth';
+import { GoogleAuth } from '@/components/GoogleAuth';
 
 const {
   mockGoogleLogin,
@@ -21,26 +21,26 @@ const {
   mockToastPush: vi.fn()
 }))
 
-vi.mock('../../../src/stores/authStore', () => ({
+vi.mock('@/stores/authStore', () => ({
   authStore: vi.fn(selector => selector({
     googleAuth: mockGoogleAuth
   }))
 }))
 
-vi.mock('../../../src/stores/userStore', () => ({
+vi.mock('@/stores/userStore', () => ({
   userStore: vi.fn(selector => selector({
     fetchUserInfo: mockFetchUserInfo,
     fetchUserHistory: mockFetchUserHistory
   }))
 }))
 
-vi.mock('../../../src/stores/scheduledExamStore', () => ({
+vi.mock('@/stores/scheduledExamStore', () => ({
   scheduledExamStore: vi.fn(selector => selector({
     getDashboardInfo: mockGetDashboardInfo
   }))
 }))
 
-vi.mock('../../../src/pages/auth/Signin', () => ({
+vi.mock('@/pages/auth/Signin', () => ({
   useToast: vi.fn(() => ({
     push: mockToastPush
   }))
@@ -52,10 +52,10 @@ vi.mock('@react-oauth/google', () => ({
 
 
 import { GoogleLogin } from "@react-oauth/google";
-import { useToast } from '../../../src/pages/auth/Signin';
-import { authStore } from '../../../src/stores/authStore';
-import { userStore } from '../../../src/stores/userStore';
-import { scheduledExamStore } from '../../../src/stores/scheduledExamStore';
+import { useToast } from '@/pages/auth/Signin';
+import { authStore } from '@/stores/authStore';
+import { userStore } from '@/stores/userStore';
+import { scheduledExamStore } from '@/stores/scheduledExamStore';
 
 describe('Google Auth', () => {
   beforeEach(() => {

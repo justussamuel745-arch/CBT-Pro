@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { request } from '@lib/api/request.js';
-import { decrypt } from '../scripts/utils/crypto.js';
+import { decrypt } from '@lib/utils/crypto.js';
 import { deleteAllQuestions } from '@lib/db/questions.js';
 import { deleteUser } from '@lib/db/users';
 import { userStore } from './userStore.js';

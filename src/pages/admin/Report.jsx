@@ -3,7 +3,7 @@ import './Report.css';
 import { MarkdownContent } from '../../components/MarkdownContent';
 import { Nav } from './Nav';
 import { Loading } from '../../components/Loading';
-import { decrypt } from '../../scripts/utils/crypto';
+import { decrypt } from '@lib/utils/crypto';
 import { request } from '@lib/api/request';
 import { adminStore } from '../../stores/AdminStore';
 

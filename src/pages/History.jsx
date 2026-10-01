@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useMemo, memo } from 'react';
 import { Link } from 'react-router';
-import { formatTime } from '../scripts/utils/formatTime';
-import { sortByClosestDate } from '../scripts/utils/dateTimeOp';
+import { formatTimeInSeconds } from '@lib/utils/formatTimeInSeconds';
+import { sortByClosestDate } from '@lib/utils/dateTimeOp';
 import { Loading } from '../components/Loading';
 import { toast } from 'react-hot-toast';
 import { removeHistory } from '@lib/db/history';
@@ -146,7 +146,7 @@ const ExpensiveHistoryModal = memo(function ExpensiveHistoryModal({ modalInfo, o
                   </div>
                   <div className="history-modal-stat">
                     <i className="fa-solid fa-clock"></i>
-                    <span className="history-modal-stat-value">{formatTime(item.timeSpent)}</span>
+                    <span className="history-modal-stat-value">{formatTimeInSeconds(item.timeSpent)}</span>
                     <span className="history-modal-stat-label">Time</span>
                   </div>
                   <div className="history-modal-stat">
@@ -319,7 +319,7 @@ export default function History() {
                 <div className="history-card-summary">
                   <span><i className="fa-solid fa-check-double"></i>{item.score}/{item.total}</span>
                   <span className="dot"></span>
-                  <span><i className="fa-regular fa-clock"></i>{formatTime(item.timeSpent)}</span>
+                  <span><i className="fa-regular fa-clock"></i>{formatTimeInSeconds(item.timeSpent)}</span>
                   <span className="dot"></span>
                   <span><i className="fa-solid fa-list-ol"></i>{item.question} questions</span>
                 </div>

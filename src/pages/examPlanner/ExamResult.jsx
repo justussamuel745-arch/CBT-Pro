@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { useLocation, Link } from 'react-router';
-import { formatTime } from '../../scripts/utils/formatTime.js';
+import { formatTimeInSeconds } from '@lib/utils/formatTimeInSeconds.js';
 import { DateTime } from '../../components/common/DateTime';
 import "./ExamResult.css";
 
@@ -142,7 +142,7 @@ export default function ExamResult() {
           <div className="examresult-summary__row">
             <span className="examresult-summary__label">Time Spent</span>
             <span className="examresult-summary__value">
-              {formatTime(result.timeSpentSeconds)}
+              {formatTimeInSeconds(result.timeSpentSeconds)}
             </span>
           </div>
           <div className="examresult-summary__row">

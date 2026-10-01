@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router';
 import { SUBJECTS_DATA } from '@lib/data/subjects';
-import { formatName } from '../../scripts/utils/formatName';
-import { formatTime } from '../../scripts/utils/formatTime';
+import { formatName } from '@lib/utils/formatName';
+import { formatTimeInSeconds } from '@lib/utils/formatTimeInSeconds';
 import { practiceStore } from '../../stores/practiceStore';
 import './Score.css';
 
@@ -177,7 +177,7 @@ export default function Score() {
                   {subjects.length} subject{subjects.length !== 1 ? 's' : ''}
                 </span>
                 <span className="score-badge info">
-                  {formatTime(examResults.timeTaken)} used
+                  {formatTimeInSeconds(examResults.timeTaken)} used
                 </span>
               </div>
             </div>
@@ -201,9 +201,9 @@ export default function Score() {
           </div>
           <div className="score-stat">
             <div className="score-stat-icon"><Ic.Time /></div>
-            <div className="score-stat-value">{formatTime(examResults.timeTaken)}</div>
+            <div className="score-stat-value">{formatTimeInSeconds(examResults.timeTaken)}</div>
             <div className="score-stat-label">Time used</div>
-            <div className="score-stat-sub">{efficiency}% of {formatTime(examResults.timeAllocated)}</div>
+            <div className="score-stat-sub">{efficiency}% of {formatTimeInSeconds(examResults.timeAllocated)}</div>
           </div>
           <div className="score-stat">
             <div className="score-stat-icon"><Ic.Chart /></div>
@@ -352,14 +352,14 @@ export default function Score() {
               <div className="score-time-bar-outer">
                 <div className="score-time-bar-inner" style={{ width: `${Math.min(efficiency, 100)}%` }} />
               </div>
-              <div className="score-time-val">{formatTime(examResults.timeTaken)}</div>
+              <div className="score-time-val">{formatTimeInSeconds(examResults.timeTaken)}</div>
             </div>
             <div className="score-time-row">
               <div className="score-time-label">Allocated</div>
               <div className="score-time-bar-outer">
                 <div className="score-time-bar-inner" style={{ width: '100%', background: 'var(--border)' }} />
               </div>
-              <div className="score-time-val">{formatTime(examResults.timeAllocated)}</div>
+              <div className="score-time-val">{formatTimeInSeconds(examResults.timeAllocated)}</div>
             </div>
             <div className="score-time-insight">
               <Ic.Info />

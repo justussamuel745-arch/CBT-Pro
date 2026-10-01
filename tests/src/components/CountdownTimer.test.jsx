@@ -3,7 +3,7 @@ import { it, expect, describe, vi } from 'vitest';
 import UserEvent from '@testing-library/user-event';
 import { screen, render, waitFor, act } from '@testing-library/react';
 
-import { CountdownTimer } from '../../../src/components/CountdownTimer';
+import { CountdownTimer } from '@/components/CountdownTimer';
 
 
 const {
@@ -18,17 +18,17 @@ const {
   mockCalculateScore: vi.fn()
 }))
 
-vi.mock('../../../src/stores/practiceStore', () => ({
+vi.mock('@/stores/practiceStore', () => ({
   practiceStore: selector => selector({
     calculateScore: mockCalculateScore
   })
 }))
-vi.mock('../../../src/stores/scheduledExamStore', () => ({
+vi.mock('@/stores/scheduledExamStore', () => ({
   scheduledExamStore: selector => selector({
     submitScheduledExam: mockSubmitScheduledExam
   })
 }))
-vi.mock('../../../src/stores/examStore', () => ({
+vi.mock('@/stores/examStore', () => ({
   examStore: mockExamStore
 }))
 
@@ -40,9 +40,9 @@ mockExamStoreGetState.mockReturnValue({
   }
 })
 
-import { practiceStore } from '../../../src/stores/practiceStore';
-import { scheduledExamStore } from '../../../src/stores/scheduledExamStore';
-import { examStore } from '../../../src/stores/examStore';
+import { practiceStore } from '@/stores/practiceStore';
+import { scheduledExamStore } from '@/stores/scheduledExamStore';
+import { examStore } from '@/stores/examStore';
 
 
 describe('CountdownTimer', () => {

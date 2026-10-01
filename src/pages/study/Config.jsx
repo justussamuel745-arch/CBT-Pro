@@ -3,11 +3,11 @@ import { useSearchParams, useNavigate, Link, Navigate } from "react-router";
 import { ModalDialog, ModalCentered, CSS } from '../../components/NotificationSystem'
 import './Config.css';
 import { SUBJECTS_DATA } from '@lib/data/subjects';
-import { formatName } from '../../scripts/utils/formatName';
+import { formatName } from '@lib/utils/formatName';
 import { authStore } from '../../stores/authStore';
 import { studyStore } from '../../stores/studyStore';
 import { request } from '@lib/api/request';
-import { decrypt } from '../../scripts/utils/crypto';
+import { decrypt } from '@lib/utils/crypto';
 import { saveQuestions } from '@lib/db/questions';
 import { saveAllImages } from '@lib/db/images';
 import { DOWNLOADED_SUBJECTS_KEY } from '@lib/config/app'

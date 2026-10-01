@@ -3,7 +3,7 @@ import { scheduledExamStore } from '../stores/scheduledExamStore';
 import { userStore } from '../stores/userStore';
 import { addUpcomingExams, deleteUserUpcomingExams } from '@lib/db/upcomingExams.js';
 import { saveExamStats } from '@lib/db/examStats';
-import { encrypt } from '../scripts/utils/crypto';
+import { encrypt } from '@lib/utils/crypto';
 
 // listen when upcomingExams changes and update the changes in indexDB
 export function useExamDataSync() {

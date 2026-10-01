@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { request } from '@lib/api/request.js';
 import { saveUser } from '@lib/db/users.js';
-import { encrypt, decrypt } from '../scripts/utils/crypto.js';
+import { encrypt, decrypt } from '@lib/utils/crypto.js';
 import { authStore } from './authStore.js';
 import { userStore } from './userStore.js';
 

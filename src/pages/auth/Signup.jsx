@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, createContext, useContext, useCallback } from 'react'
 import { Link, useNavigate } from 'react-router';
 import { GoogleAuth } from '../../components/GoogleAuth';;
-import { Ic } from '../../scripts/utils/Ic';
+import { Ic } from '@/components/common/Icons.jsx';
 import { authStore } from '../../stores/authStore';
 import './Signup.css';
 

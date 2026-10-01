@@ -5,7 +5,7 @@ import ScheduleSuccess from './ScheduleSuccess';
 import { scheduledExamStore } from '../../stores/scheduledExamStore';
 import { userStore } from '../../stores/userStore';
 import { SUBJECTS_DATA } from '@lib/data/subjects';
-import { formatName } from '../../scripts/utils/formatName';
+import { formatName } from '@lib/utils/formatName';
 import { ModalDialog, CSS } from '../../components/NotificationSystem';
 import "./ScheduleExam.css";
 

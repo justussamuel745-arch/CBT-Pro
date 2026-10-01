@@ -1,6 +1,6 @@
 import { openDB } from "./db";
-import { encrypt, decrypt } from '@/scripts/utils/crypto.js';
-import { shuffleArray } from '@/scripts/utils/shuffle.js';
+import { encrypt, decrypt } from '@lib/utils/crypto.js';
+import { shuffleArray } from '@lib/utils/shuffle.js';
 import { authStore } from '@/stores/authStore.js';
 
 /*

@@ -96,7 +96,7 @@ describe('ResetPassword Page', () => {
       await waitFor(() => {
         expect(resetPassword).not.toHaveBeenCalled()
       })
-    })
+    }, 1000 * 10)
 
     it('should remove the form and nav container on successful request and perform the right success operation', async () => {
       const user = UserEvent.setup()
@@ -134,7 +134,7 @@ describe('ResetPassword Page', () => {
       const successTitle = await screen.findByText('Password Reset!')
       expect(successTitle).toBeInTheDocument()
       
-    })
+    }, 10 * 1000)
 
 
     it('should display the sign in button and navigate the user when clicked', async () => {

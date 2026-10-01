@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { SUBJECTS_DATA } from '@lib/data/subjects';
-import { formatName } from '../../scripts/utils/formatName';
+import { formatName } from '@lib/utils/formatName';
 import { ModalStripe, ModalDialog, CSS } from '../../components/NotificationSystem';
 import { authStore } from '../../stores/authStore';
 import { practiceStore } from '../../stores/practiceStore';

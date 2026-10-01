@@ -67,7 +67,7 @@ export const CountdownTimer = memo(function CountdownTimer({ onFinish, hours, mi
     };
   }, []);
 
-  const formatTime = (secs) => {
+  const formatTimeInSeconds = (secs) => {
     const hrs = Math.floor(secs / 3600);
     const mins = Math.floor((secs % 3600) / 60);
     const s = secs % 60;
@@ -91,7 +91,7 @@ export const CountdownTimer = memo(function CountdownTimer({ onFinish, hours, mi
           strokeDashoffset={dashOffset}
         />
       </svg>
-      <span className="countdown-timer__digits">{formatTime(timeLeft)}</span>
+      <span className="countdown-timer__digits">{formatTimeInSeconds(timeLeft)}</span>
     </div>
   );
 });

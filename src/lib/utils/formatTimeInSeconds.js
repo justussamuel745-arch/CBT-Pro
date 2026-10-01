@@ -1,4 +1,4 @@
-export function formatTime(seconds) {
+export function formatTimeInSeconds(seconds) {
   if (!Number.isFinite(seconds) || seconds < 0) return "—";
   const h = Math.floor(seconds / 3600);
   const m = Math.floor((seconds % 3600) / 60);

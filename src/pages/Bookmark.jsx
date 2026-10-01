@@ -3,7 +3,7 @@ import { Link } from 'react-router';
 import { toast } from 'react-hot-toast';
 import { MarkdownContent } from '../components/MarkdownContent';
 import { SUBJECTS_DATA } from '@lib/data/subjects';
-import { formatName } from '../scripts/utils/formatName';
+import { formatName } from '@lib/utils/formatName';
 import { Image } from '../components/common/Image';
 import { userStore } from '../stores/userStore';
 import { getUserBookmarks, deleteBookmark } from '@lib/db/bookmarks';

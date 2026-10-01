@@ -1,6 +1,6 @@
 import { it, expect, describe, vi } from 'vitest';
 import { render, waitFor } from '@testing-library/react';
-import { OfflineNotifier } from '../../../src/components/OfflineNotifier';
+import { OfflineNotifier } from '@/components/OfflineNotifier';
 
 const {
   mockSetNotifications,
@@ -16,34 +16,34 @@ const {
   mockAddOfflineNotifications: vi.fn()
 }))
 
-vi.mock('../../../src/context/NotificationContext', () => ({
+vi.mock('@/context/NotificationContext', () => ({
   useNotifications: vi.fn()
 }))
 
-vi.mock('../../../src/stores/authStore', () => ({
+vi.mock('@/stores/authStore', () => ({
   authStore: (selector) => selector({
     token: 'access_token'
   })
 }))
 
 
-vi.mock('../../../src/stores/userStore', () => ({
+vi.mock('@/stores/userStore', () => ({
   userStore: vi.fn()
 }))
 
-vi.mock('../../../src/stores/scheduledExamStore', () => ({
+vi.mock('@/stores/scheduledExamStore', () => ({
   scheduledExamStore: {
     getState: vi.fn(),
     setState: vi.fn()
   }
 }))
 
-vi.mock('../../../src/hooks/services/indexedDB/offlineNotifications', () => ({
+vi.mock('@lib/db/offlineNotifications', () => ({
   getOfflineNotification: vi.fn(),
   addOfflineNotification: mockAddOfflineNotifications
 }))
 
-vi.mock('../../../src/services/pushNotificationService', () => ({
+vi.mock('@/services/pushNotificationService', () => ({
   default: {
     showNotification: vi.fn().mockResolvedValue({
       catch: vi.fn()
@@ -51,12 +51,12 @@ vi.mock('../../../src/services/pushNotificationService', () => ({
   }
 }))
 
-import { useNotifications } from '../../../src/context/NotificationContext'
-import { authStore } from '../../../src/stores/authStore';
-import { userStore } from '../../../src/stores/userStore';
-import { scheduledExamStore } from '../../../src/stores/scheduledExamStore';
-import { getOfflineNotification, addOfflineNotification } from '../../../src/hooks/services/indexedDB/offlineNotifications';
-import pushNotificationService from '../../../src/services/pushNotificationService';
+import { useNotifications } from '@/context/NotificationContext'
+import { authStore } from '@/stores/authStore';
+import { userStore } from '@/stores/userStore';
+import { scheduledExamStore } from '@/stores/scheduledExamStore';
+import { getOfflineNotification, addOfflineNotification } from '@lib/db/offlineNotifications';
+import pushNotificationService from '@/services/pushNotificationService';
 
 useNotifications.mockReturnValue({
   setNotifications: mockSetNotifications,

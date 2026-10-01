@@ -3,12 +3,12 @@ import { Link, useNavigate } from 'react-router';
 import { toast } from 'react-hot-toast';
 import { useNotifications } from '../context/NotificationContext';
 import { ModalCentered, ModalDestruct, CSS } from '../components/NotificationSystem';
-import { Ic } from '../scripts/utils/Ic'
+import { Ic } from '@/components/common/Icons'
 import defaultAvatar from '../assets/images/avatar.jpg';
 import { saveUser } from '@lib/db/users';
 import { deleteAllQuestions, saveQuestions } from '@lib/db/questions';
 import { clearImages } from '@lib/db/images';
-import { encrypt, decrypt } from '../scripts/utils/crypto';
+import { encrypt, decrypt } from '@lib/utils/crypto';
 import { request } from '@lib/api/request';
 import { authStore } from '../stores/authStore';
 import { userStore } from '../stores/userStore';
