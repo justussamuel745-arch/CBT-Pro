@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
-import { scheduledExamStore } from '../stores/scheduledExamStore';
-import { userStore } from '../stores/userStore';
+import { scheduledExamStore } from '@/stores/scheduledExamStore';
+import { userStore } from '@/stores/userStore';
 import { addUpcomingExams, deleteUserUpcomingExams } from '@lib/db/upcomingExams.js';
 import { saveExamStats } from '@lib/db/examStats';
 import { encrypt } from '@lib/utils/crypto';

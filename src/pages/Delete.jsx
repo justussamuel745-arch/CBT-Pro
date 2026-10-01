@@ -2,11 +2,11 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate } from 'react-router';
 import { GoogleLogin } from "@react-oauth/google";
 import { toast } from 'react-hot-toast';
-import {  ModalDestruct, CSS } from '../components/NotificationSystem';
+import {  ModalDestruct, CSS } from '@/components/NotificationSystem';
 import { deleteUser } from '@lib/db/users';
 import { request } from '@lib/api/request';
-import { authStore } from '../stores/authStore';
-import { userStore } from '../stores/userStore';
+import { authStore } from '@/stores/authStore';
+import { userStore } from '@/stores/userStore';
 import './Delete.css';
 
 export default function Delete() {

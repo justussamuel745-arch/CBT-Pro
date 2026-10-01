@@ -2,7 +2,7 @@ import { MemoryRouter } from 'react-router'
 import { vi, it, expect, describe } from 'vitest'
 import UserEvent from '@testing-library/user-event'
 import { render, screen } from '@testing-library/react'
-import { ForgotPassword } from '@/pages/auth/ForgotPassword';
+import { ForgotPassword } from '@pages/auth/ForgotPassword';
 
 vi.mock('@/stores/authStore', () => ({
   authStore: vi.fn((selector) => selector({

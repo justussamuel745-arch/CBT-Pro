@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { useSearchParams, useNavigate} from 'react-router';
 import { toast } from 'react-hot-toast';
-import { MarkdownContent } from '../../components/MarkdownContent';
+import { MarkdownContent } from '@/components/MarkdownContent';
 import { request } from '@lib/api/request';
-import { Image } from '../../components/common/Image';
+import { Image } from '@/components/common/Image';
 import { formatName } from '@lib/utils/formatName.js';
 import { decrypt } from '@lib/utils/crypto';
-import { authStore } from '../../stores/authStore';
+import { authStore } from '@/stores/authStore';
 import { saveQuestions } from '@lib/db/questions';
 import { saveAllImages } from '@lib/db/images';
 import './Search.css';

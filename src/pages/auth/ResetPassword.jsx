@@ -1,8 +1,8 @@
 import { useState, useRef } from 'react';
 import { useSearchParams, Link, Navigate, useNavigate } from 'react-router';
 import { toast } from 'react-hot-toast';
-import { Message } from '../../components/Message';
-import { authStore } from '../../stores/authStore';
+import { Message } from '@/components/Message';
+import { authStore } from '@/stores/authStore';
 import './ResetPassword.css';
 
 export function ResetPassword() {

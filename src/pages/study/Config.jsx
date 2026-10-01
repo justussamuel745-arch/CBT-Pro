@@ -1,11 +1,11 @@
 import { useState, useEffect, useRef, useMemo } from "react";
 import { useSearchParams, useNavigate, Link, Navigate } from "react-router";
-import { ModalDialog, ModalCentered, CSS } from '../../components/NotificationSystem'
+import { ModalDialog, ModalCentered, CSS } from '@/components/NotificationSystem'
 import './Config.css';
 import { SUBJECTS_DATA } from '@lib/data/subjects';
 import { formatName } from '@lib/utils/formatName';
-import { authStore } from '../../stores/authStore';
-import { studyStore } from '../../stores/studyStore';
+import { authStore } from '@/stores/authStore';
+import { studyStore } from '@/stores/studyStore';
 import { request } from '@lib/api/request';
 import { decrypt } from '@lib/utils/crypto';
 import { saveQuestions } from '@lib/db/questions';

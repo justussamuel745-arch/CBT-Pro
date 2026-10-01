@@ -40,7 +40,7 @@ vi.mock('@/stores/scheduledExamStore', () => ({
   }))
 }))
 
-vi.mock('@/pages/auth/Signin', () => ({
+vi.mock('@pages/auth/Signin', () => ({
   useToast: vi.fn(() => ({
     push: mockToastPush
   }))
@@ -52,7 +52,7 @@ vi.mock('@react-oauth/google', () => ({
 
 
 import { GoogleLogin } from "@react-oauth/google";
-import { useToast } from '@/pages/auth/Signin';
+import { useToast } from '@pages/auth/Signin';
 import { authStore } from '@/stores/authStore';
 import { userStore } from '@/stores/userStore';
 import { scheduledExamStore } from '@/stores/scheduledExamStore';

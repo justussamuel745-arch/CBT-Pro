@@ -1,11 +1,12 @@
 import { useState, memo } from "react";
 import { Link } from 'react-router';
-import { Menu } from '../components/layouts/Menu';
-import { InstallAppBanner } from '../components/InstallAppBanner';
-import usePushNotifications from '../hooks/usePushNotifications';
-import { useNotifications } from '../context/NotificationContext';
-import { authStore } from '../stores/authStore.js';
-import { userStore } from '../stores/userStore.js';
+import { Menu } from '@/components/layouts/Menu';
+import { InstallAppBanner } from '@/components/InstallAppBanner';
+import usePushNotifications from '@/hooks/usePushNotifications';
+import { useNotifications } from '@/context/NotificationContext';
+import { authStore } from '@/stores/authStore.js';
+import { userStore } from '@/stores/userStore.js';
+import { ACTIVATION_PRICE } from '@lib/config/app.js'
 import "./Dashboard.css";
 
 const DASHBOARD_CARDS = [
@@ -149,7 +150,7 @@ export default function Dashboard() {
               </div>
               <div className="dash-banner-text">
                 <strong>Complete Your Account Activation</strong>
-                <span>Your account is currently inactive. You can unlock our entire catalog of subjects, practice exam modes, and premium study tools for an annual subscription of ₦1,500.</span>
+                <span>Your account is currently inactive. You can unlock our entire catalog of subjects, practice exam modes, and premium study tools for an annual subscription of ₦{ ACTIVATION_PRICE }.</span>
               </div>
               <Link to="/payment" className="dash-banner-btn">
                 Activate now <i className="fa-solid fa-arrow-right"></i>

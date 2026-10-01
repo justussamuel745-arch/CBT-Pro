@@ -1,5 +1,5 @@
 import { Navigate, Outlet} from 'react-router'
-import { examStore } from '../stores/examStore';
+import { examStore } from '@/stores/examStore';
 
 function validate(examConfig){
   if (!examConfig || typeof examConfig !== 'object') return false

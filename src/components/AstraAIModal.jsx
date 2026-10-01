@@ -5,8 +5,8 @@ import remarkMath from 'remark-math';
 import remarkGfm from 'remark-gfm';
 import rehypeKatex from 'rehype-katex';
 import 'katex/dist/katex.min.css';
-import { userStore } from '../stores/userStore';
-import { AIStore } from '../stores/AIStore';
+import { userStore } from '@/stores/userStore';
+import { AIStore } from '@/stores/AIStore';
 import './AstraAIModal.css'
 
 // ─────────────────────────────────────────────────────────────

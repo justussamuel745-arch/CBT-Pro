@@ -1,10 +1,10 @@
 import { useEffect, memo } from 'react';
-import { scheduledExamStore } from '../stores/scheduledExamStore';
-import { authStore } from '../stores/authStore';
-import { userStore } from '../stores/userStore';
+import { scheduledExamStore } from '@/stores/scheduledExamStore';
+import { authStore } from '@/stores/authStore';
+import { userStore } from '@/stores/userStore';
 import { getOfflineNotification, addOfflineNotification } from '@lib/db/offlineNotifications';
-import pushNotificationService from '../services/pushNotificationService';
-import { useNotifications } from '../context/NotificationContext';
+import pushNotificationService from '@/services/pushNotificationService';
+import { useNotifications } from '@/context/NotificationContext';
 
 const getReminderDate = (examDate, reminder) => {
   const date = new Date(examDate);

@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect } from "react";
 import { Link, useNavigate } from 'react-router';
-import { useNotifications } from '../context/NotificationContext';
+import { useNotifications } from '@/context/NotificationContext';
 import { updateLocalNotificationRead, deleteLocalNotification } from '@lib/db/notifications';
 import { deleteOfflineNotification, updateOfflineNotification } from '@lib/db/offlineNotifications';
 import { addQueueAction } from '@lib/db/notificationQueue';

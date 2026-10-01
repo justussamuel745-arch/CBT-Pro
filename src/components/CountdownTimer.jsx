@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef, memo } from 'react';
 import { useNavigate } from 'react-router';
-import { practiceStore } from '../stores/practiceStore';
-import { scheduledExamStore } from '../stores/scheduledExamStore';
-import { examStore } from '../stores/examStore';
+import { practiceStore } from '@/stores/practiceStore';
+import { scheduledExamStore } from '@/stores/scheduledExamStore';
+import { examStore } from '@/stores/examStore';
 import './CountdownTimer.css';
 
 const VITE_ENV = import.meta.env.VITE_ENV

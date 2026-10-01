@@ -8,8 +8,8 @@ import {
   useRef
 } from "react";
 
-import * as notificationServiceHandlers from "../services/notificationService";
-import socketService from "../services/socketService";
+import * as notificationServiceHandlers from "@/services/notificationService";
+import socketService from "@/services/socketService";
 
 import {
   saveNotification,
@@ -28,10 +28,10 @@ import {
 } from "@lib/db/notificationQueue";
 
 
-import { authStore } from '../stores/authStore';
-import { userStore } from '../stores/userStore';
+import { authStore } from '@/stores/authStore';
+import { userStore } from '@/stores/userStore';
 
-import usePWAInstall from "../hooks/usePWAInstall";
+import usePWAInstall from "@/hooks/usePWAInstall";
 
 /**
  * Notification Context

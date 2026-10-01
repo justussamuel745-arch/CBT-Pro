@@ -2,7 +2,7 @@ import { MemoryRouter, Routes, Route } from 'react-router'
 import { vi, it, expect, describe} from 'vitest'
 import UserEvent from '@testing-library/user-event'
 import { render, screen, waitFor } from '@testing-library/react'
-import { Signin } from '@/pages/auth/Signin';
+import { Signin } from '@pages/auth/Signin';
 
 vi.mock('@react-oauth/google', async () => {
   const actual = await vi.importActual('@react-oauth/google')

@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router';
 import { Ic } from '@/components/common/Icons.jsx';
-import { adminStore } from '../../stores/AdminStore';
+import { adminStore } from '@/stores/AdminStore';
 import './Nav.css';
 
 export function Nav({ sidebarOpen, setSidebarOpen }) {

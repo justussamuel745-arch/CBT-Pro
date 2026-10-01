@@ -2,11 +2,11 @@ import { useState, useEffect, useRef, useMemo } from "react";
 import { Link, useSearchParams, useLocation, useNavigate } from "react-router";
 import { toast } from 'react-hot-toast';
 import ScheduleSuccess from './ScheduleSuccess';
-import { scheduledExamStore } from '../../stores/scheduledExamStore';
-import { userStore } from '../../stores/userStore';
+import { scheduledExamStore } from '@/stores/scheduledExamStore';
+import { userStore } from '@/stores/userStore';
 import { SUBJECTS_DATA } from '@lib/data/subjects';
 import { formatName } from '@lib/utils/formatName';
-import { ModalDialog, CSS } from '../../components/NotificationSystem';
+import { ModalDialog, CSS } from '@/components/NotificationSystem';
 import "./ScheduleExam.css";
 
 const SUBJECTS = SUBJECTS_DATA.map(sub => sub.name)

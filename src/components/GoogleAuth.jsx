@@ -1,10 +1,10 @@
 import { useState, useRef, useEffect, memo } from 'react';
 import { useNavigate } from 'react-router';
 import { GoogleLogin } from "@react-oauth/google";
-import { useToast } from '../pages/auth/Signin';
-import { authStore } from '../stores/authStore';
-import { userStore } from '../stores/userStore';
-import { scheduledExamStore } from '../stores/scheduledExamStore';
+import { useToast } from '@pages/auth/Signin';
+import { authStore } from '@/stores/authStore';
+import { userStore } from '@/stores/userStore';
+import { scheduledExamStore } from '@/stores/scheduledExamStore';
 import './GoogleAuth.css';
 
 function getGoogleAuthToast(error) {

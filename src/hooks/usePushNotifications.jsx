@@ -1,6 +1,6 @@
 import { useEffect } from "react";
-import pushNotificationService from "../services/pushNotificationService";
-import { authStore } from '../stores/authStore';
+import pushNotificationService from "@/services/pushNotificationService";
+import { authStore } from '@/stores/authStore';
 
 export default function usePushNotifications() {
   const token  = authStore(state => state.token)

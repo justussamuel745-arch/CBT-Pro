@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
 import { Routes, Route, useNavigate } from 'react-router';
 import { ProctectAdminRoutes } from '../../routes/ProtectAdminRoutes';
-import { Loading } from '../../components/Loading';
-import { Offline } from '../../components/Offline';
+import { Loading } from '@/components/Loading';
+import { Offline } from '@/components/Offline';
 import UserManagement from './UserManagement';
 import Feedback from './Feedback';
 import Report from './Report';
-import { adminStore } from '../../stores/AdminStore';
+import { adminStore } from '@/stores/AdminStore';
 
 
 

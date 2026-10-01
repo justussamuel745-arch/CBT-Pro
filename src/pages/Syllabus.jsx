@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { useSearchParams, Link } from 'react-router';
-import { PDFViewer } from '../components/PdfViewer';
+import { PDFViewer } from '@/components/PdfViewer';
 import { SUBJECTS_DATA } from '@lib/data/subjects';
 import { formatName } from '@lib/utils/formatName';
 import './Syllabus.css'

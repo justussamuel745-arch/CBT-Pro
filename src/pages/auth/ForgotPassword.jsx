@@ -1,7 +1,7 @@
 import { useState, useRef } from 'react';
 import { Link } from 'react-router';
 import { toast } from 'react-hot-toast';
-import { authStore } from '../../stores/authStore';
+import { authStore } from '@/stores/authStore';
 import './ForgotPassword.css'
 
 export function ForgotPassword() {

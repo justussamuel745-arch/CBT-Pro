@@ -2,12 +2,12 @@ import { useState, useEffect, useCallback, useMemo, memo } from 'react';
 import { Link } from 'react-router';
 import { formatTimeInSeconds } from '@lib/utils/formatTimeInSeconds';
 import { sortByClosestDate } from '@lib/utils/dateTimeOp';
-import { Loading } from '../components/Loading';
+import { Loading } from '@/components/Loading';
 import { toast } from 'react-hot-toast';
 import { removeHistory } from '@lib/db/history';
 import { request } from '@lib/api/request';
-import { userStore } from '../stores/userStore';
-import { DateTime } from '../components/common/DateTime';
+import { userStore } from '@/stores/userStore';
+import { DateTime } from '@/components/common/DateTime';
 import './History.css';
 
 /* ---------- Small presentational helpers ---------- */

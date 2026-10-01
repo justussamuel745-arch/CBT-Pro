@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { useLocation, Link } from 'react-router';
 import { formatTimeInSeconds } from '@lib/utils/formatTimeInSeconds.js';
-import { DateTime } from '../../components/common/DateTime';
+import { DateTime } from '@/components/common/DateTime';
 import "./ExamResult.css";
 
 const STATUS_META = {

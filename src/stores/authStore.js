@@ -4,7 +4,7 @@ import { decrypt } from '@lib/utils/crypto.js';
 import { deleteAllQuestions } from '@lib/db/questions.js';
 import { deleteUser } from '@lib/db/users';
 import { userStore } from './userStore.js';
-import pushNotificationService from '../services/pushNotificationService';
+import pushNotificationService from '@/services/pushNotificationService';
 
 export const authStore = create(set => ({
   /*========

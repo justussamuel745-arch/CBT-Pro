@@ -1,6 +1,6 @@
 import { useState, memo, useEffect } from 'react';
 import { MarkdownContent } from './MarkdownContent';
-import { AIStore } from '../stores/AIStore';
+import { AIStore } from '@/stores/AIStore';
 
 export const AnswerCard = memo(function AnswerCard({ explanation, correctAnswers, ques, setChatWithAI }){
   const { onAskAI, setChatMessages, aiExplanations, setAiExplanations } = AIStore(state => state)

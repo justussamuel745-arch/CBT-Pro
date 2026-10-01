@@ -1,11 +1,11 @@
 import { useState, useEffect, memo } from 'react';
 import './Report.css';
-import { MarkdownContent } from '../../components/MarkdownContent';
+import { MarkdownContent } from '@/components/MarkdownContent';
 import { Nav } from './Nav';
-import { Loading } from '../../components/Loading';
+import { Loading } from '@/components/Loading';
 import { decrypt } from '@lib/utils/crypto';
 import { request } from '@lib/api/request';
-import { adminStore } from '../../stores/AdminStore';
+import { adminStore } from '@/stores/AdminStore';
 
 const CATEGORY_LABELS = {
   wrong_answer:   'Wrong answer key',

@@ -1,6 +1,6 @@
 import { useState, memo } from "react";
 import Countdown, { useLiveCountdown } from "./Countdown";
-import { DateTime } from '../../components/common/DateTime';
+import { DateTime } from '@/components/common/DateTime';
 import { hasEditExpires } from './utils/hasEditExpires';
 import { graceEndsAt } from './utils/graceEndsAt.js';
 import "./ExamDetail.css";

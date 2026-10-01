@@ -1,12 +1,12 @@
 import { useState, useEffect, useCallback, useRef,  memo } from 'react';
 import { Link } from 'react-router';
 import { toast } from 'react-hot-toast';
-import { MarkdownContent } from '../components/MarkdownContent';
+import { MarkdownContent } from '@/components/MarkdownContent';
+import { Image } from '@/components/common/Image';
 import { SUBJECTS_DATA } from '@lib/data/subjects';
 import { formatName } from '@lib/utils/formatName';
-import { Image } from '../components/common/Image';
-import { userStore } from '../stores/userStore';
 import { getUserBookmarks, deleteBookmark } from '@lib/db/bookmarks';
+import { userStore } from '@/stores/userStore';
 import './Bookmark.css'
 
 const ExpensiveBmkModal = memo(function ExpensiveBmkModal({ modalQsInfo, setModalQsInfo }){

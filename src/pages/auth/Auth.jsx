@@ -6,7 +6,7 @@ import { ForgotPassword } from './ForgotPassword';
 
 const ResetPassword = lazy(() => import('./ResetPassword.jsx'));
 
-import { Loading } from '../../components/Loading.jsx';
+import { Loading } from '@/components/Loading.jsx';
 
 export default function Auth(){
   return (

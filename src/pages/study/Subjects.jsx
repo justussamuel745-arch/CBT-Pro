@@ -2,7 +2,7 @@ import  { useState } from "react";
 import { Link } from 'react-router';
 import { SUBJECTS_DATA } from '@lib/data/subjects';
 import { formatName } from '@lib/utils/formatName';
-import { authStore } from '../../stores/authStore';
+import { authStore } from '@/stores/authStore';
 import './Subjects.css';
 
 export default function Subjects(){

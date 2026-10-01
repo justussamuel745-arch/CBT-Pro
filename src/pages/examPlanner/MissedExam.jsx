@@ -1,7 +1,7 @@
 import { useState, useCallback } from "react";
 import { useNavigate } from 'react-router';
 import { formatDateTime } from '@lib/utils/dateTimeOp';
-import { scheduledExamStore } from '../../stores/scheduledExamStore';
+import { scheduledExamStore } from '@/stores/scheduledExamStore';
 import "./MissedExam.css";
 
 const VISIBLE_LIMIT = 3;

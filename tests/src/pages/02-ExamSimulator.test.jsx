@@ -3,7 +3,7 @@ import { MemoryRouter } from 'react-router';
 import UserEvent from '@testing-library/user-event';
 import { render, screen, act, waitFor } from '@testing-library/react';
 
-import ExamSimulator from '@/pages/simulator/ExamSimulator'
+import ExamSimulator from '@pages/simulator/ExamSimulator'
 
 import { questions } from '../utils/questions';
 

@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router'
-import { Footer } from '../components/layouts/Footer';
-import { InstallAppBanner } from '../components/InstallAppBanner';
-import { authStore } from '../stores/authStore';
+import { Footer } from '@/components/layouts/Footer';
+import { InstallAppBanner } from '@/components/InstallAppBanner';
+import { authStore } from '@/stores/authStore';
+import { ACTIVATION_PRICE } from '@lib/config/app.js'
 import './HomePage.css'
 
 // TODO: update to the real confirmed JAMB UTME date each year
@@ -78,7 +79,7 @@ const FAQS = [
   },
   {
     q: 'Do I need to pay to access full questions or subjects?',
-    a: 'Full access requires a ₦1,500 yearly subscription, covering unlimited practice across every question, subject, and CBT feature for a full year.',
+    a: `Full access requires a ₦${ACTIVATION_PRICE} yearly subscription, covering unlimited practice across every question, subject, and CBT feature for a full year.`,
   },
   {
     q: 'Does CBT Pro include an AI-powered tutor for explanations?',

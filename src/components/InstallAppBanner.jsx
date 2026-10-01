@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNotifications } from '../context/NotificationContext';
+import { useNotifications } from '@/context/NotificationContext';
 import './InstallAppBanner.css';
 
 // ─────────────────────────────────────────────────────────────

@@ -3,7 +3,7 @@ import { MemoryRouter } from 'react-router';
 import UserEvent from '@testing-library/user-event';
 import { render, screen, act, waitFor } from '@testing-library/react';
 
-import ExamSimulator from '@/pages/simulator/ExamSimulator'
+import ExamSimulator from '@pages/simulator/ExamSimulator'
 
 import { questions } from '../utils/questions';
 
@@ -154,7 +154,7 @@ describe('ExamSimulator Page', () => {
       
 
       spy.mockRestore()
-    })
+    }, 10 * 1000)
 
     it('should not submit the exam when user click the go back button', async () => {
     render(

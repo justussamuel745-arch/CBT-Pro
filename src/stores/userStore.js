@@ -10,7 +10,7 @@ import { authStore } from './authStore.js';
 import { scheduledExamStore } from './scheduledExamStore.js';
 import { submitLocalHistory } from '@lib/api/submitHistory.js';
 import { addMinutes } from '@lib/utils/dateTimeOp';
-import pushNotificationService from '../services/pushNotificationService.js';
+import pushNotificationService from '@/services/pushNotificationService.js';
 
 export const userStore = create(set => ({
   /*========

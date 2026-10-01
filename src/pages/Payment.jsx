@@ -1,8 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router';
-import { Message } from '../components/Message';
+import { Message } from '@/components/Message';
 import { request } from '@lib/api/request';
-import { authStore } from '../stores/authStore';
+import { authStore } from '@/stores/authStore';
+import { ACTIVATION_PRICE } from '@lib/config/app.js'
 import './Payment.css';
 
 // ─────────────────────────────────────────────────────────────
@@ -147,7 +148,7 @@ function PaymentHero({ isActivated }) {
           ) : (
             <>
               <span className="payment-hero-chip"><i className="fa-solid fa-calendar-check"></i> 12 months access</span>
-              <span className="payment-hero-chip"><i className="fa-solid fa-tag"></i> ₦1,500 one-time</span>
+              <span className="payment-hero-chip"><i className="fa-solid fa-tag"></i> ₦{ ACTIVATION_PRICE } one-time</span>
               <span className="payment-hero-chip"><i className="fa-solid fa-shield-halved"></i> Secured by Paystack</span>
             </>
           )}
@@ -201,7 +202,7 @@ function FeaturesCard() {
           <span>What&apos;s included</span>
           Everything you unlock with activation
         </div>
-        <div className="payment-features-price-chip">₦1,500 · 12 months</div>
+        <div className="payment-features-price-chip">₦{ ACTIVATION_PRICE } · 12 months</div>
       </div>
       <div className="payment-features-grid">
         {ACTIVATION_FEATURES.map(f => (
@@ -226,7 +227,7 @@ function ActivationGuide() {
     <div className="payment-panel">
       <div className="payment-guide-title">How app activation works</div>
       <p className="payment-guide-sub">
-        A one-time annual fee of ₦1,500 unlocks full access to CBT Pro — all subjects, mock tests, past questions, and the AI tutor — for 12 months from the day you pay.
+        A one-time annual fee of ₦{ ACTIVATION_PRICE } unlocks full access to CBT Pro — all subjects, mock tests, past questions, and the AI tutor — for 12 months from the day you pay.
       </p>
 
       <div className="payment-guide-section">
@@ -422,7 +423,7 @@ function ActivationForm({ toast, setBlockPayment }) {
         <div className="payment-summary-info">
           <div className="payment-summary-label">App Activation — Annual</div>
           <div className="payment-summary-amount-row">
-            <span className="payment-summary-amount">₦1,500</span>
+            <span className="payment-summary-amount">₦{ ACTIVATION_PRICE }</span>
             <span className="payment-summary-amount-note">12 months</span>
           </div>
           <div className="payment-summary-desc">Full access to all subjects, mock tests, past questions, and the Astra AI tutor for 12 months.</div>
@@ -438,7 +439,7 @@ function ActivationForm({ toast, setBlockPayment }) {
 
         <div className="payment-form-group">
           <label className="payment-label">Amount (NGN)</label>
-          <input type="text" className="payment-input" value="₦1,500" disabled />
+          <input type="text" className="payment-input" value={`₦${ACTIVATION_PRICE}`} disabled />
         </div>
 
         <button type="submit" className="payment-submit" disabled={loading} ref={btnRef}>

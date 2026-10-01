@@ -1,8 +1,8 @@
 import { useState, useEffect, useMemo } from 'react';
 import { request } from '@lib/api/request';
-import { ModalStripe, ToastProvider, useToast, CSS } from '../../components/NotificationSystem';
+import { ModalStripe, ToastProvider, useToast, CSS } from '@/components/NotificationSystem';
 import { Nav } from './Nav';
-import { adminStore } from '../../stores/AdminStore';
+import { adminStore } from '@/stores/AdminStore';
 import './UserManagement.css';
 
 // ==================== CONSTANTS ====================

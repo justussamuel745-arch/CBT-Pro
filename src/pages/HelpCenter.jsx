@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router";
+import { ACTIVATION_PRICE } from '@lib/config/app.js'
 import './HelpCenter.css';
 
 const categories = [
@@ -136,7 +137,7 @@ const categories = [
     items: [
       {
         q: "How much does activation cost?",
-        a: "Activation is ₦1,500 per year. This fee may be updated in the future, but you'll always see the current price before you pay.",
+        a: `Activation is ₦${ACTIVATION_PRICE} per year. This fee may be updated in the future, but you'll always see the current price before you pay.`,
       },
       {
         q: "What does an activated account get me?",

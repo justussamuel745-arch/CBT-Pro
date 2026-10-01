@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { Link, Navigate, useNavigate, useSearchParams } from "react-router";
-import { scheduledExamStore } from '../../stores/scheduledExamStore';
-import { examStore } from '../../stores/examStore';
+import { scheduledExamStore } from '@/stores/scheduledExamStore';
+import { examStore } from '@/stores/examStore';
 import "./ExamInstructions.css";
 
 const PREP_STEPS = [

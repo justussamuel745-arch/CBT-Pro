@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { Link } from 'react-router';
-import { authStore } from '../../stores/authStore';
+import { authStore } from '@/stores/authStore';
 import './Footer.css'
 
 export function Footer() {

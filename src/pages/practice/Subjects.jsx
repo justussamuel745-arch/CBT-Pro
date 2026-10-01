@@ -2,8 +2,8 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router';
 import { SUBJECTS_DATA } from '@lib/data/subjects';
 import { formatName } from '@lib/utils/formatName';
-import { authStore } from '../../stores/authStore';
-import { examStore } from '../../stores/examStore';
+import { authStore } from '@/stores/authStore';
+import { examStore } from '@/stores/examStore';
 import './Subjects.css'
 
 const JAMB_SUBJECTS = SUBJECTS_DATA.map(subject => subject.name)
