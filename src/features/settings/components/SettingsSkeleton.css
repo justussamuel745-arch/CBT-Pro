@@ -1,0 +1,28 @@
+  .settings-skeleton-page {
+    min-height: 100vh;
+    background: var(--bg);
+    padding: 2rem 1.25rem;
+  }
+
+  .settings-skeleton-block {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    max-width: 1280px;
+    margin: 0 auto 1.5rem;
+    padding: 2rem;
+  }
+
+  .settings-skeleton-line {
+    height: 14px;
+    background: linear-gradient(90deg, var(--border) 25%, #f1f5f9 50%, var(--border) 75%);
+    background-size: 200% 100%;
+    border-radius: 6px;
+    animation: settings-shimmer 1.4s infinite;
+    margin-bottom: 0.75rem;
+  }
+
+  @keyframes settings-shimmer {
+    0%   { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }

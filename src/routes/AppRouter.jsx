@@ -2,32 +2,32 @@ import { lazy, Suspense } from 'react';
 import { Routes, Route } from 'react-router';
 import { ProtectRoutes } from './ProtectRoutes';
 import { ProtectExamRoutes } from './ProtectExamRoutes';
-import { Loading } from '../components/Loading';
-import { Invalid } from '../components/Invalid';
-import HomePage from '../pages/HomePage';
-import  Study from '../pages/study/Study';
-import Practice from '../pages/practice/Practice';
-import About  from '../pages/About';
-import HelpCenter  from '../pages/HelpCenter';
-import Feedback from '../pages/Feedback';
-import Legal from '../pages/Legal';
-import Payment from '../pages/Payment';
-import Settings from '../pages/Settings';
-import Bookmark  from '../pages/Bookmark';
-import History from '../pages/History';
-import Syllabus from '../pages/Syllabus';
-import Dashboard from '../pages/Dashboard';
-import Auth  from '../pages/auth/Auth';
-import Notifications  from '../pages/Notifications';
-import ExamPlanners from '../pages/examPlanner/ExamPlanners';
-import ExamSimulator from '../pages/simulator/ExamSimulator';
-import StudySimulator from '../pages/simulator/StudySimulator';
+import { Loading } from '@/components/Loading';
+import { Invalid } from '@/components/Invalid';
+import HomePage from '@/pages/HomePage';
+import  Study from '@/pages/study/Study';
+import Practice from '@/pages/practice/Practice';
+import About  from '@/pages/About';
+import HelpCenter  from '@/pages/HelpCenter';
+import Feedback from '@/pages/Feedback';
+import Legal from '@/pages/Legal';
+import Payment from '@/pages/Payment';
+import Settings from '@/features/settings/Settings';
+import Bookmark  from '@/pages/Bookmark';
+import History from '@/pages/History';
+import Syllabus from '@/pages/Syllabus';
+import Dashboard from '@/pages/Dashboard';
+import Auth  from '@/pages/auth/Auth';
+import Notifications  from '@/pages/Notifications';
+import ExamPlanners from '@/pages/examPlanner/ExamPlanners';
+import ExamSimulator from '@/pages/simulator/ExamSimulator';
+import StudySimulator from '@/pages/simulator/StudySimulator';
 
-const Delete = lazy(() => import('../pages/Delete.jsx'));
-const Admin = lazy(() => import('../pages/admin/Admin.jsx'));
+const Delete = lazy(() => import('@/pages/Delete.jsx'));
+const Admin = lazy(() => import('@/pages/admin/Admin.jsx'));
 
 
-import { authStore } from '../stores/authStore';
+import { authStore } from '@/stores/authStore';
 
 function AppRouter() {
   const token = authStore(state => state.token)
