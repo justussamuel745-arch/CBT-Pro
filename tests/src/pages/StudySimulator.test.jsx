@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, waitFor, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import StudySimulator from '@pages/simulator/StudySimulator';
+import StudySimulator from '@/features/simulator/StudySimulator';
 
 /* ------------------------------------------------------------------ */
 /* Hoisted mutable mock state                                         */

@@ -2,7 +2,7 @@ import { Routes, Route } from 'react-router';
 import Subjects from './Subjects';
 import Config from './Config';
 import Score from './Score';
-import { ProtectExamRoutes } from '../../routes/ProtectExamRoutes';
+import { ProtectExamRoutes } from '@/routes/ProtectExamRoutes';
 
 export default function Practice() {
   return (

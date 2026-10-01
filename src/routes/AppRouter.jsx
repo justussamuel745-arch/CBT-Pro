@@ -5,26 +5,27 @@ import { ProtectExamRoutes } from './ProtectExamRoutes';
 import { Loading } from '@/components/Loading';
 import { Invalid } from '@/components/Invalid';
 import HomePage from '@pages/HomePage';
-import  Study from '@pages/study/Study';
-import Practice from '@pages/practice/Practice';
 import About  from '@pages/About';
 import HelpCenter  from '@pages/HelpCenter';
 import Feedback from '@pages/Feedback';
 import Legal from '@pages/Legal';
 import Payment from '@pages/Payment';
-import Settings from '@/features/settings/Settings';
 import Bookmark  from '@pages/Bookmark';
 import History from '@pages/History';
 import Syllabus from '@pages/Syllabus';
 import Dashboard from '@pages/Dashboard';
-import Auth  from '@pages/auth/Auth';
 import Notifications  from '@pages/Notifications';
-import ExamPlanners from '@pages/examPlanner/ExamPlanners';
-import ExamSimulator from '@pages/simulator/ExamSimulator';
-import StudySimulator from '@pages/simulator/StudySimulator';
+
+import Auth  from '@/features/auth/Auth';
+import ExamPlanners from '@/features/examPlanner/ExamPlanners';
+import Practice from '@/features/practice/Practice';
+import  Study from '@/features/study/Study';
+import Settings from '@/features/settings/Settings';
+import ExamSimulator from '@/features/simulator/ExamSimulator';
+import StudySimulator from '@/features/simulator/StudySimulator';
 
 const Delete = lazy(() => import('@/features/settings/Delete.jsx'));
-const Admin = lazy(() => import('@pages/admin/Admin.jsx'));
+const Admin = lazy(() => import('@/features/admin/Admin.jsx'));
 
 
 import { authStore } from '@/stores/authStore';
