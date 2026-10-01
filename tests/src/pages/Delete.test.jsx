@@ -3,7 +3,7 @@ import { it, expect, describe, vi } from 'vitest';
 import UserEvent from '@testing-library/user-event';
 import { screen, render, waitFor } from '@testing-library/react';
 
-import Delete from '@pages/Delete';
+import Delete from '@/features/settings/Delete';
 
 
 const {

@@ -23,7 +23,7 @@ import ExamPlanners from '@pages/examPlanner/ExamPlanners';
 import ExamSimulator from '@pages/simulator/ExamSimulator';
 import StudySimulator from '@pages/simulator/StudySimulator';
 
-const Delete = lazy(() => import('@pages/Delete.jsx'));
+const Delete = lazy(() => import('@/features/settings/Delete.jsx'));
 const Admin = lazy(() => import('@pages/admin/Admin.jsx'));
 
 
