@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router'
 import { Footer } from '@/components/layouts/Footer';
-import { InstallAppBanner } from '@/components/InstallAppBanner';
+import { InstallAppBanner } from '@/components/layouts/InstallAppBanner';
 import { authStore } from '@/stores/authStore';
 import { ACTIVATION_PRICE } from '@lib/config/app.js'
 import './HomePage.css'

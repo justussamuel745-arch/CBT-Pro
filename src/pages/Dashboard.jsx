@@ -1,7 +1,7 @@
 import { useState, memo } from "react";
 import { Link } from 'react-router';
 import { Menu } from '@/components/layouts/Menu';
-import { InstallAppBanner } from '@/components/InstallAppBanner';
+import { InstallAppBanner } from '@/components/layouts/InstallAppBanner';
 import usePushNotifications from '@/hooks/usePushNotifications';
 import { useNotifications } from '@/context/NotificationContext';
 import { authStore } from '@/stores/authStore.js';

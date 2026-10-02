@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useSearchParams, useNavigate} from 'react-router';
 import { toast } from 'react-hot-toast';
-import { MarkdownContent } from '@/components/MarkdownContent';
+import { MarkdownContent } from '@/components/common/MarkdownContent';
 import { request } from '@lib/api/request';
 import { Image } from '@/components/common/Image';
 import { formatName } from '@lib/utils/formatName.js';

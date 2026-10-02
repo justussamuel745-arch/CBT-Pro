@@ -1,4 +1,4 @@
-import { useEffect, memo } from 'react';
+import { useEffect } from 'react';
 import { scheduledExamStore } from '@/stores/scheduledExamStore';
 import { authStore } from '@/stores/authStore';
 import { userStore } from '@/stores/userStore';
@@ -85,7 +85,7 @@ const notificationListener = async (setNotifications, setUnreadCount) => {
 }
 
 
-export const OfflineNotifier = memo(function OfflineNotifier() {
+export const useOfflineNotifier = function OfflineNotifier() {
   const { setNotifications, setUnreadCount } = useNotifications();
   const token = authStore(state => state.token)
   const userInfo = userStore(state => state.userInfo)
@@ -104,4 +104,4 @@ export const OfflineNotifier = memo(function OfflineNotifier() {
   }, [token, userInfo, setNotifications, setUnreadCount])
   
   return null
-})
+}

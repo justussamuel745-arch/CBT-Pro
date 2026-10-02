@@ -1,9 +1,7 @@
 import { useState, useEffect, useRef, memo, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router';
-import { MarkdownContent } from '@/components/MarkdownContent';
+import { MarkdownContent } from '@/components/common/MarkdownContent';
 import { formatName } from '@lib/utils/formatName.js';
-import { CountdownTimer } from '@/components/CountdownTimer'
-import { Calculator } from '@/components/Calculator'
 import { Offline } from '@/components/Offline';
 import { LoadError } from '@/components/LoadError';
 import { Image } from '@/components/common/Image'
@@ -13,6 +11,8 @@ import { scheduledExamStore } from '@/stores/scheduledExamStore';
 import { examStore } from '@/stores/examStore';
 import { userStore } from '@/stores/userStore';
 import { addBookmark, deleteBookmark } from '@lib/db/bookmarks.js';
+import { CountdownTimer } from './components/CountdownTimer'
+import { Calculator } from './components/Calculator'
 import { SimulatorSkeleton } from './components/SimulatorSkeleton';
 import { SubmittingOverlay } from './components/SubmittingOverlay';
 import './ExamSimulator.css';

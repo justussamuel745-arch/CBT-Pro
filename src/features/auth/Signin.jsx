@@ -1,7 +1,7 @@
 import { useState, useEffect, createContext, useContext, useRef } from "react";
 import { Link, useNavigate } from 'react-router';
 import { Ic } from '@/components/common/Icons.jsx'
-import { GoogleAuth } from '@/components/GoogleAuth';
+import { GoogleAuth } from './components/GoogleAuth';
 import { authStore } from '@/stores/authStore';
 import { userStore } from '@/stores/userStore';
 import { scheduledExamStore } from '@/stores/scheduledExamStore';

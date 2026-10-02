@@ -1,6 +1,6 @@
 import { useState, useEffect, memo } from 'react';
 import './Report.css';
-import { MarkdownContent } from '@/components/MarkdownContent';
+import { MarkdownContent } from '@/components/common/MarkdownContent';
 import { Nav } from './Nav';
 import { Loading } from '@/components/Loading';
 import { decrypt } from '@lib/utils/crypto';

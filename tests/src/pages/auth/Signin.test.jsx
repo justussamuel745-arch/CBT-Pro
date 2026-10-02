@@ -2,7 +2,7 @@ import { MemoryRouter, Routes, Route } from 'react-router'
 import { vi, it, expect, describe} from 'vitest'
 import UserEvent from '@testing-library/user-event'
 import { render, screen, waitFor } from '@testing-library/react'
-import { Signin } from '@pages/auth/Signin';
+import { Signin } from '@/features/auth/Signin';
 
 vi.mock('@react-oauth/google', async () => {
   const actual = await vi.importActual('@react-oauth/google')
@@ -13,7 +13,7 @@ vi.mock('@react-oauth/google', async () => {
   }
 })
 
-vi.mock('@/components/GoogleAuth', () => ({
+vi.mock('@/features/auth/components/GoogleAuth', () => ({
   GoogleAuth: () => <button>Sign in with google</button>
 }))
 
@@ -47,7 +47,7 @@ vi.mock('@/stores/scheduledExamStore', () => ({
 
 
 import { GoogleOAuthProvider } from "@react-oauth/google";
-import { GoogleAuth } from '@/components/GoogleAuth';
+import { GoogleAuth } from '@/features/auth/components/GoogleAuth';
 import { authStore } from '@/stores/authStore';
 import { userStore } from '@/stores/userStore';
 import { scheduledExamStore } from '@/stores/scheduledExamStore';

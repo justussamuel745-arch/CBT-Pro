@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { Toaster } from 'react-hot-toast';
-import { OfflineNotifier } from './components/OfflineNotifier';
+import { useOfflineNotifier } from './hooks/useOfflineNotifier';
 import { Loading } from './components/Loading';
 import { submitLocalHistory } from '@lib/api/submitHistory';
 import { deleteUser } from '@lib/db/users';
@@ -17,6 +17,8 @@ function App() {
   // listen for when upcomings exams changes and update the changes in indexedDB
   useExamDataSync()
   useAutoThemeColor()
+  // listener for exam reminder and trigger notifications
+  useOfflineNotifier()
   
   const isLoading = authStore((state) => state.isLoading);
   const setIsLoading = authStore((state) => state.setIsLoading);
@@ -63,7 +65,6 @@ function App() {
       <AppRouter />
       <Toaster position="top-center" reverseOrder={false} />
       <PWAUpdateToast />
-      <OfflineNotifier />
     </>
   );
 }

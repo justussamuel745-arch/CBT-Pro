@@ -1,5 +1,5 @@
 import { useState, memo, useEffect } from 'react';
-import { MarkdownContent } from './MarkdownContent';
+import { MarkdownContent } from '@/components/common/MarkdownContent';
 import { AIStore } from '@/stores/AIStore';
 
 export const AnswerCard = memo(function AnswerCard({ explanation, correctAnswers, ques, setChatWithAI }){

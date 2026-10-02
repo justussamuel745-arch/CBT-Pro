@@ -24,14 +24,14 @@ vi.mock('react-router', () => ({
   Navigate: () => <div data-testid="redirect" />,
 }));
 
-vi.mock('@/components/MarkdownContent', () => ({
+vi.mock('@/components/common/MarkdownContent', () => ({
   MarkdownContent: ({ children }) => <div>{children}</div>,
 }));
 
-vi.mock('@/components/Calculator.jsx', () => ({ Calculator: () => null }));
-vi.mock('@/components/AstraAIModal', () => ({ AstraAIModal: () => null }));
+vi.mock('@/features/simulator/components/Calculator.jsx', () => ({ Calculator: () => null }));
+vi.mock('@/features/simulator/components/AstraAIModal', () => ({ AstraAIModal: () => null }));
 vi.mock('@/components/common/Image', () => ({ Image: () => null }));
-vi.mock('@/components/ReportQuestionModal', () => ({
+vi.mock('@/features/simulator/components/ReportQuestionModal', () => ({
   ReportQuestionModal: () => null,
 }));
 vi.mock('@/components/Loading', () => ({ Loading: () => <div>Loading…</div> }));
@@ -48,7 +48,7 @@ vi.mock('@/components/NotificationSystem', () => ({
   CSS: [''],
 }));
 
-vi.mock('@/components/AnswerCard', () => ({
+vi.mock('@/features/simulator/components/AnswerCard', () => ({
   AnswerCard: ({ correctAnswers }) => (
     <div data-testid="answer-card">Correct: {correctAnswers}</div>
   ),

@@ -3,7 +3,7 @@ import { MemoryRouter, Routes, Route } from 'react-router';
 import UserEvent from '@testing-library/user-event';
 import { render, screen, act, waitFor } from '@testing-library/react';
 
-import { GoogleAuth } from '@/components/GoogleAuth';
+import { GoogleAuth } from '@/features/auth/components/GoogleAuth';
 
 const {
   mockGoogleLogin,
@@ -40,7 +40,7 @@ vi.mock('@/stores/scheduledExamStore', () => ({
   }))
 }))
 
-vi.mock('@pages/auth/Signin', () => ({
+vi.mock('@/features/auth/Signin', () => ({
   useToast: vi.fn(() => ({
     push: mockToastPush
   }))
@@ -52,7 +52,7 @@ vi.mock('@react-oauth/google', () => ({
 
 
 import { GoogleLogin } from "@react-oauth/google";
-import { useToast } from '@pages/auth/Signin';
+import { useToast } from '@/features/auth/Signin';
 import { authStore } from '@/stores/authStore';
 import { userStore } from '@/stores/userStore';
 import { scheduledExamStore } from '@/stores/scheduledExamStore';

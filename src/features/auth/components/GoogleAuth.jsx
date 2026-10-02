@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect, memo } from 'react';
 import { useNavigate } from 'react-router';
 import { GoogleLogin } from "@react-oauth/google";
-import { useToast } from '@/features/auth/Signin';
+import { useToast } from '../Signin';
 import { authStore } from '@/stores/authStore';
 import { userStore } from '@/stores/userStore';
 import { scheduledExamStore } from '@/stores/scheduledExamStore';

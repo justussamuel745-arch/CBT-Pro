@@ -3,7 +3,7 @@ import { it, expect, describe, vi } from 'vitest';
 import UserEvent from '@testing-library/user-event';
 import { screen, render, waitFor, act } from '@testing-library/react';
 
-import { CountdownTimer } from '@/components/CountdownTimer';
+import { CountdownTimer } from '@/features/simulator/components/CountdownTimer';
 
 
 const {

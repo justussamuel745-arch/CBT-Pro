@@ -2,7 +2,7 @@ import { MemoryRouter, Routes, Route } from 'react-router'
 import { vi, it, expect, describe} from 'vitest'
 import UserEvent from '@testing-library/user-event'
 import { render, screen, waitFor } from '@testing-library/react'
-import { ResetPassword } from '@pages/auth/ResetPassword';
+import { ResetPassword } from '@/features/auth/ResetPassword';
 
 
 const resetPasswordMock = vi.fn().mockResolvedValue()
