@@ -1,0 +1,166 @@
+ /* =====================================
+   DASHBOARD INSTALL BUTTON + GUIDE
+   Prefix: dash-install-
+   Panel anchors to the sticky .dash-header
+   ======================================*/
+
+/* Wrapper adds no layout box, so the button stays a normal header flex item */
+.dash-install {
+  display: contents;
+}
+
+.dash-install-btn {
+  color: #4f46e5;
+}
+
+.dash-install-btn:hover,
+.dash-install-btn-open {
+  border-color: #c7d2fe;
+  background: #eef2ff;
+}
+
+/* ---------- GUIDE PANEL ---------- */
+.dash-install-panel {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  right: 1.5rem;
+  width: min(320px, calc(100vw - 2rem));
+  padding: 1rem 1.1rem 1.1rem;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 18px 40px -12px rgba(15, 23, 42, 0.25);
+  z-index: 60;
+  animation: dash-install-in 0.18s ease;
+}
+
+.dash-install-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.85rem;
+}
+
+.dash-install-title {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.dash-install-close {
+  flex: 0 0 auto;
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 8px;
+  background: none;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dash-install-close:hover {
+  background: var(--card);
+}
+
+/* ---------- STEPS ---------- */
+.dash-install-steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.dash-install-step {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.6rem 0.7rem;
+  border-radius: 12px;
+  background: #eef2ff;
+  font-size: 0.82rem;
+  line-height: 1.4;
+  color: var(--text);
+}
+
+.dash-install-num {
+  flex: 0 0 auto;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--gradient);
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dash-install-icon {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  color: #4f46e5;
+}
+
+.dash-install-text {
+  min-width: 0;
+}
+
+/* ---------- NOTE (redirect / unsupported) ---------- */
+.dash-install-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  margin: 0;
+  padding: 0.7rem;
+  border-radius: 12px;
+  background: #eef2ff;
+  font-size: 0.82rem;
+  line-height: 1.5;
+  color: var(--text);
+}
+
+.dash-install-note i {
+  flex: 0 0 auto;
+  margin-top: 0.15rem;
+  color: #4f46e5;
+}
+
+/* ---------- MOTION / RESPONSIVE ---------- */
+@keyframes dash-install-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 640px) {
+  .dash-install-panel {
+    right: 1rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dash-install-panel {
+    animation: none;
+  }
+}
+
+.dash-install-btn:disabled {
+  opacity: 0.6;
+  cursor: progress;
+  transform: none;
+  box-shadow: none;
+}

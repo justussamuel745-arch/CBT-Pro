@@ -11,6 +11,7 @@ export default function usePWAInstall() {
   const [deferredPrompt, setDeferredPrompt] = useState(null);
   const [canInstall, setCanInstall] = useState(false);
   const [isInstalled, setIsInstalled] = useState(isStandalone());
+  const [installing, setInstalling] = useState(false)
 
   useEffect(() => {
     setIsInstalled(isStandalone());
@@ -51,6 +52,7 @@ export default function usePWAInstall() {
   }, []);
 
   const install = async () => {
+    setInstalling(true)
     if (!deferredPrompt) return false;
 
     deferredPrompt.prompt();
@@ -59,7 +61,7 @@ export default function usePWAInstall() {
 
     setDeferredPrompt(null);
     setCanInstall(false);
-
+    setInstalling(false)
     return outcome === "accepted";
   };
 
@@ -67,5 +69,6 @@ export default function usePWAInstall() {
     canInstall,
     isInstalled,
     install,
+    installing
   };
 }

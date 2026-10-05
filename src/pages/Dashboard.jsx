@@ -2,6 +2,7 @@ import { useState, memo } from "react";
 import { Link } from 'react-router';
 import { Menu } from '@/components/layouts/Menu';
 import { InstallAppBanner } from '@/components/layouts/InstallAppBanner';
+import DashInstall from '@/components/layouts/DashInstall';
 import usePushNotifications from '@/hooks/usePushNotifications';
 import { useNotifications } from '@/context/NotificationContext';
 import { authStore } from '@/stores/authStore.js';
@@ -118,7 +119,9 @@ export default function Dashboard() {
         </div>
 
         <div className="dash-header-right">
-          <Link to="/notifications" className="dash-icon-btn" aria-label="Notifications" aria-expanded="false">
+          <DashInstall />
+
+          <Link to="/notifications" className="dash-icon-btn" aria-label="Notifications">
             <i className="fa-regular fa-bell"></i>
             {
               unreadCount ? <span className="dash-badge">{ unreadCount }</span> : ''

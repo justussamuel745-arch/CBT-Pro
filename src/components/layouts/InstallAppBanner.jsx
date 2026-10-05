@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNotifications } from '@/context/NotificationContext';
+import { detectEnvironment } from '@lib/utils/pwaInstall';
+import { getInstallGuidance } from '../common/PwaInstall';
 import './InstallAppBanner.css';
 
 // ─────────────────────────────────────────────────────────────
@@ -21,143 +23,6 @@ const Ic = {
   Bookmark: () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 21 12 16 5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" /></svg>,
 };
 
-// ─────────────────────────────────────────────────────────────
-// PLATFORM / BROWSER DETECTION
-// ─────────────────────────────────────────────────────────────
-function detectEnvironment() {
-  const ua = navigator.userAgent;
-
-  const isIOS = /iPad|iPhone|iPod/.test(ua) && !window.MSStream;
-  const isAndroid = /Android/i.test(ua);
-  const isDesktop = !isIOS && !isAndroid;
-
-  let browser = "other";
-  if (/EdgiOS/i.test(ua)) browser = "edge-ios";
-  else if (/CriOS/i.test(ua)) browser = "chrome-ios";
-  else if (/FxiOS/i.test(ua)) browser = "firefox-ios";
-  else if (/SamsungBrowser/i.test(ua)) browser = "samsung";
-  else if (/OPR\//i.test(ua) || /Opera/i.test(ua)) browser = "opera";
-  else if (/Edg\//i.test(ua)) browser = "edge";
-  else if (/Firefox\//i.test(ua)) browser = "firefox";
-  else if (/Chrome\//i.test(ua)) browser = "chrome";
-  else if (/Safari\//i.test(ua)) browser = "safari";
-
-  return { isIOS, isAndroid, isDesktop, browser };
-}
-
-// ─────────────────────────────────────────────────────────────
-// Builds the right guidance for the device Claude — sorry,
-// the device the user is actually on. One source of truth so
-// both the banner and the card show identical, correct steps.
-//
-// mode:
-//   "auto"      → native install prompt is available, no guide needed
-//   "guide"     → show numbered manual steps
-//   "redirect"  → can't install in this browser at all, tell them
-//                 which browser to switch to
-//   "unsupported" → this platform/browser has no install path
-// ─────────────────────────────────────────────────────────────
-function getInstallGuidance({ isIOS, isAndroid, isDesktop, browser }, canInstall) {
-  if (canInstall) {
-    return { mode: "auto" };
-  }
-
-  // ---- iOS ----
-  if (isIOS) {
-    if (browser === "safari") {
-      return {
-        mode: "guide",
-        label: "Installation Guide",
-        steps: [
-          { icon: <Ic.Share />, text: <>Tap the <strong>Share</strong> button in the toolbar.</> },
-          { icon: <Ic.Plus />, text: <>Scroll down and tap <strong>Add to Home Screen</strong>.</> },
-          { icon: <Ic.Check />, text: <>Tap <strong>Add</strong> in the top-right corner.</> },
-        ],
-      };
-    }
-    // Chrome/Firefox/Edge on iOS all run on WebKit and cannot install PWAs —
-    // only Safari can add to the Home Screen.
-    return {
-      mode: "redirect",
-      label: "Open in Safari",
-      message: "Installing isn't supported in this browser on iPhone/iPad. Open CBT Pro in Safari, then tap Share > Add to Home Screen.",
-    };
-  }
-
-  // ---- Android ----
-  if (isAndroid) {
-    if (browser === "samsung") {
-      return {
-        mode: "guide",
-        label: "Installation Guide",
-        steps: [
-          { icon: <Ic.Menu />, text: <>Tap the <strong>Menu</strong> icon at the bottom of Samsung Internet.</> },
-          { icon: <Ic.Plus />, text: <>Tap <strong>Add page to</strong>.</> },
-          { icon: <Ic.Smartphone />, text: <>Choose <strong>Home screen</strong>.</> },
-        ],
-      };
-    }
-    if (browser === "firefox") {
-      return {
-        mode: "guide",
-        label: "Installation Guide",
-        steps: [
-          { icon: <Ic.MoreVert />, text: <>Tap the <strong>⋮</strong> menu in Firefox.</> },
-          { icon: <Ic.Plus />, text: <>Tap <strong>Install</strong> (or <strong>Add to Home screen</strong>).</> },
-        ],
-      };
-    }
-    if (browser === "opera") {
-      return {
-        mode: "guide",
-        label: "Installation Guide",
-        steps: [
-          { icon: <Ic.MoreVert />, text: <>Tap the <strong>Opera</strong> menu.</> },
-          { icon: <Ic.Plus />, text: <>Tap <strong>Home screen</strong> to add CBT Pro.</> },
-        ],
-      };
-    }
-    // Chrome / Edge on Android normally fire the native prompt (canInstall
-    // would be true above). If it hasn't fired yet, engagement heuristics
-    // just haven't been met — give the manual fallback.
-    return {
-      mode: "guide",
-      label: "Installation Guide",
-      steps: [
-        { icon: <Ic.MoreVert />, text: <>Tap the <strong>⋮</strong> menu in the top-right.</> },
-        { icon: <Ic.Plus />, text: <>Tap <strong>Install app</strong>.</> },
-        { icon: <Ic.Check />, text: <>Confirm by tapping <strong>Install</strong>.</> },
-      ],
-    };
-  }
-
-  // ---- Desktop ----
-  if (isDesktop) {
-    if (browser === "chrome" || browser === "edge" || browser === "opera") {
-      return {
-        mode: "guide",
-        label: "Installation Guide",
-        steps: [
-          { icon: <Ic.Compass />, text: <>Look for the <strong>install icon</strong> in the address bar.</> },
-          { icon: <Ic.Check />, text: <>Click it, then confirm <strong>Install</strong>.</> },
-        ],
-      };
-    }
-    // Safari desktop and Firefox desktop have no install API at all.
-    return {
-      mode: "unsupported",
-      label: "Not Supported Here",
-      message: "This browser doesn't support installing web apps. Bookmark this page for quick access, or open CBT Pro in Chrome or Edge to install it.",
-    };
-  }
-
-  return {
-    mode: "unsupported",
-    label: "Not Supported Here",
-    message: "Installing isn't supported in this browser. Try opening CBT Pro in Chrome or Edge.",
-  };
-}
-
 const DISMISS_DURATION = 24 * 60 * 60 * 1000; // 1 day
 
 // ─────────────────────────────────────────────────────────────
@@ -169,7 +34,7 @@ export function InstallAppBanner() {
   const [dismissed, setDismissed] = useState(false);
   const [showGuide, setShowGuide] = useState(false);
 
-  const { canInstall, isInstalled, install } = pwa;
+  const { canInstall, isInstalled, install, installing } = pwa;
   const env = detectEnvironment();
   const guidance = getInstallGuidance(env, canInstall);
 
@@ -223,8 +88,7 @@ export function InstallAppBanner() {
 
   if (dismissed || isInstalled) return null;
 
-  const buttonLabel =
-    guidance.mode === "auto" ? "Install" : guidance.label;
+  const buttonLabel = installing ? "Installing…" : guidance.mode === "auto" ? "Install" : guidance.label;
 
   return (
     <div className={`pwa-install-banner${visible ? ' pwa-visible' : ''}`}>
@@ -238,7 +102,7 @@ export function InstallAppBanner() {
           <div className="pwa-install-sub">Install CBT Pro for one-tap access, offline practice, faster loading, and a distraction-free exam experience.</div>
         </div>
         <div className="pwa-install-actions">
-          <button className="pwa-install-btn" onClick={handleInstall}>
+          <button className="pwa-install-btn" style={{ opacity: installing ? '0.5' : '1'}} disabled={installing} onClick={handleInstall}>
             <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}>
               <Ic.Download />
               {buttonLabel}
@@ -288,7 +152,7 @@ export function InstallAppBanner() {
 // ─────────────────────────────────────────────────────────────
 export function InstallAppCard() {
   const { pwa } = useNotifications()
-  const { canInstall, isInstalled, install } = pwa;
+  const { canInstall, isInstalled, install, installing } = pwa;
   const [showGuide, setShowGuide] = useState(false);
 
   const env = detectEnvironment();
@@ -329,7 +193,8 @@ export function InstallAppCard() {
         <button
           className="pwa-install-btn"
           onClick={handleInstall}
-          style={{ padding: "0.65rem 1.25rem", fontSize: "0.85rem" }}
+          style={{ padding: "0.65rem 1.25rem", fontSize: "0.85rem", opacity: installing ? '0.5' : '1' }}
+          disabled={installing}
         >
           <span style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem" }}>
             <Ic.Download />

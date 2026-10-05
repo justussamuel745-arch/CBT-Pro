@@ -1,0 +1,129 @@
+const Ic = {
+  Download: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" /></svg>,
+  X: () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.3" strokeLinecap="round"><path d="M18 6 6 18M6 6l12 12" /></svg>,
+  Share: () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" /><polyline points="16 6 12 2 8 6" /><line x1="12" y1="2" x2="12" y2="15" /></svg>,
+  Plus: () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.3" strokeLinecap="round"><rect x="3" y="3" width="18" height="18" rx="4" /><line x1="12" y1="8" x2="12" y2="16" /><line x1="8" y1="12" x2="16" y2="12" /></svg>,
+  Check: () => <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round"><polyline points="20 6 9 17 4 12" /></svg>,
+  Wifi: () => <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M5 12.55a11 11 0 0 1 14.08 0" /><path d="M1.42 9a16 16 0 0 1 21.16 0" /><path d="M8.53 16.11a6 6 0 0 1 6.95 0" /><line x1="12" y1="20" x2="12.01" y2="20" /></svg>,
+  Bolt: () => <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" /></svg>,
+  Bell: () => <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" /><path d="M13.73 21a2 2 0 0 1-3.46 0" /></svg>,
+  Smartphone: () => <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" /><line x1="12" y1="18" x2="12.01" y2="18" /></svg>,
+  Menu: () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.3" strokeLinecap="round"><line x1="4" y1="6" x2="20" y2="6" /><line x1="4" y1="12" x2="20" y2="12" /><line x1="4" y1="18" x2="20" y2="18" /></svg>,
+  MoreVert: () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.3" strokeLinecap="round"><circle cx="12" cy="5" r="1.2" fill="currentColor" /><circle cx="12" cy="12" r="1.2" fill="currentColor" /><circle cx="12" cy="19" r="1.2" fill="currentColor" /></svg>,
+  Compass: () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" /></svg>,
+  Bookmark: () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 21 12 16 5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" /></svg>,
+};
+
+
+// ─────────────────────────────────────────────────────────────
+// Builds the right guidance for the device Claude — sorry,
+// the device the user is actually on. One source of truth so
+// both the banner and the card show identical, correct steps.
+//
+// mode:
+//   "auto"      → native install prompt is available, no guide needed
+//   "guide"     → show numbered manual steps
+//   "redirect"  → can't install in this browser at all, tell them
+//                 which browser to switch to
+//   "unsupported" → this platform/browser has no install path
+// ─────────────────────────────────────────────────────────────
+export function getInstallGuidance({ isIOS, isAndroid, isDesktop, browser }, canInstall) {
+  if (canInstall) {
+    return { mode: "auto" };
+  }
+
+  // ---- iOS ----
+  if (isIOS) {
+    if (browser === "safari") {
+      return {
+        mode: "guide",
+        label: "Installation Guide",
+        steps: [
+          { icon: <Ic.Share />, text: <>Tap the <strong>Share</strong> button in the toolbar.</> },
+          { icon: <Ic.Plus />, text: <>Scroll down and tap <strong>Add to Home Screen</strong>.</> },
+          { icon: <Ic.Check />, text: <>Tap <strong>Add</strong> in the top-right corner.</> },
+        ],
+      };
+    }
+    // Chrome/Firefox/Edge on iOS all run on WebKit and cannot install PWAs —
+    // only Safari can add to the Home Screen.
+    return {
+      mode: "redirect",
+      label: "Open in Safari",
+      message: "Installing isn't supported in this browser on iPhone/iPad. Open CBT Pro in Safari, then tap Share > Add to Home Screen.",
+    };
+  }
+
+  // ---- Android ----
+  if (isAndroid) {
+    if (browser === "samsung") {
+      return {
+        mode: "guide",
+        label: "Installation Guide",
+        steps: [
+          { icon: <Ic.Menu />, text: <>Tap the <strong>Menu</strong> icon at the bottom of Samsung Internet.</> },
+          { icon: <Ic.Plus />, text: <>Tap <strong>Add page to</strong>.</> },
+          { icon: <Ic.Smartphone />, text: <>Choose <strong>Home screen</strong>.</> },
+        ],
+      };
+    }
+    if (browser === "firefox") {
+      return {
+        mode: "guide",
+        label: "Installation Guide",
+        steps: [
+          { icon: <Ic.MoreVert />, text: <>Tap the <strong>⋮</strong> menu in Firefox.</> },
+          { icon: <Ic.Plus />, text: <>Tap <strong>Install</strong> (or <strong>Add to Home screen</strong>).</> },
+        ],
+      };
+    }
+    if (browser === "opera") {
+      return {
+        mode: "guide",
+        label: "Installation Guide",
+        steps: [
+          { icon: <Ic.MoreVert />, text: <>Tap the <strong>Opera</strong> menu.</> },
+          { icon: <Ic.Plus />, text: <>Tap <strong>Home screen</strong> to add CBT Pro.</> },
+        ],
+      };
+    }
+    // Chrome / Edge on Android normally fire the native prompt (canInstall
+    // would be true above). If it hasn't fired yet, engagement heuristics
+    // just haven't been met — give the manual fallback.
+    return {
+      mode: "guide",
+      label: "Installation Guide",
+      steps: [
+        { icon: <Ic.MoreVert />, text: <>Tap the <strong>⋮</strong> menu in the top-right.</> },
+        { icon: <Ic.Plus />, text: <>Tap <strong>Install app</strong>.</> },
+        { icon: <Ic.Check />, text: <>Confirm by tapping <strong>Install</strong>.</> },
+      ],
+    };
+  }
+
+  // ---- Desktop ----
+  if (isDesktop) {
+    if (browser === "chrome" || browser === "edge" || browser === "opera") {
+      return {
+        mode: "guide",
+        label: "Installation Guide",
+        steps: [
+          { icon: <Ic.Compass />, text: <>Look for the <strong>install icon</strong> in the address bar.</> },
+          { icon: <Ic.Check />, text: <>Click it, then confirm <strong>Install</strong>.</> },
+        ],
+      };
+    }
+    // Safari desktop and Firefox desktop have no install API at all.
+    return {
+      mode: "unsupported",
+      label: "Not Supported Here",
+      message: "This browser doesn't support installing web apps. Bookmark this page for quick access, or open CBT Pro in Chrome or Edge to install it.",
+    };
+  }
+
+  return {
+    mode: "unsupported",
+    label: "Not Supported Here",
+    message: "Installing isn't supported in this browser. Try opening CBT Pro in Chrome or Edge.",
+  };
+}
