@@ -83,12 +83,16 @@ export default defineConfig({
     },
   },
 
-  build: { 
-    minify: 'esbuild', 
-    esbuild: { 
-      drop: ['console', 'debugger'],
-      legalComments: 'none'
-    } 
+  build: {
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        drop_console: true
+      },
+      format: {
+        comments: false
+      }
+    }
   },
 
   test: {
