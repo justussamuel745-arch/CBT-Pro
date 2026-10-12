@@ -71,7 +71,7 @@ export const SUBJECTS_DATA = [
     id: "MTH001",
     icon: `<img src="${mathematicsImg}" style="width: 100%; border-radius: 16px" />`,
     name: "Mathematics",
-    totalQuestions: 1975,
+    totalQuestions: 2077,
     topics: [
       "Number Bases - Operations in different number bases (2 to 10)",
       "Number Bases - Conversion from one base to another (including fractions)",
@@ -159,7 +159,7 @@ export const SUBJECTS_DATA = [
       search: true,
       note: false,
     },
-    years: Array.from({ length: 2026 - 1983 + 1 }, (_, i) => String(1983 + i))
+    years: Array.from({ length: 2026 - 1983 + 1 }, (_, i) => 1983 + i != 1996 ? String(1983 + i) : null).filter(Boolean)
   },
 
   {
@@ -200,7 +200,7 @@ export const SUBJECTS_DATA = [
     id: "PHY001",
     icon: `<img src="${physicsImg}" style="width: 100%; border-radius: 16px" />`,
     name: "Physics",
-    totalQuestions: 1319,
+    totalQuestions: 1359,
     topics: [
       "Measurements and Units",
       "Scalars and Vectors",
@@ -245,7 +245,7 @@ export const SUBJECTS_DATA = [
       search: true,
       note: false,
     },
-    years: Array.from({ length: 2026 - 1983 + 1 }, (_, i) => String(1983 + i))
+    years: Array.from({ length: 2026 - 1983 + 1 }, (_, i) => 1983 + i > 2000 ? String(1983 + i) : null).filter(Boolean)
   },
 
   {
@@ -368,7 +368,7 @@ export const SUBJECTS_DATA = [
     id: "GOV001",
     icon: `<img src="${governmentImg}" style="width: 100%; border-radius: 16px" />`,
     name: "Government",
-    totalQuestions: 1316,
+    totalQuestions: 1406,
     topics: [
       "Basic Concepts in Government - Power, Authority, Legitimacy, Sovereignty",
       "Basic Concepts in Government - Society, State, Nation, Nation-State",
@@ -1072,7 +1072,7 @@ export const SUBJECTS_DATA = [
     id: "ACC001",
     icon: `<img src="${accountingImg}" style="width: 100%; border-radius: 16px" />`,
     name: "Accounting",
-    totalQuestions: 1682,
+    totalQuestions: 1722,
     topics: [
       "Nature and Significance of Book keeping and Accounting - Development of Accounting (including branches of Accounting)",
       "Nature and Significance of Book keeping and Accounting - Objectives of Book Keeping and Accounting",
