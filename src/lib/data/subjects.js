@@ -1270,7 +1270,7 @@ export const SUBJECTS_DATA = [
     id: 'LEKKI001',
     icon: `<img src="${lekkiHeadmasterImg}" style="width: 100%; border-radius: 16px" />`,
     name: 'Lekki',
-    totalQuestions: 0,
+    totalQuestions: 50,
     topics: [
       "Chapter 1: Dusk",
       "Chapter 2: The Enticement",

@@ -93,7 +93,7 @@ function GoogleButtonLoading( ) {
 }
 
 
-export const GoogleAuth = memo(function GoogleAuth({ dividerLabel, action }) {
+export const GoogleAuth = memo(function GoogleAuth({ dividerLabel, action, busy, setBusy }) {
   const googleAuth = authStore(state => state.googleAuth)
   const { fetchUserInfo, fetchUserHistory } = userStore(state => state)
   const getDashboardInfo = scheduledExamStore(state => state.getDashboardInfo)
@@ -110,13 +110,22 @@ export const GoogleAuth = memo(function GoogleAuth({ dividerLabel, action }) {
     }
   }, []);
 
+  const isSigningIn = busy === 'local'
+
   return (
     <>
       <div className="auth-divider">
         <span>{dividerLabel}</span>
       </div>
 
-      <div className="auth-google-wrap" ref={googleWrapRef}>
+      <div 
+        className="auth-google-wrap" 
+        ref={googleWrapRef}
+        style={{
+          opacity: isSigningIn ? '0.5' : '1',
+          pointerEvents: isSigningIn ? 'None' : 'auto'
+        }}
+      >
         { isLoading 
             ? <GoogleButtonLoading />
             : <GoogleLogin
@@ -128,6 +137,7 @@ export const GoogleAuth = memo(function GoogleAuth({ dividerLabel, action }) {
                 onSuccess={async (credentialResponse) => {
                   try {
                     setIsLoading(true)
+                    setBusy('google')
                     await googleAuth(credentialResponse)
                     await Promise.all([
                       fetchUserInfo(),

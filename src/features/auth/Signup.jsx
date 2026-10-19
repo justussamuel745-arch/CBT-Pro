@@ -159,6 +159,7 @@ function Register() {
   const [loading, setLoading] = useState(false);
   const [formAlert, setFormAlert] = useState(null);
   const [modal, setModal] = useState(null);
+  const [busy, setBusy] = useState(null)
 
   const set = (k, v) => {
     setFields(p => ({...p, [k]: v }));
@@ -178,6 +179,7 @@ function Register() {
     }
     setLoading(true);
     setFormAlert(null);
+    setBusy('local')
     try {
       await signup(fields)
       applySignUpScenario('success');
@@ -205,6 +207,8 @@ function Register() {
         applySignUpScenario(err.error);
       }
       setLoading(false)
+    } finally {
+      setBusy(null)
     }
   };
 
@@ -343,13 +347,13 @@ function Register() {
                 type="submit"
                 className="register-submit"
                 onClick={handleSubmit}
-                disabled={loading}
+                disabled={loading || busy === 'google'}
               >
                 {loading? <><span className="register-spinner" /> Creating account…</> : "Create account"}
               </button>
             </form>
             
-            <GoogleAuth dividerLabel={"or sign up with"} action={"signup_with"} />
+            <GoogleAuth dividerLabel={"or sign up with"} action={"signup_with"} busy={busy} setBusy={setBusy} />
 
             <div className="register-footer">
               Already have an account? <Link to="/auth">Sign In</Link>

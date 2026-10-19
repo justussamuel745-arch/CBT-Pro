@@ -170,6 +170,7 @@ function SigninInner() {
   const [formAlert, setFormAlert] = useState(null);
   const [loading, setLoading] = useState(false);
   const [modal, setModal] = useState(null);
+  const [busy, setBusy] = useState(null)
 
   function clearFieldError(field) {
     if (errors[field]) {
@@ -184,8 +185,9 @@ function SigninInner() {
       setErrors(errs);
       return;
     }
-
+    
     // 2. Loading state
+    setBusy('local')
     setLoading(true);
     setFormAlert(null);
     setErrors({});
@@ -269,6 +271,7 @@ function SigninInner() {
       }
     } finally {
       setLoading(false)
+      setBusy(false)
     }
   }
 
@@ -362,7 +365,7 @@ function SigninInner() {
               {/* Submit — onClick, NOT a form submit */}
               <button
                 className="auth-submit"
-                disabled={loading}
+                disabled={loading || busy === 'google'}
                 onClick={handleSignIn}
               >
                 {loading
@@ -373,7 +376,7 @@ function SigninInner() {
 
             </div>{/* end.auth-form */}
             
-            <GoogleAuth dividerLabel={"or continue with"} action={"continue_with"}/>
+            <GoogleAuth dividerLabel={"or continue with"} action={"continue_with"} busy={busy} setBusy={setBusy}/>
 
             <div className="auth-footer">
               Don&apos;t have an account? <Link to="/auth/signup">Sign up free</Link>
