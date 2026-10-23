@@ -25,9 +25,6 @@ import ExamSimulator from '@/features/simulator/ExamSimulator';
 import StudySimulator from '@/features/simulator/StudySimulator';
 
 const Delete = lazy(() => import('@/features/settings/Delete.jsx'));
-const Admin = lazy(() => import('@/features/admin/Admin.jsx'));
-
-
 import { authStore } from '@/stores/authStore';
 
 function AppRouter() {
@@ -60,14 +57,6 @@ function AppRouter() {
           element={
             <Suspense fallback={<Loading />}>
               <Delete />
-            </Suspense>
-          }
-        />
-        <Route
-          path="/admin/*"
-          element={
-            <Suspense fallback={<Loading />}>
-              <Admin />
             </Suspense>
           }
         />

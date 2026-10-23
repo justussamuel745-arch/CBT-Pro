@@ -59,7 +59,7 @@ export function ReportQuestionModal({ questionId, subject, questionNo, onClose }
   }
   
   const onSubmit = useCallback(async (payload) => {
-    await request.auth('/api/reports', {
+    await request.auth('/api/report', {
       method: 'POST',
       body: JSON.stringify(payload)
     })

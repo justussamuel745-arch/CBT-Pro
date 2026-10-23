@@ -6,16 +6,8 @@ import './Menu.css';
 
 export const Menu = memo(function Menu({ menuOpen, setMenuOpen }) {
   const isActivated = authStore(store => store.isActivated)
-  const isAdmin = authStore(store => store.isAdmin)
+  
   let MENU_SECTIONS = [
-    {
-      title: "Admin Control",
-      links: [
-        {
-          icon: "fa-user-shield", label: 'Management', to: '/admin/'
-        }
-      ]
-    },
     {
       title: "Practice",
       links: [
@@ -52,9 +44,7 @@ export const Menu = memo(function Menu({ menuOpen, setMenuOpen }) {
       ],
     },
   ];
-  if (!isAdmin) {
-    MENU_SECTIONS = MENU_SECTIONS.filter(m => m.title !== 'Admin Control')
-  }
+
   return (
     <>
       {/* Slide-out menu */}

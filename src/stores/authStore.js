@@ -12,7 +12,6 @@ export const authStore = create(set => ({
   ==========*/
   token: null,
   isActivated: false,
-  isAdmin: false,
   isLoading: true,
 
   setIsLoading: (isLoading) => set({
@@ -30,8 +29,7 @@ export const authStore = create(set => ({
     }
     set({
       token: data.accessToken,
-      isActivated: data.isActivated,
-      isAdmin: data.isAdmin,
+      isActivated: data.isActivated
     })
   },
 
@@ -55,8 +53,7 @@ export const authStore = create(set => ({
     }
     set({
       token: data.accessToken,
-      isActivated: data.isActivated,
-      isAdmin: data.isAdmin
+      isActivated: data.isActivated
     })
   },
 
@@ -70,8 +67,7 @@ export const authStore = create(set => ({
     const data = decrypt(res.body.data)
     set({
       token: data.accessToken,
-      isActivated: data.isActivated,
-      isAdmin: data.isAdmim
+      isActivated: data.isActivated
     })
   },
 
@@ -102,7 +98,6 @@ export const authStore = create(set => ({
 
     set({
       token: null,
-      isAdmin: false,
       isActivated: false
     })
   },
