@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { request } from '@lib/api/request.js';
 import { decrypt } from '@lib/utils/crypto.js';
 import { deleteAllQuestions } from '@lib/db/questions.js';
-import { deleteUser } from '@lib/db/users';
+import { getUser, deleteUser } from '@lib/db/users';
 import { userStore } from './userStore.js';
 import pushNotificationService from '@/services/pushNotificationService';
 
@@ -14,23 +14,33 @@ export const authStore = create(set => ({
   isActivated: false,
   isLoading: true,
 
-  setIsLoading: (isLoading) => set({
-    isLoading
-  }),
-
   refresh: async () => {
-    const res = await request.send('/api/refresh', {
-      method: 'GET',
-      credentials: 'include'
-    })
-    const data = decrypt(res.body.data)
-    if (data?.activationExpired) {
-      await deleteAllQuestions()
+    try {
+      // check if there's any session in indexedDB first
+      const existingSession = await getUser()
+      if (!existingSession){
+        throw new Error('No existing session. Sign in required.')
+      }
+      const res = await request.send('/api/refresh', {
+        method: 'GET',
+        credentials: 'include'
+      })
+      const data = decrypt(res.body.data)
+      if (data?.activationExpired) {
+        await deleteAllQuestions()
+      }
+      set({
+        token: data.accessToken,
+        isActivated: data.isActivated
+      })
+    } catch (err){
+      if (err.status){
+        await deleteUser()
+      }
+      const newError = new Error('Error refreshing session')
+      newError.status = err.status
+      throw newError
     }
-    set({
-      token: data.accessToken,
-      isActivated: data.isActivated
-    })
   },
 
   signin: async (credentials) => {

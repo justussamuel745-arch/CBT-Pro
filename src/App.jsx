@@ -3,10 +3,8 @@ import { Toaster } from 'react-hot-toast';
 import { useOfflineNotifier } from './hooks/useOfflineNotifier';
 import { Loading } from './components/Loading';
 import { submitLocalHistory } from '@lib/api/submitHistory';
-import { deleteUser } from '@lib/db/users';
+import { init } from '@lib/api/init';
 import { authStore } from './stores/authStore';
-import { userStore } from './stores/userStore';
-import { scheduledExamStore } from './stores/scheduledExamStore';
 import { useExamDataSync } from './hooks/useExamDataSync';
 import { useAutoThemeColor } from './hooks/useAutoThemeColor';
 import PWAUpdateToast from './components/PWAUpdateToast';
@@ -21,37 +19,9 @@ function App() {
   useOfflineNotifier()
   
   const isLoading = authStore((state) => state.isLoading);
-  const setIsLoading = authStore((state) => state.setIsLoading);
-  const refresh = authStore((state) => state.refresh);
-  
-  const loadCachedUser = userStore((state) => state.loadCachedUser);
-  const fetchUserInfo = userStore((state) => state.fetchUserInfo);
-  const fetchUserHistory = userStore((state) => state.fetchUserHistory);
-  const getDashboardInfo = scheduledExamStore(state => state.getDashboardInfo)
-    
   
   useEffect(() => {
-    (async () => {
-      if (!navigator.onLine) {
-        await loadCachedUser();
-        return
-      }
-      try {
-        await refresh();
-        await Promise.all([
-          fetchUserInfo(),
-          fetchUserHistory(),
-        ])
-        await getDashboardInfo().catch(() => {})
-      } catch (err) {
-        console.error('Error refreshing session:', err.error || err.message);
-        if (err.status === 401){
-          deleteUser()
-        }
-      } finally {
-        setIsLoading(false);
-      }
-    })();
+    init()
     
     window.addEventListener('online', submitLocalHistory);
     return () => window.removeEventListener('online', submitLocalHistory);
