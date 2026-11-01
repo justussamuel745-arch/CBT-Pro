@@ -1,15 +1,15 @@
 import { useState, useEffect, useRef, memo, useCallback, useMemo } from 'react'
 import { useNavigate, useSearchParams, Navigate } from 'react-router';
 import { MarkdownContent } from '@/components/common/MarkdownContent';
-import { request } from '@lib/api/request';
+import { fetchStudyQuestions } from '@lib/api/questionsApi';
+import { ApiError } from '@lib/api/errors';
 import { SUBJECTS_DATA } from '@lib/data/subjects'
 import { Image } from '@/components/common/Image'
 import { formatName } from '@lib/utils/formatName.js';
-import { ModalStripe, CSS } from '@/components/NotificationSystem';
+import { ModalStripe, CSS } from '@/components/feedback/NotificationSystem';
 import { saveQuestions, loadQuestionsInBackground } from '@lib/db/questions';
 import { saveAllImages } from '@lib/db/images';
 import { addBookmark, deleteBookmark } from '@lib/db/bookmarks.js';
-import { decrypt } from '@lib/utils/crypto';
 import { studyStore } from '@/stores/studyStore';
 import { userStore } from '@/stores/userStore';
 import { examStore } from '@/stores/examStore';
@@ -18,6 +18,7 @@ import { Calculator } from './components/Calculator.jsx'
 import { AnswerCard } from './components/AnswerCard';
 import { SimulatorSkeleton } from './components/SimulatorSkeleton';
 import { AstraAIModal } from './components/AstraAIModal'
+import './simulator.css';
 import './StudySimulator.css';
 
 // Max number of questions a study session shows (same cap as before).
@@ -444,8 +445,7 @@ export default function StudySimulator() {
           const { subject, years, topics, shuffle } = studyConfig
 
           if (navigator.onLine) {
-            const res = await request.auth('/api/study', { method: 'POST', body: JSON.stringify(studyConfig) })
-            const data = decrypt(res.body)
+            const data = await fetchStudyQuestions(studyConfig)
             Promise.all([saveQuestions(data), saveAllImages(data)]).catch((err) => console.error(err))
 
             if (cancelled) return
@@ -498,7 +498,7 @@ export default function StudySimulator() {
             )
 
             if (cancelled) return
-            if (loaded.length === 0) throw { status: 404, error: 'no_questions_found_offline' }
+            if (loaded.length === 0) throw new ApiError({ status: 404, message: 'no_questions_found_offline' })
           }
         } catch (err) {
           if (cancelled || err === CANCELLED) return
@@ -512,7 +512,7 @@ export default function StudySimulator() {
           setIsStreaming(false)
           if (!err.status && !navigator.onLine) setModal('connection_lost')
           else if (err.status >= 500) setModal('server_error')
-          else setModal(err.error && !navigator.onLine ? err.error : err.error === 'no_questions_found' ? 'no_questions_found' : 'failed_to_load')
+          else setModal(err.message && !navigator.onLine ? err.message : err.message === 'no_questions_found' ? 'no_questions_found' : 'failed_to_load')
         } finally {
           if (!cancelled) setLoading(false)
         }

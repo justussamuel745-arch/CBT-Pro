@@ -5,6 +5,7 @@ import { GoogleAuth } from './components/GoogleAuth';
 import { authStore } from '@/stores/authStore';
 import { userStore } from '@/stores/userStore';
 import { scheduledExamStore } from '@/stores/scheduledExamStore';
+import { getFieldErrors } from '@lib/api/errors';
 import './Signin.css';
 
 // ─────────────────────────────────────────────────────────────
@@ -212,15 +213,12 @@ function SigninInner() {
         },
       });
     } catch (err) {
-      if (Array.isArray(err.error)){
-        const errs = {}
-        err.error.forEach(e => {
-          errs[e.field] = e.message
-        })
-        setErrors(errs)
+      const fieldErrors = getFieldErrors(err)
+      if (fieldErrors){
+        setErrors(fieldErrors)
         return
       }
-      if (err.error === 'GOOGLE_SIGNIN_REQUIRED'){
+      if (err.message === 'GOOGLE_SIGNIN_REQUIRED'){
         setModal({
           type: "error",
           icon: <Ic.X />,
@@ -233,7 +231,7 @@ function SigninInner() {
             setModal(null);
           }
         });
-      } else if (err.error === 'invalid_credential'){
+      } else if (err.message === 'invalid_credential'){
         setModal({
           type: "error",
           icon: <Ic.X />,
@@ -271,7 +269,7 @@ function SigninInner() {
       }
     } finally {
       setLoading(false)
-      setBusy(false)
+      setBusy(null)
     }
   }
 

@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { Link } from 'react-router';
 import { toast } from 'react-hot-toast';
-import { request } from '@lib/api/request';
+import { sendFeedback } from '@lib/api/supportApi';
+import { describeError } from '@lib/api/errors';
 import './Feedback.css';
 
 export default function Feedback(){
@@ -38,20 +39,16 @@ export default function Feedback(){
     }
     
     try {
-      await request.auth('/api/feedback', {
-        method: 'POST',
-        body: JSON.stringify(formData)
-      })
+      await sendFeedback(formData)
       setFormContainer('hide')
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (err) {
-      if (!err.status) {
-        toast.error("Couldn't connect to the server.");
-      } else if (err.status >= 500) {
-        toast.error("Unexpected error. Try again later");
-      } else {
-        toast.error('Failed')
-      }
+      toast.error(describeError(err, {
+        network: "Couldn't connect to the server.",
+        server: "Unexpected error. Try again later",
+        fallback: 'Failed',
+        useApiMessage: false,
+      }))
     } finally {
       setIsDisabled(false)
     }

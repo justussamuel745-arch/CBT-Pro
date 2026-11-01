@@ -4,6 +4,7 @@ import { GoogleAuth } from './components/GoogleAuth';;
 import { Ic } from '@/components/common/Icons.jsx';
 import { authStore } from '@/stores/authStore';
 import { passwordStrength } from '@lib/utils/passwordStrength';
+import { getFieldErrors } from '@lib/api/errors';
 import './Signup.css';
 
 const ToastCtx = createContext(null);
@@ -185,26 +186,22 @@ function Register() {
       applySignUpScenario('success');
       setLoading(false)
     } catch (err) {
-      if (Array.isArray(err.error)){
-        const errs = {}
-        err.error.forEach(e => {
-          errs[e.field] = e.message
-        })
-        setErrors(errs)
+      // The frontend already validates, so server side validation errors
+      // are simply shown on their fields.
+      const fieldErrors = getFieldErrors(err)
+      if (fieldErrors){
+        setErrors(fieldErrors)
         return
       }
       console.error('Error:', err);
       if (!err.status){
         applySignUpScenario('network');
-      } else if (err?.error && Array.isArray(err.error)){
-        /* frontend already handle the validation that
-        could result to this error */
       } else if (err.status === 429){
         applySignUpScenario('too_many_attempt');
       } else if (err.status >= 500) {
         applySignUpScenario('server_error');
       } else {
-        applySignUpScenario(err.error);
+        applySignUpScenario(err.message);
       }
       setLoading(false)
     } finally {

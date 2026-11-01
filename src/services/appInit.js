@@ -2,15 +2,12 @@ import { authStore } from '@/stores/authStore';
 import { userStore } from '@/stores/userStore';
 import { scheduledExamStore } from '@/stores/scheduledExamStore';
 
+/** Restores the session and loads the signed in user's data on app start. */
 export const init = async () => {
-  const isLoading = authStore.getState().isLoading;
-  const refresh = authStore.getState().refresh;
-  
-  const loadCachedUser = userStore.getState().loadCachedUser;
-  const fetchUserInfo = userStore.getState().fetchUserInfo;
-  const fetchUserHistory = userStore.getState().fetchUserHistory;
-  const getDashboardInfo = scheduledExamStore.getState().getDashboardInfo
-    
+  const { refresh } = authStore.getState();
+  const { loadCachedUser, fetchUserInfo, fetchUserHistory } = userStore.getState();
+  const { getDashboardInfo } = scheduledExamStore.getState();
+
   if (!navigator.onLine) {
     await loadCachedUser();
     return
@@ -19,7 +16,8 @@ export const init = async () => {
     try{
       await refresh()
     } catch (err){
-      if (!err.status && !err.message.includes('No existing session')){
+      // No connection / no saved session: fall back to the cached user.
+      if (!err.status){
         await loadCachedUser()
         return
       }
@@ -31,7 +29,7 @@ export const init = async () => {
     ])
     await getDashboardInfo().catch(() => {})
   } catch (err) {
-    console.error(err.error || err.message);
+    console.error(err.message);
   } finally {
     authStore.setState({
       isLoading: false

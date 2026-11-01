@@ -8,21 +8,6 @@
   --c-privacy: #334155;
 }
 
-html {
-  font-size: clamp(15px, 0.45vw + 13px, 18px);
-}
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-*::-webkit-scrollbar {
-  display: none;
-}
-
 .help-page {
   font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
   background: var(--bg);
@@ -54,15 +39,6 @@ html {
   max-width: 100%;
   height: auto;
   display: block;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .help-page *,
-  .help-page *::before,
-  .help-page *::after {
-    animation-duration: 0.01ms !important;
-    transition-duration: 0.01ms !important;
-  }
 }
 
 .help-container {

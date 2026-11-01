@@ -2,18 +2,19 @@ import { useState, useEffect, useRef, memo } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { toast } from 'react-hot-toast';
 import { useNotifications } from '@/context/NotificationContext';
-import { ModalCentered, ModalDestruct, CSS } from '@/components/NotificationSystem';
+import { ModalCentered, ModalDestruct, CSS } from '@/components/feedback/NotificationSystem';
 import { Ic } from '@/components/common/Icons'
-import { saveUser } from '@lib/db/users';
+import { saveCurrentUser } from '@lib/db/users';
 import { deleteAllQuestions, saveQuestions } from '@lib/db/questions';
 import { clearImages } from '@lib/db/images';
-import { encrypt, decrypt } from '@lib/utils/crypto';
+import { encrypt } from '@lib/utils/crypto';
 import { passwordStrength } from '@lib/utils/passwordStrength'
-import { request } from '@lib/api/request';
+import { updateProfile as saveProfile, changePassword, fetchProfileImage } from '@lib/api/settingsApi';
+import { describeError } from '@lib/api/errors';
 import { authStore } from '@/stores/authStore';
 import { userStore } from '@/stores/userStore';
-import { Offline } from '@/components/Offline';
-import { LoadError } from '@/components/LoadError';
+import { Offline } from '@/components/feedback/Offline';
+import { LoadError } from '@/components/feedback/LoadError';
 import { DOWNLOADED_SUBJECTS_KEY } from '@lib/config/app';
 import { SettingsSkeleton } from './components/SettingsSkeleton';
 import { UserImage } from './components/UserImage';
@@ -89,13 +90,11 @@ export default function Settings() {
         if (cancelled) return;
         console.error('Error:', err);
         setLoadError(true);
-        if (!err.status) {
-          toast.error('Failed to load page data')
-        } else if (err.status >= 500) {
-          toast.error('Something went wrong. Please try again later.');
-        } else {
-          toast.error(err.error || 'Failed to load page data');
-        }
+        toast.error(describeError(err, {
+          network: 'Failed to load page data',
+          server: 'Something went wrong. Please try again later.',
+          fallback: 'Failed to load page data',
+        }));
       })
     }
     setPrefs(prev => userInfo ? (userInfo?.notificationSettings ?? prev) : prev)
@@ -168,20 +167,10 @@ export default function Settings() {
 
   // check whenever userInfo changes
   useEffect(() => {
-    async function indexDbSave(userInfo) {
-      await saveUser(userInfo)
-    }
-
     if (!isMounted.current) {
       isMounted.current = true
     } else {
-      const saveEncrypted = { ...userInfo, accessToken: token };
-      delete saveEncrypted.blob;
-      indexDbSave({
-        info: encrypt(saveEncrypted),
-        blob: userInfo?.blob,
-        id: 'current-user',
-      });
+      saveCurrentUser(userInfo, token);
     }
   }, [ userInfo, token ])
 
@@ -202,20 +191,12 @@ export default function Settings() {
       const formData = new FormData(form);
       // Email is intentionally excluded — read-only field, never submitted
 
-      const res = await request.auth('/api/settings/profile', {
-        method: 'POST',
-        headers: { authorization: `Bearer ${token}` },
-        body: formData,
-      });
-      const data = decrypt(res.body.data)
+      const data = await saveProfile(formData)
 
       let blob;
       if (data.profileUrl !== userInfo.profileUrl) {
         try {
-          const res = await fetch(data.profileUrl)
-          if (res.ok) {
-            blob = await res.blob();
-          }
+          blob = await fetchProfileImage(data.profileUrl) ?? undefined
         } catch (err) {
           console.error('Error:', err);
           toast.error('Failed to load profile pic');
@@ -241,13 +222,11 @@ export default function Settings() {
       setProfileDirty(false);
       setModal('profile_saved');
     } catch (err) {
-      if (!err.status) {
-        toast.error('Check your internet connection and try again.');
-      } else if (err.status >= 500) {
-        toast.error('Something went wrong. Try again later.');
-      } else {
-        toast.error(err.error || 'Update Failed');
-      }
+      toast.error(describeError(err, {
+        network: 'Check your internet connection and try again.',
+        server: 'Something went wrong. Try again later.',
+        fallback: 'Update Failed',
+      }));
     } finally {
       setProfileLoading(false);
     }
@@ -308,10 +287,7 @@ export default function Settings() {
 
     setPwdLoading(true);
     try {
-      await request.auth('/api/settings/account', {
-        method: 'POST',
-        body: JSON.stringify({ currentPassword: pwd.current, newPassword: pwd.newPwd }),
-      });
+      await changePassword({ currentPassword: pwd.current, newPassword: pwd.newPwd });
 
       setPwd({ current: '', newPwd: '', confirmPwd: '' });
       setModal('password_updated');
@@ -319,12 +295,12 @@ export default function Settings() {
       if (err.status === 401) {
         setPwdErrors({ current: 'Incorrect current password.' });
         toast.error('Incorrect password');
-      } else if (!err.status) {
-        toast.error('Check your internet connection and try again.');
-      } else if (err.status >= 500) {
-        toast.error('Something went wrong. Try again later.');
       } else {
-        toast.error(err.error || 'Update failed');
+        toast.error(describeError(err, {
+          network: 'Check your internet connection and try again.',
+          server: 'Something went wrong. Try again later.',
+          fallback: 'Update failed',
+        }));
       }
       console.error('Error:', err);
     } finally {
@@ -355,11 +331,11 @@ export default function Settings() {
 
     } catch (err) {
       toast.error(
-        !err.status
-          ? 'Check your internet connection and try again.'
-          : err.status >= 500
-            ? 'Something went wrong. Try again later.'
-            : err.error || 'Failed to update preferences.',
+        describeError(err, {
+          network: 'Check your internet connection and try again.',
+          server: 'Something went wrong. Try again later.',
+          fallback: 'Failed to update preferences.',
+        }),
         { id: toastId }
       );
     }

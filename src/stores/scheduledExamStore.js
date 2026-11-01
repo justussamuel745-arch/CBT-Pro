@@ -1,6 +1,7 @@
 import { create } from 'zustand';
-import { decrypt } from '@lib/utils/crypto.js';
-import { request } from '@lib/api/request.js';
+import * as examApi from '@lib/api/scheduledExamApi.js';
+import { fetchScheduledExamQuestions } from '@lib/api/questionsApi.js';
+import { getErrorMessage } from '@lib/api/errors.js';
 import { userStore } from './userStore.js';
 import { examStore } from './examStore.js';
 import {
@@ -38,6 +39,30 @@ const validateField = (form) => {
   Object.assign(bodyObj, { timeZone })
 
   return bodyObj
+}
+
+// Stores a successfully submitted attempt, opens the result page and
+// refreshes the exam history in the background.
+const finishSubmission = (set, get, result, navigate) => {
+  set({
+    stats: result.stats,
+    upcomingExams: result.upcomingExams,
+    submissionRequirement: null
+  })
+
+  examStore.setState({
+    submissionStep: 4 // done
+  })
+
+  navigate('/exam-planner/result', {
+    state: {
+      result
+    }
+  })
+
+  get().fetchScheduledExamHistory().catch((err) => {
+    toast.error(getErrorMessage(err, 'Failed to update exam history.'))
+  })
 }
 
 export const scheduledExamStore = create((set, get) => ({
@@ -88,21 +113,13 @@ export const scheduledExamStore = create((set, get) => ({
   getDashboardInfo: async () => {
     const userId = userStore.getState().userInfo?._id
     try {
-      const unsyncOfflineNotifications = await getOfflineNotifications(userId)
-      const unsyncExamIds = unsyncOfflineNotifications || unsyncOfflineNotifications.length
-        ? unsyncOfflineNotifications
-          .filter(n => n.status === 'pending')
-          .map(n => n._id)
-        : []
-      if (unsyncExamIds.length > 0) {
-        const res = await request.auth('/api/exam-planner/exam/reminder', {
-          method: 'POST',
-          body: JSON.stringify({
-            examIds: unsyncExamIds
-          })
-        })
+      const offlineNotifications = (await getOfflineNotifications(userId)) ?? []
+      const unsyncExamIds = offlineNotifications
+        .filter(n => n.status === 'pending')
+        .map(n => n._id)
 
-        const { invalidIds, validIds } = res.body
+      if (unsyncExamIds.length > 0) {
+        const { invalidIds, validIds } = await examApi.syncExamReminders(unsyncExamIds)
         if (invalidIds.length > 0) {
           for (const invalidId of invalidIds) {
             await deleteOfflineNotification(invalidId)
@@ -114,16 +131,12 @@ export const scheduledExamStore = create((set, get) => ({
             })
           }
         }
-
       }
     } catch (error) {
       console.log(error)
     }
 
-    const res = await request.auth('/api/exam-planner/dashboard', {
-      method: 'GET'
-    });
-    const { stats, upcomingExams, missedExams } = decrypt(res.body.data);
+    const { stats, upcomingExams, missedExams } = await examApi.fetchDashboard()
     set({
       stats,
       upcomingExams,
@@ -132,14 +145,7 @@ export const scheduledExamStore = create((set, get) => ({
   },
 
   onChangeStatus: async (examId, status) => {
-    const res = await request.auth(`/api/exam-planner/exam/status/${examId}`, {
-      method: 'PUT',
-      body: JSON.stringify({
-        status
-      })
-    })
-
-    const { stats, upcomingExams } = decrypt(res.body.data)
+    const { stats, upcomingExams } = await examApi.updateExamStatus(examId, status)
 
     set({
       stats,
@@ -148,41 +154,22 @@ export const scheduledExamStore = create((set, get) => ({
   },
 
   saveScheduledExam: async (form) => {
-
-    const res = await request.auth('/api/exam-planner/exam', {
-      method: 'POST',
-      body: JSON.stringify(validateField(form))
-    })
-    const { stats, upcomingExams } = decrypt(res.body.data)
+    const { stats, upcomingExams } = await examApi.createExam(validateField(form))
     set({
       stats,
       upcomingExams
     })
-
   },
 
   saveEditedSchedule: async (form, query = "") => {
-    const res = await request.auth(`/api/exam-planner/exam/${form._id}${query}`, {
-      method: 'PUT',
-      body: JSON.stringify(validateField(form))
-    })
-    const { upcomingExams } = decrypt(res.body.data)
+    const { upcomingExams } = await examApi.updateExam(form._id, validateField(form), query)
     set({
       upcomingExams
     })
   },
 
   getExamQuestions: async (reqData) => {
-    const res = await request.auth('/api/exam/scheduled', {
-      method: 'POST',
-      body: JSON.stringify({
-        ...reqData,
-        subjects: reqData.subjects.map(s => s.name ?? null).filter(Boolean)
-      })
-    })
-
-    const examId = res.body.examId
-    const questions = decrypt(res.body.questions)
+    const { examId, questions } = await fetchScheduledExamQuestions(reqData)
 
     set({
       submissionRequirement: {
@@ -199,18 +186,11 @@ export const scheduledExamStore = create((set, get) => ({
   },
 
   fetchScheduledExamHistory: async () => {
-    const res = await request.auth(
-      "/api/exam-planner/history",
-      {
-        method: "GET",
-      }
-    );
-
     const {
       historyStats,
       history: historyData,
       achievements: achievementsData,
-    } = res.body;
+    } = await examApi.fetchExamHistory()
 
     set({
       historyStats,
@@ -239,33 +219,9 @@ export const scheduledExamStore = create((set, get) => ({
       questions
     }
     try {
-      const res = await request.auth('/api/exam-planner/exam/submit', {
-        method: 'POST',
-        body: JSON.stringify(submissionRequirement)
-      })
-      const { attempt: result } = res.body
+      const result = await examApi.submitExamAttempt(submissionRequirement)
 
-      set({
-        stats: result.stats,
-        upcomingExams: result.upcomingExams,
-        submissionRequirement: null
-      })
-
-      examStore.setState({
-        submissionStep: 4 // done
-      })
-      
-      navigate('/exam-planner/result', {
-        state: {
-          result
-        }
-      })
-
-      const fetchScheduledExamHistory = get().fetchScheduledExamHistory
-
-      fetchScheduledExamHistory().catch((err) => {
-        toast.error(err?.error || 'Failed to update exam history.')
-      })
+      finishSubmission(set, get, result, navigate)
     } catch{
       if (!navigator.onLine) {
         examStore.setState({
@@ -299,37 +255,13 @@ export const scheduledExamStore = create((set, get) => ({
   retrySubmission: async (navigate) => {
     const submissionRequirement = get().submissionRequirement
     try {
-      const res = await request.auth('/api/exam-planner/exam/submit', {
-        method: 'POST',
-        body: JSON.stringify(submissionRequirement)
-      })
+      const result = await examApi.submitExamAttempt(submissionRequirement)
       examStore.setState({
         offline: null,
         loadError: null
       })
-      const { attempt: result } = res.body
 
-      set({
-        stats: result.stats,
-        upcomingExams: result.upcomingExams,
-        submissionRequirement: null
-      })
-
-      examStore.setState({
-        submissionStep: 4 // done
-      })
-      
-      navigate('/exam-planner/result', {
-        state: {
-          result
-        }
-      })
-
-      const fetchScheduledExamHistory = get().fetchScheduledExamHistory
-      
-      fetchScheduledExamHistory().catch((err) => {
-        toast.error(err?.error || 'Failed to update exam history.')
-      })
+      finishSubmission(set, get, result, navigate)
     } catch (error) {
       console.log(error)
     }

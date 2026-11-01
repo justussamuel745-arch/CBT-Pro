@@ -3,12 +3,13 @@ import { Link, useNavigate } from 'react-router';
 import { toast } from 'react-hot-toast';
 import Countdown, { useLiveCountdown } from "./Countdown";
 import { ExamDetail } from './ExamDetail';
-import { Loading } from '@/components/Loading';
-import { Offline } from '@/components/Offline';
-import { LoadError } from '@/components/LoadError';
+import { Loading } from '@/components/feedback/Loading';
+import { Offline } from '@/components/feedback/Offline';
+import { LoadError } from '@/components/feedback/LoadError';
 import { DateTime } from '@/components/common/DateTime';
 import { sortByClosestDate } from '@lib/utils/dateTimeOp';
 import { deleteUpcomingExam } from '@lib/db/upcomingExams';
+import { getErrorMessage } from '@lib/api/errors';
 import { scheduledExamStore } from '@/stores/scheduledExamStore';
 import pushNotificationService from '@/services/pushNotificationService';
 import { hasEditExpires } from './utils/hasEditExpires';
@@ -200,9 +201,7 @@ export default function ExamPlanner() {
     toast.promise(onChangeStatus(exam._id, 'cancelled'), {
       loading: 'Cancelling. Please Wait...',
       success: 'Exam Cancelled',
-      error: (err) => {
-        return err.error || 'Failed'
-      }
+      error: (err) => getErrorMessage(err, 'Failed')
     },{
       duration: 2500
     })

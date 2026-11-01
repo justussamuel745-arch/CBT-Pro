@@ -1,8 +1,9 @@
 import { useState, useRef } from 'react';
 import { useSearchParams, Link, Navigate, useNavigate } from 'react-router';
 import { toast } from 'react-hot-toast';
-import { Message } from '@/components/Message';
+import { Message } from '@/components/feedback/Message';
 import { authStore } from '@/stores/authStore';
+import { describeError } from '@lib/api/errors';
 import './ResetPassword.css';
 
 export function ResetPassword() {
@@ -59,11 +60,7 @@ export function ResetPassword() {
       toast.success('Password Reset!')
       setSuccess(true)
     } catch (err) {
-      if (!err.status) {
-        toast.error("Couldn't connect to server.");
-      } else {
-        toast.error(err.error)
-      }
+      toast.error(describeError(err, { network: "Couldn't connect to server." }))
       btnElementRef.current.disabled = false
       btnElementRef.current.textContent = 'Reset Password'
     }

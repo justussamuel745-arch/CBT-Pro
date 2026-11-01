@@ -2,10 +2,10 @@ import { useState, useEffect, useRef, memo, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router';
 import { MarkdownContent } from '@/components/common/MarkdownContent';
 import { formatName } from '@lib/utils/formatName.js';
-import { Offline } from '@/components/Offline';
-import { LoadError } from '@/components/LoadError';
+import { Offline } from '@/components/feedback/Offline';
+import { LoadError } from '@/components/feedback/LoadError';
 import { Image } from '@/components/common/Image'
-import { ModalStripe, CSS } from '@/components/NotificationSystem';
+import { ModalStripe, CSS } from '@/components/feedback/NotificationSystem';
 import { practiceStore } from '@/stores/practiceStore';
 import { scheduledExamStore } from '@/stores/scheduledExamStore';
 import { examStore } from '@/stores/examStore';
@@ -15,6 +15,7 @@ import { CountdownTimer } from './components/CountdownTimer'
 import { Calculator } from './components/Calculator'
 import { SimulatorSkeleton } from './components/SimulatorSkeleton';
 import { SubmittingOverlay } from './components/SubmittingOverlay';
+import './simulator.css';
 import './ExamSimulator.css';
 
 /* ============================================================

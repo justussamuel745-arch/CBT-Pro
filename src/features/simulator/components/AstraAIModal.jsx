@@ -7,6 +7,7 @@ import rehypeKatex from 'rehype-katex';
 import 'katex/dist/katex.min.css';
 import { userStore } from '@/stores/userStore';
 import { AIStore } from '@/stores/AIStore';
+import { describeAiError } from '@lib/api/aiApi';
 import './AstraAIModal.css'
 
 // ─────────────────────────────────────────────────────────────
@@ -234,16 +235,7 @@ export const AstraAIModal = memo(function AstraAIModal({ setChatWithAI}) {
       ));
 
     } catch (err) {
-      let errorText;
-      if (!err.status){
-        errorText = "Can't reach the server. Check your connection and try again."
-      } else if (err.status >= 500){
-        errorText = 'Something went wrong. Please try again.'
-      } else if (err.status === 402) {
-        errorText = 'You\'ve reached your AI credit limit. Please upgrade your plan or purchase additional credits to continue.'
-      } else {
-        errorText = err.error
-      }
+      const errorText = describeAiError(err)
       setChatMessages(prev => prev.map(msg =>
         msg.id === typingId
           ? { ...msg, message: errorText, description: 'error' }

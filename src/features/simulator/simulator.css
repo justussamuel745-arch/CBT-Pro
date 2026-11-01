@@ -1,0 +1,510 @@
+/* =====================================
+   SIMULATOR (shared)
+   Styles identical in the exam simulator (.exam-*) and the study
+   simulator (.mode-*). Declared once here; each simulator's own
+   stylesheet only keeps what is specific to it.
+====================================== */
+
+.exam-page, .mode-page {
+  min-height: 100vh;
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+}
+
+.exam-header, .mode-header {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.exam-header-inner, .mode-header-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0.75em 1.25em;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75em;
+}
+
+.exam-back-btn, .mode-back-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  padding: 0.6em 1em;
+  background: transparent;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 0.9em;
+  color: var(--text);
+}
+
+.exam-back-btn:hover, .mode-back-btn:hover {
+  background: var(--bg);
+  transform: translateY(-1px);
+}
+
+.exam-header-actions, .mode-header-actions {
+  display: flex;
+  gap: 0.5em;
+}
+
+.exam-icon-btn, .mode-icon-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  border: 1.5px solid var(--border);
+  background: var(--card);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.exam-icon-btn:hover, .mode-icon-btn:hover {
+  border-color: var(--primary);
+  background: var(--primary-light);
+}
+
+.exam-container, .mode-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 1.5em 1.25em 3em;
+  display: grid;
+  grid-template-columns: 240px 1fr 320px;
+  gap: 1.5em;
+  align-items: start;
+  width: 100%;
+}
+
+.exam-sidebar, .mode-sidebar {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1em;
+  position: sticky;
+  top: 88px;
+  max-height: calc(100vh - 100px);
+  overflow-y: auto;
+  box-shadow: var(--shadow);
+}
+
+.exam-sidebar-title, .mode-sidebar-title {
+  font-weight: 700;
+  font-size: 0.75em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.5em 1em 0.25em;
+  margin-bottom: 0.5em;
+}
+
+.exam-subject-list, .mode-subject-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+}
+
+.exam-subject-item, .mode-subject-item {
+  padding: 0.625em 0.75em;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.95em;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.exam-subject-item:hover, .mode-subject-item:hover {
+  background: var(--bg);
+  color: var(--primary);
+}
+
+.exam-subject-count, .mode-subject-count {
+  background: rgba(0,0,0,0.1);
+  padding: 0.125em 0.5em;
+  border-radius: 6px;
+  font-size: 0.8em;
+  margin-left: 0.5em;
+}
+
+.exam-main, .mode-main {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 2em;
+  box-shadow: var(--shadow);
+}
+
+.exam-nav, .mode-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5em;
+  padding-bottom: 1em;
+  border-bottom: 1px solid var(--border);
+}
+
+.exam-nav-btn, .mode-nav-btn {
+  padding: 0.65em 1.25em;
+  background: transparent;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  transition: all 0.2s;
+  font-size: 0.9em;
+}
+
+.exam-nav-btn:hover:not(:disabled), .mode-nav-btn:hover:not(:disabled) {
+  background: var(--bg);
+  transform: translateY(-1px);
+}
+
+.exam-nav-btn:disabled, .mode-nav-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.exam-question-info, .mode-question-info {
+  font-weight: 600;
+  color: var(--text-muted);
+  font-size: 0.9em;
+}
+
+.exam-question-tags, .mode-question-tags {
+  display: flex;
+  gap: 0.5em;
+  flex-wrap: wrap;
+  margin-bottom: 1em;
+}
+
+.exam-tag, .mode-tag {
+  padding: 0.25em 0.75em;
+  background: var(--primary-light);
+  color: var(--primary);
+  border-radius: 6px;
+  font-size: 0.8em;
+  font-weight: 600;
+}
+
+.exam-question-text, .mode-question-text {
+  font-size: 1.05em;
+  line-height: 1.7;
+  margin-bottom: 1em;
+}
+
+.exam-options, .mode-options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75em;
+  margin-bottom: 2em;
+}
+
+.exam-option:hover, .mode-option:hover {
+  background: var(--primary-light);
+  transform: translateX(4px);
+}
+
+.exam-option-key, .mode-option-key {
+  width: 36px;
+  height: 36px;
+  background: var(--card);
+  border: 2px solid var(--border);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  flex-shrink: 0;
+  transition: all 0.25s ease;
+}
+
+.exam-option-content, .mode-option-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75em;
+  padding-right: 2.5em;
+}
+
+.exam-option-text, .mode-option-text {
+  line-height: 1.6;
+}
+
+.exam-option-image, .mode-option-image {
+  width: 100%;
+  max-height: 200px;
+  object-fit: contain;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+}
+
+.exam-actions, .mode-actions {
+  padding-top: 1.5em;
+  border-top: 1px solid var(--border);
+}
+
+.exam-panel, .mode-panel {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25em;
+  position: sticky;
+  top: 88px;
+  box-shadow: var(--shadow);
+  max-height: calc(100vh - 100px);
+  overflow-y: auto;
+}
+
+.exam-panel-header, .mode-panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.25em;
+}
+
+.exam-panel-title, .mode-panel-title {
+  font-weight: 700;
+  font-size: 1em;
+}
+
+.exam-progress-btn, .mode-progress-btn {
+  aspect-ratio: 1;
+  border: 2px solid var(--border);
+  background: var(--bg);
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 0.85em;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+}
+
+.exam-progress-btn:hover, .mode-progress-btn:hover {
+  border-color: var(--primary);
+  transform: scale(1.05);
+}
+
+.exam-overlay, .mode-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 200;
+  align-items: center;
+  justify-content: center;
+  padding: 1em;
+}
+
+.exam-modal, .mode-modal {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 1.5em;
+  width: 100%;
+  max-width: 500px;
+  box-shadow: var(--shadow-lg);
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  overflow: scroll;
+}
+
+.exam-modal-header, .mode-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1em;
+}
+
+.exam-modal-title, .mode-modal-title {
+  font-weight: 700;
+  font-size: 1.1em;
+}
+
+.exam-modal-close, .mode-modal-close {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: var(--bg);
+  cursor: pointer;
+  font-size: 1.5em;
+  line-height: 1;
+}
+
+.exam-calc-display, .mode-calc-display {
+  background: var(--bg);
+  padding: 1em;
+  border-radius: 10px;
+  text-align: right;
+  font-size: 1.5em;
+  font-weight: 700;
+  margin-bottom: 1em;
+  min-height: 60px;
+  overflow-x: auto;
+}
+
+.exam-calc-grid, .mode-calc-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.5em;
+}
+
+.exam-calc-btn, .mode-calc-btn {
+  padding: 1em;
+  border: none;
+  background: var(--bg);
+  border-radius: 10px;
+  font-size: 1.1em;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.exam-calc-btn:hover, .mode-calc-btn:hover {
+  background: var(--primary-light);
+}
+
+.exam-fab, .mode-fab {
+  display: none;
+  position: fixed;
+  bottom: 1.5em;
+  right: 1.5em;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--gradient);
+  color: white;
+  border: none;
+  box-shadow: 0 8px 20px rgb(79 70 229 / 0.4);
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5em;
+  z-index: 90;
+  transition: transform 0.2s;
+}
+
+.exam-fab:hover, .mode-fab:hover {
+  transform: scale(1.05);
+}
+
+@media (max-width: 1100px) {
+  .exam-container, .mode-container {
+    grid-template-columns: 200px 1fr;
+  }
+  
+  .exam-panel, .mode-panel {
+    display: none;
+  }
+  
+  .exam-fab, .mode-fab {
+    display: flex;
+  }
+  
+}
+
+@media (max-width: 768px) {
+  .exam-page, .mode-page {
+    font-size: 14px;
+  }
+  
+  .exam-container, .mode-container {
+    grid-template-columns: 1fr;
+    padding: 1em 0.75em 2em;
+  }
+  
+  .exam-sidebar, .mode-sidebar {
+    position: static;
+    max-height: none;
+  }
+  
+  .exam-subject-list, .mode-subject-list {
+    flex-direction: row;
+    overflow-x: auto;
+    padding-bottom: 0.5em;
+  }
+  
+  .exam-subject-item, .mode-subject-item {
+    white-space: nowrap;
+  }
+  
+  .exam-main, .mode-main {
+    padding: 1.25em;
+  }
+  
+  .exam-header-inner, .mode-header-inner {
+    padding: 0.625em 0.75em;
+  }
+  
+  .exam-back-btn, .mode-back-btn {
+    padding: 0.5em 0.875em;
+    font-size: 0.85em;
+  }
+  
+  .exam-question-text, .mode-question-text {
+    font-size: 0.95em;
+  }
+  
+  .exam-option-key, .mode-option-key {
+    width: 32px;
+    height: 32px;
+  }
+  
+  .exam-nav, .mode-nav {
+    flex-wrap: wrap;
+    gap: 0.5em;
+  }
+  
+  .exam-nav-btn, .mode-nav-btn {
+    padding: 0.5em 0.875em;
+    font-size: 0.85em;
+  }
+  
+}
+
+@media (max-width: 480px) {
+  .exam-modal, .mode-modal {
+    padding: 1em;
+  }
+  
+  .exam-progress-grid, .mode-progress-grid {
+    grid-template-columns: repeat(auto-fit, minmax(36px, 1fr));
+    gap: 0.5em;
+  }
+  
+  .exam-progress-btn, .mode-progress-btn {
+    font-size: 0.75em;
+    border-radius: 8px;
+  }
+  
+}
+
+@keyframes checkIn {
+  from {
+    opacity: 0;
+    transform: translateY(-50%) scale(0.5);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(-50%) scale(1);
+  }
+}

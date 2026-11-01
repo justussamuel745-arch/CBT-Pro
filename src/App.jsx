@@ -1,15 +1,15 @@
 import { useEffect } from 'react';
 import { Toaster } from 'react-hot-toast';
 import { useOfflineNotifier } from './hooks/useOfflineNotifier';
-import { Loading } from './components/Loading';
-import { submitLocalHistory } from '@lib/api/submitHistory';
-import { init } from '@lib/api/init';
+import { Loading } from './components/feedback/Loading';
+import { submitLocalHistory } from '@/services/historyService';
+import { init } from '@/services/appInit';
 import { authStore } from './stores/authStore';
 import { useExamDataSync } from './hooks/useExamDataSync';
 import { useAutoThemeColor } from './hooks/useAutoThemeColor';
-import PWAUpdateToast from './components/PWAUpdateToast';
+import PWAUpdateToast from './components/feedback/PWAUpdateToast';
 import AppRouter from './routes/AppRouter';
-import './App.css';
+import '@/styles/layout.css';
 
 function App() {
   // listen for when upcomings exams changes and update the changes in indexedDB

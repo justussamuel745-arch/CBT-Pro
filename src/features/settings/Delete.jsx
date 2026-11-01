@@ -2,9 +2,10 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate } from 'react-router';
 import { GoogleLogin } from "@react-oauth/google";
 import { toast } from 'react-hot-toast';
-import {  ModalDestruct, CSS } from '@/components/NotificationSystem';
+import {  ModalDestruct, CSS } from '@/components/feedback/NotificationSystem';
 import { deleteUser } from '@lib/db/users';
-import { request } from '@lib/api/request';
+import { deleteAccount } from '@lib/api/settingsApi';
+import { describeError } from '@lib/api/errors';
 import { authStore } from '@/stores/authStore';
 import { userStore } from '@/stores/userStore';
 import './Delete.css';
@@ -58,14 +59,11 @@ export default function Delete() {
     setBtnText("Verifying...");
 
     try {
-      const body = isGoogleOnly
-        ? { googleToken }
-        : { password };
-
-      await request.auth('/api/settings/delete', {
-        method: 'POST',
-        body: JSON.stringify(body)
-      });
+      await deleteAccount(
+        isGoogleOnly
+          ? { googleToken }
+          : { password }
+      );
       await Promise.all([
         deleteUser(),
         logout()
@@ -77,18 +75,16 @@ export default function Delete() {
     } catch (err) {
       if (!err.status) {
         toast.error("Couldn't connect to the server.");
-      } else if (err.error === 'wrong_password') {
+      } else if (err.message === 'wrong_password') {
         setError('Incorrect password.')
-      } else if (err.error === 'GOOGLE_ACCOUNT_MISMATCH') {
+      } else if (err.message === 'GOOGLE_ACCOUNT_MISMATCH') {
         setError('This Google account doesn\'t match the one linked to your CBT Pro account. Please verify with the correct Google account.')
         setGoogleToken(null);
       } else if (err.status === 401 && isGoogleOnly) {
         setError('Google verification failed or expired.')
         setGoogleToken(null);
-      } else if (err.status >= 500) {
-        toast.error("Unexpected error. Try again later");
       } else {
-        toast.error(err.error)
+        toast.error(describeError(err, { server: "Unexpected error. Try again later" }))
       }
 
       setBtnText("Delete Account");

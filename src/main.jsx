@@ -4,7 +4,7 @@ import { GoogleOAuthProvider } from "@react-oauth/google";
 import { BrowserRouter } from 'react-router'
 import { NotificationProvider } from './context/NotificationContext';
 import { registerSW } from "virtual:pwa-register";
-import './index.css'
+import './styles/index.css'
 import App from './App.jsx'
 
 export const updateSW = registerSW({

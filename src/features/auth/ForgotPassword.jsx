@@ -2,6 +2,7 @@ import { useState, useRef } from 'react';
 import { Link } from 'react-router';
 import { toast } from 'react-hot-toast';
 import { authStore } from '@/stores/authStore';
+import { describeError } from '@lib/api/errors';
 import './ForgotPassword.css'
 
 export function ForgotPassword() {
@@ -32,11 +33,7 @@ export function ForgotPassword() {
       toast.success('Reset link sent')
       setSuccess(true)
     } catch (err) {
-      if (!err.status){
-        toast.error("Couldn't connect to the server")
-      } else {
-        toast.error(err.error)
-      }
+      toast.error(describeError(err, { network: "Couldn't connect to the server" }))
 
       btnElementRef.current.disabled = false
       btnElementRef.current.textContent = 'Send Reset Link'

@@ -9,7 +9,7 @@ const { EDIT_LOCK_MINUTES, GRACE_WINDOW_MINUTES } = EXAM_CONFIG
 function buildTimeline(examDate) {
   const start = new Date(examDate);
   const editLocksAt = addMinutes(start, -EDIT_LOCK_MINUTES);
-  const graceEndsAt = graceEndsAt(start)
+  const graceEnd = graceEndsAt(start)
 
   return [
     {
@@ -40,7 +40,7 @@ function buildTimeline(examDate) {
       key: "grace",
       icon: "fa-calendar-xmark",
       title: "Grace window closes",
-      when: formatDateTime(graceEndsAt),
+      when: formatDateTime(graceEnd),
       text: `You have ${GRACE_WINDOW_MINUTES} minutes after the start time to tap Start Exam. After that, it's marked as Missed.`,
       tone: "danger",
     },

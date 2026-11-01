@@ -2,6 +2,7 @@ import { useState, useRef, useEffect, memo } from 'react';
 import { useNavigate } from 'react-router';
 import { GoogleLogin } from "@react-oauth/google";
 import { useToast } from '../Signin';
+import { getErrorMessage } from '@lib/api/errors';
 import { authStore } from '@/stores/authStore';
 import { userStore } from '@/stores/userStore';
 import { scheduledExamStore } from '@/stores/scheduledExamStore';
@@ -22,7 +23,7 @@ function getGoogleAuthToast(error) {
       return {
         type: 'error',
         title: 'Google sign-in failed',
-        message: error.error || 'We couldn\'t verify your Google account. Please try again.',
+        message: getErrorMessage(error, 'We couldn\'t verify your Google account. Please try again.'),
       };
 
     case 401:
@@ -73,7 +74,7 @@ function getGoogleAuthToast(error) {
       return {
         type: 'error',
         title: 'Sign-in failed',
-        message: error.error || 'Something went wrong. Please try again.',
+        message: getErrorMessage(error, 'Something went wrong. Please try again.'),
       };
   }
 }
@@ -150,6 +151,7 @@ export const GoogleAuth = memo(function GoogleAuth({ dividerLabel, action, busy,
                     toast.push(getGoogleAuthToast(error))
                   } finally {
                     setIsLoading(false)
+                    setBusy(null)
                   }
                 }}
                 onError={() => {

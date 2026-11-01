@@ -98,6 +98,7 @@ describe('Google Auth', () => {
   })
 
   it('should display the loading state in the google button when running the onSuccess', async () => {
+    const setBusy = vi.fn()
     mockGoogleLogin.mockImplementation(( { onSuccess } ) => {
       return (
         <button onClick={onSuccess}>
@@ -111,7 +112,7 @@ describe('Google Auth', () => {
 
     render(
       <MemoryRouter>
-        <GoogleAuth />
+        <GoogleAuth setBusy={setBusy}/>
       </MemoryRouter>
     )
 
@@ -132,6 +133,7 @@ describe('Google Auth', () => {
       throw new Error('Test Error')
     })
 
+    const setBusy = vi.fn()
     mockGoogleLogin.mockImplementation(( { onSuccess } ) => {
       return (
         <button onClick={onSuccess}>
@@ -144,7 +146,7 @@ describe('Google Auth', () => {
 
     render(
       <MemoryRouter>
-        <GoogleAuth />
+        <GoogleAuth setBusy={setBusy} />
       </MemoryRouter>
     )
 
@@ -159,6 +161,8 @@ describe('Google Auth', () => {
   })
 
   it('should attempt all function as long as neither throws an error', async () => {
+
+    const setBusy = vi.fn()
     mockGoogleLogin.mockImplementation(( { onSuccess } ) => {
       return (
         <button onClick={onSuccess}>
@@ -171,7 +175,7 @@ describe('Google Auth', () => {
 
     render(
       <MemoryRouter>
-        <GoogleAuth />
+        <GoogleAuth setBusy={setBusy} />
       </MemoryRouter>
     )
 
@@ -192,6 +196,8 @@ describe('Google Auth', () => {
   })
 
   it('should navigate the user after googleAuth was successful despise any other one failing', async () => {
+
+    const setBusy = vi.fn()
     mockGoogleLogin.mockImplementation(( { onSuccess } ) => {
       return (
         <button onClick={onSuccess}>
@@ -205,7 +211,7 @@ describe('Google Auth', () => {
     render(
       <MemoryRouter initialEntries={["/auth"]}>
         <Routes>
-          <Route path="/auth" element={<GoogleAuth />} />
+          <Route path="/auth" element={<GoogleAuth setBusy={setBusy} />} />
           <Route index element={<div>Welcome to CBT Pro</div>} />
         </Routes>
       </MemoryRouter>
@@ -219,5 +225,32 @@ describe('Google Auth', () => {
 
     expect(screen.getByText('Welcome to CBT Pro')).toBeInTheDocument()
     
+  })
+  
+  it('should setBusy to null after request', async () => {
+
+    const setBusy = vi.fn()
+    mockGoogleLogin.mockImplementation(( { onSuccess } ) => {
+      return (
+        <button onClick={onSuccess}>
+          Continue with Google
+        </button>
+      )
+    })
+
+    const user = await UserEvent.setup()
+    render(
+      <MemoryRouter>
+        <GoogleAuth setBusy={setBusy} />
+      </MemoryRouter>
+    )
+
+    const button = screen.getByRole('button', {
+      name: 'Continue with Google'
+    })
+
+    await user.click(button)
+
+    expect(setBusy).toHaveBeenCalled()
   })
 })

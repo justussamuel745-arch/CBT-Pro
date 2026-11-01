@@ -1,6 +1,7 @@
 import { useState, memo, useEffect } from 'react';
 import { MarkdownContent } from '@/components/common/MarkdownContent';
 import { AIStore } from '@/stores/AIStore';
+import { describeAiError } from '@lib/api/aiApi';
 
 export const AnswerCard = memo(function AnswerCard({ explanation, correctAnswers, ques, setChatWithAI }){
   const { onAskAI, setChatMessages, aiExplanations, setAiExplanations } = AIStore(state => state)
@@ -71,17 +72,7 @@ export const AnswerCard = memo(function AnswerCard({ explanation, correctAnswers
       )
     } catch(err) {
       console.log(err);
-      let errorText;
-      if (!err.status){
-        errorText = "Can't reach the server. Check your connection and try again."
-      } else if (err.status >= 500){
-        errorText = 'Something went wrong. Please try again.'
-      } else if (err.status === 402) {
-        errorText = 'You\'ve reached your AI credit limit. Please upgrade your plan or purchase additional credits to continue.'
-      } else {
-        errorText = err.error
-      }
-      setAiError(errorText);
+      setAiError(describeAiError(err));
     } finally {
       setAiLoading(false);
     }

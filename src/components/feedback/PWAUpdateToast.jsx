@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { updateSW } from "../main";
+import { updateSW } from "../../main";
 import "./PWAUpdateToast.css";
 
 export default function PWAUpdateToast() {

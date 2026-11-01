@@ -1,5 +1,5 @@
-import { useState, useEffect, useCallback } from 'react';
-import { request } from '@lib/api/request';
+import { useState, useEffect } from 'react';
+import { reportQuestion } from '@lib/api/supportApi';
 import './ReportQuestionModal.css';
 
 // ─────────────────────────────────────────────────────────────
@@ -58,13 +58,6 @@ export function ReportQuestionModal({ questionId, subject, questionNo, onClose }
     }
   }
   
-  const onSubmit = useCallback(async (payload) => {
-    await request.auth('/api/report', {
-      method: 'POST',
-      body: JSON.stringify(payload)
-    })
-  },[])
-
   async function handleSubmit() {
     // Validation
     if (selectedCats.length === 0 && !message.trim()) {
@@ -80,7 +73,7 @@ export function ReportQuestionModal({ questionId, subject, questionNo, onClose }
     setError('');
 
     try {
-      await onSubmit({
+      await reportQuestion({
         questionId,
         subject,
         categories: selectedCats,
@@ -88,7 +81,9 @@ export function ReportQuestionModal({ questionId, subject, questionNo, onClose }
       });
       setDone(true);
     } catch (err) {
-      setError(err?.message || 'Something went wrong. Please try again.');
+      // `message` can be a list of validation errors, which cannot be rendered.
+      const message = typeof err?.message === 'string' ? err.message : ''
+      setError(message || 'Something went wrong. Please try again.');
     } finally {
       setLoading(false);
     }

@@ -38,12 +38,12 @@ export function Footer() {
                 : 
                 (
                   <>
-                    <Link to="/#home">Home</Link>
-                    <Link to="/#faq">FAQ</Link>
+                    <a href="/#home">Home</a>
+                    <a href="/#faq">FAQ</a>
                   </>
                 )
             }
-            <Link to="/about">About</Link>
+            <a href="/about">About</a>
           </div>
           <div>
             <h4>Resources</h4>
@@ -56,7 +56,7 @@ export function Footer() {
             <h4>Support</h4>
             <Link to="/help">Help Center</Link>
             <a href="mailto:teamcbtpro@gmail.com">Contact Us</a>
-            <a href="#whatsapp">WhatsApp Group</a>
+            <a href="https://whatsapp.com/channel/0029VbDzc251t90cb6wxTq0f">WhatsApp Group</a>
             <Link to="/legal">Terms &amp; Privacy</Link>
           </div>
         </div>

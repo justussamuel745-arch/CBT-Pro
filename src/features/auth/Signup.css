@@ -129,34 +129,6 @@
   }
   
   /*========= Newly added style =======*/
-  :root {
-    --font: 'Inter', system-ui, sans-serif;
-    --c-bg: #f0f2f5;
-    --c-surface: #ffffff;
-    --c-border: #e5e7eb;
-    --c-border-focus: #2563eb;
-    --c-text: #111827;
-    --c-muted: #6b7280;
-    --c-subtle: #f9fafb;
-
-    --c-primary: #2563eb;
-    --c-primary-hover: #1d4ed8;
-    --c-primary-light: #dbeafe;
-
-    --c-success: #16a34a;
-    --c-success-bg: #f0fdf4;
-    --c-success-border: #bbf7d0;
-    --c-success-light: #dcfce7;
-
-    --c-error: #dc2626;
-    --c-error-bg: #fef2f2;
-    --c-error-border: #fecaca;
-    --c-error-light: #fee2e2;
-
-    --c-warning: #d97706;
-    --c-warning-bg: #fffbeb;
-    --c-warning-border: #fde68a;
-  }
   
   .register-form-input.has-error {
     border-color: var(--c-error);

@@ -1,16 +1,9 @@
 /* =====================================
-   ROOT / FLUID SCALING
-   1rem scales 15px -> 19px across screen sizes. Everything else
-   is written in rem, so the whole app scales from this one line.
-====================================== */
-html {
-  font-size: clamp(15px, 0.5vw + 13px, 19px);
-}
-
-/* =====================================
-   GLOBAL VARIABLES
-   (Merged from the old triple :root blocks — every color kept,
-   duplicates removed, grouped by purpose.)
+   DESIGN TOKENS
+   The single place where colors, radii, shadows and spacing are
+   declared. Pages and components must use these variables instead of
+   redeclaring :root values. Page specific tokens (e.g. the Help Center
+   category colors) live next to the page that owns them.
 ====================================== */
 :root {
   /* Brand / core design system */
@@ -27,10 +20,10 @@ html {
   --warning: #f59e0b;
   --danger: #ef4444;
   --danger-dark: #dc2626;
-  --shadow: 0 0.625rem 0.9375rem -0.1875rem rgb(0 0 0 / 0.1);
-  --shadow-lg: 0 1.25rem 1.5625rem -0.3125rem rgb(0 0 0 / 0.1);
-  --radius: 1rem;
-  --radius-sm: 0.625rem;
+  --shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+  --radius: 16px;
+  --radius-sm: 10px;
   --gradient: linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%);
 
   /* Shared layout token — every page's side gutter, never edge-to-edge */
@@ -44,6 +37,8 @@ html {
   --c-text: #111827;
   --c-muted: #6b7280;
   --c-subtle: #f9fafb;
+  --c-border-focus: #2563eb;
+  --c-primary-light: #dbeafe;
 
   --c-success: #16a34a;
   --c-success-bg: #f0fdf4;
@@ -83,57 +78,3 @@ html {
   --c-shadow-md: 0 0.25rem 0.75rem rgba(0, 0, 0, .1);
   --c-shadow-lg: 0 0.75rem 2rem rgba(0, 0, 0, .15);
 }
-
-/* =====================================
-   GLOBAL RESET
-====================================== */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-
-*::-webkit-scrollbar {
-  display: none;
-}
-
-body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  line-height: 1.6;
-  width: 100%;
-  overflow-x: hidden;
-}
-
-a {
-  text-decoration: none;
-}
-
-:focus-visible {
-  outline: 0.125rem solid var(--primary);
-  outline-offset: 0.125rem;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
-}
-
-img, svg, video {
-  max-width: 100%;
-  height: auto;
-  display: block;
-}
-
-/* =====================================
-   BREAKPOINT SCALE — reuse on every page
-   ≤30em (~480px) phones | ≤48em (~768px) tablets
-   ≤64em (~1024px) laptops | ≥90em (~1440px) large/ultra-wide
-====================================== */

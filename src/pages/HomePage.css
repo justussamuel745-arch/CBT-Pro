@@ -4,19 +4,7 @@
   section rhythm: clamp(3.5rem, ...) top & bottom on every section.
   ======================================*/
 
-html {
-  scroll-behavior: smooth;
-}
-
 /* respect users who've asked for less motion before anything else */
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.001ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.001ms !important;
-    scroll-behavior: auto !important;
-  }
-}
 
 /* ---------- SCROLL PROGRESS ---------- */
 .scroll-progress {

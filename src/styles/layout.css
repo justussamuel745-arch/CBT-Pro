@@ -1,4 +1,10 @@
 /* =====================================
+   SHARED LAYOUT & COMPONENTS
+   Container, nav, buttons, page header. Imported last in App.jsx on
+   purpose: it has to come after the page stylesheets so the rules
+   below keep winning over page level overrides of the same selectors.
+====================================== */
+/* =====================================
    SHARED COMPONENTS - reusable across pages
    ======================================*/
 

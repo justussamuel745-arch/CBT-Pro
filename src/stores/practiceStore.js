@@ -3,8 +3,8 @@ import { authStore } from './authStore';
 import { userStore } from './userStore';
 import { examStore } from './examStore';
 import { encrypt, decrypt } from '@lib/utils/crypto';
-import { submitHistory } from '@lib/api/submitHistory';
-import { request } from '@lib/api/request';
+import { submitHistory } from '@/services/historyService';
+import { fetchExamQuestions, fetchFixedExamQuestions } from '@lib/api/questionsApi';
 import { saveQuestions, getRandomQuestions } from '@lib/db/questions';
 import { saveAllImages } from '@lib/db/images';
 
@@ -149,21 +149,10 @@ export const practiceStore = create(set => ({
     const isActivated = authStore.getState().isActivated
     let data;
     if (navigator.onLine){
-      let response;
-      if (!isActivated){
-        const newReqData = { subjects: reqData.subjects.map(data => data.name) }
-        response = await request.auth('/api/exam/fixedExam', {
-          method: 'POST',
-          body: JSON.stringify(newReqData)
-        });
-      } else {
-        response = await request.auth('/api/exam', {
-          method: 'POST',
-          body: JSON.stringify(reqData)
-        });
-      }
-      data = decrypt(response.body)
-      
+      data = isActivated
+        ? await fetchExamQuestions(reqData)
+        : await fetchFixedExamQuestions(reqData.subjects.map(sub => sub.name))
+
       // Saving question to indexDB
       await saveQuestions(data)
       await saveAllImages(data)

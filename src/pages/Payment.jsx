@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router';
-import { Message } from '@/components/Message';
-import { request } from '@lib/api/request';
+import { Message } from '@/components/feedback/Message';
+import { initializePayment } from '@lib/api/paymentApi';
+import { getErrorMessage } from '@lib/api/errors';
 import { authStore } from '@/stores/authStore';
 import { ACTIVATION_PRICE } from '@lib/config/app.js'
 import './Payment.css';
@@ -391,11 +392,7 @@ function ActivationForm({ toast, setBlockPayment }) {
     if (!validate()) return;
     setLoading(true);
     try {
-      const response = await request.auth('/api/payment', {
-        method: 'POST',
-        body: JSON.stringify({ email, type: 'app_activation' }),
-      });
-      const data = response.body
+      const data = await initializePayment({ email, type: 'app_activation' });
       toast.push({ type: 'info', title: 'Redirecting to Paystack…', message: 'You will be redirected to the secure payment page.' });
       setTimeout(() => { window.location.href = data.authorization_url; }, 1000);
     } catch (err) {
@@ -406,7 +403,7 @@ function ActivationForm({ toast, setBlockPayment }) {
       } else if (err.status === 409) {
         setBlockPayment(true)
       } else {
-        toast.push({ type: 'error', title: 'Payment error', message: err.error });
+        toast.push({ type: 'error', title: 'Payment error', message: getErrorMessage(err) });
       }
     } finally {
       setLoading(false);
@@ -480,11 +477,7 @@ function CreditsForm({ toast }) {
     if (!validate()) return;
     setLoading(true);
     try {
-      const response = await request.auth('/api/payment', {
-        method: 'POST',
-        body: JSON.stringify({ email, type: `ai_pack_${pack.price.toLocaleString()}` }),
-      });
-      const data = response.body
+      const data = await initializePayment({ email, type: `ai_pack_${pack.price.toLocaleString()}` });
       toast.push({ type: 'info', title: 'Redirecting to Paystack…', message: `Purchasing ${pack.credits} credits for ₦${pack.price.toLocaleString()}.` });
       setTimeout(() => { window.location.href = data.authorization_url; }, 1000);
     } catch (err) {
@@ -493,7 +486,7 @@ function CreditsForm({ toast }) {
       } else if (err.status >= 500) {
         toast.push({ type: 'error', title: 'Server error', message: 'Something went wrong on our end. Please try again shortly.' });
       } else {
-        toast.push({ type: 'error', title: 'Payment error', message: err.error });
+        toast.push({ type: 'error', title: 'Payment error', message: getErrorMessage(err) });
       }
     } finally {
       setLoading(false);

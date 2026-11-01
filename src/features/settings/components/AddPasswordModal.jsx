@@ -1,8 +1,10 @@
 import { useState, memo } from 'react';
 import { toast } from 'react-hot-toast';
 import { passwordStrength } from '@lib/utils/passwordStrength';
-import { request } from '@lib/api/request';
+import { addPassword as saveNewPassword } from '@lib/api/settingsApi';
+import { describeError } from '@lib/api/errors';
 import { Ic } from '@/components/common/Icons';
+import { ModalCentered } from '@/components/feedback/NotificationSystem';
 
 const PWD_MIN_LENGTH = 6;
 
@@ -39,22 +41,18 @@ export const AddPasswordModal = memo(function AddPasswordModal({ userInfo, setUs
 
     setNewPwdOnlyLoading(true);
     try {
-      await request.auth('/api/settings/account', {
-        method: 'POST',
-        body: JSON.stringify({ newPassword: newPwdOnly.newPwd }),
-      });
+      await saveNewPassword(newPwdOnly.newPwd);
 
       setUserInfo(prev => ({ ...prev, authProvider: 'local' }));
       setNewPwdOnly({ newPwd: '', confirmPwd: '' });
       setModal('password_added');
     } catch (err) {
-      if (!err.status) {
-        toast.error('Check your internet connection and try again.');
-      } else if (err.status >= 500) {
-        toast.error('Something went wrong. Try again later.');
-      } else {
-        toast.error('Failed to set password');
-      }
+      toast.error(describeError(err, {
+        network: 'Check your internet connection and try again.',
+        server: 'Something went wrong. Try again later.',
+        fallback: 'Failed to set password',
+        useApiMessage: false,
+      }));
     } finally {
       setNewPwdOnlyLoading(false);
     }

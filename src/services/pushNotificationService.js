@@ -1,6 +1,4 @@
-import { BACKEND_URL } from "@lib/config/app.js";
-
-const PATH = `${BACKEND_URL}/api/push`;
+import { savePushSubscription, removePushSubscription } from "@lib/api/pushApi.js";
 
 class PushNotificationService {
   constructor() {
@@ -122,30 +120,8 @@ class PushNotificationService {
   /**
    * Save subscription on backend.
    */
-  async saveSubscription(subscription, token) {
-    const response = await fetch(
-      `${PATH}/subscribe`,
-      {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          subscription,
-          userAgent: navigator.userAgent,
-        }),
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error(
-        "Failed to save push subscription."
-      );
-    }
-
-    return response.json();
+  saveSubscription(subscription, token) {
+    return savePushSubscription(subscription, token);
   }
 
   /**
@@ -159,26 +135,7 @@ class PushNotificationService {
       return;
     }
 
-    const response = await fetch(
-      `${PATH}/unsubscribe`,
-      {
-        method: "DELETE",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          endpoint: subscription.endpoint,
-        }),
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error(
-        "Failed to remove push subscription."
-      );
-    }
+    await removePushSubscription(subscription.endpoint, token);
 
     await subscription.unsubscribe();
 

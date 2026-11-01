@@ -1,4 +1,5 @@
 import { openDB } from "./db";
+import { encrypt } from "@lib/utils/crypto.js";
 
 /*
   Save user information.
@@ -26,6 +27,20 @@ export async function saveUser(user) {
     request.onerror = () => {
       reject(request.error);
     };
+  });
+}
+
+/*
+  Save the signed in user. The profile is encrypted together with the access
+  token; the avatar blob is stored next to it, unencrypted.
+*/
+export async function saveCurrentUser(userInfo, token) {
+  const { blob, ...info } = userInfo ?? {};
+
+  return saveUser({
+    info: encrypt({ ...info, accessToken: token }),
+    blob,
+    id: "current-user",
   });
 }
 

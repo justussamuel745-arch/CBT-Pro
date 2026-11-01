@@ -1,44 +1,5 @@
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
   
-  *,
-  *::before,
-  *::after {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-  
-    :root {
-    --primary: #4f46e5;
-    --primary-dark: #4338ca;
-    --primary-light: #eef2ff;
-    --accent: #06b6d4;
-    --success: #10b981;
-    --bg: #f8fafc;
-    --card: #ffffff;
-    --text: #0f172a;
-    --text-muted: #64748b;
-    --border: #e2e8f0;
-    --warning: #f59e0b;
-    --danger: #ef4444;
-    --shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
-    --shadow-lg: 0 20px 25px -5px rgb(0 0 0 / 0.1);
-    --radius: 16px;
-    --radius-sm: 10px;
-    --gradient: linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%);
-  }
-  
-  body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    line-height: 1.6;
-  }
-  
-  a {
-    text-decoration: none;
-  }
-  
   /* ── Original auth page styles ── */
   .auth-page {
     min-height: 100vh;

@@ -1,10 +1,10 @@
 import { useMemo, useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router";
 import { toast } from 'react-hot-toast';
-import { request } from "@lib/api/request";
-import { Loading } from "@/components/Loading";
-import { LoadError } from "@/components/LoadError";
-import { Offline } from "@/components/Offline";
+import { fetchExam } from "@lib/api/scheduledExamApi";
+import { Loading } from "@/components/feedback/Loading";
+import { LoadError } from "@/components/feedback/LoadError";
+import { Offline } from "@/components/feedback/Offline";
 import { scheduledExamStore } from "@/stores/scheduledExamStore";
 import "./ExamHistory.css";
 
@@ -291,11 +291,9 @@ export default function ExamHistory() {
 
   const {
     historyStats: statsData,
-    setHistoryStats: setStatsData,
     history,
-    setHistory,
     achievements,
-    setAchievements,
+    fetchScheduledExamHistory,
   } = scheduledExamStore(
     (state) => state
   );
@@ -346,33 +344,7 @@ export default function ExamHistory() {
 
     const getHistory = async () => {
       try {
-        const res = await request.auth(
-          "/api/exam-planner/history",
-          {
-            method: "GET",
-          }
-        );
-
-        const {
-          historyStats,
-          history: historyData,
-          achievements: achievementsData,
-        } = res.body;
-
-        if (!mounted) return;
-
-        setStatsData(historyStats);
-        setHistory(
-          Array.isArray(historyData)
-            ? historyData
-            : []
-        );
-
-        setAchievements(
-          Array.isArray(achievementsData)
-            ? achievementsData
-            : []
-        );
+        await fetchScheduledExamHistory();
       } catch (err) {
         console.error(
           "Failed to load exam history:",
@@ -411,14 +383,7 @@ export default function ExamHistory() {
     setReschedulingExamId(examId);
 
     try {
-      const res = await request.auth(
-        `/api/exam-planner/exam/${examId}`,
-        {
-          method: "GET",
-        }
-      );
-
-      const data = res.body;
+      const data = await fetchExam(examId);
 
       navigate(
         "/exam-planner/schedule",

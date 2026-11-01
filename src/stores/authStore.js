@@ -1,6 +1,5 @@
 import { create } from 'zustand';
-import { request } from '@lib/api/request.js';
-import { decrypt } from '@lib/utils/crypto.js';
+import * as authApi from '@lib/api/authApi.js';
 import { deleteAllQuestions } from '@lib/db/questions.js';
 import { getUser, deleteUser } from '@lib/db/users';
 import { userStore } from './userStore.js';
@@ -14,6 +13,9 @@ export const authStore = create(set => ({
   isActivated: false,
   isLoading: true,
 
+  /*========
+    ACTION
+  ==========*/
   refresh: async () => {
     try {
       // check if there's any session in indexedDB first
@@ -21,17 +23,13 @@ export const authStore = create(set => ({
       if (!existingSession){
         throw new Error('No existing session. Sign in required.')
       }
-      const res = await request.send('/api/refresh', {
-        method: 'GET',
-        credentials: 'include'
-      })
-      const data = decrypt(res.body.data)
-      if (data?.activationExpired) {
+      const session = await authApi.refreshSession()
+      if (session?.activationExpired) {
         await deleteAllQuestions()
       }
       set({
-        token: data.accessToken,
-        isActivated: data.isActivated
+        token: session.accessToken,
+        isActivated: session.isActivated
       })
     } catch (err){
       if (err.status){
@@ -44,58 +42,34 @@ export const authStore = create(set => ({
   },
 
   signin: async (credentials) => {
-    const res = await request.send('/api/auth', {
-      method: 'POST',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(credentials)
-    });
+    const session = await authApi.signIn(credentials)
 
-    const data = decrypt(res.body.data)
-    if (data?.activationExpired) {
+    if (session?.activationExpired) {
       await deleteAllQuestions()
     }
-    
+
     if (import.meta.env.VITE_ENV === 'production'){
-      await pushNotificationService.enable(data.accessToken)
+      await pushNotificationService.enable(session.accessToken)
     }
     set({
-      token: data.accessToken,
-      isActivated: data.isActivated
+      token: session.accessToken,
+      isActivated: session.isActivated
     })
   },
 
   googleAuth: async (credentialResponse) => {
-    const res = await request.send('/api/auth/google', {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
-      body: JSON.stringify({ token: credentialResponse.credential })
-    })
-    const data = decrypt(res.body.data)
+    const session = await authApi.signInWithGoogle(credentialResponse.credential)
     set({
-      token: data.accessToken,
-      isActivated: data.isActivated
+      token: session.accessToken,
+      isActivated: session.isActivated
     })
   },
 
-  signup: async (credentials) => {
-    await request.send('/api/register', {
-      method: 'POST',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(credentials)
-    })
-
-  },
+  signup: (credentials) => authApi.signUp(credentials),
 
   logout: async () => {
     await Promise.all([
-      request.send('/api/logout'),
+      authApi.signOut(),
       deleteUser()
     ])
 
@@ -111,26 +85,8 @@ export const authStore = create(set => ({
       isActivated: false
     })
   },
-  
-  forgotPassword: async (credentials) => {
-    await request.send('/api/password/forgot-password', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      credentials: 'include',
-      body: JSON.stringify(credentials)
-    })
-  },
-  
-  resetPassword: async (credentials) => {
-    await request.send('/api/password/reset-password', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      credentials: 'include',
-      body: JSON.stringify(credentials)
-    })
-  }
+
+  forgotPassword: (credentials) => authApi.requestPasswordReset(credentials),
+
+  resetPassword: (credentials) => authApi.resetPassword(credentials)
 }))

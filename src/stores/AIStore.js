@@ -1,7 +1,6 @@
 import { create } from 'zustand';
-import { request } from '@lib/api/request.js';
-import { saveUser } from '@lib/db/users.js';
-import { encrypt, decrypt } from '@lib/utils/crypto.js';
+import { explainQuestion } from '@lib/api/aiApi.js';
+import { saveCurrentUser } from '@lib/db/users.js';
 import { authStore } from './authStore.js';
 import { userStore } from './userStore.js';
 
@@ -43,32 +42,13 @@ export const AIStore = create(set => ({
     const { token } = authStore.getState()
     if (!token) throw new Error('No token found')
 
-    const res = await request.auth('/api/ai/explain', {
-      method: 'POST',
-      body: JSON.stringify({
-        questionId: questionId ?? undefined,
-        question: message,
-      }),
-    })
+    const data = await explainQuestion({ questionId, message })
 
-    const data = decrypt(res.body.reply)
-
-    let nextUserInfo = { ...userInfo, aiCredits: data.creditsLeft };
+    const nextUserInfo = { ...userInfo, aiCredits: data.creditsLeft }
     userStore.setState({
       userInfo: nextUserInfo
     })
-
-    const blob = nextUserInfo.blob
-    delete nextUserInfo.blob
-    const encryptedInfo = {
-      ...nextUserInfo,
-      accessToken: token
-    }
-    await saveUser({
-      "info": encrypt(encryptedInfo),
-      blob,
-      id: 'current-user'
-    })
+    await saveCurrentUser(nextUserInfo, token)
 
     return data.answer
   }

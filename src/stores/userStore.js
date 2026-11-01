@@ -1,16 +1,25 @@
 import { create } from 'zustand';
-import { request } from '@lib/api/request.js';
+import { fetchSettings, fetchProfileImage } from '@lib/api/settingsApi.js';
+import { fetchHistory } from '@lib/api/historyApi.js';
 import { decrypt, encrypt } from '@lib/utils/crypto.js';
 import { saveQuestions } from '@lib/db/questions.js';
-import { saveUser, getUser } from '@lib/db/users.js';
+import { saveUser, saveCurrentUser, getUser } from '@lib/db/users.js';
 import { saveHistory, clearHistory, getHistory } from '@lib/db/history.js';
 import { getUserUpcomingExams, deleteUpcomingExam } from '@lib/db/upcomingExams.js';
 import { getExamStats } from '@lib/db/examStats.js';
 import { authStore } from './authStore.js';
 import { scheduledExamStore } from './scheduledExamStore.js';
-import { submitLocalHistory } from '@lib/api/submitHistory.js';
+import { submitLocalHistory } from '@/services/historyService.js';
 import { addMinutes } from '@lib/utils/dateTimeOp';
 import pushNotificationService from '@/services/pushNotificationService.js';
+
+// Editable profile fields (settings form), with their defaults.
+const toProfileFields = (user) => ({
+  fullName: user?.fullName || '',
+  phoneNumber: user?.phoneNumber || '',
+  targetExam: user?.targetExam || 'JAMB UTME 2027',
+  targetScore: user?.targetScore || '',
+})
 
 export const userStore = create(set => ({
   /*========
@@ -46,10 +55,7 @@ export const userStore = create(set => ({
   })),
   
   fetchUserInfo: async () => {
-    const res = await request.auth('/api/settings', {
-      method: 'GET',
-    })
-    const data = decrypt(res.body.data)
+    const data = await fetchSettings()
     if (data?.pendingClientUpdates && data.pendingClientUpdates.length >= 1) {
       const qs = data.pendingClientUpdates.map(q =>
       ({
@@ -65,25 +71,14 @@ export const userStore = create(set => ({
     let blob;
     try {
       if (data?.profileUrl) {
-        const res = await fetch(data.profileUrl)
-        if (!res.ok) {
-          throw new Error(`Failed to load profile pic: ${res.status}`)
-        }
-        blob = await res.blob();
+        blob = (await fetchProfileImage(data.profileUrl)) ?? undefined
       }
     } catch (err) {
       console.error(err)
     }
     const token = authStore.getState().token
 
-    await saveUser({
-      "info": encrypt({
-        ...data,
-        accessToken: token
-      }),
-      blob: blob,
-      id: 'current-user'
-    })
+    await saveCurrentUser({ ...data, blob }, token)
 
     set({
       userInfo: {
@@ -92,23 +87,15 @@ export const userStore = create(set => ({
         id: 'current-user'
       },
       userId: data._id,
-      profileFields: {
-        fullName: data.fullName || '',
-        phoneNumber: data.phoneNumber || '',
-        targetExam: data.targetExam || 'JAMB UTME 2027',
-        targetScore: data.targetScore || '',
-      }
+      profileFields: toProfileFields(data)
     })
   },
 
   fetchUserHistory: async () => {
     await submitLocalHistory()
-    const res = await request.auth('/api/history', {
-      method: 'GET',
-    })
-    const data = res.body
+    const data = await fetchHistory()
 
-    if (res.status === 204) {
+    if (data === null) {
       await clearHistory()
       set({
         historyData: []
@@ -167,12 +154,7 @@ export const userStore = create(set => ({
     set({
       userInfo: user,
       userId: user._id,
-      profileFields: {
-        fullName: user?.fullName || '',
-        phoneNumber: user?.phoneNumber || '',
-        targetExam: user?.targetExam || 'JAMB UTME 2027',
-        targetScore: user?.targetScore || '',
-      },
+      profileFields: toProfileFields(user),
       historyData: userHistory
     })
     

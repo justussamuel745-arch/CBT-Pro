@@ -2,10 +2,9 @@ import { useState } from "react";
 import { useSearchParams, useNavigate} from 'react-router';
 import { toast } from 'react-hot-toast';
 import { MarkdownContent } from '@/components/common/MarkdownContent';
-import { request } from '@lib/api/request';
+import { searchQuestions } from '@lib/api/questionsApi';
 import { Image } from '@/components/common/Image';
 import { formatName } from '@lib/utils/formatName.js';
-import { decrypt } from '@lib/utils/crypto';
 import { authStore } from '@/stores/authStore';
 import { saveQuestions } from '@lib/db/questions';
 import { saveAllImages } from '@lib/db/images';
@@ -123,10 +122,7 @@ export default function Search() {
     }
     setIsSearching(true);
     try {
-      const res = await request.auth(`/api/search?subject=${subject.toLowerCase()}${year !== 'All' ? `&year=${year}` : ''}${query ? `&keyword=${query}` : ''}`, {
-        method: 'GET'
-      })
-      const data = decrypt(res.body.data)
+      const data = await searchQuestions({ subject, year, query })
       await Promise.all([
         saveQuestions(data),
         saveAllImages(data)

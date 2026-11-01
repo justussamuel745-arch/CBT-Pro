@@ -1,13 +1,13 @@
 import { useState, useEffect, useRef, useMemo } from "react";
 import { useSearchParams, useNavigate, Link, Navigate } from "react-router";
-import { ModalDialog, ModalCentered, CSS } from '@/components/NotificationSystem'
+import { ModalDialog, ModalCentered, CSS } from '@/components/feedback/NotificationSystem'
 import './Config.css';
 import { SUBJECTS_DATA } from '@lib/data/subjects';
 import { formatName } from '@lib/utils/formatName';
 import { authStore } from '@/stores/authStore';
 import { studyStore } from '@/stores/studyStore';
-import { request } from '@lib/api/request';
-import { decrypt } from '@lib/utils/crypto';
+import { downloadSubjectQuestions } from '@lib/api/questionsApi';
+import { getErrorMessage } from '@lib/api/errors';
 import { saveQuestions } from '@lib/db/questions';
 import { saveAllImages } from '@lib/db/images';
 import { DOWNLOADED_SUBJECTS_KEY } from '@lib/config/app'
@@ -276,17 +276,13 @@ export default function Config() {
 
       let questions;
       try {
-        const res = await request.auth('/api/questions/download', {
-          method: 'POST',
-          body: JSON.stringify({ subjects: [s.name] })
-        });
-        const subjectQuestions = decrypt(res.body.questions);
+        const subjectQuestions = await downloadSubjectQuestions(s.name);
         questions = Object.values(subjectQuestions).flat();
         updateSubjectProgress(s.id, { fetchState: 'success' });
       } catch (err) {
         updateSubjectProgress(s.id, {
           fetchState: 'error',
-          fetchError: err?.error || 'Could not reach the server.',
+          fetchError: getErrorMessage(err, 'Could not reach the server.'),
           saveState: 'skipped',
         });
         continue;

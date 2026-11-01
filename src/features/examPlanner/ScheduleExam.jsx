@@ -6,7 +6,8 @@ import { scheduledExamStore } from '@/stores/scheduledExamStore';
 import { userStore } from '@/stores/userStore';
 import { SUBJECTS_DATA } from '@lib/data/subjects';
 import { formatName } from '@lib/utils/formatName';
-import { ModalDialog, CSS } from '@/components/NotificationSystem';
+import { describeError } from '@lib/api/errors';
+import { ModalDialog, CSS } from '@/components/feedback/NotificationSystem';
 import "./ScheduleExam.css";
 
 const SUBJECTS = SUBJECTS_DATA.map(sub => sub.name)
@@ -183,6 +184,12 @@ const formatDateTimeForInputs = (mongoDate) => {
   };
 }
 
+// Shown when saving, editing or rescheduling an exam fails.
+const SCHEDULE_ERRORS = {
+  network: "Couldn't reach the server. Check your internet connection and try again",
+  server: 'Something went wrong.',
+};
+
 export default function ScheduleExam() {
   const upcomingExams = scheduledExamStore(state => state.upcomingExams)
   const saveScheduledExam = scheduledExamStore(state => state.saveScheduledExam);
@@ -302,16 +309,10 @@ export default function ScheduleExam() {
 
       setScheduleSuccess(updatedForm);
     } catch (err) {
-      if (!err?.status) {
-        setServerError(
-          'Couldn\'t reach the server. Check your internet connection and try again'
-        );
-      } else if (err.status >= 500) {
-        setServerError('Something went wrong.');
-      } else if (err.status === 401) {
-        setModal(err.error)
+      if (err?.status === 401) {
+        setModal(err.message)
       } else {
-        setServerError(err.error)
+        setServerError(describeError(err, SCHEDULE_ERRORS))
       }
     } finally {
       const btnElement = scheduleButtonRef.current;
@@ -338,13 +339,7 @@ export default function ScheduleExam() {
       success: 'Edited.',
       error: false
     }).catch((err) => {
-      if (!err.status) {
-        setServerError('Couldn\'t reach the server. Check your internet connection and try again')
-      } else if (err.status >= 500) {
-        setServerError('Something went wrong.')
-      } else {
-        setServerError(err.error)
-      }
+      setServerError(describeError(err, SCHEDULE_ERRORS))
     }).finally(() => {
       const btnElement = scheduleButtonRef.current
       btnElement.style.opacity = '1'
@@ -376,11 +371,7 @@ export default function ScheduleExam() {
 
     } catch (err) {
       toast.error(
-        !err.status
-          ? "Couldn't reach the server. Check your internet connection and try again"
-          : err.status >= 500
-            ? 'Something went wrong.'
-            : err.error || 'Rescheduling failed',
+        describeError(err, { ...SCHEDULE_ERRORS, fallback: 'Rescheduling failed' }),
         { id: toastId }
       );
 

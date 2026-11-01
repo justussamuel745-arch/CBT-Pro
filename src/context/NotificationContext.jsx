@@ -8,7 +8,7 @@ import {
   useRef
 } from "react";
 
-import * as notificationServiceHandlers from "@/services/notificationService";
+import * as notificationApi from "@lib/api/notificationApi";
 import socketService from "@/services/socketService";
 
 import {
@@ -57,7 +57,7 @@ export const NotificationProvider = ({ children }) => {
   const pwa = usePWAInstall()
 
   const handlers = useMemo(() => {
-    return notificationServiceHandlers
+    return notificationApi
   },[])
 
   const hasLoadNotifications = useRef(false)
