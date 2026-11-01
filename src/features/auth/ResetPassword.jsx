@@ -6,7 +6,7 @@ import { authStore } from '@/stores/authStore';
 import { describeError } from '@lib/api/errors';
 import './ResetPassword.css';
 
-export function ResetPassword() {
+export default function ResetPassword() {
   const resetPassword = authStore(state => state.resetPassword)
   const navigate = useNavigate()
   const [formData, setFormData] = useState({ password: '', confirmPassword: '' })

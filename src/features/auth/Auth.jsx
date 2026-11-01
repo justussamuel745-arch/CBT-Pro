@@ -16,7 +16,7 @@ export default function Auth(){
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/reset-password" element={
         <Suspense fallback={<Loading />}>
-          <ResetPassword />110
+          <ResetPassword />
         </Suspense>
       } />
     </Routes>
