@@ -50,5 +50,5 @@ export const sendEmailCode = async (email) => {
 }
 
 export const verifyEmailCode = async (email, code) => {
-  await postJson('/api/auth/email/send-code', { email, code  })
+  await postJson('/api/auth/email/verify-code', { email, code  })
 }
