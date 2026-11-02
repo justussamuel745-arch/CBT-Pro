@@ -43,3 +43,12 @@ export const requestPasswordReset = async (credentials) => {
 export const resetPassword = async (credentials) => {
   await postJson('/api/password/reset-password', credentials);
 };
+
+export const sendEmailCode = async (email) => {
+  const res =  await postJson('/api/auth/email/send-code', { email })
+  return res?.body
+}
+
+export const verifyEmailCode = async (email, code) => {
+  await postJson('/api/auth/email/send-code', { email, code  })
+}

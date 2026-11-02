@@ -1,16 +1,19 @@
 import { useState, useEffect, useRef, createContext, useContext, useCallback } from 'react'
 import { Link, useNavigate } from 'react-router';
-import { GoogleAuth } from './components/GoogleAuth';;
+import { GoogleAuth } from './components/GoogleAuth';
 import { Ic } from '@/components/common/Icons.jsx';
+import { EmailVerifyField } from '@/components/common/EmailVerifyField';
+import { PENDING_VERIFICATION_KEY } from '@/hooks/useEmailVerification';
 import { authStore } from '@/stores/authStore';
 import { passwordStrength } from '@lib/utils/passwordStrength';
 import { getFieldErrors } from '@lib/api/errors';
+import { sendEmailCode, verifyEmailCode } from '@lib/api/authApi.js';
 import './Signup.css';
 
 const ToastCtx = createContext(null);
 const useToast = () => useContext(ToastCtx);
 let _tid = 0;
- 
+
 function ToastProvider({ children }) {
   const navigate = useNavigate()
   const [toasts, setToasts] = useState([]);
@@ -19,19 +22,19 @@ function ToastProvider({ children }) {
     setToasts(p => {
       const toast = p.find(t => t.id === id);
       // Only navigate if user clicked X and toast type is success
-      if (dismissType){
+      if (dismissType) {
         if (toast?.type === "success") navigate('/auth/');
       }
-      
-      return p.map(t => t.id === id? {...t, exiting: true } : t);
+
+      return p.map(t => t.id === id ? { ...t, exiting: true } : t);
     });
-    setTimeout(() => setToasts(p => p.filter(t => t.id!== id)), 220);
+    setTimeout(() => setToasts(p => p.filter(t => t.id !== id)), 220);
   }, [navigate]);
 
   const push = useCallback((cfg) => {
     const id = ++_tid;
-    const dur = cfg.duration?? 4500;
-    setToasts(p => [...p, {...cfg, id, exiting: false, progress: 100, startedAt: Date.now(), duration: dur }]);
+    const dur = cfg.duration ?? 4500;
+    setToasts(p => [...p, { ...cfg, id, exiting: false, progress: 100, startedAt: Date.now(), duration: dur }]);
     if (dur > 0) setTimeout(() => dismiss(id, 'auto'), dur);
     return id;
   }, [dismiss]);
@@ -70,7 +73,7 @@ function AuthToast({ type = "success", title, message, duration, startedAt, exit
 
   const ICON = { success: <Ic.Check />, error: <Ic.X />, warning: <Ic.Warn />, info: <Ic.Info /> };
   return (
-    <div className={`register-toast t-${type} ${exiting? "exiting" : ""}`}>
+    <div className={`register-toast t-${type} ${exiting ? "exiting" : ""}`}>
       <div className={`register-toast-icon t-${type}`}>{ICON[type]}</div>
       <div className="register-toast-content">
         {title && <div className="register-toast-title">{title}</div>}
@@ -104,12 +107,12 @@ function AuthModal({ type, icon, title, message, primaryLabel, secondaryLabel, o
           <div className="register-modal-msg" dangerouslySetInnerHTML={{ __html: message }} />
           <div className="register-modal-actions">
             {primaryLabel && (
-              <button className={`register-modal-btn primary-${type === "info"? "primary" : type}`} onClick={onPrimary?? onClose}>
+              <button className={`register-modal-btn primary-${type === "info" ? "primary" : type}`} onClick={onPrimary ?? onClose}>
                 {primaryLabel}
               </button>
             )}
             {secondaryLabel && (
-              <button className="register-modal-btn ghost" onClick={onSecondary?? onClose}>
+              <button className="register-modal-btn ghost" onClick={onSecondary ?? onClose}>
                 {secondaryLabel}
               </button>
             )}
@@ -138,44 +141,83 @@ function FormAlert({ kind, title, message, onDismiss }) {
   );
 }
 
-function validateSignUp({ fullName, email, phoneNumber, password, confirm }) {
+// Maps <EmailVerifyField /> onto this page's own styles
+const EMAIL_FIELD_CLASSES = {
+  group: 'register-form-group',
+  label: 'register-form-label',
+  input: 'register-form-input',
+  inputError: 'has-error',
+  fieldError: 'register-field-error',
+  fieldSuccess: 'register-field-hint',
+  spinner: 'register-spinner',
+  submit: 'register-submit',
+};
+const EMAIL_FIELD_ICONS = { error: <Ic.X />, success: <Ic.Check /> };
+
+function validateSignUp({ fullName, email, phoneNumber, password, confirm, emailVerified }) {
   const errs = {};
   if (!fullName.trim()) errs.fullName = "Enter your full name.";
   if (!email.trim()) errs.email = "Enter your email address.";
   else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) errs.email = "That doesn't look like a valid email.";
+  else if (!emailVerified) errs.email = "Verify your email address to continue.";
   if (!phoneNumber.trim()) errs.phoneNumber = "Enter your phone number.";
   else if (!/^0[789][01]\d{8}$/.test(phoneNumber.replace(/\s/g, ""))) errs.phoneNumber = "Enter a valid Nigerian phone number (e.g. 08012345678).";
   if (!password) errs.password = "Choose a password.";
   else if (password.length < 6) errs.password = "Password must be at least 6 characters.";
   if (!confirm) errs.confirm = "Confirm your password.";
-  else if (confirm!== password) errs.confirm = "Passwords don't match.";
+  else if (confirm !== password) errs.confirm = "Passwords don't match.";
   return errs;
 }
 
 function Register() {
+  const pendingVerification = JSON.parse(localStorage.getItem(PENDING_VERIFICATION_KEY))
+  const pendingEmail = pendingVerification?.email
+  const requestedTimeInMilliSec = pendingVerification?.requestedTimeInMilliSec
+  
+  if (requestedTimeInMilliSec){
+    const now = Date.now()
+    const hasExpired = now > requestedTimeInMilliSec
+    if (hasExpired){
+      localStorage.removeItem(PENDING_VERIFICATION_KEY)
+    }
+  }
+  
   const signup = authStore(state => state.signup)
+  /*
+  const sendEmailCode = () => new Promise((resolve, reject) => setTimeout(() => resolve(), 3000)) //authStore(state => state.sendEmailCode)
+  const verifyEmailCode = () => new Promise((resolve, reject) => resolve()) // authStore(state => state.verifyEmailCode)
+  */
   const toast = useToast();
-  const [fields, setFields] = useState({ fullName: "", email: "", phoneNumber: "", password: "", confirm: "" });
+  const [fields, setFields] = useState({ fullName: "", email: pendingEmail ?? "", phoneNumber: "", password: "", confirm: "" });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [formAlert, setFormAlert] = useState(null);
   const [modal, setModal] = useState(null);
   const [busy, setBusy] = useState(null)
+  const [verifiedEmail, setVerifiedEmail] = useState(null)
 
   const set = (k, v) => {
-    setFields(p => ({...p, [k]: v }));
-    if (errors[k]) setErrors(p => { const n = {...p }; delete n[k]; return n; });
+    setFields(p => ({ ...p, [k]: v }));
+    if (errors[k]) setErrors(p => { const n = { ...p }; delete n[k]; return n; });
     setFormAlert(null);
+  };
+
+  const handleEmailVerified = (email) => {
+    setVerifiedEmail(email);
+    if (email) {
+      setErrors(p => { const n = { ...p }; delete n.email; return n; });
+      setFormAlert(null);
+    }
   };
 
   const strength = passwordStrength(fields.password)
 
   const handleSubmit = async (event) => {
     event.preventDefault()
-    const errs = validateSignUp(fields);
+    const errs = validateSignUp({ ...fields, emailVerified: verifiedEmail});
     if (Object.keys(errs).length) {
       setErrors(errs);
-      setFormAlert({ kind: "error", title: "Fix the errors above", message: `${Object.keys(errs).length} field${Object.keys(errs).length > 1? "s need" : " needs"} your attention before you can continue.` });
+      setFormAlert({ kind: "error", title: "Fix the errors above", message: `${Object.keys(errs).length} field${Object.keys(errs).length > 1 ? "s need" : " needs"} your attention before you can continue.` });
       return;
     }
     setLoading(true);
@@ -184,27 +226,26 @@ function Register() {
     try {
       await signup(fields)
       applySignUpScenario('success');
-      setLoading(false)
     } catch (err) {
       // The frontend already validates, so server side validation errors
       // are simply shown on their fields.
       const fieldErrors = getFieldErrors(err)
-      if (fieldErrors){
+      if (fieldErrors) {
         setErrors(fieldErrors)
         return
       }
       console.error('Error:', err);
-      if (!err.status){
+      if (!err.status) {
         applySignUpScenario('network');
-      } else if (err.status === 429){
+      } else if (err.status === 429) {
         applySignUpScenario('too_many_attempt');
       } else if (err.status >= 500) {
         applySignUpScenario('server_error');
       } else {
         applySignUpScenario(err.message);
       }
-      setLoading(false)
     } finally {
+      setLoading(false)
       setBusy(null)
     }
   };
@@ -236,8 +277,11 @@ function Register() {
           title: "Too many attempts",
           message: "You've made too many failed sign-in attempts. Your account is temporarily locked for <strong>15 minutes</strong> to protect your data.",
           secondaryLabel: "Wait and try again",
-          onPrimary: () => { setModal(null)}
+          onPrimary: () => { setModal(null) }
         });
+        break;
+      case "unverified_email":
+        setFormAlert({ kind: "error", title: "Email not verified", message: "Click the verify button below the email input to verify your email and continue." });
         break;
       case "server_error":
         setModal({
@@ -245,7 +289,7 @@ function Register() {
           title: "Something went wrong",
           message: "We ran into an unexpected error while creating your account. Your details were <strong>not saved</strong>. Please try again in a moment.",
           primaryLabel: "Try again",
-          onPrimary: () => { setModal(null); toast.push({ type: "info", title: "Retrying…", message: "Give it another go." });}
+          onPrimary: () => { setModal(null); toast.push({ type: "info", title: "Retrying…", message: "Give it another go." }); }
         });
         toast.push({ type: "error", title: "Server error (500)", message: "Please try again shortly." });
         break;
@@ -274,8 +318,9 @@ function Register() {
               <div className="register-form-group">
                 <label className="register-form-label" htmlFor="fullname">Full Name</label>
                 <input
+                  id="fullname"
                   type="text"
-                  className={`register-form-input ${errors.fullName? 'has-error' : ''}`}
+                  className={`register-form-input ${errors.fullName ? 'has-error' : ''}`}
                   placeholder="Enter your full name"
                   value={fields.fullName}
                   onChange={(event) => set("fullName", event.target.value)}
@@ -283,23 +328,24 @@ function Register() {
                 {errors.fullName && <div className="register-field-error"><Ic.X />{errors.fullName}</div>}
               </div>
 
-              <div className="register-form-group">
-                <label className="register-form-label" htmlFor="email">Email Address</label>
-                <input
-                  type="email"
-                  className={`register-form-input ${errors.email? 'has-error' : ''}`}
-                  placeholder="Enter your email"
-                  value={fields.email}
-                  onChange={(event) => set("email", event.target.value)}
-                />
-                {errors.email && <div className="register-field-error"><Ic.X />{errors.email}</div>}
-              </div>
+              <EmailVerifyField
+                id="email"
+                email={fields.email}
+                onEmailChange={(value) => set("email", value)}
+                error={errors.email}
+                onSendCode={sendEmailCode}
+                onVerifyCode={verifyEmailCode}
+                onVerifiedChange={handleEmailVerified}
+                classes={EMAIL_FIELD_CLASSES}
+                icons={EMAIL_FIELD_ICONS}
+              />
 
               <div className="register-form-group">
                 <label className="register-form-label" htmlFor="phone">Phone Number</label>
                 <input
+                  id="phone"
                   type="tel"
-                  className={`register-form-input ${errors.phoneNumber? 'has-error' : ''}`}
+                  className={`register-form-input ${errors.phoneNumber ? 'has-error' : ''}`}
                   placeholder="08012345678"
                   value={fields.phoneNumber}
                   onChange={(event) => set("phoneNumber", event.target.value)}
@@ -310,14 +356,15 @@ function Register() {
               <div className="register-form-group">
                 <label className="register-form-label" htmlFor="password">Password</label>
                 <input
+                  id="password"
                   type="password"
-                  className={`register-form-input ${errors.password? 'has-error' : ''}`}
+                  className={`register-form-input ${errors.password ? 'has-error' : ''}`}
                   placeholder="Create a password"
                   value={fields.password}
                   onChange={(event) => set("password", event.target.value)}
                 />
                 {errors.password && <div className="register-field-error"><Ic.X />{errors.password}</div>}
-                {fields.password &&!errors.password && (
+                {fields.password && !errors.password && (
                   <div className="register-strength">
                     <div className="register-strength-bar">
                       <div className="register-strength-fill" style={{ width: `${strength.pct}%`, background: strength.color }} />
@@ -330,8 +377,9 @@ function Register() {
               <div className="register-form-group">
                 <label className="register-form-label" htmlFor="confirm-password">Confirm Password</label>
                 <input
+                  id="confirm-password"
                   type="password"
-                  className={`register-form-input ${errors.confirm? 'has-error' : pwOk? " has-success" : ""}`}
+                  className={`register-form-input ${errors.confirm ? 'has-error' : pwOk ? " has-success" : ""}`}
                   placeholder="Confirm your password"
                   value={fields.confirm}
                   onChange={(event) => set("confirm", event.target.value)}
@@ -346,10 +394,10 @@ function Register() {
                 onClick={handleSubmit}
                 disabled={loading || busy === 'google'}
               >
-                {loading? <><span className="register-spinner" /> Creating account…</> : "Create account"}
+                {loading ? <><span className="register-spinner" /> Creating account…</> : "Create account"}
               </button>
             </form>
-            
+
             <GoogleAuth dividerLabel={"or sign up with"} action={"signup_with"} busy={busy} setBusy={setBusy} />
 
             <div className="register-footer">
@@ -358,14 +406,14 @@ function Register() {
           </div>
         </div>
         {modal && (
-          <AuthModal {...modal} onClose={() => {setModal(null)}}/>
+          <AuthModal {...modal} onClose={() => { setModal(null) }} />
         )}
       </div>
     </>
   )
 }
 
-export function Signup(){
+export function Signup() {
   return (
     <ToastProvider>
       <Register />
