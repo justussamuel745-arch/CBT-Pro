@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router";
+import { Helmet } from 'react-helmet-async';
 import { ACTIVATION_PRICE } from '@lib/config/app.js'
 import './HelpCenter.css';
 
@@ -285,209 +286,224 @@ export default function HelpCenter() {
       : [];
 
   return (
-    <div className="help-page">
-      <nav className="help-nav">
-        <div className="help-container">
-          <div className="help-nav-content">
-            <Link to="/" className="help-logo">CBT Pro</Link>
-            <span className="help-nav-crumb">
-              <strong>Help Center</strong>
-              {view !== "category" || catId !== categories[0].id ? (
-                <> / {view === "search" ? "Search" : activeCategory.title}</>
-              ) : (
-                <> / {activeCategory.title}</>
-              )}
-            </span>
-          </div>
-        </div>
-      </nav>
+    <>
+      <Helmet>
+        <title>CBT Pro Help Center | Support and FAQs</title>
 
-      <header className="help-hero">
-        <div className="help-container">
-          <h1>How can we help?</h1>
-          <p>Answers to common questions about studying, activation, and your account.</p>
-          <div className="help-search">
-            <i className="fa-solid fa-magnifying-glass" />
-            <input
-              type="text"
-              value={searchTerm}
-              onChange={handleSearchChange}
-              placeholder='Search for an answer, e.g. "target score" or "Paystack"'
-              autoComplete="off"
-            />
-          </div>
-        </div>
-      </header>
-
-      <div className="help-container">
-        <div className="help-layout">
-          <aside className="help-sidebar">
-            <div className="help-sidebar-select">
-              <select
-                value={catId}
-                onChange={(e) => goToCategory(e.target.value)}
-              >
-                {categories.map((cat) => (
-                  <option key={cat.id} value={cat.id}>
-                    {cat.title}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className="help-sidebar-nav">
-              <div className="help-sidebar-label">CATEGORIES</div>
-              {categories.map((cat) => (
-                <button
-                  key={cat.id}
-                  className={
-                    "help-nav-item" +
-                    (cat.id === catId && view !== "search" ? " active" : "")
-                  }
-                  style={{ "--item-color": `var(${cat.colorVar})` }}
-                  onClick={() => goToCategory(cat.id)}
-                >
-                  <span className="help-nav-icon">
-                    <i className={cat.icon} />
-                  </span>
-                  {cat.title}
-                  <span className="help-nav-count">{cat.items.length}</span>
-                </button>
-              ))}
-            </div>
-
-            <div className="help-sidebar-contact">
-              <h3>Still stuck?</h3>
-              <p>Can't find what you're looking for? Send us a message and we'll get back to you.</p>
-              <a
-                className="help-mail-btn"
-                href="mailto:teamcbtpro@gmail.com"
-              >
-                <i className="fa-solid fa-envelope" /> Email Support
-              </a>
-            </div>
-          </aside>
-
-          <main className="help-main">
-            {view === "search" && (
-              <>
-                {searchResults.length === 0 ? (
-                  <div className="help-empty">
-                    <i className="fa-solid fa-magnifying-glass" />
-                    <p>No results for "{searchTerm}". Try a different term, or email support.</p>
-                  </div>
+        <meta
+          name="description"
+          content="Find answers to common questions about CBT Pro, account registration, JAMB practice, examinations and platform features."
+        />
+        <link
+          rel="canonical"
+          href="https://www.cbtpro.site/help"
+        />
+      </Helmet>
+      
+      <div className="help-page">
+        <nav className="help-nav">
+          <div className="help-container">
+            <div className="help-nav-content">
+              <Link to="/" className="help-logo">CBT Pro</Link>
+              <span className="help-nav-crumb">
+                <strong>Help Center</strong>
+                {view !== "category" || catId !== categories[0].id ? (
+                  <> / {view === "search" ? "Search" : activeCategory.title}</>
                 ) : (
-                  <>
-                    <div className="help-section-head">
-                      <h2>
-                        {searchResults.length} result
-                        {searchResults.length !== 1 ? "s" : ""}
-                      </h2>
-                    </div>
-                    <div className="help-grid">
-                      {searchResults.map(({ cat, idx, item }) => (
-                        <button
-                          key={cat.id + idx}
-                          className="help-card"
-                          style={{ "--card-color": `var(${cat.colorVar})` }}
-                          onClick={() => openItem(cat.id, idx)}
-                        >
-                          <span className="help-card-tag">{cat.title}</span>
-                          <div className="help-card-q">{item.q}</div>
-                          <div className="help-card-snippet">{snippet(item.a, 90)}</div>
-                        </button>
-                      ))}
-                    </div>
-                  </>
+                  <> / {activeCategory.title}</>
                 )}
-              </>
-            )}
-
-            {view === "category" && (
-              <>
-                <div className="help-section-head">
-                  <div
-                    className="help-eyebrow"
-                    style={{ "--head-color": `var(${activeCategory.colorVar})` }}
-                  >
-                    <i className={activeCategory.icon} /> {activeCategory.title}
-                  </div>
-                  <h2>{activeCategory.title}</h2>
-                  <p>{activeCategory.description}</p>
-                </div>
-                <div className="help-grid">
-                  {activeCategory.items.map((item, idx) => (
-                    <button
-                      key={idx}
-                      className="help-card"
-                      style={{ "--card-color": `var(${activeCategory.colorVar})` }}
-                      onClick={() => openItem(activeCategory.id, idx)}
-                    >
-                      <div className="help-card-q">
-                        {item.q} <i className="fa-solid fa-arrow-right" />
-                      </div>
-                      <div className="help-card-snippet">{snippet(item.a, 90)}</div>
-                    </button>
-                  ))}
-                </div>
-              </>
-            )}
-
-            {view === "article" && itemIdx !== null && (
-              <>
-                <div className="help-breadcrumb">
-                  <button onClick={() => goToCategory(activeCategory.id)}>
-                    ← {activeCategory.title}
-                  </button>
-                </div>
-                <div
-                  className="help-article"
-                  style={{ "--art-color": `var(${activeCategory.colorVar})` }}
+              </span>
+            </div>
+          </div>
+        </nav>
+  
+        <header className="help-hero">
+          <div className="help-container">
+            <h1>How can we help?</h1>
+            <p>Answers to common questions about studying, activation, and your account.</p>
+            <div className="help-search">
+              <i className="fa-solid fa-magnifying-glass" />
+              <input
+                type="text"
+                value={searchTerm}
+                onChange={handleSearchChange}
+                placeholder='Search for an answer, e.g. "target score" or "Paystack"'
+                autoComplete="off"
+              />
+            </div>
+          </div>
+        </header>
+  
+        <div className="help-container">
+          <div className="help-layout">
+            <aside className="help-sidebar">
+              <div className="help-sidebar-select">
+                <select
+                  value={catId}
+                  onChange={(e) => goToCategory(e.target.value)}
                 >
-                  <div className="help-article-bar" />
-                  <div className="help-article-body">
-                    <button
-                      className="help-article-close"
-                      onClick={closeArticle}
-                      aria-label="Close"
+                  {categories.map((cat) => (
+                    <option key={cat.id} value={cat.id}>
+                      {cat.title}
+                    </option>
+                  ))}
+                </select>
+              </div>
+  
+              <div className="help-sidebar-nav">
+                <div className="help-sidebar-label">CATEGORIES</div>
+                {categories.map((cat) => (
+                  <button
+                    key={cat.id}
+                    className={
+                      "help-nav-item" +
+                      (cat.id === catId && view !== "search" ? " active" : "")
+                    }
+                    style={{ "--item-color": `var(${cat.colorVar})` }}
+                    onClick={() => goToCategory(cat.id)}
+                  >
+                    <span className="help-nav-icon">
+                      <i className={cat.icon} />
+                    </span>
+                    {cat.title}
+                    <span className="help-nav-count">{cat.items.length}</span>
+                  </button>
+                ))}
+              </div>
+  
+              <div className="help-sidebar-contact">
+                <h3>Still stuck?</h3>
+                <p>Can't find what you're looking for? Send us a message and we'll get back to you.</p>
+                <a
+                  className="help-mail-btn"
+                  href="mailto:teamcbtpro@gmail.com"
+                >
+                  <i className="fa-solid fa-envelope" /> Email Support
+                </a>
+              </div>
+            </aside>
+  
+            <main className="help-main">
+              {view === "search" && (
+                <>
+                  {searchResults.length === 0 ? (
+                    <div className="help-empty">
+                      <i className="fa-solid fa-magnifying-glass" />
+                      <p>No results for "{searchTerm}". Try a different term, or email support.</p>
+                    </div>
+                  ) : (
+                    <>
+                      <div className="help-section-head">
+                        <h2>
+                          {searchResults.length} result
+                          {searchResults.length !== 1 ? "s" : ""}
+                        </h2>
+                      </div>
+                      <div className="help-grid">
+                        {searchResults.map(({ cat, idx, item }) => (
+                          <button
+                            key={cat.id + idx}
+                            className="help-card"
+                            style={{ "--card-color": `var(${cat.colorVar})` }}
+                            onClick={() => openItem(cat.id, idx)}
+                          >
+                            <span className="help-card-tag">{cat.title}</span>
+                            <div className="help-card-q">{item.q}</div>
+                            <div className="help-card-snippet">{snippet(item.a, 90)}</div>
+                          </button>
+                        ))}
+                      </div>
+                    </>
+                  )}
+                </>
+              )}
+  
+              {view === "category" && (
+                <>
+                  <div className="help-section-head">
+                    <div
+                      className="help-eyebrow"
+                      style={{ "--head-color": `var(${activeCategory.colorVar})` }}
                     >
-                      <i className="fa-solid fa-xmark" />
-                    </button>
-                    <div className="help-eyebrow">
                       <i className={activeCategory.icon} /> {activeCategory.title}
                     </div>
-                    <h2>{activeCategory.items[itemIdx].q}</h2>
-                    <div
-                      className="help-answer"
-                      dangerouslySetInnerHTML={{ __html: activeCategory.items[itemIdx].a }}
-                    />
-                    {activeCategory.items.length > 1 && (
-                      <div className="help-related">
-                        <h3>MORE IN {activeCategory.title.toUpperCase()}</h3>
-                        {activeCategory.items.map((it, idx) =>
-                          idx === itemIdx ? null : (
-                            <div
-                              key={idx}
-                              className="help-related-item"
-                              onClick={() => openItem(activeCategory.id, idx)}
-                            >
-                              {it.q} <i className="fa-solid fa-arrow-right" />
-                            </div>
-                          )
-                        )}
-                      </div>
-                    )}
+                    <h2>{activeCategory.title}</h2>
+                    <p>{activeCategory.description}</p>
                   </div>
-                </div>
-              </>
-            )}
-          </main>
+                  <div className="help-grid">
+                    {activeCategory.items.map((item, idx) => (
+                      <button
+                        key={idx}
+                        className="help-card"
+                        style={{ "--card-color": `var(${activeCategory.colorVar})` }}
+                        onClick={() => openItem(activeCategory.id, idx)}
+                      >
+                        <div className="help-card-q">
+                          {item.q} <i className="fa-solid fa-arrow-right" />
+                        </div>
+                        <div className="help-card-snippet">{snippet(item.a, 90)}</div>
+                      </button>
+                    ))}
+                  </div>
+                </>
+              )}
+  
+              {view === "article" && itemIdx !== null && (
+                <>
+                  <div className="help-breadcrumb">
+                    <button onClick={() => goToCategory(activeCategory.id)}>
+                      ← {activeCategory.title}
+                    </button>
+                  </div>
+                  <div
+                    className="help-article"
+                    style={{ "--art-color": `var(${activeCategory.colorVar})` }}
+                  >
+                    <div className="help-article-bar" />
+                    <div className="help-article-body">
+                      <button
+                        className="help-article-close"
+                        onClick={closeArticle}
+                        aria-label="Close"
+                      >
+                        <i className="fa-solid fa-xmark" />
+                      </button>
+                      <div className="help-eyebrow">
+                        <i className={activeCategory.icon} /> {activeCategory.title}
+                      </div>
+                      <h2>{activeCategory.items[itemIdx].q}</h2>
+                      <div
+                        className="help-answer"
+                        dangerouslySetInnerHTML={{ __html: activeCategory.items[itemIdx].a }}
+                      />
+                      {activeCategory.items.length > 1 && (
+                        <div className="help-related">
+                          <h3>MORE IN {activeCategory.title.toUpperCase()}</h3>
+                          {activeCategory.items.map((it, idx) =>
+                            idx === itemIdx ? null : (
+                              <div
+                                key={idx}
+                                className="help-related-item"
+                                onClick={() => openItem(activeCategory.id, idx)}
+                              >
+                                {it.q} <i className="fa-solid fa-arrow-right" />
+                              </div>
+                            )
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </>
+              )}
+            </main>
+          </div>
         </div>
+  
+        <footer className="help-footer">
+          © 2026 CBT Pro. JAMB UTME preparation for Nigerian students.
+        </footer>
       </div>
-
-      <footer className="help-footer">
-        © 2026 CBT Pro. JAMB UTME preparation for Nigerian students.
-      </footer>
-    </div>
+    </>
   );
 }

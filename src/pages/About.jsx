@@ -1,11 +1,23 @@
 import { Link } from 'react-router';
+import { Helmet } from 'react-helmet-async';
 import { Footer } from '@/components/layouts/Footer';
 import './About.css';
+
 
 export default function About(){
   return (
     <>
-      <title>About Us | CBT Pro</title>
+      <Helmet>
+        <title>About CBT Pro | JAMB Preparation</title>
+        <meta
+          name="description"
+          content="Learn about CBT Pro, our mission and how we help students prepare for JAMB through realistic CBT practice and detailed explanations."
+        />
+        <link
+          rel="canonical"
+          href="https://www.cbtpro.site/about"
+        />
+      </Helmet>
       
       <nav>
         <div className="nav-container">

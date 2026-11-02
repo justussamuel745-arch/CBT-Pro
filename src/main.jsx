@@ -1,7 +1,8 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { GoogleOAuthProvider } from "@react-oauth/google";
-import { BrowserRouter } from 'react-router'
+import { BrowserRouter } from 'react-router';
+import { HelmetProvider } from 'react-helmet-async';
 import { NotificationProvider } from './context/NotificationContext';
 import { registerSW } from "virtual:pwa-register";
 import './styles/index.css'
@@ -23,9 +24,11 @@ createRoot(document.getElementById('root')).render(
     <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}
     >
         <NotificationProvider>
-          <BrowserRouter>
-            <App />
-          </BrowserRouter>
+          <HelmetProvider>
+            <BrowserRouter>
+              <App />
+            </BrowserRouter>
+          </HelmetProvider>
         </NotificationProvider>
     </GoogleOAuthProvider>
   </StrictMode>
