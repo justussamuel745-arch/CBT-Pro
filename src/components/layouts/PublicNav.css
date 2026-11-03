@@ -1,0 +1,104 @@
+/* Moved here from HomePage.css so every public page gets the same header.
+   Delete the "SCROLL PROGRESS" and "NAV" blocks from HomePage.css. */
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 0.2rem;
+  background: var(--gradient);
+  z-index: 1000;
+  transition: width 0.1s linear;
+}
+
+.public-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter: blur(0.75rem);
+  -webkit-backdrop-filter: blur(0.75rem);
+  border-bottom: 0.0625rem solid transparent;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.public-nav.is-scrolled {
+  border-bottom-color: var(--border);
+  box-shadow: 0 0.5rem 1.5rem -1rem rgba(15, 23, 42, 0.12);
+}
+
+.public-nav .nav-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.public-nav .logo {
+  text-decoration: none;
+  color: inherit;
+}
+
+.public-nav-links {
+  display: none;
+  align-items: center;
+  gap: 0.25rem;
+  margin: 0 auto;
+}
+
+.public-nav-link {
+  padding: 0.5rem 0.9rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: color 0.2s ease, background 0.2s ease;
+}
+
+.public-nav-link:hover,
+.public-nav-link.active {
+  color: var(--primary);
+  background: var(--primary-light);
+}
+
+.public-nav .nav-right {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.public-nav-signin {
+  display: none;
+}
+
+.public-nav-burger {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.625rem;
+  border: 0.0625rem solid var(--border);
+  background: var(--card);
+  color: var(--text);
+  font-size: 1.05rem;
+  cursor: pointer;
+}
+
+.public-nav-burger:focus-visible {
+  outline: 0.15rem solid var(--primary);
+  outline-offset: 0.15rem;
+}
+
+@media (min-width: 30em) {
+  .public-nav-signin {
+    display: inline-flex;
+  }
+}
+
+@media (min-width: 48em) {
+  .public-nav-links {
+    display: flex;
+  }
+
+  .public-nav-burger {
+    display: none;
+  }
+}
