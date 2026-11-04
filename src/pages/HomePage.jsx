@@ -3,8 +3,11 @@ import { Link } from 'react-router'
 import { Footer } from '@/components/layouts/Footer';
 import { InstallAppBanner } from '@/components/layouts/InstallAppBanner';
 import { authStore } from '@/stores/authStore';
-import { ACTIVATION_PRICE } from '@lib/config/app.js'
+import { ACTIVATION_PRICE } from '@lib/config/app.js';
+import HilltopAdsBanner from '@/components/ads/HilltopAdsBanner';
+import { hilltopConfig } from '@lib/config/ads.config.js';
 import './HomePage.css'
+
 
 // TODO: update to the real confirmed JAMB UTME date each year
 const NEXT_UTME_DATE = new Date('2027-04-01')
@@ -374,7 +377,9 @@ export default function HomePage() {
           </div>
         </div>
       </header>
-
+      
+      <HilltopAdsBanner src={hilltopConfig.homeTop} />
+      
       <main>
         <section className="home-section container">
           <Reveal as="h2" className="home-section-title">Everything you need to hit 300+</Reveal>
@@ -461,6 +466,8 @@ export default function HomePage() {
             </Reveal>
           ))}
         </section>
+
+        <HilltopAdsBanner src={hilltopConfig.homeBottom} />
 
         <section className="home-section container">
           <Reveal className="cta">

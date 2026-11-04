@@ -15,3 +15,8 @@ export const monetagConfig = {
     "/auth/reset-password",
   ]
 };
+
+export const hilltopConfig = {
+  homeTop: "\/\/juvenilechoice.com\/b.XjVFsvd\/GZlE0qY\/W\/ch\/_eBmc9RuAZPURlHk\/PMT\/cH1wOMTDQQ5dMNDhE\/tfNdzTUp5cNJDQkawANIQx",
+  homeBottom: "\/\/juvenilechoice.com\/bRX.Vfs\/dlGIl\/0\/YZWKcK\/zeMm\/9wu\/ZzU_lxkAP\/Tzch1YO\/TeUY1\/MEDrkTtlNqzQUI5ONUTnUzxrMZwI"
+}
