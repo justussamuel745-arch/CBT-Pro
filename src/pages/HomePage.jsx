@@ -398,6 +398,8 @@ export default function HomePage() {
           </div>
         </section>
 
+        <HilltopAdsBanner src={hilltopConfig.homeCenterOne} />
+
         <section className="home-section home-steps-section">
           <div className="container">
             <Reveal as="h2" className="home-section-title">How it works</Reveal>
@@ -415,6 +417,8 @@ export default function HomePage() {
             </div>
           </div>
         </section>
+
+        <HilltopAdsBanner src={hilltopConfig.homeCenterTwo} />
 
         <section className="home-section container" id="about">
           <div className="trust-grid">

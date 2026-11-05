@@ -2,10 +2,12 @@ import { useState, useEffect, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { SUBJECTS_DATA } from '@lib/data/subjects';
 import { formatName } from '@lib/utils/formatName';
+import { hilltopConfig } from '@lib/config/ads.config.js';
 import { ModalStripe, ModalDialog, CSS } from '@/components/feedback/NotificationSystem';
 import { authStore } from '@/stores/authStore';
 import { practiceStore } from '@/stores/practiceStore';
 import { examStore } from '@/stores/examStore';
+import HilltopAdsBanner from '@/components/ads/HilltopAdsBanner';
 import './Config.css';
 
 export default function Config() {
@@ -95,6 +97,8 @@ export default function Config() {
           <h1>Configure Your Exam</h1>
         </div>
       </section>
+
+      <HilltopAdsBanner src={hilltopConfig.practicePageTwo} />
 
       <div className="practice-two-container">
         {/* SUBJECTS */}

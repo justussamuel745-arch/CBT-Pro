@@ -2,8 +2,10 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router';
 import { SUBJECTS_DATA } from '@lib/data/subjects';
 import { formatName } from '@lib/utils/formatName';
+import { hilltopConfig } from '@lib/config/ads.config.js';
 import { authStore } from '@/stores/authStore';
 import { examStore } from '@/stores/examStore';
+import HilltopAdsBanner from '@/components/ads/HilltopAdsBanner';
 import './Subjects.css'
 
 const JAMB_SUBJECTS = SUBJECTS_DATA.map(subject => subject.name)
@@ -66,6 +68,8 @@ export default function Subjects() {
           <p>Choose any number of JAMB subjects to start your CBT session</p>
         </div>
       </section>
+
+      <HilltopAdsBanner src={hilltopConfig.practicePageOne} />
 
       <div className="practice-container">
         <div className="practice-card">

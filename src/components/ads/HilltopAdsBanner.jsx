@@ -1,40 +1,49 @@
 import { useEffect, useRef } from "react";
-import { useLocation } from "react-router";
 
 export default function HilltopAdsBanner({ src, height = 250 }) {
   const ref = useRef(null);
-  const location = useLocation();
+  const loadedRef = useRef(false);
 
   useEffect(() => {
     const container = ref.current;
-
     if (!container || !src) return;
 
-    container.innerHTML = "";
+    const loadAd = () => {
+      if (loadedRef.current) return; // request only once
+      loadedRef.current = true;
 
-    const script = document.createElement("script");
+      const script = document.createElement("script");
+      script.textContent = `
+        (function(yoam){
+          var d = document,
+              s = d.createElement('script'),
+              l = d.currentScript || d.scripts[d.scripts.length - 1];
 
-    script.textContent = `
-      (function(yoam){
-        var d = document,
-            s = d.createElement('script'),
-            l = d.currentScript || d.scripts[d.scripts.length - 1];
+          s.settings = yoam || {};
+          s.src = "${src}";
+          s.async = true;
+          s.referrerPolicy = 'no-referrer-when-downgrade';
 
-        s.settings = yoam || {};
-        s.src = "${src}";
-        s.async = true;
-        s.referrerPolicy = 'no-referrer-when-downgrade';
-
-        l.parentNode.insertBefore(s, l);
-      })({})
-    `;
-
-    container.appendChild(script);
-
-    return () => {
-      container.innerHTML = "";
+          l.parentNode.insertBefore(s, l);
+        })({})
+      `;
+      container.appendChild(script);
     };
-  }, [location.pathname, src]);
+
+    if (navigator.onLine) {
+      loadAd();
+      return;
+    }
+
+    // Offline: wait until the user comes online, then load once
+    const handleOnline = () => {
+      loadAd();
+      window.removeEventListener("online", handleOnline);
+    };
+    window.addEventListener("online", handleOnline);
+
+    return () => window.removeEventListener("online", handleOnline);
+  }, [src]);
 
   return (
     <div style={{ textAlign: "center", margin: "20px 0" }}>
