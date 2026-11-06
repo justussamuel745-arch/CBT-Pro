@@ -1,0 +1,33 @@
+/* Shared look for form fields (dropdown trigger, select). */
+.ui-field-label {
+  display: block;
+  margin-bottom: 0.4rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.ui-field-control {
+  width: 100%;
+  min-height: 2.9rem;
+  padding: 0.7rem 1rem;
+  border: 0.0625rem solid var(--border);
+  border-radius: 0.625rem;
+  background: var(--bg);
+  color: var(--text);
+  font: inherit;
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.ui-field-control:hover {
+  border-color: var(--primary);
+}
+
+.ui-field-control:focus-visible {
+  outline: 0.15rem solid var(--primary);
+  outline-offset: 0.1rem;
+}

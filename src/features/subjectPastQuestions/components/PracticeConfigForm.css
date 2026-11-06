@@ -1,0 +1,61 @@
+/* Practice configuration form (SubjectPastQuestions feature) */
+.sp-config {
+  /* stacking context above later sections so open dropdowns are never covered */
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+  max-width: 62rem;
+  margin: 0 auto;
+  padding: clamp(1.25rem, 1rem + 1.5vw, 2rem);
+  background: var(--card);
+  border: 0.0625rem solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.sp-field {
+  min-width: 0;
+}
+
+.sp-config-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.sp-config-actions .btn {
+  width: 100%;
+}
+
+.sp-form-error {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--danger-dark);
+}
+
+.sp-config-hint {
+  margin: 0;
+  font-size: 0.85rem;
+  text-align: center;
+  color: var(--text-muted);
+}
+
+
+@media (min-width: 48em) {
+  .sp-config {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .sp-config-actions {
+    grid-column: 1 / -1;
+    align-items: center;
+  }
+
+  .sp-config-actions .btn {
+    width: auto;
+    min-width: 16rem;
+  }
+}

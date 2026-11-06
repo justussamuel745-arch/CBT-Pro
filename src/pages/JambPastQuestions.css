@@ -1,0 +1,225 @@
+/* =====================================
+   JAMB PAST QUESTIONS PAGE
+   Section, card, FAQ and CTA styles come from HomePage.css.
+   Only page-specific rules live here.
+====================================== */
+
+/* ---------- HERO ---------- */
+.pq-hero {
+  position: relative;
+  overflow: hidden;
+  padding: clamp(3rem, 2rem + 4vw, 5rem) 0 clamp(3rem, 2.5rem + 3vw, 4.5rem);
+  background: var(--bg);
+  text-align: center;
+}
+
+.pq-hero-inner {
+  position: relative;
+  z-index: 1;
+  max-width: 52rem;
+  margin: 0 auto;
+}
+
+.pq-breadcrumb {
+  margin-bottom: 1.25rem;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.pq-breadcrumb a {
+  color: var(--primary);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.pq-breadcrumb a:hover {
+  text-decoration: underline;
+}
+
+.pq-hero h1 {
+  font-size: clamp(2rem, 1.5rem + 3vw, 3.25rem);
+  font-weight: 900;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  margin-bottom: 1.25rem;
+  color: var(--text);
+}
+
+.pq-hero-lead {
+  max-width: 40rem;
+  margin: 0 auto 2rem;
+  font-size: clamp(1rem, 0.9rem + 0.4vw, 1.15rem);
+  line-height: 1.7;
+  color: var(--text-muted);
+}
+
+.pq-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 2.5rem;
+}
+
+.pq-hero .home-hero-stats {
+  margin: 0 auto;
+}
+
+/* ---------- INTRO TEXT ---------- */
+.pq-prose {
+  max-width: 46rem;
+  margin: 0 auto;
+}
+
+.pq-prose p {
+  margin-bottom: 1.25rem;
+  font-size: 1.02rem;
+  line-height: 1.8;
+  color: var(--text-muted);
+}
+
+/* ---------- SUBJECT FILTERS ---------- */
+.pq-filters {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+}
+
+.pq-filter {
+  padding: 0.5rem 1.1rem;
+  border-radius: 999px;
+  border: 0.0625rem solid var(--border);
+  background: var(--card);
+  color: var(--text-muted);
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.pq-filter:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.pq-filter.active {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #fff;
+}
+
+.pq-filter:focus-visible,
+.pq-subject-card:focus-visible {
+  outline: 0.15rem solid var(--primary);
+  outline-offset: 0.15rem;
+}
+
+/* ---------- SUBJECT CARDS ---------- */
+.pq-subjects {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+}
+
+.pq-subject-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  background: var(--card);
+  border: 0.0625rem solid var(--border);
+  border-top-left-radius: 90px;
+  border-top-right-radius: 90px;
+  color: var(--text);
+  text-decoration: none;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.pq-subject-card:hover {
+  transform: translateY(-0.3rem);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--primary);
+}
+
+.pq-subject-img {
+  aspect-ratio: 16 / 9;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: var(--primary-light);
+  color: var(--primary);
+  font-size: 2rem;
+}
+
+.pq-subject-img img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.pq-subject-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 1rem 1.1rem 1.25rem;
+}
+
+.pq-subject-body h3 {
+  font-size: 1.05rem;
+  font-weight: 800;
+}
+
+.pq-subject-meta {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.pq-subject-go {
+  margin-top: auto;
+  padding-top: 0.6rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.pq-subject-go i {
+  transition: transform 0.2s ease;
+}
+
+.pq-subject-card:hover .pq-subject-go i {
+  transform: translateX(0.25rem);
+}
+
+/* ---------- RESPONSIVE ---------- */
+@media (min-width: 26em) {
+  .pq-subjects {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 48em) {
+  .pq-subjects {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 64em) {
+  .pq-subjects {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (max-width: 30em) {
+  .pq-hero-actions .btn {
+    width: 100%;
+  }
+}
