@@ -1,7 +1,17 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router'
+import { DemoSimulator } from './DemoSimulator'
+import { balanceSimulator } from './demoSimulators/balance'
+import { freeFallSimulator } from './demoSimulators/freeFall'
+import { spreadSimulator } from './demoSimulators/spread'
 
 const QUESTION_TIME = 20
+
+const STATUS_VIEW = {
+  correct: { icon: 'fa-circle-check', title: 'Correct!' },
+  incorrect: { icon: 'fa-circle-xmark', title: 'Not quite.' },
+  timeout: { icon: 'fa-clock', title: "Time's up!" },
+}
 
 const DEMO_QUESTIONS = [
   {
@@ -10,6 +20,7 @@ const DEMO_QUESTIONS = [
     options: ['6 m/s', '15 m/s', '30 m/s', '60 m/s'],
     correctIndex: 2,
     explanation: 'v = u + gt = 0 + (10 × 3) = 30 m/s.',
+    simulator: freeFallSimulator,
   },
   {
     subject: 'Mathematics',
@@ -17,6 +28,7 @@ const DEMO_QUESTIONS = [
     options: ['4', '5', '6', '7'],
     correctIndex: 2,
     explanation: '3x = 18, so x = 6.',
+    simulator: balanceSimulator,
   },
   {
     subject: 'English',
@@ -24,6 +36,7 @@ const DEMO_QUESTIONS = [
     options: ['Rare', 'Everywhere', 'Hidden', 'Ancient'],
     correctIndex: 1,
     explanation: "'Ubiquitous' means present or found everywhere.",
+    simulator: spreadSimulator,
   },
 ]
 
@@ -36,6 +49,7 @@ export function DemoQuestionCard() {
   const answered = selected !== null
   const timedOut = !answered && timeLeft <= 0
   const revealed = answered || timedOut
+  const status = timedOut ? 'timeout' : selected === question.correctIndex ? 'correct' : 'incorrect'
 
   useEffect(() => {
     if (revealed || timeLeft <= 0) return
@@ -71,41 +85,46 @@ export function DemoQuestionCard() {
         ))}
       </div>
 
-      {/* key={qIndex} remounts this block per question to replay the entrance animation */}
-      <div className="demo-question-wrap" key={qIndex}>
-        <p className="demo-question">{question.text}</p>
+      {revealed ? (
+        // The explanation replaces the question and options; the simulator sits below it.
+        // The key remounts this block so the simulator starts fresh for each question.
+        <div className="demo-question-wrap" key={`${qIndex}-explanation`}>
+          <div className={`demo-result ${status}`}>
+            <i className={`fa-solid ${STATUS_VIEW[status].icon}`}></i>
+            <div>
+              {STATUS_VIEW[status].title}
+              <small>
+                Correct answer: {String.fromCharCode(65 + question.correctIndex)}. {question.options[question.correctIndex]}
+              </small>
+            </div>
+          </div>
 
-        <div className="demo-options">
-          {question.options.map((option, index) => {
-            const isCorrect = index === question.correctIndex
-            const isSelected = index === selected
-            let state = ''
-            if (revealed && isCorrect) state = 'correct'
-            else if (isSelected && !isCorrect) state = 'incorrect'
+          <div className="demo-feedback">
+            <i className="fa-solid fa-lightbulb"></i>
+            <span>{question.explanation}</span>
+          </div>
 
-            return (
+          <DemoSimulator config={question.simulator} />
+        </div>
+      ) : (
+        // key={qIndex} remounts this block per question to replay the entrance animation
+        <div className="demo-question-wrap" key={qIndex}>
+          <p className="demo-question">{question.text}</p>
+
+          <div className="demo-options">
+            {question.options.map((option, index) => (
               <button
                 key={option}
-                className={`demo-option ${state}`}
+                className="demo-option"
                 onClick={() => handleSelect(index)}
-                disabled={revealed}
               >
                 <span className="demo-option-letter">{String.fromCharCode(65 + index)}</span>
                 {option}
-                {state === 'correct' && <i className="fa-solid fa-circle-check"></i>}
-                {state === 'incorrect' && <i className="fa-solid fa-circle-xmark"></i>}
               </button>
-            )
-          })}
-        </div>
-
-        {revealed && (
-          <div className="demo-feedback">
-            <i className="fa-solid fa-lightbulb"></i>
-            <span>{timedOut ? "Time's up! " : ''}{question.explanation}</span>
+            ))}
           </div>
-        )}
-      </div>
+        </div>
+      )}
 
       <div className="demo-footer">
         {revealed ? (
