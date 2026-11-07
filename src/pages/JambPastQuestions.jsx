@@ -61,7 +61,7 @@ function SubjectCard({ subject }) {
   return (
     <Link to={`${GUEST_PATH}/${subject.slug}`} className="pq-subject-card">
       <div className="pq-subject-img">
-        {subject.image ? (
+        {/*subject.image*/ null ? (
           <img src={subject.image} alt={`${subject.name} JAMB past questions`} loading="lazy" />
         ) : (
           <i className="fa-solid fa-book" aria-hidden="true"></i>

@@ -82,7 +82,7 @@ export function QuestionList({ subject, topics, years }) {
     return (
       <div className="ql">
         <div className="ql-state">
-          <p>No questions found for this selection.</p>
+          <p>No questions found. Sign in for full access.</p>
           <Link to={subjectPath(subject.slug)} className="btn btn-primary">See all {subject.name} topics and years</Link>
         </div>
       </div>
