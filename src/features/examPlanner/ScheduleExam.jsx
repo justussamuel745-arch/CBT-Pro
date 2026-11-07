@@ -338,7 +338,9 @@ export default function ScheduleExam() {
       loading: 'Editing...',
       success: 'Edited.',
       error: false
-    }).catch((err) => {
+    })
+      .then(() => navigate('/exam-planner'))
+      .catch((err) => {
       setServerError(describeError(err, SCHEDULE_ERRORS))
     }).finally(() => {
       const btnElement = scheduleButtonRef.current
@@ -364,10 +366,11 @@ export default function ScheduleExam() {
       await saveEditedSchedule(updatedForm, '?action=reschedule');
 
       toast.success('Rescheduled', { id: toastId });
-
       setMissedExams(prev =>
         prev.filter(e => e._id !== form._id)
       );
+
+      navigate('/exam-planner')
 
     } catch (err) {
       toast.error(
