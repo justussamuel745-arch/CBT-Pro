@@ -1,28 +1,26 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router'
 import { CheckboxDropdown } from '@/components/common/CheckboxDropdown'
-import { authStore } from '@/stores/authStore'
-import { studyStore } from '@/stores/studyStore'
+import { DEFAULT_PAGE_SIZE, PAGE_SIZES, buildQuestionsPath } from '../utils/questionFilters'
 import '@/components/common/FormControls.css'
 import './PracticeConfigForm.css'
 
-const QUESTION_COUNTS = [10, 20, 40, 60]
-
-/* Topics, years and number-of-questions form for one subject (from getSubjectPage). */
-export function PracticeConfigForm({ subject }) {
+/* Topics, years and questions-per-page form for one subject (from getSubjectPage).
+   Submitting opens the questions page for the selection (see buildQuestionsPath).
+   Pass initialTopics / initialYears / initialSize to start from the current selection. */
+export function PracticeConfigForm({
+  subject,
+  initialTopics = subject.topics,
+  initialYears = subject.years,
+  initialSize = DEFAULT_PAGE_SIZE,
+}) {
   const navigate = useNavigate()
-  const token = authStore((state) => state.token)
-  const isActivated = authStore((state) => state.isActivated)
-  const setStudyConfig = studyStore((state) => state.setStudyConfig)
 
-  // Everything starts selected, like the Study configuration screen
-  const [topics, setTopics] = useState(subject.topics)
-  const [years, setYears] = useState(subject.years)
-  const [count, setCount] = useState(subject.slug === 'english' ? 60 : 40)
+  const [topics, setTopics] = useState(initialTopics)
+  const [years, setYears] = useState(initialYears)
+  const [size, setSize] = useState(initialSize)
   const [error, setError] = useState('')
 
-  // Placeholder destination. When clean practice URLs exist, replace the
-  // navigate() calls below with the clean URL built from topics, years and count.
   const handleSubmit = (e) => {
     e.preventDefault()
     if (!topics.length || !years.length) {
@@ -30,12 +28,7 @@ export function PracticeConfigForm({ subject }) {
       return
     }
     setError('')
-
-    if (!token) return navigate('/auth/signup')
-    if (!isActivated) return navigate('/payment')
-
-    setStudyConfig({ subject: subject.rawName, years, topics, shuffle: true })
-    navigate('/study-simulator?mode=study', { state: { questionCount: count } })
+    navigate(buildQuestionsPath(subject, topics, years, size))
   }
 
   return (
@@ -56,15 +49,15 @@ export function PracticeConfigForm({ subject }) {
         onChange={setYears}
       />
       <div className="sp-field">
-        <label className="ui-field-label" htmlFor="sp-question-count">Number of questions</label>
+        <label className="ui-field-label" htmlFor="sp-page-size">Questions per page</label>
         <select
-          id="sp-question-count"
-          name="count"
+          id="sp-page-size"
+          name="size"
           className="ui-field-control"
-          value={count}
-          onChange={(e) => setCount(Number(e.target.value))}
+          value={size}
+          onChange={(e) => setSize(Number(e.target.value))}
         >
-          {QUESTION_COUNTS.map((n) => (
+          {PAGE_SIZES.map((n) => (
             <option key={n} value={n}>{n} questions</option>
           ))}
         </select>
@@ -73,9 +66,9 @@ export function PracticeConfigForm({ subject }) {
       <div className="sp-config-actions">
         {error && <p className="sp-form-error" role="alert">{error}</p>}
         <button type="submit" className="btn btn-primary">
-          Start practicing <i className="fa-solid fa-arrow-right" aria-hidden="true"></i>
+          View questions <i className="fa-solid fa-arrow-right" aria-hidden="true"></i>
         </button>
-        <p className="sp-config-hint">Browse as a guest, or create a free account to save your progress.</p>
+        <p className="sp-config-hint">No account needed. Create a free account to save your progress.</p>
       </div>
     </form>
   )

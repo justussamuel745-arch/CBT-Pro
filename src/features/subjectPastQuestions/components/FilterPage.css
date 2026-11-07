@@ -1,0 +1,47 @@
+/* Collapsible filter above the questions (FilterPage) */
+.sp-refine {
+  max-width: 62rem;
+  margin: 0 auto 2rem;
+  background: var(--card);
+  border: 0.0625rem solid var(--border);
+  border-radius: var(--radius);
+}
+
+.sp-refine > summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  list-style: none;
+  font-weight: 700;
+  color: var(--primary);
+  cursor: pointer;
+}
+
+.sp-refine > summary::-webkit-details-marker {
+  display: none;
+}
+
+.sp-refine > summary::after {
+  content: '+';
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+.sp-refine[open] > summary::after {
+  content: '\2212';
+}
+
+.sp-refine > summary:focus-visible {
+  outline: 0.15rem solid var(--primary);
+  outline-offset: 0.15rem;
+}
+
+.sp-refine .sp-config {
+  margin: 0;
+  border: 0;
+  border-top: 0.0625rem solid var(--border);
+  border-radius: 0 0 var(--radius) var(--radius);
+  box-shadow: none;
+}

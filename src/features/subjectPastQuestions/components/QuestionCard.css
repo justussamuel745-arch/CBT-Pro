@@ -1,0 +1,179 @@
+.qc {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  min-width: 0;
+  padding: clamp(1rem, 0.8rem + 1vw, 1.5rem);
+  background: var(--card);
+  border: 0.0625rem solid var(--border);
+  border-radius: var(--radius);
+}
+
+.qc-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.qc-number {
+  margin-right: 0.25rem;
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: var(--primary);
+}
+
+.qc-tag {
+  padding: 0.2rem 0.65rem;
+  border-radius: 999px;
+  background: var(--primary-light);
+  color: var(--primary);
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.qc-text {
+  min-width: 0;
+  line-height: 1.7;
+  color: var(--text);
+  overflow-wrap: anywhere;
+}
+
+.qc-text p {
+  margin: 0 0 0.6rem;
+}
+
+.qc-options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.qc-option {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.75rem 0.9rem;
+  border: 0.125rem solid var(--border);
+  border-radius: 0.625rem;
+  background: var(--bg);
+  color: var(--text);
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.qc-option:hover:not([aria-disabled='true']) {
+  border-color: var(--primary);
+}
+
+.qc-option:focus-visible {
+  outline: 0.15rem solid var(--primary);
+  outline-offset: 0.1rem;
+}
+
+.qc-option[aria-disabled='true'] {
+  cursor: default;
+}
+
+/* Picked the right answer, or the right answer shown after a wrong pick */
+.qc-option.is-correct {
+  border-color: var(--c-success);
+  background: var(--c-success-bg);
+}
+
+/* Picked a wrong answer */
+.qc-option.is-wrong {
+  border-color: var(--c-error);
+  background: var(--c-error-bg);
+}
+
+/* Explanation opened without picking an answer */
+.qc-option.is-viewed {
+  border-color: var(--c-warning);
+  background: var(--c-warning-bg);
+}
+
+.qc-key {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 50%;
+  background: var(--card);
+  border: 0.0625rem solid var(--border);
+  font-size: 0.8rem;
+  font-weight: 800;
+}
+
+.qc-option-text {
+  min-width: 0;
+  padding-top: 0.15rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+}
+
+.qc-option-text p {
+  margin: 0;
+}
+
+.qc-sr {
+  position: absolute;
+  width: 0.0625rem;
+  height: 0.0625rem;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.qc-show {
+  align-self: flex-start;
+  padding: 0.6rem 1rem;
+  border: 0.0625rem solid var(--border);
+  border-radius: 0.625rem;
+  background: var(--card);
+  color: var(--primary);
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.qc-show:hover {
+  background: var(--primary-light);
+  border-color: var(--primary);
+}
+
+.qc-show:focus-visible {
+  outline: 0.15rem solid var(--primary);
+  outline-offset: 0.1rem;
+}
+
+.qc-explanation {
+  padding: 0.9rem 1rem;
+  background: var(--c-subtle);
+  border: 0.0625rem solid var(--border);
+  border-radius: 0.625rem;
+  font-size: 0.92rem;
+  line-height: 1.65;
+  color: var(--text-muted);
+  overflow-wrap: anywhere;
+}
+
+.qc-explanation p {
+  margin: 0 0 0.5rem;
+}
+
+.qc-explanation p:last-child {
+  margin-bottom: 0;
+}
+
+.qc-answer-line {
+  color: var(--text);
+}

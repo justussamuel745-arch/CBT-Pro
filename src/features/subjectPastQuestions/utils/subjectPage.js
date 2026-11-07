@@ -1,14 +1,16 @@
 import { SUBJECTS_DATA } from '@/lib/data/subjects'
 import { SUBJECT_LIST, subjectSlug } from '@/lib/data/pastQuestionsContent'
 import { GUEST_PATH } from '@/lib/config/publicLinks'
-import { ACTIVATION_PRICE } from '@lib/config/app.js'
 import { SUBJECT_CONTENT, buildFallbackContent } from '../data/subjectContent'
 
 /* ---------- Clean URLs (single place to change them later) ---------- */
 
 export const subjectPath = (slug) => `${GUEST_PATH}/${slug}`
-export const subjectTopicPath = (slug, topicSlug) => `${subjectPath(slug)}/topics/${topicSlug}`
-export const subjectYearPath = (slug, year) => `${subjectPath(slug)}/years/${year}`
+export const subjectTopicPath = (slug, topicSlug) => `${subjectPath(slug)}/topic/${topicSlug}`
+export const subjectYearPath = (slug, year) => `${subjectPath(slug)}/year/${year}`
+
+// Icons for the tips lists on the subject, topic and year pages
+export const TIP_ICONS = ['fa-bullseye', 'fa-lightbulb', 'fa-stopwatch', 'fa-clock-rotate-left']
 
 /* ---------- Topic grouping ---------- */
 
@@ -38,6 +40,11 @@ export function groupTopics(topics) {
 
 /* ---------- Generated copy (always matches your real data) ---------- */
 
+export const buildFreeAccessFaq = (name) => ({
+  q: `Can I practice ${name} past questions for free?`,
+  a: 'Yes. You can read and answer these questions without an account. Create a free account to save your progress and use the CBT simulator.',
+})
+
 function buildFaqs({ name, slug, total, topicCount, firstYear, lastYear }) {
   const isEnglish = slug === 'english'
   return [
@@ -61,10 +68,7 @@ function buildFaqs({ name, slug, total, topicCount, firstYear, lastYear }) {
         ? 'Yes. Use of English is compulsory for every UTME candidate.'
         : 'No. Use of English is compulsory, but the other three subjects depend on your course. Check the admission requirements of your chosen course.',
     },
-    {
-      q: `Can I practice ${name} past questions for free?`,
-      a: `You can browse as a guest. A free account lets you save your progress, and full access to every question requires the ₦${ACTIVATION_PRICE} yearly subscription.`,
-    },
+    buildFreeAccessFaq(name),
   ]
 }
 
@@ -108,3 +112,24 @@ export function getSubjectPage(slug) {
     faqs: buildFaqs(subject),
   }
 }
+
+/* ---------- Link lists (items for PillLinkList) ---------- */
+
+export const getTopicLinks = (subject, topics) =>
+  topics.map((t) => ({
+    key: t.slug,
+    to: subjectTopicPath(subject.slug, t.slug),
+    label: t.label,
+    title: `${subject.name}: ${t.value} past questions`,
+  }))
+
+// Years newest first. Pass `excludeYear` to leave the current year out.
+export const getYearLinks = (subject, excludeYear) =>
+  subject.yearOptions
+    .filter((y) => y.label !== String(excludeYear))
+    .map((y) => ({
+      key: y.label,
+      to: subjectYearPath(subject.slug, y.label),
+      label: y.label,
+      title: `${subject.name} ${y.label} JAMB past questions`,
+    }))

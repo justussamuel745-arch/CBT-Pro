@@ -14,13 +14,11 @@ import { SITE_URL } from '@lib/config/app.js'
 import { GUEST_PATH } from '@/lib/config/publicLinks'
 import { PracticeConfigForm } from './components/PracticeConfigForm'
 import {
-  getSubjectPage, subjectPath, subjectTopicPath, subjectYearPath,
+  TIP_ICONS, getSubjectPage, getTopicLinks, getYearLinks, subjectPath,
 } from './utils/subjectPage'
 import '@pages/HomePage.css' // shared section, card, FAQ and CTA styles
 import '@pages/JambPastQuestions.css' // shared hero, breadcrumb and prose styles
 import './SubjectPastQuestions.css'
-
-const TIP_ICONS = ['fa-bullseye', 'fa-lightbulb', 'fa-stopwatch', 'fa-clock-rotate-left']
 
 function SubjectPage({ subject }) {
   const { name, slug } = subject
@@ -54,16 +52,7 @@ function SubjectPage({ subject }) {
     [subject.faqs, name, pageUrl],
   )
 
-  const yearLinks = useMemo(
-    () =>
-      subject.yearOptions.map((y) => ({
-        key: y.label,
-        to: subjectYearPath(slug, y.label),
-        label: y.label,
-        title: `${name} ${y.label} JAMB past questions`,
-      })),
-    [subject.yearOptions, slug, name],
-  )
+  const yearLinks = useMemo(() => getYearLinks(subject), [subject])
 
   const showGroupTitles = subject.topicGroups.length > 1
 
@@ -122,8 +111,8 @@ function SubjectPage({ subject }) {
         {/* 2. CONFIGURATION FORM */}
         <section className="home-section container" id="practice">
           <SectionHeader
-            title={`Set up your ${name} practice`}
-            sub="Pick topics and years, choose how many questions you want, then start."
+            title={`Choose your ${name} questions`}
+            sub="Pick topics and years, choose how many questions to show per page, then view them."
           />
 
           <PracticeConfigForm subject={subject} />
@@ -186,12 +175,7 @@ function SubjectPage({ subject }) {
                 )}
                 <PillLinkList
                   label={group.title ?? `${name} topics`}
-                  items={group.topics.map((t) => ({
-                    key: t.slug,
-                    to: subjectTopicPath(slug, t.slug),
-                    label: t.label,
-                    title: `${name}: ${t.value} past questions`,
-                  }))}
+                  items={getTopicLinks(subject, group.topics)}
                 />
               </div>
             ))}
@@ -238,7 +222,7 @@ function SubjectPage({ subject }) {
             <p>Create a free account to save your scores, track your progress and unlock the full CBT simulator.</p>
             <div className="cta-actions">
               <Link to="/auth/signup" className="btn btn-hero">Create Free Account</Link>
-              <a href="#practice" className="btn btn-hero cta-ghost">Set up practice</a>
+              <a href="#practice" className="btn btn-hero cta-ghost">Choose questions</a>
             </div>
           </Reveal>
         </section>
