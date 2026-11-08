@@ -11,6 +11,7 @@ import { DemoQuestionCard } from '@/components/home/DemoQuestionCard'
 import { ReviewsSection } from '@/components/home/ReviewsSection'
 import { SITE_URL } from '@lib/config/app.js'
 import { GUEST_PATH } from '@/lib/config/publicLinks'
+import { sendReview } from '@lib/api/supportApi'
 import {
   NEXT_UTME_DATE, FEATURES, STEPS, SUBJECTS, UTME_FACTS, TIPS, REVIEWS, FAQS,
 } from '@/lib/data/homeContent'
@@ -22,11 +23,7 @@ const SEO_DESCRIPTION =
 
 const daysUntil = (date) => Math.ceil((date.getTime() - Date.now()) / (1000 * 60 * 60 * 24))
 
-// TODO: replace the review submit with your API call (it must reject on failure).
-const submitReview = async (review) => {
-  await new Promise((resolve) => setTimeout(resolve, 600))
-  console.info('review submitted', review)
-}
+const submitReview = async (review) => sendReview(review)
 
 /* Structured data. FAQPage matches the visible FAQ. No Review/AggregateRating
    markup on purpose: Google penalises markup for reviews that are not real. */

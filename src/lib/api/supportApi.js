@@ -6,3 +6,5 @@ const postJson = (path, payload) =>
 export const sendFeedback = (feedback) => postJson('/api/feedback', feedback);
 
 export const reportQuestion = (report) => postJson('/api/report', report);
+
+export const sendReview = (review) => postJson('/api/review', review);

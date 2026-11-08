@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { Reveal } from '@/components/common/Reveal'
 import { SectionHeader } from '@/components/common/SectionHeader'
-import { StarRating } from '@/components/common/StarRating'
+import { StarRating } from '@/components/common/StarRating';
+import { getUserRegion } from '@/lib/utils/getUserRegion';
 import './ReviewsSection.css'
 
 const MAX_LENGTH = 400
@@ -32,7 +33,8 @@ function ReviewCard({ review, index }) {
 export function ReviewsSection({ reviews, onSubmit }) {
   const [form, setForm] = useState(EMPTY_FORM)
   const [status, setStatus] = useState('idle') // idle | submitting | success | error
-  const [error, setError] = useState('')
+  const [errors, setErrors] = useState([])
+  const [errorIndex, setErrorIndex] = useState(0)
 
   const average = reviews.length
     ? (reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length).toFixed(1)
@@ -40,21 +42,38 @@ export function ReviewsSection({ reviews, onSubmit }) {
 
   const update = (field) => (value) => setForm((f) => ({ ...f, [field]: value }))
 
+  const showErrors = (messages) => {
+    setErrors(messages)
+    setErrorIndex(0)
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault()
+    
     if (!form.name.trim() || form.text.trim().length < 20 || form.rating === 0) {
-      setError('Add your name, a star rating, and at least 20 characters of feedback.')
+      showErrors(['Add your name, a star rating, and at least 20 characters of feedback.'])
       return
     }
-    setError('')
+    showErrors([])
     setStatus('submitting')
     try {
-      await onSubmit({ ...form, name: form.name.trim(), text: form.text.trim() })
+      const region = await getUserRegion()
+      if (!region) throw new Error('Could not determine your region')
+      const meta = `UTME candidate, ${region}`
+      await onSubmit({ ...form, meta, name: form.name.trim(), text: form.text.trim() })
       setForm(EMPTY_FORM)
       setStatus('success')
-    } catch {
+    } catch (err) {
       setStatus('error')
-      setError('We could not send your review. Please try again.')
+      const receivedErrors = Array.isArray(err?.message)
+        ? err.message
+            .map((item) => typeof item === 'string' ? item : item?.message)
+        : [err?.message]
+      const errorMessages = receivedErrors
+        .filter((message) => typeof message === 'string' && message.trim())
+      showErrors(errorMessages.length
+        ? errorMessages
+        : ['We could not send your review. Please try again.'])
     }
   }
 
@@ -116,7 +135,21 @@ export function ReviewsSection({ reviews, onSubmit }) {
             />
             <small className="review-count">{form.text.length}/{MAX_LENGTH}</small>
 
-            {error && <p className="review-error" role="alert">{error}</p>}
+            {errors.length > 0 && (
+              <div role="alert">
+                <p className="review-error">{errors[errorIndex]}</p>
+                {errors.length > 1 && (
+                  <button
+                    type="button"
+                    className="review-error-next"
+                    aria-label={`Show next error, ${errorIndex + 1} of ${errors.length}`}
+                    onClick={() => setErrorIndex((index) => (index + 1) % errors.length)}
+                  >
+                    Next error ({errorIndex + 1} of {errors.length})
+                  </button>
+                )}
+              </div>
+            )}
 
             <button type="submit" className="btn btn-primary" disabled={status === 'submitting'}>
               {status === 'submitting' ? 'Sending…' : 'Submit review'}

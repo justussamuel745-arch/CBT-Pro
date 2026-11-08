@@ -135,6 +135,29 @@
   font-size: 0.875rem;
 }
 
+.review-error-next {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--primary);
+  font: inherit;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+  cursor: pointer;
+}
+
+.review-error-next:hover {
+  color: var(--text);
+}
+
+.review-error-next:focus-visible {
+  outline: 0.15rem solid var(--primary);
+  outline-offset: 0.2rem;
+  border-radius: 0.125rem;
+}
+
 .review-form .btn {
   margin-top: 0.75rem;
   align-self: stretch;
