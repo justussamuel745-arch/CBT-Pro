@@ -8,7 +8,6 @@ import { authStore } from './stores/authStore';
 import { useExamDataSync } from './hooks/useExamDataSync';
 import { useAutoThemeColor } from './hooks/useAutoThemeColor';
 import PWAUpdateToast from './components/feedback/PWAUpdateToast';
-import MonetagController from './components/ads/MonetagController';
 import AppRouter from './routes/AppRouter';
 import '@/styles/layout.css';
 
@@ -33,7 +32,6 @@ function App() {
 
   return (
     <>
-      <MonetagController />
       <AppRouter />
       <Toaster position="top-center" reverseOrder={false} />
       <PWAUpdateToast />

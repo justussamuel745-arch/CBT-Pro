@@ -6,9 +6,12 @@ import { PublicNav } from '@/components/layouts/PublicNav';
 import { Reveal } from '@/components/common/Reveal'
 import { SectionHeader } from '@/components/common/SectionHeader'
 import { FaqList } from '@/components/common/FaqList'
+import HilltopAdsBanner from '@/components/ads/HilltopAdsBanner'
+import MonetagController from '@/components/ads/MonetagController';
 import { SITE_URL } from '@lib/config/app.js'
 import { GUEST_PATH } from '@/lib/config/publicLinks'
 import { UTME_FACTS, TIPS } from '@/lib/data/homeContent'
+import { hilltopConfig, zonesConfig } from '@lib/config/ads.config'
 import { authStore } from '@/stores/authStore';
 import {
   SUBJECT_LIST, TOTAL_QUESTIONS_LABEL, FILTERS, matchesFilter,
@@ -89,6 +92,7 @@ export default function JambPastQuestions() {
 
   return (
     <>
+      <MonetagController zoneConfig={zonesConfig.pastQuestionsPage} />
       <Helmet>
         <title>{SEO_TITLE}</title>
         <meta name="description" content={SEO_DESCRIPTION} />
@@ -140,6 +144,8 @@ export default function JambPastQuestions() {
         </div>
       </header>
 
+      <HilltopAdsBanner src={hilltopConfig.publicPageSix}/>
+
       <main>
         <section className="home-section container" id="what-are-past-questions">
           <div className="pq-prose">
@@ -178,6 +184,8 @@ export default function JambPastQuestions() {
             ))}
           </div>
         </section>
+
+        <HilltopAdsBanner src={hilltopConfig.publicPageSeven}/>
 
         <section className="home-section container" id="subjects">
           <SectionHeader

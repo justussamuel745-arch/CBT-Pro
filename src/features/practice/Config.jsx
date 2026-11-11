@@ -7,7 +7,6 @@ import { ModalStripe, ModalDialog, CSS } from '@/components/feedback/Notificatio
 import { authStore } from '@/stores/authStore';
 import { practiceStore } from '@/stores/practiceStore';
 import { examStore } from '@/stores/examStore';
-import HilltopAdsBanner from '@/components/ads/HilltopAdsBanner';
 import './Config.css';
 
 export default function Config() {
@@ -97,8 +96,6 @@ export default function Config() {
           <h1>Configure Your Exam</h1>
         </div>
       </section>
-
-      <HilltopAdsBanner src={hilltopConfig.practicePageTwo} />
 
       <div className="practice-two-container">
         {/* SUBJECTS */}

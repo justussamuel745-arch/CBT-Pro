@@ -3,11 +3,13 @@ import { Link } from 'react-router';
 import { Menu } from '@/components/layouts/Menu';
 import { InstallAppBanner } from '@/components/layouts/InstallAppBanner';
 import DashInstall from '@/components/layouts/DashInstall';
+import MonetagController from '@/components/ads/MonetagController';
 import usePushNotifications from '@/hooks/usePushNotifications';
 import { useNotifications } from '@/context/NotificationContext';
 import { authStore } from '@/stores/authStore.js';
 import { userStore } from '@/stores/userStore.js';
 import { ACTIVATION_PRICE } from '@lib/config/app.js'
+import { zonesConfig } from '@lib/config/ads.config'
 import "./Dashboard.css";
 
 const DASHBOARD_CARDS = [
@@ -110,96 +112,100 @@ export default function Dashboard() {
   
 
   return (
-    <div className="dash-page">
-      {/* HEADER */}
-      <header className="dash-header">
-        <div className="dash-header-left">
-          <button
-            className="dash-menu-btn"
-            aria-label="Open menu"
-            aria-expanded={menuOpen}
-            onClick={() => setMenuOpen(true)}
-          >
-            <i className="fa-solid fa-bars"></i>
-          </button>
-          <div className="dash-logo">CBT Pro</div>
-        </div>
+    <>
+      <MonetagController zoneConfig={zonesConfig.dashboard} />
 
-        <div className="dash-header-right">
-          <DashInstall />
-
-          <Link to="/notifications" className="dash-icon-btn" aria-label="Notifications">
-            <i className="fa-regular fa-bell"></i>
-            {
-              unreadCount ? <span className="dash-badge">{ unreadCount }</span> : ''
-            }
-          </Link>
-
-          <button className="dash-avatar-btn" aria-label="Account">
-            <Avatar userInfo={userInfo} />
-          </button>
-        </div>
-
-        <Menu menuOpen={menuOpen} setMenuOpen={setMenuOpen}/>
-      </header>
-
-      {/* MAIN */}
-      <main className="dash-main">
-        <div className="dash-container">
-          {showBanner && (
-            <div className="dash-banner">
-              <button
-                className="dash-banner-close"
-                aria-label="Dismiss"
-                onClick={() => setBannerDismissed(true)}
-              >
-                <i className="fa-solid fa-xmark"></i>
-              </button>
-              <div className="dash-banner-icon">
-                <i className="fa-solid fa-lock"></i>
-              </div>
-              <div className="dash-banner-text">
-                <strong>Complete Your Account Activation</strong>
-                <span>Your account is currently inactive. You can unlock our entire catalog of subjects, practice exam modes, and premium study tools for an annual subscription of ₦{ ACTIVATION_PRICE }.</span>
-              </div>
-              <Link to="/payment" className="dash-banner-btn">
-                Activate now <i className="fa-solid fa-arrow-right"></i>
-              </Link>
-            </div>
-          )}
-
-          <div className="dash-greeting">
-            <div className="dash-greeting-text">
-              <span className="dash-greeting-eyebrow">
-                <i className="fa-solid fa-sun"></i> {getGreeting()}
-              </span>
-              <h1>Welcome back, {firstName} 👋</h1>
-              <p>Explore something new today or continue your learning journey below.</p>
-            </div>
-            <div className="dash-greeting-icon">
-              <i className="fa-solid fa-graduation-cap"></i>
-            </div>
+      <div className="dash-page">
+        {/* HEADER */}
+        <header className="dash-header">
+          <div className="dash-header-left">
+            <button
+              className="dash-menu-btn"
+              aria-label="Open menu"
+              aria-expanded={menuOpen}
+              onClick={() => setMenuOpen(true)}
+            >
+              <i className="fa-solid fa-bars"></i>
+            </button>
+            <div className="dash-logo">CBT Pro</div>
           </div>
-
-          <div className="dash-grid">
-            {DASHBOARD_CARDS.map((card) => (
-              <Link
-                key={card.title}
-                to={card.to}
-                className={`dash-card dash-card-${card.color}`}
-              >
-                <div className="dash-card-icon">
-                  <i className={`fa-solid ${card.icon}`}></i>
+  
+          <div className="dash-header-right">
+            <DashInstall />
+  
+            <Link to="/notifications" className="dash-icon-btn" aria-label="Notifications">
+              <i className="fa-regular fa-bell"></i>
+              {
+                unreadCount ? <span className="dash-badge">{ unreadCount }</span> : ''
+              }
+            </Link>
+  
+            <button className="dash-avatar-btn" aria-label="Account">
+              <Avatar userInfo={userInfo} />
+            </button>
+          </div>
+  
+          <Menu menuOpen={menuOpen} setMenuOpen={setMenuOpen}/>
+        </header>
+  
+        {/* MAIN */}
+        <main className="dash-main">
+          <div className="dash-container">
+            {showBanner && (
+              <div className="dash-banner">
+                <button
+                  className="dash-banner-close"
+                  aria-label="Dismiss"
+                  onClick={() => setBannerDismissed(true)}
+                >
+                  <i className="fa-solid fa-xmark"></i>
+                </button>
+                <div className="dash-banner-icon">
+                  <i className="fa-solid fa-lock"></i>
                 </div>
-                <h3>{card.title}</h3>
-                <p>{card.description}</p>
-              </Link>
-            ))}
+                <div className="dash-banner-text">
+                  <strong>Complete Your Account Activation</strong>
+                  <span>Your account is currently inactive. You can unlock our entire catalog of subjects, practice exam modes, and premium study tools for an annual subscription of ₦{ ACTIVATION_PRICE }.</span>
+                </div>
+                <Link to="/payment" className="dash-banner-btn">
+                  Activate now <i className="fa-solid fa-arrow-right"></i>
+                </Link>
+              </div>
+            )}
+  
+            <div className="dash-greeting">
+              <div className="dash-greeting-text">
+                <span className="dash-greeting-eyebrow">
+                  <i className="fa-solid fa-sun"></i> {getGreeting()}
+                </span>
+                <h1>Welcome back, {firstName} 👋</h1>
+                <p>Explore something new today or continue your learning journey below.</p>
+              </div>
+              <div className="dash-greeting-icon">
+                <i className="fa-solid fa-graduation-cap"></i>
+              </div>
+            </div>
+  
+            <div className="dash-grid">
+              {DASHBOARD_CARDS.map((card) => (
+                <Link
+                  key={card.title}
+                  to={card.to}
+                  className={`dash-card dash-card-${card.color}`}
+                >
+                  <div className="dash-card-icon">
+                    <i className={`fa-solid ${card.icon}`}></i>
+                  </div>
+                  <h3>{card.title}</h3>
+                  <p>{card.description}</p>
+                </Link>
+              ))}
+            </div>
           </div>
-        </div>
-      </main>
-
-      <InstallAppBanner />
-    </div>
+        </main>
+  
+        <InstallAppBanner />
+      </div>
+    </>
   );
 }

@@ -5,7 +5,17 @@ import { usePublicQuestions } from '../hooks/usePublicQuestions'
 import { describeSelection, readPage, readPageSize } from '../utils/questionFilters'
 import { subjectPath } from '../utils/subjectPage'
 import { QuestionCard } from './QuestionCard'
-import './QuestionList.css'
+import './QuestionList.css';
+
+const MONETAG_DIRECT_LINK = 'https://uplcm.com/4/12192703'
+
+function DirectLink({ children, subject }){
+  const [hasClicked, setHasClicked] = useState(false)
+
+  if (!hasClicked) return <a href={MONETAG_DIRECT_LINK} onClick={() => setHasClicked(true)} className="btn btn-primary">See all {subject.name} topics and years</a>
+
+  return children
+}
 
 /* Loads every question for the selection, then shows them a page at a time.
    The page number and page size live in the URL (?page=2&size=20) so links and the back button work.
@@ -83,7 +93,9 @@ export function QuestionList({ subject, topics, years }) {
       <div className="ql">
         <div className="ql-state">
           <p>No questions found. Sign in for full access.</p>
-          <Link to={subjectPath(subject.slug)} className="btn btn-primary">See all {subject.name} topics and years</Link>
+          <DirectLink subject={subject}>
+            <Link to={subjectPath(subject.slug)} className="btn btn-primary">See all {subject.name} topics and years</Link>
+          </DirectLink>
         </div>
       </div>
     )

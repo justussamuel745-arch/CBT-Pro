@@ -9,9 +9,12 @@ import { FaqList } from '@/components/common/FaqList'
 import { AnimatedWords } from '@/components/home/AnimatedWords'
 import { DemoQuestionCard } from '@/components/home/DemoQuestionCard'
 import { ReviewsSection } from '@/components/home/ReviewsSection'
+import HilltopAdsBanner from '@/components/ads/HilltopAdsBanner'
+import MonetagController from '@/components/ads/MonetagController';
 import { SITE_URL } from '@lib/config/app.js'
 import { GUEST_PATH } from '@/lib/config/publicLinks'
 import { sendReview } from '@lib/api/supportApi'
+import { hilltopConfig, zonesConfig } from '@lib/config/ads.config'
 import {
   NEXT_UTME_DATE, FEATURES, STEPS, SUBJECTS, UTME_FACTS, TIPS, REVIEWS, FAQS,
 } from '@/lib/data/homeContent'
@@ -57,6 +60,7 @@ export default function HomePage() {
 
   return (
     <>
+      <MonetagController zoneConfig={zonesConfig.homePage} />
       <Helmet>
         <title>{SEO_TITLE}</title>
         <meta name="description" content={SEO_DESCRIPTION} />
@@ -111,6 +115,8 @@ export default function HomePage() {
         </div>
       </header>
 
+      <HilltopAdsBanner src={hilltopConfig.homeTop} />
+
       <main>
         <section className="home-section container" id="features">
           <SectionHeader title="Everything you need to hit 300+" sub="One platform, built around how JAMB actually works." />
@@ -158,6 +164,8 @@ export default function HomePage() {
           </ul>
         </section>
 
+        <HilltopAdsBanner src={hilltopConfig.homeCenterOne} />
+
         <section className="home-section home-steps-section">
           <div className="container">
             <SectionHeader title="How it works" sub="Three steps between you and exam-day confidence." />
@@ -173,6 +181,8 @@ export default function HomePage() {
             </div>
           </div>
         </section>
+
+        <HilltopAdsBanner src={hilltopConfig.homeCenterTwo} />
 
         <section className="home-section container" id="utme-guide">
           <SectionHeader
@@ -258,6 +268,8 @@ export default function HomePage() {
           </Reveal>
         </section>
       </main>
+
+      <HilltopAdsBanner src={hilltopConfig.homeBottom} />
 
       <InstallAppBanner />
       <Footer />

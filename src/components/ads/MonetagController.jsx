@@ -4,7 +4,7 @@ import { useLocation } from "react-router";
 import { loadMonetag } from "@lib//utils/monetag";
 import { monetagConfig } from "@lib/config/ads.config";
 
-export default function MonetagController() {
+export default function MonetagController({ zoneConfig }) {
   const { pathname } = useLocation();
 
   const isExcluded = monetagConfig.excludedRoutes.some(
@@ -16,7 +16,7 @@ export default function MonetagController() {
   useEffect(() => {
     if (isExcluded) return;
 
-    loadMonetag();
+    loadMonetag(zoneConfig);
   }, [isExcluded]);
 
   return null;
