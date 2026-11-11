@@ -161,7 +161,7 @@ const OptionsList = memo(function OptionsList({ options, activeState, mode, onSe
   if (!options) return null
   return options.map((opt) => (
     <div className="mode-options" key={opt.id} onClick={() => !activeState?.status && mode !== 'review' && onSelect(opt.id)}>
-      <div className={`mode-option ${activeState?.userAnswer === opt.id ? activeState?.status  : activeState?.correctAnswers.includes(opt.id) && activeState?.userAnswer ? 'correct' : ''}`}>
+      <div className={`mode-option ${activeState?.userAnswer === opt.id ? activeState?.status  : activeState?.correctAnswers.includes(opt.id) && activeState?.userAnswer ? activeState.status === 'selected' ? 'selected' : 'correct' : ''}`}>
         <div className="mode-option-key">{opt.id.toUpperCase()}</div>
         <div className="mode-option-content">
           <div className="mode-option-text">
@@ -585,12 +585,13 @@ export default function StudySimulator() {
   // --- Answers ---
   const selectOption = useCallback((optId = '') => {
     if (!currentQs) return
-    const status = !optId ? 'selected' : currentQs.correctAnswers.includes(optId) ? 'correct' : 'wrong'
+    const status = !optId || typeof optId !== 'string' ? 'selected' : currentQs.correctAnswers.includes(optId) ? 'correct' : 'wrong'
     setAnswers((prev) => ({
       ...prev,
       [currentQs.id]: { ...prev[currentQs.id], userAnswer: optId, status, correctAnswers: currentQs.correctAnswers },
     }))
   }, [currentQs])
+
 
   const toggleBookmark = useCallback(async () => {
     if (!currentQs) return
@@ -679,7 +680,7 @@ export default function StudySimulator() {
                         />
                       )}
                       <div className="mode-actions">
-                        <button className="mode-btn-show" disabled={!!activeState?.status} onClick={() => selectOption()}>
+                        <button className="mode-btn-show" disabled={!!activeState?.status} onClick={selectOption}>
                           Show Answer
                         </button>
                       </div>
