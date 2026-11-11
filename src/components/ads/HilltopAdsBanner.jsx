@@ -9,7 +9,7 @@ export default function HilltopAdsBanner({ src, height = 250 }) {
     if (!container || !src) return;
 
     const loadAd = () => {
-      if (loadedRef.current) return; // request only once
+      if (loadedRef.current) return;
       loadedRef.current = true;
 
       const script = document.createElement("script");
@@ -35,7 +35,6 @@ export default function HilltopAdsBanner({ src, height = 250 }) {
       return;
     }
 
-    // Offline: wait until the user comes online, then load once
     const handleOnline = () => {
       loadAd();
       window.removeEventListener("online", handleOnline);
@@ -49,7 +48,7 @@ export default function HilltopAdsBanner({ src, height = 250 }) {
     <div style={{ textAlign: "center", margin: "20px 0" }}>
       <small
         style={{
-          color: "#888",
+          color: "var(--text-muted)",
           fontSize: "11px",
           letterSpacing: "1px",
         }}
@@ -63,17 +62,19 @@ export default function HilltopAdsBanner({ src, height = 250 }) {
           maxWidth: "728px",
           width: "97%",
           margin: "5px auto",
-          borderRadius: "12px",
+          borderRadius: "var(--radius-sm)",
           padding: 0,
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          color: "#000",
-          fontFamily: "sans-serif",
+          color: "var(--text)",
+          fontFamily: "var(--font)",
           textAlign: "left",
           minHeight: height,
           overflow: "hidden",
-          background: "#f5f5f5",
+          background: "var(--card)",
+          border: "1px solid var(--border)",
+          boxShadow: "var(--shadow)",
         }}
       />
     </div>

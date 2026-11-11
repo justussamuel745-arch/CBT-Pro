@@ -17,7 +17,7 @@
   justify-content: space-between;
   gap: 0.75rem;
   padding: 1rem 1.5rem;
-  background: rgba(255, 255, 255, 0.9);
+  background: var(--surface-glass);
   backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border);
   position: sticky;
@@ -121,7 +121,7 @@
   margin-bottom: 2rem;
   border-radius: var(--radius);
   background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
-  border: 1px solid #fde68a;
+  border: 1px solid var(--c-warning-border);
   box-shadow: 0 4px 14px rgba(217, 119, 6, 0.08);
 }
 
@@ -149,12 +149,12 @@
 
 .dash-banner-text strong {
   font-size: 0.98rem;
-  color: #92400e;
+  color: var(--c-warning-text);
 }
 
 .dash-banner-text span {
   font-size: 0.85rem;
-  color: #b45309;
+  color: var(--c-warning-text);
 }
 
 .dash-banner-btn {
@@ -183,7 +183,7 @@
   right: 0.9rem;
   border: none;
   background: none;
-  color: #b45309;
+  color: var(--c-warning-text);
   cursor: pointer;
   font-size: 0.9rem;
   width: 28px;
@@ -355,26 +355,26 @@
 
 /* Card color themes: soft tinted background + matching accent border/icon */
 .dash-card-indigo {
-  background: #eef2ff;
-  --card-border: #e0e7ff;
+  background: var(--primary-light);
+  --card-border: var(--primary-light);
   --card-accent: linear-gradient(135deg, #4f46e5, #6366f1);
   --card-border-hover: #6366f1;
   --card-shadow: rgba(79, 70, 229, 0.25);
 }
 
 .dash-card-cyan {
-  background: #ecfeff;
-  --card-border: #cffafe;
+  background: var(--accent-cyan-light);
+  --card-border: var(--accent-cyan-light);
   --card-accent: linear-gradient(135deg, #06b6d4, #22d3ee);
-  --card-border-hover: #22d3ee;
+  --card-border-hover: var(--accent-bright);
   --card-shadow: rgba(6, 182, 212, 0.25);
 }
 
 .dash-card-amber {
-  background: #fffbeb;
-  --card-border: #fef3c7;
+  background: var(--c-warning-bg);
+  --card-border: var(--c-warning-light);
   --card-accent: linear-gradient(135deg, #f59e0b, #fbbf24);
-  --card-border-hover: #fbbf24;
+  --card-border-hover: var(--warning-bright);
   --card-shadow: rgba(245, 158, 11, 0.25);
 }
 
@@ -382,40 +382,41 @@
   background: #fdf2f8;
   --card-border: #fce7f3;
   --card-accent: linear-gradient(135deg, #ec4899, #f472b6);
-  --card-border-hover: #f472b6;
+  --card-border-hover: var(--accent-pink);
   --card-shadow: rgba(236, 72, 153, 0.25);
 }
 
 .dash-card-green {
-  background: #f0fdf4;
-  --card-border: #dcfce7;
+  background: var(--c-success-bg);
+  --card-border: var(--c-success-light);
   --card-accent: linear-gradient(135deg, #10b981, #34d399);
   --card-border-hover: #34d399;
   --card-shadow: rgba(16, 185, 129, 0.25);
 }
 
-.dash-card-violet {
-  background: #f5f3ff;
-  --card-border: #ede9fe;
-  --card-accent: linear-gradient(135deg, #7c3aed, #a78bfa);
-  --card-border-hover: #a78bfa;
-  --card-shadow: rgba(124, 58, 237, 0.25);
-}
-
 .dash-card-blue {
-  background: #eff6ff;
-  --card-border: #dbeafe;
+  background: var(--c-info-bg);
+  --card-border: var(--c-primary-light);
   --card-accent: linear-gradient(135deg, #2563eb, #60a5fa);
   --card-border-hover: #60a5fa;
   --card-shadow: rgba(37, 99, 235, 0.25);
 }
 
+
 .dash-card-rose {
   background: #fff1f2;
   --card-border: #ffe4e6;
   --card-accent: linear-gradient(135deg, #e11d48, #fb7185);
-  --card-border-hover: #fb7185;
+  --card-border-hover: var(--accent-rose);
   --card-shadow: rgba(225, 29, 72, 0.25);
+}
+
+.dash-card-violet {
+  background: #f5f3ff;
+  --card-border: var(--accent-violet-light);
+  --card-accent: linear-gradient(135deg, #7c3aed, #a78bfa);
+  --card-border-hover: #a78bfa;
+  --card-shadow: rgba(124, 58, 237, 0.25);
 }
 
 .dash-card-teal {
@@ -424,6 +425,32 @@
   --card-accent: linear-gradient(135deg, #0d9488, #2dd4bf);
   --card-border-hover: #2dd4bf;
   --card-shadow: rgba(13, 148, 136, 0.25);
+}
+
+/* --- DARK MODE --- */
+:root[data-theme="dark"] .dash-card-rose {
+  background: rgb(225 29 72 / 0.12);
+  --card-border: rgb(251 113 133 / 0.25);
+  --card-accent: linear-gradient(135deg, #fb7185, #fda4af);
+  --card-border-hover: var(--accent-rose);
+  --card-shadow: rgb(251 113 133 / 0.25);
+}
+
+:root[data-theme="dark"] .dash-card-violet {
+  background: rgb(124 58 237 / 0.14);
+  --card-border: rgb(167 139 250 / 0.25);
+  --card-accent: linear-gradient(135deg, #a78bfa, #c4b5fd);
+  --card-border-hover: var(--accent-violet);
+  --card-shadow: rgb(167 139 250 / 0.25);
+}
+
+/* --- DARK MODE --- */
+:root[data-theme="dark"] .dash-card-teal {
+  background: rgb(13 148 136 / 0.12);
+  --card-border: rgb(45 212 191 / 0.25);
+  --card-accent: linear-gradient(135deg, #2dd4bf, #5eead4);
+  --card-border-hover: #2dd4bf;
+  --card-shadow: rgb(45 212 191 / 0.25);
 }
 
 /* ---------- RESPONSIVE ---------- */

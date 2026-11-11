@@ -196,7 +196,7 @@
   /* ── Validation additions ── */
   .auth-form-input.auth-input-error {
     border-color: var(--danger);
-    background: #fff5f5;
+    background: var(--c-error-bg);
   }
   
   .auth-form-input.auth-input-error:focus {
@@ -251,15 +251,15 @@
   }
   
   .auth-alert-error {
-    background: #fef2f2;
-    border-color: #fecaca;
-    color: #991b1b;
+    background: var(--c-error-bg);
+    border-color: var(--c-error-border);
+    color: var(--c-error-text);
   }
   
   .auth-alert-warning {
-    background: #fffbeb;
-    border-color: #fde68a;
-    color: #92400e;
+    background: var(--c-warning-bg);
+    border-color: var(--c-warning-border);
+    color: var(--c-warning-text);
   }
   
   .auth-alert-icon {
@@ -299,7 +299,7 @@
     width: 16px;
     height: 16px;
     border: 2px solid rgba(255, 255, 255, 0.35);
-    border-top-color: #fff;
+    border-top-color: var(--border);
     border-radius: 50%;
     animation: auth-spin 0.65s linear infinite;
     flex-shrink: 0;
@@ -394,17 +394,17 @@
   }
   
   .auth-toast-success .auth-toast-icon-wrap {
-    background: #d1fae5;
+    background: var(--c-success-light);
     color: var(--success);
   }
   
   .auth-toast-error .auth-toast-icon-wrap {
-    background: #fee2e2;
+    background: var(--c-error-light);
     color: var(--danger);
   }
   
   .auth-toast-warning .auth-toast-icon-wrap {
-    background: #fef3c7;
+    background: var(--c-warning-light);
     color: var(--warning);
   }
   
@@ -556,19 +556,19 @@
   }
   
   .auth-modal-icon-success {
-    background: #d1fae5;
+    background: var(--c-success-light);
     color: var(--success);
     animation: auth-icon-pop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) 0.05s both;
   }
   
   .auth-modal-icon-error {
-    background: #fee2e2;
+    background: var(--c-error-light);
     color: var(--danger);
     animation: auth-icon-shake 0.4s ease 0.05s both;
   }
   
   .auth-modal-icon-warning {
-    background: #fef3c7;
+    background: var(--c-warning-light);
     color: var(--warning);
     animation: auth-icon-pop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) 0.05s both;
   }
@@ -657,7 +657,7 @@
   }
   
   .auth-modal-btn-success:hover {
-    background: #059669;
+    background: var(--accent-emerald);
   }
   
   .auth-modal-btn-error {
@@ -666,7 +666,7 @@
   }
   
   .auth-modal-btn-error:hover {
-    background: #dc2626;
+    background: var(--danger-dark);
   }
   
   .auth-modal-btn-primary {

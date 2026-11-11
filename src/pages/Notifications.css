@@ -7,10 +7,10 @@ Everything else below reuses --primary, --accent, --success, --danger,
 --c-info, --c-success-light, --c-error-light, --text-muted, --border, etc.
 ======================================*/
 .ntf-page {
-  --ntf-premium: #7c3aed;
-  --ntf-premium-bg: #ede9fe;
-  --ntf-cyan-bg: #cffafe;
-  --ntf-unread-border: #c7d2fe;
+  --ntf-premium: var(--accent-violet);
+  --ntf-premium-bg: var(--accent-violet-light);
+  --ntf-cyan-bg: var(--accent-cyan-light);
+  --ntf-unread-border: var(--primary-light);
 }
 
 .ntf-page {

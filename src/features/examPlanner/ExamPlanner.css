@@ -188,7 +188,7 @@
 }
 
 .planner-btn--danger:hover {
-  background: #fef2f2;
+  background: var(--c-error-bg);
   color: var(--danger);
   border-color: var(--danger);
 }

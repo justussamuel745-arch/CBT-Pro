@@ -60,7 +60,7 @@ const DASHBOARD_CARDS = [
     title: "Browse Past Questions",
     description: "Search and review thousands of free past exam questions by year, subject and topic.",
     to: "/jamb-past-questions",
-    color: "cyan",
+    color: "green",
   }
 ];
 

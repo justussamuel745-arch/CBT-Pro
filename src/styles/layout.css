@@ -17,7 +17,7 @@
 
 /* Nav */
 nav {
-  background: rgba(255, 255, 255, 0.8);
+  background: var(--nav-bg);
   backdrop-filter: blur(0.75rem);
   border-bottom: 0.0625rem solid var(--border);
   position: sticky;
@@ -94,7 +94,7 @@ nav {
   padding: 1rem 2.5rem;
   font-size: 1.1rem;
   border-radius: 0.75rem;
-  background: white;
+  background: var(--card);
   color: var(--primary);
   font-weight: 700;
   box-shadow: 0 0.5rem 1.25rem rgb(0 0 0 / 0.2);

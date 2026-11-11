@@ -17,8 +17,8 @@
   align-items: center;
   gap: 1rem;
   padding: 1rem 1.25rem;
-  background: #fef2f2;
-  border: 1px solid #fecaca;
+  background: var(--c-error-bg);
+  border: 1px solid var(--c-error-border);
   border-radius: var(--radius-sm);
   margin-bottom: 2rem;
   color: var(--danger);
@@ -154,7 +154,7 @@
   align-items: center;
   gap: 0.4rem;
   font-size: 0.85rem;
-  color: var(--success, #16a34a);
+  color: var(--success, var(--c-success));
   font-weight: 600;
   margin-top: 0.75rem;
 }

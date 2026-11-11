@@ -419,9 +419,9 @@
 }
 
 .demo-option.correct {
-  background: #f0fdf4;
-  border-color: #bbf7d0;
-  color: #16a34a;
+  background: var(--c-success-bg);
+  border-color: var(--c-success-border);
+  color: var(--c-success);
   animation: correct-glow 0.5s ease;
 }
 
@@ -431,14 +431,14 @@
 }
 
 .demo-option.correct .demo-option-letter {
-  background: #16a34a;
+  background: var(--c-success);
   color: white;
 }
 
 .demo-option.incorrect {
-  background: #fef2f2;
-  border-color: #fecaca;
-  color: #dc2626;
+  background: var(--c-error-bg);
+  border-color: var(--c-error-border);
+  color: var(--danger-dark);
   animation: shake 0.4s ease;
 }
 
@@ -449,7 +449,7 @@
 }
 
 .demo-option.incorrect .demo-option-letter {
-  background: #dc2626;
+  background: var(--danger-dark);
   color: white;
 }
 

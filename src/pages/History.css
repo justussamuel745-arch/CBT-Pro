@@ -136,14 +136,14 @@
 
 .history-sparkline-line {
   fill: none;
-  stroke: white;
+  stroke: var(--card);
   stroke-width: 2;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
 
 .history-sparkline-dot {
-  fill: white;
+  fill: var(--card);
 }
 
 /* ---------- TIMELINE ---------- */

@@ -153,7 +153,7 @@
     padding: 0.9rem 2rem;
     font-size: 1rem;
     border-radius: 12px;
-    background: white;
+    background: var(--card);
     color: var(--primary);
     font-weight: 700;
     border: none;
@@ -209,7 +209,7 @@
     font-size: 0.68rem;
     font-weight: 700;
     background: rgba(239, 68, 68, 0.25);
-    color: #fecaca;
+    color: var(--c-error-border);
     padding: 0.15rem 0.5rem;
     border-radius: 8px;
   }
@@ -238,7 +238,7 @@
   }
 
   .simulator-mock-option.selected {
-    background: rgba(255,255,255,0.92);
+    background: var(--surface-glass);
     border-color: transparent;
   }
 

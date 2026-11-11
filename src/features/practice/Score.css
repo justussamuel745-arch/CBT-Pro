@@ -241,8 +241,8 @@
     transform: translateX(2px);
   }
 
-  .score-subject-row.score-rank-1 { border-left: 3px solid #10b981; }
-  .score-subject-row.score-rank-last { border-left: 3px solid #ef4444; }
+  .score-subject-row.score-rank-1 { border-left: 3px solid var(--success); }
+  .score-subject-row.score-rank-last { border-left: 3px solid var(--danger); }
 
   .score-subject-icon {
     width: 46px;
@@ -321,9 +321,9 @@
     white-space: nowrap;
   }
 
-  .score-badge.success { background: #d1fae5; color: #065f46; }
-  .score-badge.warning { background: #fef3c7; color: #92400e; }
-  .score-badge.danger  { background: #fee2e2; color: #991b1b; }
+  .score-badge.success { background: var(--c-success-light); color: #065f46; }
+  .score-badge.warning { background: var(--c-warning-light); color: var(--c-warning-text); }
+  .score-badge.danger  { background: var(--c-error-light); color: var(--c-error-text); }
   .score-badge.info    { background: var(--primary-light); color: var(--primary); }
 
   /* ── Tier table ── */
@@ -341,9 +341,9 @@
     border: 1.5px solid transparent;
   }
 
-  .score-tier.excellent { background: #f0fdf4; border-color: #bbf7d0; }
-  .score-tier.passing   { background: #fffbeb; border-color: #fde68a; }
-  .score-tier.failing   { background: #fef2f2; border-color: #fecaca; }
+  .score-tier.excellent { background: var(--c-success-bg); border-color: var(--c-success-border); }
+  .score-tier.passing   { background: var(--c-warning-bg); border-color: var(--c-warning-border); }
+  .score-tier.failing   { background: var(--c-error-bg); border-color: var(--c-error-border); }
 
   .score-tier-num {
     font-size: 2rem;
@@ -352,9 +352,9 @@
     margin-bottom: 0.25rem;
   }
 
-  .score-tier.excellent .score-tier-num { color: #16a34a; }
-  .score-tier.passing   .score-tier-num { color: #d97706; }
-  .score-tier.failing   .score-tier-num { color: #dc2626; }
+  .score-tier.excellent .score-tier-num { color: var(--c-success); }
+  .score-tier.passing   .score-tier-num { color: var(--c-warning); }
+  .score-tier.failing   .score-tier-num { color: var(--danger-dark); }
 
   .score-tier-label {
     font-size: 0.78rem;
@@ -386,8 +386,8 @@
     gap: 0.875rem;
   }
 
-  .score-spotlight.best  { background: #f0fdf4; border: 1.5px solid #bbf7d0; }
-  .score-spotlight.worst { background: #fef2f2; border: 1.5px solid #fecaca; }
+  .score-spotlight.best  { background: var(--c-success-bg); border: 1.5px solid var(--c-success-border); }
+  .score-spotlight.worst { background: var(--c-error-bg); border: 1.5px solid var(--c-error-border); }
 
   .score-spotlight-icon {
     width: 40px;
@@ -400,8 +400,8 @@
     font-size: 1.25rem;
   }
 
-  .score-spotlight.best  .score-spotlight-icon { background: #dcfce7; }
-  .score-spotlight.worst .score-spotlight-icon { background: #fee2e2; }
+  .score-spotlight.best  .score-spotlight-icon { background: var(--c-success-light); }
+  .score-spotlight.worst .score-spotlight-icon { background: var(--c-error-light); }
 
   .score-spotlight-info { flex: 1; min-width: 0; }
 
@@ -413,8 +413,8 @@
     margin-bottom: 0.2rem;
   }
 
-  .score-spotlight.best  .score-spotlight-eyebrow { color: #16a34a; }
-  .score-spotlight.worst .score-spotlight-eyebrow { color: #dc2626; }
+  .score-spotlight.best  .score-spotlight-eyebrow { color: var(--c-success); }
+  .score-spotlight.worst .score-spotlight-eyebrow { color: var(--danger-dark); }
 
   .score-spotlight-name {
     font-size: 0.875rem;

@@ -7,8 +7,8 @@
 .sk,
 .sk-fab {
   /* local palette — no CSS variables */
-  --sk-base: #e5e7eb;
-  --sk-shine: #f3f4f6;
+  --sk-base: var(--c-border);
+  --sk-shine: var(--c-subtle);
 
   background-color: var(--sk-base);
   background-image: linear-gradient(
@@ -99,12 +99,12 @@
   pointer-events: none;
   cursor: default;
   /* override the real .mode-option background/hover */
-  background: #ffffff;
-  border-color: #e5e7eb;
+  background: var(--card);
+  border-color: var(--c-border);
 }
 
 .sk-option:hover {
-  background: #ffffff;
+  background: var(--card);
   transform: none;
 }
 
@@ -146,7 +146,7 @@
   border: none;
   box-shadow: none;
   /* override the real .mode-fab gradient */
-  background: #e5e7eb;
+  background: var(--c-border);
 }
 
 /* ---------- Responsive parity with StudySimulator.css ---------- */

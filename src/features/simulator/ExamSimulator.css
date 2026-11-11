@@ -15,7 +15,7 @@
 }
 
 .exam-timer.warning {
-  background: #fef2f2;
+  background: var(--c-error-bg);
   color: var(--danger);
   animation: examPulse 1s infinite;
 }

@@ -5,7 +5,7 @@
   transform: translateX(-50%);
   width: min(420px, calc(100% - 32px));
   
-  background: var(--surface, #fff);
+  background: var(--surface, var(--card));
   color: var(--text, #111);
   
   border-radius: 18px;
@@ -58,10 +58,10 @@
 }
 
 .pwa-update-btn.primary {
-  background: #2563eb;
+  background: var(--c-primary);
   color: white;
 }
 
 .pwa-update-btn.secondary {
-  background: #ececec;
+  background: var(--c-subtle);
 }

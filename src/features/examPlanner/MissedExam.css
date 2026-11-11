@@ -11,8 +11,8 @@
   display: flex;
   align-items: center;
   gap: 0.85rem;
-  background: #fef2f2;
-  border: 1px solid #fecaca;
+  background: var(--c-error-bg);
+  border: 1px solid var(--c-error-border);
   border-radius: var(--radius);
   padding: 0.9rem 1rem;
   margin-bottom: 1rem;
@@ -123,8 +123,8 @@
 /* ---------- Grouped list (2+ missed exams) ---------- */
 
 .missedexam-group {
-  background: #fef2f2;
-  border: 1px solid #fecaca;
+  background: var(--c-error-bg);
+  border: 1px solid var(--c-error-border);
   border-radius: var(--radius);
   padding: 1rem;
   margin-bottom: 1.25rem;

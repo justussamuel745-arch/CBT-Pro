@@ -234,7 +234,7 @@
 
 .examdetail-pill--on {
   color: var(--success);
-  background: #f0fdf4;
+  background: var(--c-success-bg);
 }
 
 .examdetail-pill--off {
@@ -302,7 +302,7 @@
 }
 
 .examdetail-btn--danger:hover {
-  background: #fef2f2;
+  background: var(--c-error-bg);
   color: var(--danger);
   border-color: var(--danger);
 }

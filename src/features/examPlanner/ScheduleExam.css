@@ -155,7 +155,7 @@
 
 .examform-input--error {
   border-color: var(--danger);
-  background: #fef2f2;
+  background: var(--c-error-bg);
 }
 
 .examform-input--error:focus {
@@ -191,8 +191,8 @@
   font-size: 0.82rem;
   font-weight: 700;
   color: var(--danger-dark);
-  background: #fef2f2;
-  border: 1px solid #fecaca;
+  background: var(--c-error-bg);
+  border: 1px solid var(--c-error-border);
   border-radius: var(--radius-sm);
   padding: 0.65rem 0.9rem;
   margin-bottom: 0.75rem;
@@ -328,7 +328,7 @@
   text-transform: uppercase;
   letter-spacing: 0.03em;
   color: var(--primary);
-  background: #fff;
+  background: var(--card);
   border: 1px solid var(--primary);
   padding: 0.1rem 0.4rem;
   border-radius: 999px;
@@ -418,7 +418,7 @@
   height: 20px;
   left: 3px;
   top: 3px;
-  background: #fff;
+  background: var(--card);
   border-radius: 50%;
   box-shadow: 0 1px 3px rgb(0 0 0 / 0.25);
   transition: transform 0.2s ease;
@@ -453,7 +453,7 @@
   height: 20px;
   right: 3px;
   top: 3px;
-  background: #fff;
+  background: var(--card);
   border-radius: 50%;
   box-shadow: 0 1px 3px rgb(0 0 0 / 0.25);
 }

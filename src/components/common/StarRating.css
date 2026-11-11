@@ -6,7 +6,7 @@
 }
 
 .star-rating .is-on {
-  color: #f59e0b;
+  color: var(--warning);
 }
 
 .star-rating.is-input {

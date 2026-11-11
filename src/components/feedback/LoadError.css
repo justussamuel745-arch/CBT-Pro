@@ -33,7 +33,7 @@
   width: 76px;
   height: 76px;
   border-radius: 50%;
-  background: #fef2f2;
+  background: var(--c-error-bg);
   color: var(--danger);
   display: flex;
   align-items: center;

@@ -1,9 +1,9 @@
 :root {
-  --c-getting-started: #4f46e5;
+  --c-getting-started: var(--primary);
   --c-study-practice: #0e7490;
   --c-exam-scheduling: #047857;
   --c-account: #6d28d9;
-  --c-activation: #b45309;
+  --c-activation: var(--c-warning-text);
   --c-troubleshooting: #be123c;
   --c-privacy: #334155;
 }
@@ -50,7 +50,7 @@
 
 /* Nav */
 .help-nav {
-  background: rgba(255, 255, 255, 0.9);
+  background: var(--surface-glass);
   backdrop-filter: blur(0.75rem);
   border-bottom: 0.0625rem solid var(--border);
   position: sticky;
@@ -337,7 +337,7 @@
   font-size: 0.68rem;
   font-weight: 700;
   color: var(--card-color, var(--primary));
-  background: color-mix(in srgb, var(--card-color, var(--primary)) 12%, #fff);
+  background: color-mix(in srgb, var(--card-color, var(--primary)) 12%, var(--card));
   padding: 0.15rem 0.5rem;
   border-radius: 999px;
   margin-bottom: 0.5rem;

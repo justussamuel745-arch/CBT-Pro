@@ -5,8 +5,8 @@
 
 /* ---------- Base shimmer ---------- */
 .sk-planner {
-  --sk-base: #e5e7eb;
-  --sk-shine: #f3f4f6;
+  --sk-base: var(--c-border);
+  --sk-shine: var(--c-subtle);
 
   background-color: var(--sk-base);
   background-image: linear-gradient(

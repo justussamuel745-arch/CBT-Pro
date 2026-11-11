@@ -77,4 +77,122 @@
   --c-shadow-sm: 0 0.0625rem 0.1875rem rgba(0, 0, 0, .08), 0 0.0625rem 0.125rem rgba(0, 0, 0, .04);
   --c-shadow-md: 0 0.25rem 0.75rem rgba(0, 0, 0, .1);
   --c-shadow-lg: 0 0.75rem 2rem rgba(0, 0, 0, .15);
+
+  /* Extended accent palette — category / subject accents, adapt in dark mode */
+  --accent-violet: #7c3aed;
+  --accent-violet-light: #ede9fe;
+  --accent-cyan-light: #ecfeff;
+  --accent-orange: #f97316;
+  --accent-pink: #f472b6;
+  --accent-rose: #fb7185;
+  --accent-emerald: #059669;
+  --accent-bright: #22d3ee;
+  --warning-bright: #fbbf24;
+  --c-warning-text: #92400e;
+  --c-error-text: #991b1b;
+
+  /* Glass / translucent surfaces (nav, topbars, floating cards) */
+  --nav-bg: rgba(255, 255, 255, 0.8);
+  --surface-glass: rgba(255, 255, 255, 0.85);
+}
+
+/* =====================================
+   DARK MODE TOKENS
+   Overrides ONLY color/shadow tokens. Radii, spacing, layout and
+   font tokens are inherited from :root, so no component changes.
+   Activate with <html data-theme="dark">.
+====================================== */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  /* Brand / core design system */
+  --primary: #818cf8;
+  --primary-dark: #6366f1;
+  --primary-light: rgb(99 102 241 / 0.16);
+  --accent: #22d3ee;
+  --success: #34d399;
+  --bg: #0b0f1a;
+  --card: #121829;
+  --text: #e6eaf5;
+  --text-muted: #94a3b8;
+  --border: #1f2a44;
+  --warning: #fbbf24;
+  --danger: #f87171;
+  --danger-dark: #ef4444;
+  --shadow: 0 10px 20px -5px rgb(0 0 0 / 0.6), 0 0 0 1px rgb(255 255 255 / 0.03);
+  --shadow-lg: 0 24px 40px -8px rgb(0 0 0 / 0.7), 0 0 40px -12px rgb(99 102 241 / 0.35);
+  --gradient: linear-gradient(135deg, #3730A3 0%, #1E3A8A 100%);
+  
+  /* Semantic / status system */
+  --c-bg: #0a0e17;
+  --c-surface: #111726;
+  --c-border: #1f2937;
+  --c-text: #e5e7eb;
+  --c-muted: #9ca3af;
+  --c-subtle: #0f1522;
+  --c-border-focus: #60a5fa;
+  --c-primary-light: rgb(37 99 235 / 0.18);
+
+  --c-success: #4ade80;
+  --c-success-bg: rgb(34 197 94 / 0.10);
+  --c-success-border: rgb(34 197 94 / 0.30);
+  --c-success-light: rgb(34 197 94 / 0.18);
+
+  --c-error: #f87171;
+  --c-error-bg: rgb(239 68 68 / 0.10);
+  --c-error-border: rgb(239 68 68 / 0.30);
+  --c-error-light: rgb(239 68 68 / 0.18);
+
+  --c-warning: #fbbf24;
+  --c-warning-bg: rgb(245 158 11 / 0.10);
+  --c-warning-border: rgb(245 158 11 / 0.30);
+  --c-warning-light: rgb(245 158 11 / 0.18);
+
+  --c-info: #60a5fa;
+  --c-info-bg: rgb(59 130 246 / 0.10);
+  --c-info-border: rgb(59 130 246 / 0.30);
+  --c-info-light: rgb(59 130 246 / 0.18);
+
+  /* Admin / sidebar layout */
+  --c-sidebar: #070a12;
+  --c-sidebar-hover: #131a2a;
+  --c-primary: #3b82f6;
+  --c-primary-hover: #60a5fa;
+  --c-danger: #f87171;
+  --c-danger-hover: #ef4444;
+  --c-row-hover: #151c2e;
+  --c-shadow-sm: 0 0.0625rem 0.1875rem rgb(0 0 0 / 0.5), 0 0 0 1px rgb(255 255 255 / 0.03);
+  --c-shadow-md: 0 0.25rem 0.75rem rgb(0 0 0 / 0.55);
+  --c-shadow-lg: 0 0.75rem 2rem rgb(0 0 0 / 0.65);
+
+  /* Extended accent palette — dark counterparts */
+  --accent-violet: #a78bfa;
+  --accent-violet-light: rgb(124 58 237 / 0.18);
+  --accent-cyan-light: rgb(34 211 238 / 0.10);
+  --accent-orange: #fb923c;
+  --accent-pink: #f9a8d4;
+  --accent-rose: #fda4af;
+  --accent-emerald: #34d399;
+  --accent-bright: #67e8f9;
+  --warning-bright: #fcd34d;
+  --c-warning-text: #fcd34d;
+  --c-error-text: #fca5a5;
+
+  /* Glass / translucent surfaces — dark counterparts */
+  --nav-bg: rgb(11 15 26 / 0.8);
+  --surface-glass: rgb(18 24 41 / 0.82);
+}
+
+/* Optional polish: soft ambient glow behind the page, dark mode only */
+:root[data-theme="dark"] body {
+  background:
+    radial-gradient(60rem 30rem at 85% -10%, rgb(99 102 241 / 0.14), transparent 60%),
+    radial-gradient(50rem 28rem at -10% 10%, rgb(6 182 212 / 0.08), transparent 60%),
+    var(--bg);
+  background-attachment: fixed;
+}
+
+/* Smooth theme switch on core surfaces */
+body, nav, .dash-menu-panel, .page-header, .btn, input, select, textarea {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }

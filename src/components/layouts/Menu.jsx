@@ -1,6 +1,7 @@
 import { memo } from 'react';
 import { Link } from 'react-router';
 import { authStore } from '@/stores/authStore';
+import { ThemeToggle } from './ThemeToggle';
 import './Menu.css';
 
 /* Dashboard sections. Exported so other layouts can extend them. */
@@ -78,6 +79,16 @@ export const Menu = memo(function Menu({ menuOpen, setMenuOpen, sections }) {
             ))}
           </div>
         ))}
+        <div className="dash-menu-section">
+          <div className="dash-menu-section-title">Appearance</div>
+          <div className="theme-toggle-row">
+            <span className="theme-toggle-label">
+              <i className="fa-solid fa-circle-half-stroke"></i>
+              Dark mode
+            </span>
+            <ThemeToggle />
+          </div>
+        </div>
       </nav>
 
       <div

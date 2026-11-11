@@ -14,14 +14,14 @@
   }
 
   .astra-modal {
-    background: #ffffff;
+    background: var(--card);
     width: 100%;
     max-width: 480px;
     height: 85vh;
     height: 85dvh;
     max-height: 720px;
     border-radius: 20px;
-    border: 1px solid #e2e8f0;
+    border: 1px solid var(--border);
     box-shadow:
       0 0 0 1px rgba(79, 70, 229, 0.08),
       0 32px 64px rgba(15, 23, 42, 0.18),
@@ -42,12 +42,12 @@
   .astra-header {
     position: relative;
     padding: 14px 16px;
-    border-bottom: 1px solid #e2e8f0;
+    border-bottom: 1px solid var(--border);
     display: flex;
     align-items: center;
     gap: 10px;
     flex-shrink: 0;
-    background: #f8fafc;
+    background: var(--bg);
   }
 
   .astra-avatar {
@@ -68,7 +68,7 @@
   .astra-header-name {
     font-size: 14px;
     font-weight: 700;
-    color: #0f172a;
+    color: var(--text);
     letter-spacing: -0.01em;
     line-height: 1.2;
   }
@@ -89,7 +89,7 @@
     flex-shrink: 0;
   }
 
-  .astra-status-dot.offline { background: #ef4444; animation: none; }
+  .astra-status-dot.offline { background: var(--danger); animation: none; }
 
   @keyframes astra-pulse {
     0%, 100% { opacity: 1; box-shadow: 0 0 4px #22c55e; }
@@ -98,20 +98,20 @@
 
   .astra-status-text {
     font-size: 11px;
-    color: #16a34a;
+    color: var(--c-success);
     font-weight: 500;
   }
 
-  .astra-status-text.offline { color: #dc2626; }
+  .astra-status-text.offline { color: var(--danger-dark); }
 
   .astra-close {
     width: 32px;
     height: 32px;
     border-radius: 8px;
-    border: 1px solid #e2e8f0;
-    background: #ffffff;
+    border: 1px solid var(--border);
+    background: var(--card);
     cursor: pointer;
-    color: #64748b;
+    color: var(--text-muted);
     font-size: 18px;
     display: flex;
     align-items: center;
@@ -121,7 +121,7 @@
     line-height: 1;
   }
 
-  .astra-close:hover { background: #f1f5f9; color: #0f172a; border-color: #cbd5e1; }
+  .astra-close:hover { background: var(--c-subtle); color: var(--text); border-color: var(--border); }
 
   /* ── Credits badge (clickable) ── */
   .astra-credits {
@@ -130,11 +130,11 @@
     gap: 4px;
     padding: 5px 10px;
     border-radius: 20px;
-    background: #eef2ff;
+    background: var(--primary-light);
     border: 1px solid rgba(79, 70, 229, 0.18);
     font-size: 11.5px;
     font-weight: 700;
-    color: #4f46e5;
+    color: var(--primary);
     flex-shrink: 0;
     white-space: nowrap;
     cursor: pointer;
@@ -142,7 +142,7 @@
   }
 
   .astra-credits:hover {
-    background: #e0e7ff;
+    background: var(--primary-light);
     border-color: rgba(79, 70, 229, 0.3);
   }
 
@@ -151,13 +151,13 @@
   }
 
   .astra-credits.low {
-    background: #fef2f2;
+    background: var(--c-error-bg);
     border-color: rgba(239, 68, 68, 0.2);
-    color: #dc2626;
+    color: var(--danger-dark);
   }
 
   .astra-credits.low:hover {
-    background: #fee2e2;
+    background: var(--c-error-light);
     border-color: rgba(239, 68, 68, 0.35);
   }
 
@@ -175,8 +175,8 @@
     right: 0;
     width: 260px;
     max-width: calc(100vw - 32px);
-    background: #ffffff;
-    border: 1px solid #e2e8f0;
+    background: var(--card);
+    border: 1px solid var(--border);
     border-radius: 14px;
     box-shadow: 0 12px 32px rgba(15, 23, 42, 0.14);
     z-index: 10;
@@ -198,14 +198,14 @@
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.06em;
-    color: #94a3b8;
+    color: var(--text-muted);
     margin-bottom: 6px;
   }
 
   .astra-credits-popover-value {
     font-size: 28px;
     font-weight: 800;
-    color: #0f172a;
+    color: var(--text);
     line-height: 1;
     margin-bottom: 4px;
   }
@@ -213,19 +213,19 @@
   .astra-credits-popover-value span {
     font-size: 14px;
     font-weight: 600;
-    color: #94a3b8;
+    color: var(--text-muted);
   }
 
   .astra-credits-popover-sub {
     font-size: 12px;
-    color: #64748b;
+    color: var(--text-muted);
     line-height: 1.5;
     margin-bottom: 14px;
   }
 
   .astra-credits-popover-bar-track {
     height: 6px;
-    background: #f1f5f9;
+    background: var(--c-subtle);
     border-radius: 99px;
     overflow: hidden;
     margin-bottom: 14px;
@@ -274,13 +274,13 @@
     gap: 14px;
     scroll-behavior: smooth;
     overscroll-behavior: contain;
-    background: #ffffff;
+    background: var(--card);
   }
 
   /* thin custom scrollbar */
   .astra-messages::-webkit-scrollbar { width: 4px; }
   .astra-messages::-webkit-scrollbar-track { background: transparent; }
-  .astra-messages::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 99px; }
+  .astra-messages::-webkit-scrollbar-thumb { background: var(--border); border-radius: 99px; }
 
   .astra-msg {
     display: flex;
@@ -312,7 +312,7 @@
   }
 
   .astra-msg.ai   .astra-msg-avatar { background: linear-gradient(135deg, #4f46e5, #7c3aed); }
-  .astra-msg.user .astra-msg-avatar { background: #eef2ff; font-size: 11px; font-weight: 700; color: #4f46e5; }
+  .astra-msg.user .astra-msg-avatar { background: var(--primary-light); font-size: 11px; font-weight: 700; color: var(--primary); }
 
   .astra-bubble {
     padding: 10px 14px;
@@ -323,9 +323,9 @@
   }
 
   .astra-msg.ai .astra-bubble {
-    background: #f8fafc;
-    color: #1e293b;
-    border: 1px solid #e2e8f0;
+    background: var(--bg);
+    color: var(--text);
+    border: 1px solid var(--border);
     border-bottom-left-radius: 4px;
   }
 
@@ -343,26 +343,26 @@
   .astra-bubble li { margin-bottom: 0.2em; }
   .astra-bubble code {
     background: rgba(79, 70, 229, 0.08);
-    color: #4338ca;
+    color: var(--primary-dark);
     padding: 1px 5px;
     border-radius: 4px;
     font-size: 12px;
     font-family: 'JetBrains Mono', 'Fira Code', monospace;
   }
   .astra-bubble pre {
-    background: #0f172a;
-    border: 1px solid #1e293b;
+    background: var(--text);
+    border: 1px solid var(--text);
     border-radius: 8px;
     padding: 10px 12px;
     overflow-x: auto;
     margin: 0.5em 0;
   }
-  .astra-bubble pre code { background: none; color: #e2e8f0; padding: 0; font-size: 12px; }
-  .astra-bubble strong { color: #0f172a; font-weight: 700; }
+  .astra-bubble pre code { background: none; color: var(--border); padding: 0; font-size: 12px; }
+  .astra-bubble strong { color: var(--text); font-weight: 700; }
   .astra-bubble blockquote {
     border-left: 3px solid rgba(79,70,229,0.4);
     padding-left: 10px;
-    color: #64748b;
+    color: var(--text-muted);
     margin: 0.4em 0;
   }
 
@@ -377,7 +377,7 @@
   .astra-typing span {
     width: 5px;
     height: 5px;
-    background: #4f46e5;
+    background: var(--primary);
     border-radius: 50%;
     animation: astra-bounce 1.3s infinite ease-in-out;
   }
@@ -392,17 +392,17 @@
 
   /* ── Error bubble ── */
   .astra-bubble.error {
-    background: #fef2f2;
-    border-color: #fecaca;
-    color: #b91c1c;
+    background: var(--c-error-bg);
+    border-color: var(--c-error-border);
+    color: var(--c-danger-hover);
   }
 
   /* ── Input area ── */
   .astra-input-area {
     padding: 12px 16px;
     padding-bottom: calc(12px + env(safe-area-inset-bottom));
-    border-top: 1px solid #e2e8f0;
-    background: #f8fafc;
+    border-top: 1px solid var(--border);
+    background: var(--bg);
     flex-shrink: 0;
   }
 
@@ -414,13 +414,13 @@
 
   .astra-textarea {
     flex: 1;
-    background: #ffffff;
-    border: 1.5px solid #e2e8f0;
+    background: var(--card);
+    border: 1.5px solid var(--border);
     border-radius: 12px;
     padding: 10px 14px;
     font-size: 13.5px;
     font-family: inherit;
-    color: #0f172a;
+    color: var(--text);
     resize: none;
     min-height: 42px;
     max-height: 120px;
@@ -429,11 +429,11 @@
     line-height: 1.5;
   }
 
-  .astra-textarea::placeholder { color: #94a3b8; }
+  .astra-textarea::placeholder { color: var(--text-muted); }
 
   .astra-textarea:focus {
-    border-color: #4f46e5;
-    background: #ffffff;
+    border-color: var(--primary);
+    background: var(--card);
     box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
   }
 
@@ -465,7 +465,7 @@
   .astra-footer-note {
     text-align: center;
     font-size: 10.5px;
-    color: #94a3b8;
+    color: var(--text-muted);
     margin-top: 8px;
     letter-spacing: 0.01em;
   }

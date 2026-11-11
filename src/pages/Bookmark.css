@@ -305,13 +305,13 @@
 
 .bookmark-modal-option.correct {
   border-color: var(--success);
-  background: #f0fdf4;
+  background: var(--c-success-bg);
 }
 
 .bookmark-modal-option-key {
   width: 28px;
   height: 28px;
-  background: white;
+  background: var(--card);
   border: 2px solid var(--border);
   border-radius: 50%;
   display: flex;

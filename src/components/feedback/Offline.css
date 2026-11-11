@@ -67,8 +67,8 @@
   font-size: 0.72rem;
   font-weight: 700;
   color: var(--danger);
-  background: #fef2f2;
-  border: 1px solid #fecaca;
+  background: var(--c-error-bg);
+  border: 1px solid var(--c-error-border);
   padding: 0.3rem 0.7rem;
   border-radius: 999px;
   text-transform: uppercase;
@@ -85,8 +85,8 @@
 
 .offline-status--back {
   color: var(--success);
-  background: #f0fdf4;
-  border-color: #bbf7d0;
+  background: var(--c-success-bg);
+  border-color: var(--c-success-border);
 }
 
 .offline-status--back .offline-status__dot {

@@ -65,7 +65,7 @@
   border-radius: 999px;
   font-weight: 700;
   font-size: 13px;
-  border: 1px solid #c7d2fe;
+  border: 1px solid var(--primary-light);
 }
 
 /* SUBJECT GRID */
@@ -83,7 +83,7 @@
   cursor: pointer;
   transition: all 0.2s;
   user-select: none;
-  background: white;
+  background: var(--card);
   position: relative;
   display: flex;
   align-items: center;
@@ -113,7 +113,7 @@
   height: 20px;
   border-radius: 6px;
   border: 2px solid var(--border);
-  background: white;
+  background: var(--card);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -124,8 +124,8 @@
 }
 
 .practice-subject-card.selected .check {
-  background: white;
-  border-color: white;
+  background: var(--card);
+  border-color: var(--border);
 }
 
 .practice-subject-card.selected .check::after {
@@ -174,13 +174,13 @@
 }
 
 .btn-start:disabled {
-  background: #cbd5e1;
+  background: var(--border);
   cursor: not-allowed;
   transform: none;
 }
 
 .btn-secondary {
-  background: white;
+  background: var(--card);
   color: var(--text);
   border: 1.5px solid var(--border);
   flex: 0 0 auto;

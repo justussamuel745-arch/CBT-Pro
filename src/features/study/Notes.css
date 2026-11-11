@@ -129,9 +129,9 @@
   font-weight: 700;
   padding: 0.15rem 0.5rem;
   border-radius: 999px;
-  background: var(--c-warning-bg, #fffbeb);
-  color: var(--c-warning, #d97706);
-  border: 0.0625rem solid var(--c-warning-border, #fde68a);
+  background: var(--c-warning-bg, var(--c-warning-bg));
+  color: var(--c-warning, var(--c-warning));
+  border: 0.0625rem solid var(--c-warning-border, var(--c-warning-border));
 }
 
 /* CONTENT PANEL */

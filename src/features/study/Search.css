@@ -271,18 +271,18 @@
 }
 
 .pq-badge--jamb {
-  background: #eef2ff;
+  background: var(--primary-light);
   color: var(--primary);
 }
 
 .pq-badge--waec {
-  background: #ecfeff;
+  background: var(--accent-cyan-light);
   color: #0e7490;
 }
 
 .pq-badge--neco {
-  background: #fef3c7;
-  color: #92400e;
+  background: var(--c-warning-light);
+  color: var(--c-warning-text);
 }
 
 /* empty / loading states */

@@ -13,7 +13,7 @@
 }
 
 .exam-header, .mode-header {
-  background: rgba(255, 255, 255, 0.85);
+  background: var(--surface-glass);
   backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border);
   position: sticky;

@@ -22,7 +22,7 @@
   font-size: 0.72rem;
   font-weight: 800;
   color: var(--success);
-  background: #f0fdf4;
+  background: var(--c-success-bg);
   padding: 0.25rem 0.7rem;
   border-radius: 999px;
   text-transform: uppercase;
@@ -154,15 +154,15 @@
 }
 
 .examresult-banner--celebrate {
-  background: #f0fdf4;
+  background: var(--c-success-bg);
   color: var(--success);
-  border: 1px solid #bbf7d0;
+  border: 1px solid var(--c-success-border);
 }
 
 .examresult-banner--best {
-  background: #fffbeb;
+  background: var(--c-warning-bg);
   color: var(--warning);
-  border: 1px solid #fde68a;
+  border: 1px solid var(--c-warning-border);
 }
 
 /* ---------- AI feedback section ---------- */
@@ -214,17 +214,17 @@
 }
 
 .examresult-subject--great .examresult-subject__icon {
-  background: #fffbeb;
+  background: var(--c-warning-bg);
   color: var(--warning);
 }
 
 .examresult-subject--good .examresult-subject__icon {
-  background: #f0fdf4;
+  background: var(--c-success-bg);
   color: var(--success);
 }
 
 .examresult-subject--warn .examresult-subject__icon {
-  background: #fef2f2;
+  background: var(--c-error-bg);
   color: var(--danger);
 }
 
