@@ -2,13 +2,14 @@ import { useMemo, useState } from 'react'
 import { Link } from 'react-router'
 import { Helmet } from 'react-helmet-async'
 import { Footer } from '@/components/layouts/Footer'
-import { PublicNav } from '@/components/layouts/PublicNav'
+import { PublicNav } from '@/components/layouts/PublicNav';
 import { Reveal } from '@/components/common/Reveal'
 import { SectionHeader } from '@/components/common/SectionHeader'
 import { FaqList } from '@/components/common/FaqList'
 import { SITE_URL } from '@lib/config/app.js'
 import { GUEST_PATH } from '@/lib/config/publicLinks'
 import { UTME_FACTS, TIPS } from '@/lib/data/homeContent'
+import { authStore } from '@/stores/authStore';
 import {
   SUBJECT_LIST, TOTAL_QUESTIONS_LABEL, FILTERS, matchesFilter,
   BENEFITS, HOW_STEPS, WHY_POINTS, PAGE_FAQS,
@@ -82,6 +83,7 @@ function SubjectCard({ subject }) {
 }
 
 export default function JambPastQuestions() {
+  const token = authStore(state => state.token)
   const [filter, setFilter] = useState('all')
   const subjects = useMemo(() => SUBJECT_LIST.filter((s) => matchesFilter(s, filter)), [filter])
 
@@ -116,7 +118,9 @@ export default function JambPastQuestions() {
 
           <div className="pq-hero-actions">
             <a href="#subjects" className="btn btn-primary">Browse subjects</a>
-            <Link to="/auth/signup" className="btn btn-outline btn-hero-outline">Create free account</Link>
+            {
+              !token && <Link to="/auth/signup" className="btn btn-outline btn-hero-outline">Create free account</Link>
+            }
           </div>
 
           <div className="home-hero-stats">
@@ -280,16 +284,22 @@ export default function JambPastQuestions() {
           <Link to="/help" className="demo-cta faq-more">Visit the Help Center <i className="fa-solid fa-arrow-right"></i></Link>
         </section>
 
-        <section className="home-section container">
-          <Reveal className="cta">
-            <h2>Start practicing JAMB past questions today</h2>
-            <p>Create a free account to save your scores, track your progress and unlock the full CBT simulator.</p>
-            <div className="cta-actions">
-              <Link to="/auth/signup" className="btn btn-hero">Create Free Account</Link>
-              <a href="#subjects" className="btn btn-hero cta-ghost">Choose a subject</a>
-            </div>
-          </Reveal>
-        </section>
+        {
+          !token &&
+            (
+              <section className="home-section container">
+                <Reveal className="cta">
+                  <h2>Start practicing JAMB past questions today</h2>
+                  <p>Create a free account to save your scores, track your progress and unlock the full CBT simulator.</p>
+                  <div className="cta-actions">
+                    <Link to="/auth/signup" className="btn btn-hero">Create Free Account</Link>
+                    <a href="#subjects" className="btn btn-hero cta-ghost">Choose a subject</a>
+                  </div>
+                </Reveal>
+              </section>  
+            )
+        }
+        
       </main>
 
       <Footer />

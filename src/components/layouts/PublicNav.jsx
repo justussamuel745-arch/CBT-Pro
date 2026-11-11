@@ -6,11 +6,11 @@ import { useScrollProgress } from '@/hooks/useScrollProgress'
 import { GUEST_PATH, PUBLIC_NAV_LINKS } from '@/lib/config/publicLinks'
 import './PublicNav.css'
 
-/* Header for every public (crawlable) page: logo, 3 main links,
-   auth actions, scroll progress, and a slide-out drawer on small screens. */
+/* Header for every public (crawlable) page. Small screens: menu icon left, logo centered,
+   auth actions right. Desktop: logo left, 3 main links centered, auth actions right. */
 export function PublicNav() {
   const token = authStore((state) => state.token)
-  const isActivated = authStore((state) => state.isActivated)
+  const isActivated = authStore((state) => !state.isActivated)
   const { scrolled, progress } = useScrollProgress()
   const [menuOpen, setMenuOpen] = useState(false)
 
@@ -36,8 +36,19 @@ export function PublicNav() {
       <nav className={`public-nav${scrolled ? ' is-scrolled' : ''}`} aria-label="Main">
         <div className="nav-container">
           <div className="nav-content">
-            <Link to="/" className="logo">CBT Pro</Link>
+            <div>
+            <button
+              type="button"
+              className="public-nav-burger"
+              aria-label="Open menu"
+              aria-expanded={menuOpen}
+              onClick={() => setMenuOpen(true)}
+            >
+              <i className="fa-solid fa-bars"></i>
+            </button>
 
+            <Link to="/" className="logo">CBT Pro</Link>
+            </div>
             <div className="public-nav-links">
               {PUBLIC_NAV_LINKS.map((link) => (
                 <NavLink key={link.to} to={link.to} className="public-nav-link">
@@ -55,21 +66,12 @@ export function PublicNav() {
                   <Link to="/auth/signup" className="btn btn-primary">Sign Up</Link>
                 </>
               )}
-              <button
-                type="button"
-                className="public-nav-burger"
-                aria-label="Open menu"
-                aria-expanded={menuOpen}
-                onClick={() => setMenuOpen(true)}
-              >
-                <i className="fa-solid fa-bars"></i>
-              </button>
             </div>
           </div>
         </div>
       </nav>
 
-      <Menu menuOpen={menuOpen} setMenuOpen={setMenuOpen} sections={drawerSections} />
+      <Menu menuOpen={menuOpen} setMenuOpen={setMenuOpen} sections={token ? null : drawerSections} />
     </>
   )
 }

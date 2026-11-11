@@ -12,7 +12,8 @@ import { SITE_URL } from '@lib/config/app.js'
 import { GUEST_PATH } from '@/lib/config/publicLinks'
 import { TIP_ICONS, subjectPath } from '../utils/subjectPage'
 import { readPageSize } from '../utils/questionFilters'
-import { PracticeConfigForm } from './PracticeConfigForm'
+import { PracticeConfigForm } from './PracticeConfigForm';
+import { CTACard } from './CTACard';
 import { QuestionList } from './QuestionList'
 import '@pages/HomePage.css' // shared section, card, FAQ and CTA styles
 import '@pages/JambPastQuestions.css' // shared hero, breadcrumb and prose styles
@@ -163,16 +164,13 @@ export function FilterPage({ page }) {
           </Link>
         </section>
 
-        <section className="home-section container">
-          <Reveal className="cta">
-            <h2>Start practicing {name} past questions today</h2>
-            <p>Create a free account to save your scores, track your progress and unlock the full CBT simulator.</p>
-            <div className="cta-actions">
-              <Link to="/auth/signup" className="btn btn-hero">Create Free Account</Link>
-              <a href="#questions" className="btn btn-hero cta-ghost">Back to the questions</a>
-            </div>
-          </Reveal>
-        </section>
+        <CTACard 
+          subject={name}
+          buttons={[{
+            link: '#questions',
+            text: 'Back to the questions'
+          }]}
+        />
       </main>
 
       <Footer />

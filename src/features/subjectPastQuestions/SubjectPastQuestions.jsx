@@ -12,7 +12,8 @@ import { PillLinkList } from '@/components/common/PillLinkList'
 import { SampleQuestion } from '@/components/common/SampleQuestion'
 import { SITE_URL } from '@lib/config/app.js'
 import { GUEST_PATH } from '@/lib/config/publicLinks'
-import { PracticeConfigForm } from './components/PracticeConfigForm'
+import { PracticeConfigForm } from './components/PracticeConfigForm';
+import { CTACard } from './components/CTACard';
 import {
   TIP_ICONS, getSubjectPage, getTopicLinks, getYearLinks, subjectPath,
 } from './utils/subjectPage'
@@ -216,16 +217,13 @@ function SubjectPage({ subject }) {
           </Link>
         </section>
 
-        <section className="home-section container">
-          <Reveal className="cta">
-            <h2>Start practicing {name} past questions today</h2>
-            <p>Create a free account to save your scores, track your progress and unlock the full CBT simulator.</p>
-            <div className="cta-actions">
-              <Link to="/auth/signup" className="btn btn-hero">Create Free Account</Link>
-              <a href="#practice" className="btn btn-hero cta-ghost">Choose questions</a>
-            </div>
-          </Reveal>
-        </section>
+        <CTACard 
+          subject={name} 
+          buttons={[{
+            link: '#practice',
+            text: 'Choose questions'
+          }]}
+        />
       </main>
 
       <Footer />

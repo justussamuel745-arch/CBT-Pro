@@ -4,12 +4,13 @@ import { authStore } from '@/stores/authStore';
 import './Menu.css';
 
 /* Dashboard sections. Exported so other layouts can extend them. */
-export const getDashboardSections = (isActivated) => [
+export const getMenuSections = (isActivated) => [
   {
     title: 'Practice',
     links: [
       { icon: 'fa-file-pen', label: 'CBT Simulator', to: '/practice' },
       { icon: 'fa-book-open', label: 'Study Past Questions', to: '/study' },
+      { icon: 'fa-layer-group', label: 'Browse Past Questions', to: '/jamb-past-questions' },
     ],
   },
   {
@@ -50,7 +51,7 @@ export const getDashboardSections = (isActivated) => [
    so the same slide-out drawer serves both areas. */
 export const Menu = memo(function Menu({ menuOpen, setMenuOpen, sections }) {
   const isActivated = authStore((store) => store.isActivated);
-  const menuSections = sections ?? getDashboardSections(isActivated);
+  const menuSections = sections ?? getMenuSections(isActivated);
 
   return (
     <>
