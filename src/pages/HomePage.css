@@ -6,35 +6,6 @@
 
 /* respect users who've asked for less motion before anything else */
 
-/* ---------- SCROLL PROGRESS ---------- */
-.scroll-progress {
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 0.2rem;
-  background: var(--gradient);
-  z-index: 1000;
-  transform-origin: left;
-  transition: width 0.1s linear;
-}
-
-/* ---------- NAV ---------- */
-nav {
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  background: color-mix(in srgb, var(--bg) 88%, transparent);
-  backdrop-filter: blur(0.75rem);
-  -webkit-backdrop-filter: blur(0.75rem);
-  border-bottom: 0.0625rem solid transparent;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-nav.is-scrolled {
-  border-bottom-color: var(--border);
-  box-shadow: 0 0.5rem 1.5rem -1rem rgba(15, 23, 42, 0.12);
-}
-
 /* ---------- HERO ---------- */
 .home-hero {
   position: relative;
@@ -932,4 +903,183 @@ nav.is-scrolled {
   .home-section-sub {
     margin-bottom: 2.5rem;
   }
+}
+
+/* ---------- GUEST LINK (hero) ---------- */
+.home-guest-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 2.5rem;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--primary);
+  text-decoration: none;
+  animation: fade-up 0.6s ease 0.58s both;
+}
+
+.home-guest-link:hover {
+  text-decoration: underline;
+}
+
+.home-hero-actions {
+  margin-bottom: 1.5rem;
+}
+
+/* ---------- GUEST BANNER ---------- */
+.guest-banner {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1.5rem;
+  padding: clamp(1.75rem, 1.25rem + 2vw, 3rem);
+  background: var(--primary-light);
+  border: 0.0625rem solid var(--border);
+  border-radius: var(--radius);
+}
+
+.guest-banner h2 {
+  font-size: clamp(1.25rem, 1.1rem + 1vw, 1.75rem);
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+}
+
+.guest-banner p {
+  color: var(--text-muted);
+  max-width: 40rem;
+  line-height: 1.65;
+}
+
+/* ---------- SUBJECTS ---------- */
+.subjects-grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+}
+
+.subject-link {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  height: 100%;
+  padding: 0.9rem 1rem;
+  background: var(--card);
+  border: 0.0625rem solid var(--border);
+  border-radius: 0.75rem;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--text);
+  text-decoration: none;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.subject-link i {
+  flex-shrink: 0;
+  width: 2rem;
+  text-align: center;
+  color: var(--primary);
+}
+
+.subject-link:hover {
+  border-color: var(--primary);
+  transform: translateX(0.2rem);
+}
+
+.subject-link:focus-visible {
+  outline: 0.15rem solid var(--primary);
+  outline-offset: 0.15rem;
+}
+
+/* ---------- UTME FACTS ---------- */
+.utme-facts {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+.fact-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  align-items: center;
+  text-align: center;
+  padding: 1.5rem 1rem;
+  background: var(--card);
+  border: 0.0625rem solid var(--border);
+  border-radius: var(--radius);
+}
+
+/* ---------- TIPS / FAQ / CTA extras ---------- */
+.tips-copy {
+  max-width: 46rem;
+  margin: 0 auto;
+}
+
+.faq-more {
+  margin-top: 2rem;
+}
+
+.cta-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.cta-ghost {
+  background: transparent;
+  border: 0.125rem solid rgba(255, 255, 255, 0.8);
+  color: white;
+}
+
+/* ---------- RESPONSIVE (new sections) ---------- */
+@media (min-width: 30em) {
+  .subjects-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 48em) {
+  .guest-banner {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .subjects-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .utme-facts {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (min-width: 64em) {
+  .subjects-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (max-width: 63.99em) {
+  .home-guest-link {
+    justify-content: center;
+    display: flex;
+  }
+}
+
+@media (max-width: 30em) {
+  .cta-actions .btn {
+    width: 100%;
+  }
+}
+
+.subject-link small {
+  display: block;
+  color: var(--text-muted);
+  font-weight: 600;
+  font-size: 0.75rem;
 }

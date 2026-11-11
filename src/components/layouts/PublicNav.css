@@ -1,0 +1,121 @@
+/* Moved here from HomePage.css so every public page gets the same header.
+   Delete the "SCROLL PROGRESS" and "NAV" blocks from HomePage.css. */
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 0.2rem;
+  background: var(--gradient);
+  z-index: 1000;
+  transition: width 0.1s linear;
+}
+
+.public-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter: blur(0.75rem);
+  -webkit-backdrop-filter: blur(0.75rem);
+  border-bottom: 0.0625rem solid transparent;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.public-nav.is-scrolled {
+  border-bottom-color: var(--border);
+  box-shadow: 0 0.5rem 1.5rem -1rem rgba(15, 23, 42, 0.12);
+}
+
+/* Small screens: [menu icon][logo] .............. [actions] */
+.public-nav .nav-content {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  grid-template-areas: 'burger logo actions';
+  align-items: center;
+  gap: 0.75rem; /* space between the menu icon and the logo */
+}
+
+.public-nav .logo {
+  grid-area: logo;
+  justify-self: start;
+  text-decoration: none;
+  color: inherit;
+  margin-left: 10px;
+}
+
+.public-nav-burger {
+  grid-area: burger;
+  justify-self: start;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.625rem;
+  border: 0.0625rem solid var(--border);
+  background: var(--card);
+  color: var(--text);
+  font-size: 1.05rem;
+  cursor: pointer;
+}
+
+.public-nav-burger:focus-visible {
+  outline: 0.15rem solid var(--primary);
+  outline-offset: 0.15rem;
+}
+
+.public-nav .nav-right {
+  grid-area: actions;
+  justify-self: end;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  white-space: nowrap;
+}
+
+.public-nav-links {
+  grid-area: links;
+  display: none;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.public-nav-link {
+  padding: 0.5rem 0.9rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: color 0.2s ease, background 0.2s ease;
+}
+
+.public-nav-link:hover,
+.public-nav-link.active {
+  color: var(--primary);
+  background: var(--primary-light);
+}
+
+.public-nav-signin {
+  display: none;
+}
+
+@media (min-width: 30em) {
+  .public-nav-signin {
+    display: inline-flex;
+  }
+}
+
+/* Desktop: [ logo ] [ links centered ] [actions], no menu icon */
+@media (min-width: 48em) {
+  .public-nav .nav-content {
+    grid-template-areas: 'logo links actions';
+    gap: 1rem;
+  }
+
+  .public-nav-links {
+    display: flex;
+    justify-self: center;
+  }
+
+  .public-nav-burger {
+    display: none;
+  }
+}

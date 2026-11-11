@@ -53,6 +53,13 @@ const DASHBOARD_CARDS = [
     to: "/history",
     color: "teal",
   },
+  {
+    icon: "fa-layer-group",
+    title: "Browse Past Questions",
+    description: "Search and review thousands of free past exam questions by year, subject and topic.",
+    to: "/jamb-past-questions",
+    color: "cyan",
+  }
 ];
 
 function getGreeting() {

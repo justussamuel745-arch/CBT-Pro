@@ -1,0 +1,139 @@
+/* Simulator shown under the explanation in the home page demo card */
+.demo-result {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.75rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.demo-result i {
+  font-size: 1.15rem;
+}
+
+.demo-result small {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.demo-result.correct { color: var(--c-success); }
+.demo-result.incorrect { color: var(--c-error); }
+.demo-result.timeout { color: var(--c-warning); }
+
+.dsim {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  margin-top: 1rem;
+}
+
+.dsim-title {
+  margin: 0;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--primary);
+}
+
+.dsim-canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: var(--bg);
+  border: 0.0625rem solid var(--border);
+  border-radius: 0.75rem;
+}
+
+.dsim-control label {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.4rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.dsim-control input[type='range'] {
+  width: 100%;
+  accent-color: var(--primary);
+}
+
+.dsim-results {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+
+.dsim-result {
+  min-width: 0;
+  padding: 0.6rem 0.75rem;
+  background: var(--primary-light);
+  border-radius: 0.625rem;
+}
+
+.dsim-result small {
+  display: block;
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+
+.dsim-result strong {
+  display: block;
+  margin-top: 0.15rem;
+  font-size: 0.95rem;
+  color: var(--primary);
+  overflow-wrap: anywhere;
+}
+
+.dsim-result.is-success {
+  background: var(--c-success-bg);
+}
+
+.dsim-result.is-success strong {
+  color: var(--c-success);
+}
+
+.dsim-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.dsim-btn {
+  flex: 1;
+  padding: 0.7rem 0.75rem;
+  border: 0.0625rem solid transparent;
+  border-radius: 0.625rem;
+  background: var(--primary);
+  color: #fff;
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.dsim-btn:focus-visible {
+  outline: 0.15rem solid var(--primary);
+  outline-offset: 0.1rem;
+}
+
+.dsim-btn-ghost {
+  flex: 0 0 auto;
+  background: var(--bg);
+  border-color: var(--border);
+  color: var(--text-muted);
+}
+
+.dsim-note {
+  margin: 0;
+  padding: 0.7rem 0.85rem;
+  background: var(--bg);
+  border-radius: 0.625rem;
+  font-size: 0.8rem;
+  line-height: 1.55;
+  color: var(--text-muted);
+}

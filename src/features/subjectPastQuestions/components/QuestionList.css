@@ -1,0 +1,66 @@
+.ql {
+  max-width: 62rem;
+  margin: 0 auto;
+}
+
+.ql-top {
+  scroll-margin-top: 5.5rem;
+}
+
+.ql-summary {
+  margin: 0 0 1rem;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.ql-summary strong {
+  color: var(--text);
+}
+
+.ql-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ql-pager {
+  margin: 1.5rem 0;
+}
+
+.ql-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 2.5rem 1rem;
+  background: var(--card);
+  border: 0.0625rem solid var(--border);
+  border-radius: var(--radius);
+  text-align: center;
+  color: var(--text-muted);
+}
+
+.ql-state p {
+  margin: 0;
+}
+
+.ql-spinner {
+  width: 1.75rem;
+  height: 1.75rem;
+  border: 0.2rem solid var(--border);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: ql-spin 0.8s linear infinite;
+}
+
+@keyframes ql-spin {
+  to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ql-spinner { animation-duration: 2s; }
+}
