@@ -72,9 +72,7 @@ export default function HilltopAdsBanner({ src, height = 250 }) {
           textAlign: "left",
           minHeight: height,
           overflow: "hidden",
-          background: "var(--card)",
-          border: "1px solid var(--border)",
-          boxShadow: "var(--shadow)",
+          background: "var(--card)"
         }}
       />
     </div>

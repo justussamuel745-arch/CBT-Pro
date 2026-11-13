@@ -10,7 +10,7 @@ import './PublicNav.css'
    auth actions right. Desktop: logo left, 3 main links centered, auth actions right. */
 export function PublicNav() {
   const token = authStore((state) => state.token)
-  const isActivated = authStore((state) => !state.isActivated)
+  const isActivated = authStore((state) => state.isActivated)
   const { scrolled, progress } = useScrollProgress()
   const [menuOpen, setMenuOpen] = useState(false)
 

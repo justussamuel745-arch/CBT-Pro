@@ -106,7 +106,8 @@ const ACTIVATION_FEATURES = [
   { icon: 'fa-wand-magic-sparkles', title: 'AI-enhanced study mode', desc: 'Step-by-step explanations powered by AI whenever a concept needs breaking down.' },
   { icon: 'fa-list-check', title: 'Topic-by-topic revision', desc: 'Study specific subjects and individual topics at your own pace, in any order.' },
   { icon: 'fa-desktop', title: 'Dynamic CBT simulator', desc: 'Practice in a realistic exam environment with a fresh, randomized question set every attempt.' },
-  { icon: 'fa-arrows-rotate', title: 'Continuous updates', desc: 'Ongoing platform improvements and new features, included for your full 12 months.' },
+  { icon: 'fa-ban', title: '100% Ad-Free', desc: 'Zero interruptions. Study, practice and revise in a clean, distraction-free environment.' },
+  { icon: 'fa-arrows-rotate', title: 'Continuous updates', desc: 'Ongoing platform improvements and new features, included for your full 12 months.' }
 ];
 
 // ─────────────────────────────────────────────────────────────
