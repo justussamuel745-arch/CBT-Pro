@@ -10,11 +10,10 @@ import { AnimatedWords } from '@/components/home/AnimatedWords'
 import { DemoQuestionCard } from '@/components/home/DemoQuestionCard'
 import { ReviewsSection } from '@/components/home/ReviewsSection'
 import HilltopAdsBanner from '@/components/ads/HilltopAdsBanner'
-import MonetagController from '@/components/ads/MonetagController';
 import { SITE_URL } from '@lib/config/app.js'
 import { GUEST_PATH } from '@/lib/config/publicLinks'
 import { sendReview } from '@lib/api/supportApi'
-import { hilltopConfig, zonesConfig } from '@lib/config/ads.config'
+import { hilltopConfig } from '@lib/config/ads.config'
 import {
   NEXT_UTME_DATE, FEATURES, STEPS, SUBJECTS, UTME_FACTS, TIPS, REVIEWS, FAQS,
 } from '@/lib/data/homeContent'
@@ -60,7 +59,6 @@ export default function HomePage() {
 
   return (
     <>
-      <MonetagController zoneConfig={zonesConfig.homePage} />
       <Helmet>
         <title>{SEO_TITLE}</title>
         <meta name="description" content={SEO_DESCRIPTION} />

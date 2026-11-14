@@ -3,13 +3,11 @@ import { Link } from 'react-router';
 import { Menu } from '@/components/layouts/Menu';
 import { InstallAppBanner } from '@/components/layouts/InstallAppBanner';
 import DashInstall from '@/components/layouts/DashInstall';
-import MonetagController from '@/components/ads/MonetagController';
 import usePushNotifications from '@/hooks/usePushNotifications';
 import { useNotifications } from '@/context/NotificationContext';
 import { authStore } from '@/stores/authStore.js';
 import { userStore } from '@/stores/userStore.js';
 import { ACTIVATION_PRICE } from '@lib/config/app.js'
-import { zonesConfig } from '@lib/config/ads.config'
 import "./Dashboard.css";
 
 const DASHBOARD_CARDS = [
@@ -113,8 +111,6 @@ export default function Dashboard() {
 
   return (
     <>
-      <MonetagController zoneConfig={zonesConfig.dashboard} />
-
       <div className="dash-page">
         {/* HEADER */}
         <header className="dash-header">

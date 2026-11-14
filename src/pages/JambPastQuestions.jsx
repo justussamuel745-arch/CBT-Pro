@@ -7,7 +7,6 @@ import { Reveal } from '@/components/common/Reveal'
 import { SectionHeader } from '@/components/common/SectionHeader'
 import { FaqList } from '@/components/common/FaqList'
 import HilltopAdsBanner from '@/components/ads/HilltopAdsBanner'
-import MonetagController from '@/components/ads/MonetagController';
 import { SITE_URL } from '@lib/config/app.js'
 import { GUEST_PATH } from '@/lib/config/publicLinks'
 import { UTME_FACTS, TIPS } from '@/lib/data/homeContent'
@@ -92,7 +91,6 @@ export default function JambPastQuestions() {
 
   return (
     <>
-      <MonetagController zoneConfig={zonesConfig.pastQuestionsPage} />
       <Helmet>
         <title>{SEO_TITLE}</title>
         <meta name="description" content={SEO_DESCRIPTION} />
