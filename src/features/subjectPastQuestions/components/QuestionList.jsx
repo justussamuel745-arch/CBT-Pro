@@ -66,6 +66,13 @@ export function QuestionList({ subject, topics, years }) {
     return { pathname, search: search ? `?${search}` : '' }
   }
 
+  const questionShareUrl = (question) => {
+    const url = new URL('/shared-question', window.location.origin)
+    url.searchParams.set('questionId', String(question.id))
+    url.searchParams.set('subject', subject.slug)
+    return url.toString()
+  }
+
   if (status === 'loading') {
     return (
       <div className="ql">
@@ -126,6 +133,7 @@ export function QuestionList({ subject, topics, years }) {
               answer={answers[question.id]}
               onChoose={choose}
               onReveal={reveal}
+              shareUrl={questionShareUrl(question)}
             />
           </li>
         ))}

@@ -39,6 +39,7 @@
   justify-content: center;
   gap: 0.4rem;
   min-height: 2rem;
+  max-width: 100%;
   margin-left: auto;
   padding: 0.35rem 0.65rem;
   border: 0.0625rem solid var(--border);
@@ -67,6 +68,12 @@
 .qc-share:focus-visible {
   outline: 0.15rem solid var(--primary);
   outline-offset: 0.1rem;
+}
+
+.qc-share-message {
+  margin: -0.5rem 0 0;
+  color: var(--text-muted);
+  font-size: 0.85rem;
 }
 
 .qc-text {
