@@ -38,6 +38,12 @@ export function QuestionCard({ number, question, answer, onChoose, onReveal }) {
         <span className="qc-number">Question {number}</span>
         {year && <span className="qc-tag">JAMB {year}</span>}
         {topic && <span className="qc-tag">{topic}</span>}
+        <button type="button" className="qc-share" aria-label="Share question" title="Share question">
+          <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M15 8.5 9 12m6 3.5L9 12m11-5a3 3 0 1 1-6 0 3 3 0 0 1 6 0ZM10 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm10 5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+          <span>Share</span>
+        </button>
       </div>
 
       <div className="qc-text">
