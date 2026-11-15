@@ -134,6 +134,7 @@ export function QuestionList({ subject, topics, years }) {
               onChoose={choose}
               onReveal={reveal}
               shareUrl={questionShareUrl(question)}
+              subject={subject.name}
             />
           </li>
         ))}

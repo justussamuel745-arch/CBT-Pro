@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { MarkdownContent } from '@/components/common/MarkdownContent'
 import { Image } from '@/components/common/Image'
+import { createQuestionShareImage } from '../utils/shareQuestionImage'
 import './QuestionCard.css'
 
 const STATE_LABEL = {
@@ -27,13 +28,23 @@ async function copyText(text) {
   if (!copied) throw new Error('Clipboard copy failed')
 }
 
+function downloadImage(file) {
+  const url = URL.createObjectURL(file)
+  const link = document.createElement('a')
+  link.href = url
+  link.download = file.name
+  link.click()
+  URL.revokeObjectURL(url)
+}
+
 /* One question with its options.
    `answer` is undefined until the question is answered, then { userAnswer, status } where status is
    'correct' | 'wrong' (an option was picked) or 'viewed' (explanation opened without picking).
    Once `answer` exists the question is locked.
    question: { id, year, topic, question, image?, options: [{ id, option }], correctAnswers: [id], explanation: { text } } */
-export function QuestionCard({ number, question, answer, onChoose, onReveal, shareUrl }) {
+export function QuestionCard({ number, question, answer, onChoose, onReveal, shareUrl, subject }) {
   const [shareMessage, setShareMessage] = useState('')
+  const [sharing, setSharing] = useState(false)
   const { year, topic, image, options = [], explanation } = question
   const correct = question.correctAnswers ?? []
   const body = question.question
@@ -54,28 +65,33 @@ export function QuestionCard({ number, question, answer, onChoose, onReveal, sha
   }
 
   const share = async () => {
-    if (!shareUrl) return
-    setShareMessage('')
-
-    if (supportsNativeShare) {
-      try {
-        await navigator.share({
-          title: 'JAMB past question | CBT Pro',
-          text: 'Try this JAMB past question on CBT Pro.',
-          url: shareUrl,
-        })
-      } catch (error) {
-        // Dismissing the native share sheet is an expected user action.
-        if (error.name !== 'AbortError') setShareMessage('Sharing is unavailable right now.')
-      }
-      return
-    }
+    if (!shareUrl || sharing) return
+    setSharing(true)
+    setShareMessage('Preparing question image…')
 
     try {
-      await copyText(shareUrl)
-      setShareMessage('Link copied. Share it with your friends.')
-    } catch {
-      setShareMessage('Could not copy the link. Please copy it from your browser address bar.')
+      const imageFile = await createQuestionShareImage({ question, subject, number })
+      if (supportsNativeShare && navigator.canShare?.({ files: [imageFile] })) {
+        await navigator.share({
+          title: `${subject} JAMB past question | CBT Pro`,
+          text: 'Try this JAMB past question on CBT Pro.',
+          url: shareUrl,
+          files: [imageFile],
+        })
+        setShareMessage('Question image shared.')
+      } else {
+        await copyText(shareUrl)
+        downloadImage(imageFile)
+        setShareMessage('Link copied and question image downloaded. Attach the image when you share the link.')
+      }
+    } catch (error) {
+      if (error.name !== 'AbortError') {
+        setShareMessage('Could not share the question. Please try again.')
+      } else {
+        setShareMessage('Sharing cancelled.')
+      }
+    } finally {
+      setSharing(false)
     }
   }
 
@@ -86,11 +102,11 @@ export function QuestionCard({ number, question, answer, onChoose, onReveal, sha
         {year && <span className="qc-tag">JAMB {year}</span>}
         {topic && <span className="qc-tag">{topic}</span>}
         {shareUrl && (
-          <button type="button" className="qc-share" onClick={share} aria-label={supportsNativeShare ? 'Share question' : 'Copy and share question link'}>
+          <button type="button" className="qc-share" onClick={share} disabled={sharing} aria-busy={sharing} aria-label={supportsNativeShare ? 'Share question' : 'Copy and share question link'}>
             <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M15 8.5 9 12m6 3.5L9 12m11-5a3 3 0 1 1-6 0 3 3 0 0 1 6 0ZM10 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm10 5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
-            <span>{supportsNativeShare ? 'Share' : 'Copy & Share'}</span>
+            <span>{sharing ? 'Preparing…' : supportsNativeShare ? 'Share' : 'Copy & Share'}</span>
           </button>
         )}
       </div>

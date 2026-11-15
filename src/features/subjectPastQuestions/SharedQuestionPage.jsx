@@ -58,6 +58,7 @@ function SharedQuestion({ subject, questionId }) {
         onChoose={choose}
         onReveal={reveal}
         shareUrl={shareUrl.toString()}
+        subject={subject.name}
       />
     )
   }
