@@ -2,15 +2,36 @@ import { latexToText, parseMatrixBlocks } from '@lib/utils/latexToText'
 
 const FONT = "'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
 
+// Optional: URL of the CBT Pro logo (e.g. `import logo from '@/assets/logo.png'`). It is drawn in the header
+// in place of the built-in check-mark logo. It must be same-origin or served with CORS headers.
+const LOGO_URL = '/favicon.png'
+
 // JPEG encodes several times faster than PNG on large canvases. Switch to 'image/png' if you need lossless.
 const IMAGE_TYPE = 'image/jpeg'
 const IMAGE_QUALITY = 0.92
 const IMAGE_EXTENSION = IMAGE_TYPE === 'image/png' ? 'png' : 'jpg'
+const IMAGE_LOAD_TIMEOUT = 8000
 const CACHE_LIMIT = 20
 
 // Text styles. `baseline` is the offset from the top of a line to its text baseline.
 const PROMPT_STYLE = { font: `500 27px ${FONT}`, lineHeight: 42, baseline: 26 }
 const OPTION_STYLE = { font: `500 24px ${FONT}`, lineHeight: 36, baseline: 25 }
+
+// Card design (all values are in logical pixels; the canvas is drawn at 2x).
+const CANVAS_WIDTH = 1000
+const CANVAS_SCALE = 2
+const PAGE_PADDING = 40
+const CARD_PADDING = 56
+const CARD_RADIUS = 28
+const ACCENT_HEIGHT = 10
+const LOGO_SIZE = 56
+const PILL_HEIGHT = 40
+const PILL_FONT = `700 18px ${FONT}`
+const FOOTER_TEXT = 'Practice more JAMB past questions on CBT Pro'
+
+// Question photo box.
+const PHOTO_PADDING = 16
+const PHOTO_MAX_HEIGHT = 440
 
 // Matrix grid settings. Brackets are drawn as paths (not font glyphs) so they always join up.
 const BLOCK_GAP = 8
@@ -103,9 +124,26 @@ function wrapText(ctx, text, maxWidth) {
   return lines.length ? lines : ['']
 }
 
+// Shortens text with an ellipsis so it never exceeds maxWidth (uses the current ctx.font).
+function fitText(ctx, text, maxWidth) {
+  if (ctx.measureText(text).width <= maxWidth) return text
+  let result = text
+  while (result.length > 1 && ctx.measureText(`${result}…`).width > maxWidth) result = result.slice(0, -1)
+  return `${result.trimEnd()}…`
+}
+
 function roundedRect(ctx, x, y, width, height, radius) {
   ctx.beginPath()
   ctx.roundRect(x, y, width, height, radius)
+}
+
+function drawDivider(ctx, x1, x2, y, color) {
+  ctx.beginPath()
+  ctx.moveTo(x1, y)
+  ctx.lineTo(x2, y)
+  ctx.strokeStyle = color
+  ctx.lineWidth = 2
+  ctx.stroke()
 }
 
 /* ---------- Rich text: wrapped lines and matrix grids ---------- */
@@ -251,6 +289,89 @@ function drawRichText(ctx, layout, x, top, colors) {
   }
 }
 
+/* ---------- Images: question photo and logo ---------- */
+
+// Resolves to a loaded image, or null if it is missing, fails, times out or has no size. A failed image
+// never blocks sharing; the card is simply generated without it. `crossOrigin` keeps the canvas exportable.
+function loadImage(url) {
+  if (!url) return Promise.resolve(null)
+
+  return new Promise((resolve) => {
+    const image = new window.Image()
+    let settled = false
+    const finish = (value) => {
+      if (settled) return
+      settled = true
+      clearTimeout(timer)
+      resolve(value)
+    }
+    const timer = setTimeout(() => finish(null), IMAGE_LOAD_TIMEOUT)
+
+    image.crossOrigin = 'anonymous'
+    image.onload = () => finish(image.naturalWidth > 0 && image.naturalHeight > 0 ? image : null)
+    image.onerror = () => finish(null)
+    image.src = url
+  })
+}
+
+// Fits the photo inside the content width and PHOTO_MAX_HEIGHT without distorting or enlarging it.
+function layoutPhoto(image, maxWidth) {
+  const available = maxWidth - PHOTO_PADDING * 2
+  const fit = Math.min(1, available / image.naturalWidth, PHOTO_MAX_HEIGHT / image.naturalHeight)
+  const drawWidth = image.naturalWidth * fit
+  const drawHeight = image.naturalHeight * fit
+  return { image, drawWidth, drawHeight, width: maxWidth, height: drawHeight + PHOTO_PADDING * 2 }
+}
+
+// White backing keeps dark diagram lines readable even when the app theme is dark.
+function drawPhoto(ctx, photo, x, y, colors) {
+  roundedRect(ctx, x, y, photo.width, photo.height, 16)
+  ctx.fillStyle = '#ffffff'
+  ctx.fill()
+  ctx.strokeStyle = colors.border
+  ctx.lineWidth = 2
+  ctx.stroke()
+
+  ctx.save()
+  roundedRect(ctx, x + PHOTO_PADDING, y + PHOTO_PADDING, photo.width - PHOTO_PADDING * 2, photo.drawHeight, 8)
+  ctx.clip()
+  ctx.drawImage(
+    photo.image,
+    x + (photo.width - photo.drawWidth) / 2,
+    y + PHOTO_PADDING,
+    photo.drawWidth,
+    photo.drawHeight,
+  )
+  ctx.restore()
+}
+
+/* ---------- Header logo ---------- */
+
+function drawLogoMark(ctx, x, y, size, colors) {
+  ctx.save()
+  roundedRect(ctx, x, y, size, size, 16)
+  ctx.fillStyle = colors.primary
+  ctx.fill()
+
+  ctx.strokeStyle = '#ffffff'
+  ctx.lineWidth = 6
+  ctx.lineCap = 'round'
+  ctx.lineJoin = 'round'
+  ctx.beginPath()
+  ctx.moveTo(x + size * 0.27, y + size * 0.52)
+  ctx.lineTo(x + size * 0.43, y + size * 0.68)
+  ctx.lineTo(x + size * 0.74, y + size * 0.32)
+  ctx.stroke()
+  ctx.restore()
+}
+
+function drawLogoImage(ctx, image, x, y, size) {
+  const fit = Math.min(size / image.naturalWidth, size / image.naturalHeight)
+  const width = image.naturalWidth * fit
+  const height = image.naturalHeight * fit
+  ctx.drawImage(image, x + (size - width) / 2, y + (size - height) / 2, width, height)
+}
+
 /* ---------- Image generation ---------- */
 
 function canvasToBlob(canvas) {
@@ -269,7 +390,7 @@ function canvasToBlob(canvas) {
 // Measuring with a fallback font and drawing with Inter gives wrong line breaks, so wait for it once.
 function loadFonts() {
   fontsReady ??= Promise.all(
-    ['500 24px', '700 18px', '800 23px'].map((font) => document.fonts.load(`${font} Inter`)),
+    ['500 24px', '600 17px', '700 18px', '800 30px'].map((font) => document.fonts.load(`${font} Inter`)),
   ).catch(() => {})
   return fontsReady
 }
@@ -288,87 +409,134 @@ function readColors() {
   }
 }
 
-async function renderQuestionShareImage({ question, subject, number }, colors) {
-  await loadFonts()
+async function renderQuestionShareImage({ question, subject }, colors) {
+  const [, questionPhoto, logo] = await Promise.all([
+    loadFonts(),
+    loadImage(question.image?.url),
+    loadImage(LOGO_URL),
+  ])
 
-  const scale = 2
-  const width = 1000
-  const outer = 36
-  const cardX = outer
-  const cardWidth = width - outer * 2
-  const inner = 52
-  const contentX = cardX + inner
-  const contentWidth = cardWidth - inner * 2
+  const width = CANVAS_WIDTH
+  const cardX = PAGE_PADDING
+  const cardY = PAGE_PADDING
+  const cardWidth = width - PAGE_PADDING * 2
+  const contentX = cardX + CARD_PADDING
+  const contentWidth = cardWidth - CARD_PADDING * 2
+  const contentRight = contentX + contentWidth
   const optionTextOffset = 64
   const optionTextWidth = contentWidth - 92
+
   const canvas = document.createElement('canvas')
-  canvas.width = width * scale
+  canvas.width = width * CANVAS_SCALE
   const ctx = canvas.getContext('2d')
   if (!ctx) throw new Error('Canvas is not available in this browser')
 
-  ctx.font = `700 24px ${FONT}`
-  const metadata = [
-    subject,
-    question.year ? `JAMB ${question.year}` : '',
-    question.topic ?? '',
-    number ? `Question ${number}` : '',
-  ].filter(Boolean)
+  /* Measure: work out every position before the canvas height is known. */
+
+  const headerY = cardY + ACCENT_HEIGHT + 44
+  const headerDividerY = headerY + LOGO_SIZE + 32
+  let cursor = headerDividerY + 32
+
+  ctx.font = PILL_FONT
+  const metadata = [subject, question.year ? `JAMB ${question.year}` : '', question.topic ?? ''].filter(Boolean)
   const pills = []
   let pillX = contentX
-  let pillY = 142
+  let pillY = cursor
   for (const label of metadata) {
-    const pillWidth = ctx.measureText(label).width + 36
-    if (pillX + pillWidth > contentX + contentWidth) {
+    const text = fitText(ctx, label, contentWidth - 36)
+    const pillWidth = ctx.measureText(text).width + 36
+    if (pillX > contentX && pillX + pillWidth > contentRight) {
       pillX = contentX
-      pillY += 54
+      pillY += PILL_HEIGHT + 14
     }
-    pills.push({ label, x: pillX, y: pillY, width: pillWidth })
+    pills.push({ text, x: pillX, y: pillY, width: pillWidth })
     pillX += pillWidth + 12
   }
+  if (pills.length) cursor = pillY + PILL_HEIGHT + 32
 
-  const y = pillY + 68
+  const photo = questionPhoto ? layoutPhoto(questionPhoto, contentWidth) : null
+  const photoY = cursor
+  if (photo) cursor += photo.height + 28
+
+  const promptY = cursor
   const prompt = getQuestionText(question)
   const promptLayout = layoutRichText(ctx, prompt || 'Question text unavailable.', contentWidth, PROMPT_STYLE)
-  const optionLayouts = []
-  let optionY = y + promptLayout.height + 34
-  const options = question.options ?? []
-  for (const option of options) {
-    const text = layoutRichText(ctx, markdownToText(option.option), optionTextWidth, OPTION_STYLE)
-    const optionHeight = Math.max(76, text.height + 34)
-    optionLayouts.push({ option, text, y: optionY, height: optionHeight })
-    optionY += optionHeight + 16
-  }
+  cursor += promptLayout.height + 34
 
-  const cardHeight = optionY - 16 + 46
-  const height = cardHeight + outer * 2
-  canvas.height = height * scale // resets the context state, so scale and fonts are applied below
-  ctx.scale(scale, scale)
+  const optionLayouts = []
+  for (const option of question.options ?? []) {
+    const text = layoutRichText(ctx, markdownToText(option.option), optionTextWidth, OPTION_STYLE)
+    const height = Math.max(76, text.height + 34)
+    optionLayouts.push({ option, text, y: cursor, height })
+    cursor += height + 16
+  }
+  const optionsBottom = optionLayouts.length ? cursor - 16 : cursor - 34
+
+  const footerDividerY = optionsBottom + 36
+  const footerTextY = footerDividerY + 46
+  const cardBottom = footerDividerY + 78
+  const cardHeight = cardBottom - cardY
+  const height = cardBottom + PAGE_PADDING
+
+  /* Draw. Resizing the canvas resets the context, so scale and fonts are applied after it. */
+
+  canvas.height = height * CANVAS_SCALE
+  ctx.scale(CANVAS_SCALE, CANVAS_SCALE)
 
   ctx.fillStyle = colors.page
   ctx.fillRect(0, 0, width, height)
-  roundedRect(ctx, cardX, outer, cardWidth, cardHeight, 24)
+
+  // Card with soft shadow, accent strip and border
+  ctx.save()
+  ctx.shadowColor = 'rgba(15, 23, 42, 0.12)'
+  ctx.shadowBlur = 48
+  ctx.shadowOffsetY = 16
+  roundedRect(ctx, cardX, cardY, cardWidth, cardHeight, CARD_RADIUS)
   ctx.fillStyle = colors.card
   ctx.fill()
+  ctx.restore()
+
+  ctx.save()
+  roundedRect(ctx, cardX, cardY, cardWidth, cardHeight, CARD_RADIUS)
+  ctx.clip()
+  ctx.fillStyle = colors.primary
+  ctx.fillRect(cardX, cardY, cardWidth, ACCENT_HEIGHT)
+  ctx.restore()
+
+  roundedRect(ctx, cardX, cardY, cardWidth, cardHeight, CARD_RADIUS)
   ctx.strokeStyle = colors.border
   ctx.lineWidth = 2
   ctx.stroke()
 
-  ctx.fillStyle = colors.primary
-  ctx.font = `800 23px ${FONT}`
-  ctx.fillText('CBT Pro  ·  JAMB Past Questions', contentX, outer + 48)
+  // Header: logo and wordmark
+  if (logo) drawLogoImage(ctx, logo, contentX, headerY, LOGO_SIZE)
+  else drawLogoMark(ctx, contentX, headerY, LOGO_SIZE, colors)
+  const wordmarkX = contentX + LOGO_SIZE + 18
+  ctx.textAlign = 'left'
+  ctx.textBaseline = 'alphabetic'
+  ctx.fillStyle = colors.text
+  ctx.font = `800 30px ${FONT}`
+  ctx.fillText('CBT Pro', wordmarkX, headerY + 28)
+  ctx.fillStyle = colors.muted
+  ctx.font = `600 17px ${FONT}`
+  ctx.fillText('JAMB Past Questions', wordmarkX, headerY + 51)
+  drawDivider(ctx, contentX, contentRight, headerDividerY, colors.border)
 
+  // Metadata pills
+  ctx.font = PILL_FONT
+  ctx.textBaseline = 'middle'
   for (const pill of pills) {
-    roundedRect(ctx, pill.x, pill.y, pill.width, 40, 20)
+    roundedRect(ctx, pill.x, pill.y, pill.width, PILL_HEIGHT, PILL_HEIGHT / 2)
     ctx.fillStyle = colors.primaryLight
     ctx.fill()
     ctx.fillStyle = colors.primary
-    ctx.font = `700 18px ${FONT}`
-    ctx.textBaseline = 'middle'
-    ctx.fillText(pill.label, pill.x + 18, pill.y + 20)
-    ctx.textBaseline = 'alphabetic'
+    ctx.fillText(pill.text, pill.x + 18, pill.y + PILL_HEIGHT / 2)
   }
+  ctx.textBaseline = 'alphabetic'
 
-  drawRichText(ctx, promptLayout, contentX, y, colors)
+  // Question photo, question text and options
+  if (photo) drawPhoto(ctx, photo, contentX, photoY, colors)
+  drawRichText(ctx, promptLayout, contentX, promptY, colors)
 
   for (const layout of optionLayouts) {
     roundedRect(ctx, contentX, layout.y, contentWidth, layout.height, 14)
@@ -396,6 +564,14 @@ async function renderQuestionShareImage({ question, subject, number }, colors) {
     drawRichText(ctx, layout.text, contentX + optionTextOffset, textTop, colors)
   }
 
+  // Footer
+  drawDivider(ctx, contentX, contentRight, footerDividerY, colors.border)
+  ctx.fillStyle = colors.muted
+  ctx.font = `600 17px ${FONT}`
+  ctx.textAlign = 'center'
+  ctx.fillText(FOOTER_TEXT, width / 2, footerTextY)
+  ctx.textAlign = 'left'
+
   const blob = await canvasToBlob(canvas)
   return new File([blob], `cbt-pro-question-${question.id}.${IMAGE_EXTENSION}`, { type: IMAGE_TYPE })
 }
@@ -403,7 +579,7 @@ async function renderQuestionShareImage({ question, subject, number }, colors) {
 // Results are cached per question and theme, so a repeat share (or a prefetch) returns instantly.
 export function createQuestionShareImage(args) {
   const colors = readColors()
-  const key = [args.question.id, args.subject, args.number, ...Object.values(colors)].join('|')
+  const key = [args.question.id, args.subject, args.question.image?.url ?? '', ...Object.values(colors)].join('|')
 
   let pending = imageCache.get(key)
   if (!pending) {

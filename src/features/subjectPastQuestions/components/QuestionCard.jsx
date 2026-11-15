@@ -98,7 +98,7 @@ export function QuestionCard({ number, question, answer, onChoose, onReveal, sha
 
   // Opening the menu shows intent to share, so start rendering the image now. The result is cached.
   const toggleMenu = () => {
-    if (!menuOpen) prefetchQuestionShareImage({ question, subject, number })
+    if (!menuOpen) prefetchQuestionShareImage({ question, subject })
     setMenuOpen((open) => !open)
   }
 
@@ -119,7 +119,7 @@ export function QuestionCard({ number, question, answer, onChoose, onReveal, sha
 
   const shareLink = () => runShare('Sharing link…', () => shareQuestionLink({ url: shareUrl, subject }))
   const shareImage = () =>
-    runShare('Preparing question image…', () => shareQuestionImage({ question, subject, number, url: shareUrl }))
+    runShare('Preparing question image…', () => shareQuestionImage({ question, subject, url: shareUrl }))
 
   return (
     <article className="qc">

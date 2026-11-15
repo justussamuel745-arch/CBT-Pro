@@ -57,8 +57,8 @@ export async function shareQuestionLink({ url, subject }) {
 
 // Shares the question image. The URL goes inside `text` (not `url`) because many apps drop `url`
 // when files are attached, whereas text becomes the caption and links in it stay tappable.
-export async function shareQuestionImage({ question, subject, number, url }) {
-  const file = await createQuestionShareImage({ question, subject, number })
+export async function shareQuestionImage({ question, subject, url }) {
+  const file = await createQuestionShareImage({ question, subject })
   const text = `${getIntro(subject)}\n${url}`
   const data = { title: getTitle(subject), text, files: [file] }
 
