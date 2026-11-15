@@ -33,6 +33,13 @@
   line-height: 1.4;
 }
 
+/* Share button + options menu */
+.qc-share-wrap {
+  position: relative;
+  max-width: 100%;
+  margin-left: auto;
+}
+
 .qc-share {
   display: inline-flex;
   align-items: center;
@@ -40,7 +47,6 @@
   gap: 0.4rem;
   min-height: 2rem;
   max-width: 100%;
-  margin-left: auto;
   padding: 0.35rem 0.65rem;
   border: 0.0625rem solid var(--border);
   border-radius: var(--radius-sm);
@@ -59,7 +65,8 @@
   flex-shrink: 0;
 }
 
-.qc-share:hover:not(:disabled) {
+.qc-share:hover:not(:disabled),
+.qc-share[aria-expanded='true'] {
   background: var(--primary-light);
   border-color: var(--primary);
   color: var(--primary);
@@ -73,6 +80,78 @@
 .qc-share:focus-visible {
   outline: 0.15rem solid var(--primary);
   outline-offset: 0.1rem;
+}
+
+.qc-share-menu {
+  position: absolute;
+  top: calc(100% + 0.4rem);
+  right: 0;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 12.5rem;
+  max-width: calc(100vw - 2rem);
+  padding: 0.35rem;
+  background: var(--card);
+  border: 0.0625rem solid var(--border);
+  border-radius: 0.75rem;
+  box-shadow: 0 0.5rem 1.5rem rgba(15, 23, 42, 0.18);
+  animation: qc-menu-in 0.12s ease-out;
+}
+
+.qc-share-option {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  width: 100%;
+  min-height: 2.75rem;
+  padding: 0.55rem 0.7rem;
+  border: 0;
+  border-radius: 0.5rem;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.qc-share-option svg {
+  width: 1.15rem;
+  height: 1.15rem;
+  flex-shrink: 0;
+  color: var(--primary);
+}
+
+.qc-share-option:hover,
+.qc-share-option:focus-visible {
+  background: var(--primary-light);
+  color: var(--primary);
+}
+
+.qc-share-option:focus-visible {
+  outline: 0.15rem solid var(--primary);
+  outline-offset: -0.15rem;
+}
+
+@keyframes qc-menu-in {
+  from {
+    opacity: 0;
+    transform: translateY(-0.25rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .qc-share-menu {
+    animation: none;
+  }
 }
 
 .qc-share-message {
