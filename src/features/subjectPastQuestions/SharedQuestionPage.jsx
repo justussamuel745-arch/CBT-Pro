@@ -11,9 +11,7 @@ import './SharedQuestionPage.css'
 
 function SharedQuestion({ subject, questionId }) {
   const { status, questions, reload } = usePublicQuestions({
-    subject: subject.rawName,
-    topics: subject.topics,
-    years: subject.years,
+    questionId
   })
   const [answer, setAnswer] = useState(undefined)
   const question = questions.find((item) => String(item.id) === questionId)

@@ -5,13 +5,13 @@ const LOADING = { status: 'loading', questions: [] }
 
 /* Loads all questions for one subject / topics / years selection.
    `topics` and `years` must keep the same array identity between renders (the page model does). */
-export function usePublicQuestions({ subject, topics, years }) {
+export function usePublicQuestions(params) {
   const [state, setState] = useState(LOADING)
   const [attempt, setAttempt] = useState(0)
 
   useEffect(() => {
     let cancelled = false
-    fetchPublicQuestions({ subject, topics, years })
+    fetchPublicQuestions(params)
       .then((questions) => {
         if (!cancelled) setState({ status: 'ready', questions })
       })
@@ -21,7 +21,7 @@ export function usePublicQuestions({ subject, topics, years }) {
     return () => {
       cancelled = true
     }
-  }, [subject, topics, years, attempt])
+  }, [attempt])
 
   const reload = useCallback(() => {
     setState(LOADING)
