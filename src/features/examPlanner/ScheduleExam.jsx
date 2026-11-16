@@ -784,7 +784,7 @@ export default function ScheduleExam() {
               type="info"
               title="Activation Required"
               subtitle="Exam Scheduling Limit • CBT Pro Policy"
-              body="You can only schedule one exam per day with free access. Activate the app to schedule additional exams and plan multiple practice sessions without this daily limit."
+              body="You already have an active scheduled exam or a completed exam on your account. To schedule another exam, activate your account first. Activation unlocks continued exam planning and scheduling without this limit."
               primaryLabel="Activate App"
               onPrimary={() => navigate('/payment')}
               onClose={closeModal}
