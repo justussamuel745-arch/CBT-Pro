@@ -45,6 +45,7 @@ function AppRouter() {
       <Route path="/jamb-past-questions" element={<JambPastQuestions />} />
       <Route path="/jamb-past-questions/:slug" element={<SubjectPastQuestions />} />
       <Route path="/jamb-past-questions/:slug/questions" element={<FilteredPastQuestions />} />
+      <Route path="/shared-question/:questionId/:subject" element={<SharedQuestionPage />} />
       <Route path="/shared-question" element={<SharedQuestionPage />} />
 
       <Route path="/jamb-past-questions/:slug/topic/:topicSlug" element={<TopicPastQuestions />} />

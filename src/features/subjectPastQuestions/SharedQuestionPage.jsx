@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState } from 'react'
 import { Helmet } from 'react-helmet-async'
-import { Link, useSearchParams } from 'react-router'
+import { Link, useParams, useSearchParams } from 'react-router'
 import { Footer } from '@/components/layouts/Footer'
 import { PublicNav } from '@/components/layouts/PublicNav'
 import { Loading } from '@/components/feedback/Loading'
@@ -45,9 +45,7 @@ function SharedQuestion({ subject, questionId }) {
       </div>
     )
   } else {
-    const shareUrl = new URL('/shared-question', window.location.origin)
-    shareUrl.searchParams.set('questionId', String(question.id))
-    shareUrl.searchParams.set('subject', subject.slug)
+    const shareUrl = `${window.location.origin}/shared-question/${encodeURIComponent(String(question.id))}/${encodeURIComponent(subject.slug)}`
     content = (
       <QuestionCard
         number={1}
@@ -55,7 +53,7 @@ function SharedQuestion({ subject, questionId }) {
         answer={answer}
         onChoose={choose}
         onReveal={reveal}
-        shareUrl={shareUrl.toString()}
+        shareUrl={shareUrl}
         subject={subject.name}
       />
     )
@@ -82,9 +80,10 @@ function SharedQuestion({ subject, questionId }) {
 }
 
 export default function SharedQuestionPage() {
+  const params = useParams()
   const [searchParams] = useSearchParams()
-  const questionId = searchParams.get('questionId')
-  const subjectSlug = searchParams.get('subject')
+  const questionId = params.questionId ?? searchParams.get('questionId')
+  const subjectSlug = params.subject ?? searchParams.get('subject')
   const subject = useMemo(() => getSubjectPage(subjectSlug), [subjectSlug])
 
   if (!subject || !questionId) {

@@ -66,12 +66,8 @@ export function QuestionList({ subject, topics, years }) {
     return { pathname, search: search ? `?${search}` : '' }
   }
 
-  const questionShareUrl = (question) => {
-    const url = new URL('/shared-question', window.location.origin)
-    url.searchParams.set('questionId', String(question.id))
-    url.searchParams.set('subject', subject.slug)
-    return url.toString()
-  }
+  const questionShareUrl = (question) =>
+    `${window.location.origin}/shared-question/${encodeURIComponent(String(question.id))}/${encodeURIComponent(subject.slug)}`
 
   if (status === 'loading') {
     return (
