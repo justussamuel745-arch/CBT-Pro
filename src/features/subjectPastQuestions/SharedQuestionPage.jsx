@@ -67,7 +67,6 @@ function SharedQuestion({ subject, questionId }) {
       <MonetagController zoneConfig={zonesConfig.sharedQuestionPage} />
       <Helmet>
         <title>{subject.name} JAMB Past Question | CBT Pro</title>
-        <meta name="robots" content="noindex, follow" />
       </Helmet>
       <PublicNav />
       <main className="sq-main">
