@@ -7,9 +7,11 @@ import { Reveal } from '@/components/common/Reveal'
 import { SectionHeader } from '@/components/common/SectionHeader'
 import { FaqList } from '@/components/common/FaqList'
 import { Breadcrumbs } from '@/components/common/Breadcrumbs'
-import { PillLinkList } from '@/components/common/PillLinkList'
+import { PillLinkList } from '@/components/common/PillLinkList';
+import HilltopAdsBanner from '@/components/ads/HilltopAdsBanner';
 import { SITE_URL } from '@lib/config/app.js'
-import { GUEST_PATH } from '@/lib/config/publicLinks'
+import { GUEST_PATH } from '@/lib/config/publicLinks';
+import { hilltopConfig } from '@lib/config/ads.config';
 import { TIP_ICONS, subjectPath } from '../utils/subjectPage'
 import { readPageSize } from '../utils/questionFilters'
 import { PracticeConfigForm } from './PracticeConfigForm';
@@ -110,6 +112,8 @@ export function FilterPage({ page }) {
           <QuestionList subject={subject} topics={page.topics} years={page.years} />
         </section>
 
+        <HilltopAdsBanner src={hilltopConfig.homeTop}/>
+
         {/* ABOUT */}
         <section className="home-section container" id="about">
           <div className="pq-prose">
@@ -154,6 +158,8 @@ export function FilterPage({ page }) {
             {page.moreLink.label} <i className="fa-solid fa-arrow-right"></i>
           </Link>
         </section>
+
+        <HilltopAdsBanner src={hilltopConfig.homeCenterTwo}/>
 
         {/* FAQ AND CTA */}
         <section className="home-section container" id="faq">

@@ -9,9 +9,11 @@ import { SectionHeader } from '@/components/common/SectionHeader'
 import { FaqList } from '@/components/common/FaqList'
 import { Breadcrumbs } from '@/components/common/Breadcrumbs'
 import { PillLinkList } from '@/components/common/PillLinkList'
-import { SampleQuestion } from '@/components/common/SampleQuestion'
+import { SampleQuestion } from '@/components/common/SampleQuestion';
+import HilltopAdsBanner from '@/components/ads/HilltopAdsBanner'
 import { SITE_URL } from '@lib/config/app.js'
-import { GUEST_PATH } from '@/lib/config/publicLinks'
+import { GUEST_PATH } from '@/lib/config/publicLinks';
+import { hilltopConfig } from '@lib/config/ads.config'
 import { PracticeConfigForm } from './components/PracticeConfigForm';
 import { CTACard } from './components/CTACard';
 import {
@@ -107,6 +109,8 @@ function SubjectPage({ subject }) {
           </div>
         </div>
       </header>
+
+      <HilltopAdsBanner src={hilltopConfig.homeCenterOne}/>
 
       <main>
         {/* 2. CONFIGURATION FORM */}
@@ -207,6 +211,8 @@ function SubjectPage({ subject }) {
             </div>
           </section>
         )}
+
+        <HilltopAdsBanner src={hilltopConfig.homeCenterTwo}/>
 
         {/* 6. FAQ AND CALL TO ACTION */}
         <section className="home-section container" id="faq">

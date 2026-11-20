@@ -25,6 +25,11 @@ export const zonesConfig = {
     enabled: true,
     zoneId: "12240437",
     scriptUrl: "https://n6wxm.com/vignette.min.js"
+  },
+  sharedQuestionPage: {
+    enabled: true,
+    zoneId: "12303117",
+    scriptUrl: "https://n6wxm.com/vignette.min.js"
   }
 }
 

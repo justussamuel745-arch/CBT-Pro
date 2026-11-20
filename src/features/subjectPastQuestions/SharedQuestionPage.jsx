@@ -4,9 +4,12 @@ import { Link, useParams, useSearchParams } from 'react-router'
 import { Footer } from '@/components/layouts/Footer'
 import { PublicNav } from '@/components/layouts/PublicNav'
 import { Loading } from '@/components/feedback/Loading'
+import HilltopAdsBanner from '@/components/ads/HilltopAdsBanner'
+import MonetagController from '@/components/ads/MonetagController'
 import { usePublicQuestions } from './hooks/usePublicQuestions'
 import { getSubjectPage, subjectPath } from './utils/subjectPage'
-import { QuestionCard } from './components/QuestionCard'
+import { QuestionCard } from './components/QuestionCard';
+import { hilltopConfig, zonesConfig } from '@lib/config/ads.config'
 import './SharedQuestionPage.css'
 
 function SharedQuestion({ subject, questionId }) {
@@ -61,6 +64,7 @@ function SharedQuestion({ subject, questionId }) {
 
   return (
     <>
+      <MonetagController zoneConfig={zonesConfig.sharedQuestionPage} />
       <Helmet>
         <title>{subject.name} JAMB Past Question | CBT Pro</title>
         <meta name="robots" content="noindex, follow" />
@@ -74,6 +78,9 @@ function SharedQuestion({ subject, questionId }) {
           {content}
         </div>
       </main>
+      <HilltopAdsBanner src={hilltopConfig.publicPageSix}/>
+      <HilltopAdsBanner src={hilltopConfig.homeBottom}/>
+      <HilltopAdsBanner src={hilltopConfig.homeTop}/>
       <Footer />
     </>
   )

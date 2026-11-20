@@ -286,6 +286,8 @@ export default function JambPastQuestions() {
           </div>
         </section>
 
+        <HilltopAdsBanner src={hilltopConfig.homeTop}/>
+
         <section className="home-section container" id="faq">
           <SectionHeader title="JAMB past questions: common questions" />
           <FaqList items={PAGE_FAQS} />
