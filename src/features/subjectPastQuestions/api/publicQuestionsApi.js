@@ -9,11 +9,17 @@ export const PUBLIC_QUESTIONS_ENDPOINT = '/api/public/questions'
 /* Fetches every question that matches the subject, topics and years.
    Resolves an array shaped like the study questions:
    { id, year, topic, question, image?, options: [{ id, option }], correctAnswers: [id], explanation: { text } } */
-export const fetchPublicQuestions = async ({ subject, topics, years }) => {
+export const fetchPublicQuestions = async (params) => {
+  if ('questionId' in params){
+    const res = await request.send(`${PUBLIC_QUESTIONS_ENDPOINT}/${params.questionId}`)
+    const data = typeof res.body !== 'object' ? [decrypt(res.body)] : res.body
+    
+    return data
+  }
   const res = await request.send(PUBLIC_QUESTIONS_ENDPOINT, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ subject, topics, years, shuffle: false }),
+    body: JSON.stringify({ ...params, shuffle: false }),
   })
 
   // Accept both an encrypted body (like /api/study) and a plain JSON array

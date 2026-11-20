@@ -28,6 +28,7 @@ import SubjectPastQuestions from '@/features/subjectPastQuestions/SubjectPastQue
 import TopicPastQuestions from '@/features/subjectPastQuestions/TopicPastQuestions'
 import YearPastQuestions from '@/features/subjectPastQuestions/YearPastQuestions'
 import FilteredPastQuestions from '@/features/subjectPastQuestions/FilteredPastQuestions'
+import SharedQuestionPage from '@/features/subjectPastQuestions/SharedQuestionPage'
 
 const Delete = lazy(() => import('@/features/settings/Delete.jsx'));
 import { authStore } from '@/stores/authStore';
@@ -44,6 +45,8 @@ function AppRouter() {
       <Route path="/jamb-past-questions" element={<JambPastQuestions />} />
       <Route path="/jamb-past-questions/:slug" element={<SubjectPastQuestions />} />
       <Route path="/jamb-past-questions/:slug/questions" element={<FilteredPastQuestions />} />
+      <Route path="/shared-question/:questionId/:subject" element={<SharedQuestionPage />} />
+      <Route path="/shared-question" element={<SharedQuestionPage />} />
 
       <Route path="/jamb-past-questions/:slug/topic/:topicSlug" element={<TopicPastQuestions />} />
       <Route path="/jamb-past-questions/:slug/year/:year" element={<YearPastQuestions />} />

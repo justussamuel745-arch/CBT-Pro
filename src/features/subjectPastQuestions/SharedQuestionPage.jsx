@@ -1,0 +1,113 @@
+import { useCallback, useMemo, useState } from 'react'
+import { Helmet } from 'react-helmet-async'
+import { Link, useParams, useSearchParams } from 'react-router'
+import { Footer } from '@/components/layouts/Footer'
+import { PublicNav } from '@/components/layouts/PublicNav'
+import { Loading } from '@/components/feedback/Loading'
+import HilltopAdsBanner from '@/components/ads/HilltopAdsBanner'
+import MonetagController from '@/components/ads/MonetagController'
+import { usePublicQuestions } from './hooks/usePublicQuestions'
+import { getSubjectPage, subjectPath } from './utils/subjectPage'
+import { QuestionCard } from './components/QuestionCard';
+import { hilltopConfig, zonesConfig } from '@lib/config/ads.config'
+import './SharedQuestionPage.css'
+
+function SharedQuestion({ subject, questionId }) {
+  const { status, questions, reload } = usePublicQuestions({
+    questionId
+  })
+  const [answer, setAnswer] = useState(undefined)
+  const question = questions.find((item) => String(item.id) === questionId)
+
+  const choose = useCallback((selectedQuestion, optionId) => {
+    if (answer) return
+    const isCorrect = (selectedQuestion.correctAnswers ?? []).includes(optionId)
+    setAnswer({ userAnswer: optionId, status: isCorrect ? 'correct' : 'wrong' })
+  }, [answer])
+
+  const reveal = useCallback(() => {
+    setAnswer((current) => current ?? { userAnswer: '', status: 'viewed' })
+  }, [])
+
+  let content
+  if (status === 'loading') {
+    content = <div className="sq-state" role="status"><Loading /></div>
+  } else if (status === 'error') {
+    content = (
+      <div className="sq-state" role="alert">
+        <p>We could not load this question. Check your connection and try again.</p>
+        <button type="button" className="btn btn-primary" onClick={reload}>Try again</button>
+      </div>
+    )
+  } else if (!question) {
+    content = (
+      <div className="sq-state" role="status">
+        <h1>Question not found</h1>
+        <p>This question may no longer be publicly available.</p>
+        <Link className="btn btn-primary" to={subjectPath(subject.slug)}>Browse {subject.name} questions</Link>
+      </div>
+    )
+  } else {
+    const shareUrl = `${window.location.origin}/shared-question/${encodeURIComponent(String(question.id))}/${encodeURIComponent(subject.slug)}`
+    content = (
+      <QuestionCard
+        number={1}
+        question={question}
+        answer={answer}
+        onChoose={choose}
+        onReveal={reveal}
+        shareUrl={shareUrl}
+        subject={subject.name}
+      />
+    )
+  }
+
+  return (
+    <>
+      <MonetagController zoneConfig={zonesConfig.sharedQuestionPage} />
+      <Helmet>
+        <title>{subject.name} JAMB Past Question | CBT Pro</title>
+        <meta name="robots" content="noindex, follow" />
+      </Helmet>
+      <PublicNav />
+      <main className="sq-main">
+        <div className="sq-content">
+          <Link className="sq-back" to={subjectPath(subject.slug)}>
+            <i className="fa-solid fa-arrow-left" aria-hidden="true"></i> All {subject.name} questions
+          </Link>
+          {content}
+        </div>
+      </main>
+      <HilltopAdsBanner src={hilltopConfig.publicPageSix}/>
+      <HilltopAdsBanner src={hilltopConfig.homeBottom}/>
+      <HilltopAdsBanner src={hilltopConfig.homeTop}/>
+      <Footer />
+    </>
+  )
+}
+
+export default function SharedQuestionPage() {
+  const params = useParams()
+  const [searchParams] = useSearchParams()
+  const questionId = params.questionId ?? searchParams.get('questionId')
+  const subjectSlug = params.subject ?? searchParams.get('subject')
+  const subject = useMemo(() => getSubjectPage(subjectSlug), [subjectSlug])
+
+  if (!subject || !questionId) {
+    return (
+      <>
+        <PublicNav />
+        <main className="sq-main">
+          <div className="sq-state" role="alert">
+            <h1>Invalid question link</h1>
+            <p>This link is missing the subject or question ID.</p>
+            <Link className="btn btn-primary" to="/jamb-past-questions">Browse past questions</Link>
+          </div>
+        </main>
+        <Footer />
+      </>
+    )
+  }
+
+  return <SharedQuestion key={`${subjectSlug}:${questionId}`} subject={subject} questionId={questionId} />
+}

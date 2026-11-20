@@ -66,6 +66,9 @@ export function QuestionList({ subject, topics, years }) {
     return { pathname, search: search ? `?${search}` : '' }
   }
 
+  const questionShareUrl = (question) =>
+    `${window.location.origin}/shared-question/${encodeURIComponent(String(question.id))}/${encodeURIComponent(subject.slug)}`
+
   if (status === 'loading') {
     return (
       <div className="ql">
@@ -126,6 +129,8 @@ export function QuestionList({ subject, topics, years }) {
               answer={answers[question.id]}
               onChoose={choose}
               onReveal={reveal}
+              shareUrl={questionShareUrl(question)}
+              subject={subject.name}
             />
           </li>
         ))}
