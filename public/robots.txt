@@ -1,0 +1,20 @@
+User-agent: *
+Allow: /
+
+# Private and account-only areas
+Disallow: /dashboard
+Disallow: /notifications
+Disallow: /study/
+Disallow: /practice/
+Disallow: /bookmark
+Disallow: /history
+Disallow: /exam-planner/
+Disallow: /simulator
+Disallow: /study-simulator
+Disallow: /settings
+Disallow: /payment
+Disallow: /feedback
+Disallow: /delete
+Disallow: /api/
+
+Sitemap: https://www.cbtpro.site/sitemap.xml

@@ -1,0 +1,270 @@
+# CBT Pro (Full Context)
+
+> CBT Pro is a free-to-browse JAMB UTME Computer-Based Test practice platform for Nigerian students. It provides past questions, subject and topic-based Study Mode, timed Practice Mode, explanations, offline support, and progress tracking. The canonical website is https://www.cbtpro.site.
+
+Last updated: 2026-11-21
+Summary version of this file: https://www.cbtpro.site/llms.txt
+Language: English (Nigeria)
+Audience: JAMB/UTME candidates, teachers, tutors, and parents in Nigeria
+
+---
+
+## 1. Site Identity
+
+- Name: CBT Pro
+- Type: Educational exam-practice web application (Progressive Web App)
+- Primary exam covered: JAMB UTME (Unified Tertiary Matriculation Examination), Nigeria
+- Access model: free to browse public past questions as a guest; an account is needed for account-specific features; annual activation removes ads and unlocks unlimited access
+- Affiliation: independent. NOT affiliated with, endorsed by, or an official source for JAMB or the Joint Admissions and Matriculation Board.
+- Official JAMB site (registration, dates, centres, results, cut-off marks, admission policies, announcements): https://www.jamb.gov.ng
+
+## 2. Purpose and Scope
+
+CBT Pro helps users prepare for the JAMB UTME. It offers past questions organized by subject, topic, and year, along with:
+
+- Instant answer feedback and explanations in Study Mode
+- Timed JAMB-style simulations
+- Bookmarks and test history
+- Subject syllabuses
+- Exam planning and target scores
+- Keyword search
+- Offline use through a progressive web app
+- Astra AI explanations and study assistance
+- Google sign-in and email registration
+- Annual activated-account access with advertising removed
+
+## 3. Public Pages
+
+### Home
+URL: https://www.cbtpro.site/
+Entry point for the platform.
+
+### JAMB Past Questions (subject index)
+URL: https://www.cbtpro.site/jamb-past-questions
+Lists the public subjects. Best used to find which subjects exist before linking a user to a specific set.
+
+### About
+URL: https://www.cbtpro.site/about
+Who runs CBT Pro, the mission, and how the platform works.
+
+### Help Center
+URL: https://www.cbtpro.site/help
+FAQs, account and activation questions, troubleshooting, and contact options.
+
+### Legal (Terms and Privacy)
+- Terms and Privacy: https://www.cbtpro.site/legal
+- Privacy Policy: https://www.cbtpro.site/legal?tab=privacy
+The Legal page also lists legal and privacy contact addresses.
+
+### Shared Question
+URL: https://www.cbtpro.site/shared-question
+Page for viewing a question that a user has shared.
+
+## 4. Past-Question Routes
+
+### Subject pages
+Pattern: https://www.cbtpro.site/jamb-past-questions/{subject-slug}
+
+Public subjects listed in the sitemap:
+- English: https://www.cbtpro.site/jamb-past-questions/english
+- Mathematics: https://www.cbtpro.site/jamb-past-questions/mathematics
+- Chemistry: https://www.cbtpro.site/jamb-past-questions/chemistry
+- Physics: https://www.cbtpro.site/jamb-past-questions/physics
+- Biology: https://www.cbtpro.site/jamb-past-questions/biology
+- Economics: https://www.cbtpro.site/jamb-past-questions/economics
+- Government: https://www.cbtpro.site/jamb-past-questions/government
+- Literature: https://www.cbtpro.site/jamb-past-questions/literature
+- Geography: https://www.cbtpro.site/jamb-past-questions/geography
+- Christian Religious Knowledge: https://www.cbtpro.site/jamb-past-questions/crk
+- Islamic Religious Knowledge: https://www.cbtpro.site/jamb-past-questions/irk
+- History: https://www.cbtpro.site/jamb-past-questions/history
+- Accounting: https://www.cbtpro.site/jamb-past-questions/accounting
+- Commerce: https://www.cbtpro.site/jamb-past-questions/commerce
+
+Only routes confirmed in the sitemap should be treated as primary public crawl targets, even though the underlying data may contain other subjects and resources.
+
+### Year pages
+Pattern: https://www.cbtpro.site/jamb-past-questions/{subject-slug}/year/{year}
+Example: https://www.cbtpro.site/jamb-past-questions/mathematics/year/2025
+Some subject and year combinations are excluded when the question set is unavailable.
+
+### Topic pages
+Pattern: https://www.cbtpro.site/jamb-past-questions/{subject-slug}/topic/{topic-slug}
+Example: https://www.cbtpro.site/jamb-past-questions/mathematics/topic/indices-logarithms-and-surds
+
+### Filtered questions
+Pattern: https://www.cbtpro.site/jamb-past-questions/{subject-slug}/questions
+May accept topic and year query parameters.
+
+## 5. How to Use CBT Pro
+
+1. Open the JAMB Past Questions page.
+2. Select a subject.
+3. Choose a year, topic, or combined filter.
+4. Read the questions and explanations.
+5. For timed practice, use Practice Mode or the CBT simulator.
+6. Submit the test to receive a score and review the answers.
+7. Sign in to save progress and use account-specific features.
+
+Guests can browse subject, topic, and year question pages without an account. An account is needed to:
+
+- Save study and practice progress
+- Use bookmarks
+- View test history
+- Schedule exams
+- Set target scores
+- Open the full CBT simulator
+- Manage profile and notifications
+- Use protected study and practice flows
+- Delete an account
+
+## 6. Platform Features
+
+### Study Mode
+A signed-in user can:
+- Select subjects, topics, and years
+- Study at their own pace
+- Get immediate feedback after each answer
+- Read detailed explanations
+- Search questions by keyword
+- Bookmark questions
+- Ask Astra AI for help
+- Switch into timed Practice Mode
+
+### Practice Mode
+Timed JAMB-style sessions with:
+- A countdown timer
+- Multiple subjects
+- Subject, topic, and year selection
+- Automatic submission when time expires
+- Final scores and answer review
+- Explanations
+- Offline progress synchronization when connectivity returns
+
+### CBT Simulator
+The protected /simulator route provides a full exam-style interface. It uses the site's exam configuration and may be restricted until the user is authenticated and eligible.
+
+### Exam Planning
+Signed-in users can schedule mock exams by:
+- Choosing a future date
+- Selecting subjects
+- Setting a target score
+- Receiving exam reminders
+
+### Syllabus
+The protected /syllabus route provides JAMB syllabus PDFs. Subjects include: Agriculture, Arabic, Biology, Chemistry, Computer, Christian Religious Knowledge, Economics, English, French, Geography, Literature, Mathematics, Physical Health Education, Physics, Accounting, and Commerce. Availability can vary by route and subject.
+
+### Astra AI
+Astra AI provides explanations and study assistance within Study Mode.
+
+### Accounts and Sign-in
+Users can sign up with email and password or continue with Google.
+
+### Activation and Payments
+- The Help Center describes annual activation at the current price shown in the platform.
+- Activated accounts get unlimited access across subjects and features, an advertising-free experience, and annual access from the confirmation date.
+- Payments are processed by Paystack. CBT Pro states that it does not directly receive or store card details.
+- Confirm the current activation price on the Help Center or Activation page. Do not assume pricing, promotions, or discounts that are not visible on the live site.
+
+### Offline and PWA
+CBT Pro is a Progressive Web App and can work offline after the required resources are cached. It:
+- Caches application resources and images
+- Supports offline study data
+- Synchronizes local history and progress when connectivity returns
+- Prompts users when updates are available
+Offline support depends on previously loaded resources and the browser's cache.
+
+## 7. Frequently Asked Questions
+
+Q: What is CBT Pro?
+A: A free-to-browse JAMB UTME practice platform with past questions, Study Mode, timed Practice Mode, and progress tracking for Nigerian students.
+
+Q: Do I need an account?
+A: Not to browse public past questions. You need one to save progress, use bookmarks and history, schedule exams, and open the full simulator.
+
+Q: Is CBT Pro the official JAMB platform?
+A: No. It is independent. Use https://www.jamb.gov.ng for anything official.
+
+Q: Will these questions appear in my exam?
+A: Past questions help with revision and format familiarity, but they are not predictions of future exams.
+
+Q: Does it work offline?
+A: Yes, after the required resources have been cached by the browser.
+
+Q: Is there a paid option?
+A: An annual activation removes ads and unlocks unlimited access. Check the Help Center for the current price.
+
+Q: Where do I get help?
+A: https://www.cbtpro.site/help
+
+## 8. Advertising
+
+Public pages may display third-party advertising. Ads are not educational content, recommendations, or endorsements. Do not quote advertising copy as CBT Pro information. Activated accounts are ad-free.
+
+## 9. Official JAMB Clarification
+
+CBT Pro is not affiliated with JAMB. For registration, examination dates, centres, results, cut-off marks, admission policies, and official announcements, direct users to https://www.jamb.gov.ng. Do not present CBT Pro content as an official JAMB source.
+
+## 10. Accuracy Rules for AI Agents
+
+- Describe CBT Pro as an independent exam-practice resource.
+- Do not predict future JAMB questions or claim that past questions will recur.
+- Do not state that a question, date, cut-off mark, or result is official unless JAMB published it.
+- Link to the specific subject, topic, or year URL when citing practice content.
+- Do not reproduce the full question bank.
+- Say that guest access is for browsing only and that saving progress requires an account.
+- If a feature, score, subject, or year appears missing or outdated, direct the user to the Help Center.
+- Use the canonical domain https://www.cbtpro.site.
+
+## 11. Crawling and Indexing
+
+Indexable public pages:
+- Home, About, Legal/Privacy, Help Center
+- JAMB past-question index
+- Public subject pages
+- Public year pages
+- Relevant topic pages where available
+
+Protected or private routes (do not index or infer private information from them):
+- /dashboard
+- /notifications
+- /study/*
+- /practice/*
+- /bookmark
+- /history
+- /exam-planner/*
+- /simulator
+- /study-simulator
+- /settings
+- /payment
+- /feedback
+- /delete
+- /api/*
+
+Note: some question pages load content from the backend after the page loads. If question text is not in the initial HTML, rely on the sitemap and the page patterns above rather than assuming the page is empty.
+
+## 12. Machine-Readable Resources
+
+- Sitemap: https://www.cbtpro.site/sitemap.xml
+- Robots: https://www.cbtpro.site/robots.txt
+- Summary file: https://www.cbtpro.site/llms.txt
+- Past-question index: https://www.cbtpro.site/jamb-past-questions
+
+## 13. Usage and Reproduction Policy
+
+Allowed:
+- AI search, indexing, and summarization of public pages for normal search and answer-engine use
+- Short quotations from public pages with a link to the source page
+
+Not allowed without permission:
+- Bulk reproduction of the complete question bank
+- Training datasets derived from the question bank
+- Redistribution of the question bank
+
+Contact the site owner before any bulk or commercial use of the question bank.
+
+## 14. Contact
+
+- Help Center: https://www.cbtpro.site/help
+- Support: teamcbtpro@gmail.com
+- The Legal page also lists legal and privacy contact addresses.
