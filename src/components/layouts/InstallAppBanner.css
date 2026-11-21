@@ -1,9 +1,6 @@
 /* ─────────────────────────────────────────────────────────────
-   GLOBAL & THEMING FALLBACKS
-───────────────────────────────────────────────────────────── */
-
-/* ─────────────────────────────────────────────────────────────
    FLOATING BANNER (Bottom Slide-Up)
+   Step list and note styles live in InstallGuide.css
 ───────────────────────────────────────────────────────────── */
 .pwa-install-banner {
   position: fixed;
@@ -89,6 +86,7 @@
   flex-shrink: 0;
 }
 
+/* ── Shared install button (banner + card) ── */
 .pwa-install-btn {
   min-height: 40px;
   padding: 0.5rem 0.9rem;
@@ -104,17 +102,34 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
   box-shadow: 0 4px 10px rgba(79, 70, 229, 0.2);
 }
 
-.pwa-install-btn:hover {
+.pwa-install-btn-inner {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.pwa-install-btn:hover:not(:disabled) {
   transform: translateY(-1px);
   box-shadow: 0 6px 14px rgba(79, 70, 229, 0.3);
 }
 
-.pwa-install-btn:active {
+.pwa-install-btn:active:not(:disabled) {
   transform: translateY(0) scale(0.98);
+}
+
+.pwa-install-btn:disabled {
+  opacity: 0.5;
+  cursor: progress;
+}
+
+/* Double class so it wins over the responsive .pwa-install-btn overrides below */
+.pwa-install-btn.pwa-install-btn-card {
+  padding: 0.65rem 1.25rem;
+  font-size: 0.85rem;
 }
 
 .pwa-install-btn:focus-visible,
@@ -143,65 +158,17 @@
   color: var(--text);
 }
 
-/* ── Manual Instructions / Guide Sheet ──
-   Holds both short numbered steps AND longer single-paragraph
-   messages (redirect / unsupported). Scrolls internally so a
-   lengthy message can never push the banner off-screen. */
+/* ── Guide sheet (banner) ──
+   Wraps <InstallGuide />. Scrolls internally so a long message
+   can never push the banner off-screen. */
 .pwa-ios-sheet {
   padding: 0.875rem clamp(0.875rem, 3vw, 1.25rem) 1.1rem;
   background: var(--bg);
   border-top: 1px solid var(--border);
-  display: flex;
-  flex-direction: column;
-  gap: 0.6rem;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   box-sizing: border-box;
   animation: pwa-sheet-in 0.28s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.pwa-ios-step {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.65rem;
-  font-size: 0.83rem;
-  color: var(--text);
-  line-height: 1.5;
-  overflow-wrap: break-word;
-}
-
-.pwa-ios-num {
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  background: var(--primary-light);
-  color: var(--primary);
-  font-size: 0.72rem;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  margin-top: 0.05rem;
-}
-
-.pwa-ios-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--primary);
-  flex-shrink: 0;
-  margin-top: 0.15rem;
-}
-
-/* A step with no number (redirect / unsupported messages) gets
-   a light card treatment instead of the plain numbered-list look,
-   so a full sentence doesn't read like a mislabeled step. */
-.pwa-ios-step:has(.pwa-ios-icon):not(:has(.pwa-ios-num)) {
-  padding: 0.75rem 0.85rem;
-  background: var(--card);
-  border: 1px dashed var(--border);
-  border-radius: 12px;
 }
 
 @keyframes pwa-sheet-in {
@@ -249,7 +216,7 @@
   color: #ffffff;
   flex-shrink: 0;
   box-shadow: 0 6px 16px rgba(79, 70, 229, 0.25);
-  display: none; /* hidden by default, matches original behavior */
+  display: none; /* shown on small screens only */
   margin-bottom: 1rem;
 }
 
@@ -313,39 +280,17 @@
   flex-shrink: 0;
 }
 
+/* Wraps <InstallGuide /> inside the card */
 .pwa-card-guide {
   width: 100%;
   max-width: 480px;
   margin-top: 1rem;
-  padding: 0.9rem 1.1rem;
-  border-radius: 12px;
-  background: var(--bg);
-  border: 1px dashed var(--border);
-  font-size: 0.83rem;
-  color: var(--text);
   box-sizing: border-box;
   max-height: 220px;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   text-align: left;
   animation: pwa-sheet-in 0.28s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.pwa-card-guide p {
-  margin: 0.5rem 0;
-  display: flex;
-  align-items: flex-start;
-  gap: 0.5rem;
-  line-height: 1.55;
-  overflow-wrap: break-word;
-}
-
-.pwa-card-guide p:first-child {
-  margin-top: 0;
-}
-
-.pwa-card-guide p:last-child {
-  margin-bottom: 0;
 }
 
 /* ─────────────────────────────────────────────────────────────
@@ -374,7 +319,7 @@
   }
 }
 
-/* Compact mobile (360px – 480px) */
+/* Compact mobile (up to 480px) */
 @media (max-width: 480px) {
   .pwa-install-body {
     flex-wrap: wrap;

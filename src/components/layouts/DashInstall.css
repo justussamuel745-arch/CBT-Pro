@@ -1,7 +1,8 @@
- /* =====================================
+/* =====================================
    DASHBOARD INSTALL BUTTON + GUIDE
    Prefix: dash-install-
    Panel anchors to the sticky .dash-header
+   Step list and note styles live in InstallGuide.css
    ======================================*/
 
 /* Wrapper adds no layout box, so the button stays a normal header flex item */
@@ -64,74 +65,7 @@
 }
 
 .dash-install-close:hover {
-  background: var(--card);
-}
-
-/* ---------- STEPS ---------- */
-.dash-install-steps {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.6rem;
-}
-
-.dash-install-step {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  padding: 0.6rem 0.7rem;
-  border-radius: 12px;
   background: var(--primary-light);
-  font-size: 0.82rem;
-  line-height: 1.4;
-  color: var(--text);
-}
-
-.dash-install-num {
-  flex: 0 0 auto;
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  background: var(--gradient);
-  color: #fff;
-  font-size: 0.72rem;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.dash-install-icon {
-  flex: 0 0 auto;
-  display: flex;
-  align-items: center;
-  color: var(--primary);
-}
-
-.dash-install-text {
-  min-width: 0;
-}
-
-/* ---------- NOTE (redirect / unsupported) ---------- */
-.dash-install-note {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.6rem;
-  margin: 0;
-  padding: 0.7rem;
-  border-radius: 12px;
-  background: var(--primary-light);
-  font-size: 0.82rem;
-  line-height: 1.5;
-  color: var(--text);
-}
-
-.dash-install-note i {
-  flex: 0 0 auto;
-  margin-top: 0.15rem;
-  color: var(--primary);
 }
 
 /* ---------- MOTION / RESPONSIVE ---------- */

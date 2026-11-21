@@ -15,6 +15,5 @@ Disallow: /settings
 Disallow: /payment
 Disallow: /feedback
 Disallow: /delete
-Disallow: /api/
 
 Sitemap: https://www.cbtpro.site/sitemap.xml

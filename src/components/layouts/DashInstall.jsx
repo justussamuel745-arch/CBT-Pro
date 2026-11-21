@@ -1,27 +1,21 @@
-import { useState, useEffect, useRef } from "react";
-import { useNotifications } from '@/context/NotificationContext';
-import { detectEnvironment } from '@lib/utils/pwaInstall.js';
-import { getInstallGuidance } from '@/components/common/PwaInstall';
+import { useEffect, useRef } from "react";
+import { useInstallAction } from "@/hooks/useInstallAction";
+import { InstallGuide } from "@/components/common/InstallGuide";
 import "./DashInstall.css";
 
-
 export default function DashInstall() {
-  const { pwa } = useNotifications();
-  const { canInstall, isInstalled, install, installing } = pwa;
-  const [open, setOpen] = useState(false);
+  const { guidance, isAuto, isInstalled, installing, open, close, trigger } = useInstallAction();
   const rootRef = useRef(null);
-
-  const guidance = getInstallGuidance(detectEnvironment(), canInstall);
 
   // Close on outside tap or Escape
   useEffect(() => {
     if (!open) return;
 
     function onPointerDown(e) {
-      if (rootRef.current && !rootRef.current.contains(e.target)) setOpen(false);
+      if (rootRef.current && !rootRef.current.contains(e.target)) close();
     }
     function onKeyDown(e) {
-      if (e.key === "Escape") setOpen(false);
+      if (e.key === "Escape") close();
     }
 
     document.addEventListener("pointerdown", onPointerDown);
@@ -30,21 +24,7 @@ export default function DashInstall() {
       document.removeEventListener("pointerdown", onPointerDown);
       document.removeEventListener("keydown", onKeyDown);
     };
-  }, [open]);
-
-  // Native prompt available: install straight away. Otherwise toggle the guide.
-  async function handleClick() {
-    if (guidance.mode === "auto") {
-      setOpen(false);
-      try {
-        await install();
-      } catch(err){
-        console.log(err)
-      }
-      return;
-    }
-    setOpen((prev) => !prev);
-  }
+  }, [open, close]);
 
   if (isInstalled) return null;
 
@@ -58,12 +38,12 @@ export default function DashInstall() {
         aria-controls="dash-install-panel"
         title={installing ? "Installing…" : "Install app"}
         disabled={installing}
-        onClick={handleClick}
+        onClick={trigger}
       >
         <i className={installing ? "fa-solid fa-spinner fa-spin" : "fa-solid fa-download"}></i>
       </button>
 
-      {open && guidance.mode !== "auto" && (
+      {open && !isAuto && (
         <div
           id="dash-install-panel"
           className="dash-install-panel"
@@ -76,32 +56,13 @@ export default function DashInstall() {
               type="button"
               className="dash-install-close"
               aria-label="Close"
-              onClick={() => setOpen(false)}
+              onClick={close}
             >
               <i className="fa-solid fa-xmark"></i>
             </button>
           </div>
 
-          {guidance.mode === "guide" && (
-            <ol className="dash-install-steps">
-              {guidance.steps.map((step, i) => (
-                <li className="dash-install-step" key={i}>
-                  <span className="dash-install-num">{i + 1}</span>
-                  <span className="dash-install-icon">{step.icon}</span>
-                  <span className="dash-install-text">{step.text}</span>
-                </li>
-              ))}
-            </ol>
-          )}
-
-          {guidance.mode !== "guide" && (
-            <p className="dash-install-note">
-              <i
-                className={`fa-solid ${guidance.mode === "redirect" ? "fa-compass" : "fa-bookmark"}`}
-              ></i>
-              <span>{guidance.message}</span>
-            </p>
-          )}
+          <InstallGuide guidance={guidance} />
         </div>
       )}
     </div>

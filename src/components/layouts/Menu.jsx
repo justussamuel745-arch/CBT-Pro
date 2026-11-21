@@ -2,6 +2,7 @@ import { memo } from 'react';
 import { Link } from 'react-router';
 import { authStore } from '@/stores/authStore';
 import { ThemeToggle } from './ThemeToggle';
+import { MenuInstall } from './MenuInstall';
 import './Menu.css';
 
 /* Dashboard sections. Exported so other layouts can extend them. */
@@ -63,6 +64,8 @@ export const Menu = memo(function Menu({ menuOpen, setMenuOpen, sections }) {
             <i className="fa-solid fa-xmark"></i>
           </button>
         </div>
+
+        <MenuInstall onAutoInstall={() => setMenuOpen(false)} />
 
         {menuSections.map((section) => (
           <div className="dash-menu-section" key={section.title}>
