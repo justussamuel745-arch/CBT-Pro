@@ -225,6 +225,8 @@ function Register() {
     setBusy('local')
     try {
       await signup(fields)
+      // for tracking completed sign up with umami
+      window.umami?.track("signup_completed");
       applySignUpScenario('success');
     } catch (err) {
       // The frontend already validates, so server side validation errors
